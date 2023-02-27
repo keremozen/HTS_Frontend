@@ -1,0 +1,78 @@
+<p-toast></p-toast>
+
+
+<h4>{{ '::Admin:Hospital:HospitalManagement' | abpLocalization }}</h4>
+
+<div class="card">
+    <p-toolbar styleClass="mb-4 gap-2">
+        <ng-template pTemplate="left">
+            <button pButton pRipple label="{{ '::Admin:Hospital:NewHospital' | abpLocalization }}" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNewHospital()"></button>
+        </ng-template>
+    </p-toolbar>
+
+    <p-table #dt [value]="hospitalList" [rows]="10" [paginator]="true" [globalFilterFields]="['Name','PhoneNumber','ContactInfoName','ContactInfoPhoneNumber']" [tableStyle]="{'min-width': '75rem'}"
+        [rowHover]="true" dataKey="Id" currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}" [showCurrentPageReport]="true">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="Name" style="min-width:15rem" rowspan="2">{{ '::Admin:Hospital:Column:Name' | abpLocalization }} <p-sortIcon field="Name"></p-sortIcon></th>
+                <th pSortableColumn="PhoneNumber" rowspan="2">{{ '::Admin:Hospital:Column:PhoneNumber' | abpLocalization }} <p-sortIcon field="PhoneNumber"></p-sortIcon></th>
+                <th colspan="2">{{ '::Admin:Hospital:Column:ContactInfo' | abpLocalization }}</th>
+            </tr>
+            <tr>
+                <th pSortableColumn="ContactInfoName" style="min-width:10rem">{{ '::Admin:Hospital:Column:ContactInfoName' | abpLocalization }} <p-sortIcon field="ContactInfoName"></p-sortIcon></th>
+                <th pSortableColumn="ContactInfoPhoneNumber">{{ '::Admin:Hospital:Column:ContactInfoPhoneNumber' | abpLocalization }} <p-sortIcon field="ContactInfoPhoneNumber"></p-sortIcon></th>
+                <th style="width:8rem;"></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-hospital>
+            <tr>
+                <td>{{hospital.Name}}</td>
+                <td>{{hospital.PhoneNumber}}</td>
+                <td>{{hospital.ContactInfoName}}</td>
+                <td>{{hospital.ContactInfoPhoneNumber}}</td>
+                <td>
+                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editHospital(hospital)"></button>
+                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteHospital(hospital)"></button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="flex align-items-center justify-content-between">
+                {{ '::Table:Summary' | abpLocalization:(hospitalList ? hospitalList.length : 0):"hastane" }}
+            </div>
+        </ng-template>
+    </p-table>
+</div>
+
+<p-dialog [(visible)]="hospitalDialog" [style]="{width: '450px'}" header="{{ '::Admin:Hospital:HospitalDetails' | abpLocalization }}" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="field">
+            <label for="name">{{ '::Admin:Hospital:Column:Name' | abpLocalization }} *</label>
+            <input type="text" pInputText id="name" [(ngModel)]="hospital.Name" required autofocus />
+            <small class="p-error" *ngIf="submitted && !hospital.Name">{{ '::Message:RequiredField' | abpLocalization }}</small>
+        </div>
+        <div class="field">
+            <label for="phoneNumber">{{ '::Admin:Hospital:Column:PhoneNumber' | abpLocalization }}</label>
+            <p-inputMask id="phoneNumber" name="phoneNumber" #phoneNumber="ngModel" mask="(999) 999-9999" 
+            [(ngModel)]="hospital.PhoneNumber" placeholder="(xxx) xxx-xxxx"></p-inputMask>
+        </div>
+        <div class="field">
+            <label for="contactInfoName">{{ '::Admin:Hospital:Column:ContactInfoName' | abpLocalization }} *</label>
+            <input type="text" pInputText id="contactInfoName" [(ngModel)]="hospital.ContactInfoName" required autofocus />
+            <small class="p-error" *ngIf="submitted && !hospital.ContactInfoName">{{ '::Message:RequiredField' | abpLocalization }}</small>
+        </div>
+        <div class="field">
+            <label for="contactInfoPhoneNumber">{{ '::Admin:Hospital:Column:ContactInfoPhoneNumber' | abpLocalization }}</label>
+            <p-inputMask id="contactInfoPhoneNumber" name="contactInfoPhoneNumber" #contactInfoPhoneNumber="ngModel" mask="(999) 999-9999" 
+            [(ngModel)]="hospital.ContactInfoPhoneNumber" placeholder="(xxx) xxx-xxxx"></p-inputMask>
+        </div>
+
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" class="p-button-text" (click)="saveHospital()"></button>
+    </ng-template>
+</p-dialog>
+
+<p-confirmDialog [style]="{width: '450px'}" rejectLabel="{{ '::Reject' | abpLocalization }}" acceptLabel="{{ '::Accept' | abpLocalization }}"></p-confirmDialog>
