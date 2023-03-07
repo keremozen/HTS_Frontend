@@ -1,7 +1,7 @@
 import { LocalizationService } from '@abp/ng.core';
 import { Component } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { Hospital, IHospital } from 'src/app/models/hospital';
+import { Hospital, IHospital } from 'src/app/models/hospital.model';
 import { HospitalService } from 'src/app/services/hospital.service';
 
 
@@ -32,7 +32,7 @@ export class HospitalComponent {
     ) { }
 
     ngOnInit() {
-        this.hospitalService.getHospitals().subscribe(data => this.hospitalList = data);
+        this.hospitalService.getHospitalList().subscribe(data => this.hospitalList = data);
     }
 
     openNewHospital() {

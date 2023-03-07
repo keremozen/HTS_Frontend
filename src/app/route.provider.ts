@@ -23,6 +23,78 @@ function configureRoutes(routesService: RoutesService) {
         parentName: eThemeSharedRouteNames.Administration,
         order: 100,
         layout: eLayoutType.application
+      },
+      {
+        path: '/admin/nationality',
+        name: '::Menu:Admin:Nationality',
+        iconClass: 'fas fa-passport',
+        parentName: eThemeSharedRouteNames.Administration,
+        order: 101,
+        layout: eLayoutType.application
+      },
+      {
+        path: '/admin/language',
+        name: '::Menu:Admin:Language',
+        iconClass: 'fas fa-language',
+        parentName: eThemeSharedRouteNames.Administration,
+        order: 102,
+        layout: eLayoutType.application
+      },
+      {
+        path: '/admin/patientNoteStatus',
+        name: '::Menu:Admin:PatientNoteStatus',
+        iconClass: 'fas fa-notes-medical',
+        parentName: eThemeSharedRouteNames.Administration,
+        order: 103,
+        layout: eLayoutType.application
+      },
+      {
+        path: '/admin/documentType',
+        name: '::Menu:Admin:DocumentType',
+        iconClass: 'fas fa-file-alt',
+        parentName: eThemeSharedRouteNames.Administration,
+        order: 104,
+        layout: eLayoutType.application
+      },
+      {
+        path: '/admin/patientDocumentStatus',
+        name: '::Menu:Admin:PatientDocumentStatus',
+        iconClass: 'fas fa-notes-medical',
+        parentName: eThemeSharedRouteNames.Administration,
+        order: 105,
+        layout: eLayoutType.application
+      },
+      {
+        path: '/admin/treatmentProcessStatus',
+        name: '::Menu:Admin:TreatmentProcessStatus',
+        iconClass: 'fas fa-prescription-bottle-alt',
+        parentName: eThemeSharedRouteNames.Administration,
+        order: 106,
+        layout: eLayoutType.application
+      },
+      {
+        path: '/admin/patientAdmissionMethod',
+        name: '::Menu:Admin:PatientAdmissionMethod',
+        iconClass: 'fas fa-hospital-user',
+        parentName: eThemeSharedRouteNames.Administration,
+        order: 107,
+        layout: eLayoutType.application
+      },
+      {
+        path: '/admin/contractedInstitution',
+        name: '::Menu:Admin:ContractedInstitution',
+        iconClass: 'fas fa-clinic-medical',
+        parentName: eThemeSharedRouteNames.Administration,
+        order: 107,
+        layout: eLayoutType.application
+      },
+      {
+        path: '/admin/hospitalConsultationStatus',
+        name: '::Menu:Admin:HospitalConsultationStatus',
+        iconClass: 'fas fa-comment-medical',
+        parentName: eThemeSharedRouteNames.Administration,
+        order: 108,
+        layout: eLayoutType.application
       }
     ]);
   };

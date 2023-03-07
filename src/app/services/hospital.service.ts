@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { IHospital } from '../models/hospital';
+import { IHospital } from '../models/hospital.model';
 
 @Injectable()
 export class HospitalService {
@@ -10,7 +10,7 @@ export class HospitalService {
     constructor(private http: HttpClient) { }
 
 
-    getHospitals(): Observable<IHospital[]> {
+    getHospitalList(): Observable<IHospital[]> {
         return of([{
             Id: 1,
             Name: "Memorial Ankara",

@@ -38,7 +38,7 @@
         </ng-template>
         <ng-template pTemplate="summary">
             <div class="flex align-items-center justify-content-between">
-                {{ '::Table:Summary' | abpLocalization:(hospitalList ? hospitalList.length : 0):"hastane" }}
+                {{ '::Table:Summary' | abpLocalization:(hospitalList ? hospitalList.length : 0):(("::Admin:Hospital:Name" | abpLocalization) | lowercase) }}
             </div>
         </ng-template>
     </p-table>
