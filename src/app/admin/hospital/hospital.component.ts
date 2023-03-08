@@ -1,8 +1,9 @@
 import { LocalizationService } from '@abp/ng.core';
-import { Component } from '@angular/core';
+import { Component, Injector } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Hospital, IHospital } from 'src/app/models/hospital.model';
 import { HospitalService } from 'src/app/services/hospital.service';
+import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 
 @Component({
@@ -17,7 +18,7 @@ import { HospitalService } from 'src/app/services/hospital.service';
         }
     `]
 })
-export class HospitalComponent {
+export class HospitalComponent extends AppComponentBase {
 
     hospitalDialog: boolean;
     hospitalList: IHospital[];
@@ -25,11 +26,12 @@ export class HospitalComponent {
     submitted: boolean;
 
     constructor(
+        injector: Injector,
         private hospitalService: HospitalService,
-        private messageService: MessageService,
-        private confirmationService: ConfirmationService,
-        private l: LocalizationService
-    ) { }
+        private messageService: MessageService
+    ) { 
+        super(injector);
+    }
 
     ngOnInit() {
         this.hospitalService.getHospitalList().subscribe(data => this.hospitalList = data);
@@ -48,9 +50,9 @@ export class HospitalComponent {
     }
 
     deleteHospital(hospital: Hospital) {
-        this.confirmationService.confirm({
+        this.confirm({
             message: 'Are you sure you want to delete ' + hospital.Name + '?',
-            header: this.l.instant('::Confirm'),
+            header: this.l('::Confirm'),
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
                 this.hospitalList = this.hospitalList.filter(val => val.Id !== hospital.Id);

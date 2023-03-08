@@ -1,26 +1,27 @@
-import { LocalizationService } from '@abp/ng.core';
-import { Component } from '@angular/core';
+import { Component, Injector } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { IDocumentType, DocumentType } from 'src/app/models/documentType.model';
 import { DocumentTypeService } from 'src/app/services/documentType.service';
+import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 @Component({
   selector: 'app-document-type',
   templateUrl: './document-type.component.html',
   styleUrls: ['./document-type.component.scss']
 })
-export class DocumentTypeComponent {
+export class DocumentTypeComponent extends AppComponentBase {
   documentTypeDialog: boolean;
   documentTypeList: IDocumentType[];
   documentType: DocumentType;
   submitted: boolean;
 
   constructor(
+    injector: Injector,
     private documentTypeService: DocumentTypeService,
-    private messageService: MessageService,
-    private confirmationService: ConfirmationService,
-    private l: LocalizationService
-  ) { }
+    private messageService: MessageService
+  ) {
+    super(injector);
+  }
 
   ngOnInit() {
     this.documentTypeService.getDocumentTypeList().subscribe(data => this.documentTypeList = data);
@@ -38,9 +39,9 @@ export class DocumentTypeComponent {
   }
 
   deleteDocumentType(documentType: DocumentType) {
-    this.confirmationService.confirm({
+    this.confirm({
       message: 'Are you sure you want to delete ' + documentType.Name + '?',
-      header: this.l.instant('::Confirm'),
+      header: this.l('::Confirm'),
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.documentTypeList = this.documentTypeList.filter(val => val.Id !== documentType.Id);

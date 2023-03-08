@@ -1,26 +1,27 @@
-import { LocalizationService } from '@abp/ng.core';
-import { Component } from '@angular/core';
+import { Component, Injector } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { IContractedInstitution, ContractedInstitution } from 'src/app/models/contractedInstitution.model';
 import { ContractedInstitutionService } from 'src/app/services/contractedInstitution.service';
+import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 @Component({
   selector: 'app-contracted-institution',
   templateUrl: './contracted-institution.component.html',
   styleUrls: ['./contracted-institution.component.scss']
 })
-export class ContractedInstitutionComponent {
+export class ContractedInstitutionComponent extends AppComponentBase {
   contractedInstitutionDialog: boolean;
   contractedInstitutionList: IContractedInstitution[];
   contractedInstitution: ContractedInstitution;
   submitted: boolean;
 
   constructor(
+    injector: Injector,
     private contractedInstitutionService: ContractedInstitutionService,
-    private messageService: MessageService,
-    private confirmationService: ConfirmationService,
-    private l: LocalizationService
-  ) { }
+    private messageService: MessageService
+  ) {
+    super(injector);
+  }
 
   ngOnInit() {
     this.contractedInstitutionService.getContractedInstitutionList().subscribe(data => this.contractedInstitutionList = data);
@@ -38,9 +39,9 @@ export class ContractedInstitutionComponent {
   }
 
   deleteContractedInstitution(contractedInstitution: ContractedInstitution) {
-    this.confirmationService.confirm({
+    this.confirm({
       message: 'Are you sure you want to delete ' + contractedInstitution.Name + '?',
-      header: this.l.instant('::Confirm'),
+      header: this.l('::Confirm'),
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.contractedInstitutionList = this.contractedInstitutionList.filter(val => val.Id !== contractedInstitution.Id);

@@ -1,8 +1,9 @@
 import { LocalizationService } from '@abp/ng.core';
-import { Component } from '@angular/core';
+import { Component, Injector } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Language, ILanguage } from 'src/app/models/language.model';
 import { LanguageService } from 'src/app/services/language.service';
+import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 
 @Component({
@@ -17,7 +18,7 @@ import { LanguageService } from 'src/app/services/language.service';
         }
     `]
 })
-export class LanguageComponent {
+export class LanguageComponent extends AppComponentBase {
 
     languageDialog: boolean;
     languageList: ILanguage[];
@@ -25,11 +26,12 @@ export class LanguageComponent {
     submitted: boolean;
 
     constructor(
+        injector: Injector,
         private languageService: LanguageService,
-        private messageService: MessageService,
-        private confirmationService: ConfirmationService,
-        private l: LocalizationService
-    ) { }
+        private messageService: MessageService
+    ) { 
+        super(injector);
+    }
 
     ngOnInit() {
         this.languageService.getLanguageList().subscribe(data => this.languageList = data);
@@ -48,9 +50,9 @@ export class LanguageComponent {
     }
 
     deleteLanguage(language: Language) {
-        this.confirmationService.confirm({
+        this.confirm({
             message: 'Are you sure you want to delete ' + language.Name + '?',
-            header: this.l.instant('::Confirm'),
+            header: this.l('::Confirm'),
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
                 this.languageList = this.languageList.filter(val => val.Id !== language.Id);

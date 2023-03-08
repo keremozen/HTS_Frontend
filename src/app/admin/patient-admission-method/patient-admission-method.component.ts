@@ -1,26 +1,28 @@
 import { LocalizationService } from '@abp/ng.core';
-import { Component } from '@angular/core';
+import { Component, Injector } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { IPatientAdmissionMethod, PatientAdmissionMethod } from 'src/app/models/patientAdmissionMethod.model';
 import { PatientAdmissionMethodService } from 'src/app/services/patientAdmissionMethod.service';
+import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 @Component({
   selector: 'app-patient-admission-method',
   templateUrl: './patient-admission-method.component.html',
   styleUrls: ['./patient-admission-method.component.scss']
 })
-export class PatientAdmissionMethodComponent {
+export class PatientAdmissionMethodComponent extends AppComponentBase {
   patientAdmissionMethodDialog: boolean;
   patientAdmissionMethodList: IPatientAdmissionMethod[];
   patientAdmissionMethod: PatientAdmissionMethod;
   submitted: boolean;
 
   constructor(
+    injector: Injector,
     private patientAdmissionMethodService: PatientAdmissionMethodService,
-    private messageService: MessageService,
-    private confirmationService: ConfirmationService,
-    private l: LocalizationService
-  ) { }
+    private messageService: MessageService
+  ) {
+    super(injector);
+  }
 
   ngOnInit() {
     this.patientAdmissionMethodService.getPatientAdmissionMethodList().subscribe(data => this.patientAdmissionMethodList = data);
@@ -38,9 +40,9 @@ export class PatientAdmissionMethodComponent {
   }
 
   deletePatientAdmissionMethod(patientAdmissionMethod: PatientAdmissionMethod) {
-    this.confirmationService.confirm({
+    this.confirm({
       message: 'Are you sure you want to delete ' + patientAdmissionMethod.Name + '?',
-      header: this.l.instant('::Confirm'),
+      header: this.l('::Confirm'),
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.patientAdmissionMethodList = this.patientAdmissionMethodList.filter(val => val.Id !== patientAdmissionMethod.Id);

@@ -1,8 +1,9 @@
 import { LocalizationService } from '@abp/ng.core';
-import { Component } from '@angular/core';
+import { Component, Injector } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Nationality, INationality } from 'src/app/models/nationality.model';
 import { NationalityService } from 'src/app/services/nationality.service';
+import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 
 @Component({
@@ -10,7 +11,7 @@ import { NationalityService } from 'src/app/services/nationality.service';
     templateUrl: './nationality.component.html',
     styleUrls: ['./nationality.component.scss']
 })
-export class NationalityComponent {
+export class NationalityComponent extends AppComponentBase {
 
     nationalityDialog: boolean;
     nationalityList: INationality[];
@@ -18,11 +19,12 @@ export class NationalityComponent {
     submitted: boolean;
 
     constructor(
+        injector: Injector,
         private nationalityService: NationalityService,
-        private messageService: MessageService,
-        private confirmationService: ConfirmationService,
-        private l: LocalizationService
-    ) { }
+        private messageService: MessageService
+    ) {
+        super(injector);
+    }
 
     ngOnInit() {
         this.nationalityService.getNationalityList().subscribe(data => this.nationalityList = data);
@@ -41,9 +43,9 @@ export class NationalityComponent {
     }
 
     deleteNationality(nationality: Nationality) {
-        this.confirmationService.confirm({
+        this.confirm({
             message: 'Are you sure you want to delete ' + nationality.Name + '?',
-            header: this.l.instant('::Confirm'),
+            header: this.l('::Confirm'),
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
                 this.nationalityList = this.nationalityList.filter(val => val.Id !== nationality.Id);

@@ -1,26 +1,28 @@
 import { LocalizationService } from '@abp/ng.core';
-import { Component } from '@angular/core';
+import { Component, Injector } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { IHospitalConsultationStatus, HospitalConsultationStatus } from 'src/app/models/hospitalConsultationStatus.model';
 import { HospitalConsultationStatusService } from 'src/app/services/hospitalConsultationStatus.service';
+import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 @Component({
   selector: 'app-hospital-consultation-status',
   templateUrl: './hospital-consultation-status.component.html',
   styleUrls: ['./hospital-consultation-status.component.scss']
 })
-export class HospitalConsultationStatusComponent {
+export class HospitalConsultationStatusComponent extends AppComponentBase {
   hospitalConsultationStatusDialog: boolean;
   hospitalConsultationStatusList: IHospitalConsultationStatus[];
   hospitalConsultationStatus: HospitalConsultationStatus;
   submitted: boolean;
 
   constructor(
+    injector: Injector,
     private hospitalConsultationStatusService: HospitalConsultationStatusService,
-    private messageService: MessageService,
-    private confirmationService: ConfirmationService,
-    private l: LocalizationService
-  ) { }
+    private messageService: MessageService
+  ) {
+    super(injector);
+   }
 
   ngOnInit() {
     this.hospitalConsultationStatusService.getHospitalConsultationStatusList().subscribe(data => this.hospitalConsultationStatusList = data);
@@ -38,9 +40,9 @@ export class HospitalConsultationStatusComponent {
   }
 
   deleteHospitalConsultationStatus(hospitalConsultationStatus: HospitalConsultationStatus) {
-    this.confirmationService.confirm({
+    this.confirm({
       message: 'Are you sure you want to delete ' + hospitalConsultationStatus.Name + '?',
-      header: this.l.instant('::Confirm'),
+      header: this.l('::Confirm'),
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.hospitalConsultationStatusList = this.hospitalConsultationStatusList.filter(val => val.Id !== hospitalConsultationStatus.Id);

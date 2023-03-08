@@ -1,26 +1,28 @@
 import { LocalizationService } from '@abp/ng.core';
-import { Component } from '@angular/core';
+import { Component, Injector } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { IPatientNoteStatus, PatientNoteStatus } from 'src/app/models/patientNoteStatus.model';
 import { PatientNoteStatusService } from 'src/app/services/patientNoteStatus.service';
+import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 @Component({
   selector: 'app-patient-note-status',
   templateUrl: './patient-note-status.component.html',
   styleUrls: ['./patient-note-status.component.scss']
 })
-export class PatientNoteStatusComponent {
+export class PatientNoteStatusComponent extends AppComponentBase {
   patientNoteStatusDialog: boolean;
   patientNoteStatusList: IPatientNoteStatus[];
   patientNoteStatus: PatientNoteStatus;
   submitted: boolean;
 
   constructor(
+    injector: Injector,
     private patientNoteStatusService: PatientNoteStatusService,
-    private messageService: MessageService,
-    private confirmationService: ConfirmationService,
-    private l: LocalizationService
-  ) { }
+    private messageService: MessageService
+  ) { 
+    super(injector)
+  }
 
   ngOnInit() {
     this.patientNoteStatusService.getPatientNoteStatusList().subscribe(data => this.patientNoteStatusList = data);
@@ -38,9 +40,9 @@ export class PatientNoteStatusComponent {
   }
 
   deletePatientNoteStatus(patientNoteStatus: PatientNoteStatus) {
-    this.confirmationService.confirm({
+    this.confirm({
       message: 'Are you sure you want to delete ' + patientNoteStatus.Name + '?',
-      header: this.l.instant('::Confirm'),
+      header: this.l('::Confirm'),
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.patientNoteStatusList = this.patientNoteStatusList.filter(val => val.Id !== patientNoteStatus.Id);

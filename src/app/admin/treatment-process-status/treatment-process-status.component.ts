@@ -1,26 +1,28 @@
 import { LocalizationService } from '@abp/ng.core';
-import { Component } from '@angular/core';
+import { Component, Injector } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ITreatmentProcessStatus, TreatmentProcessStatus } from 'src/app/models/treatmentProcessStatus.model';
 import { TreatmentProcessStatusService } from 'src/app/services/treatmentProcessStatus.service';
+import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 @Component({
   selector: 'app-treatment-process-status',
   templateUrl: './treatment-process-status.component.html',
   styleUrls: ['./treatment-process-status.component.scss']
 })
-export class TreatmentProcessStatusComponent {
+export class TreatmentProcessStatusComponent extends AppComponentBase {
   treatmentProcessStatusDialog: boolean;
   treatmentProcessStatusList: ITreatmentProcessStatus[];
   treatmentProcessStatus: TreatmentProcessStatus;
   submitted: boolean;
 
   constructor(
+    injector: Injector,
     private treatmentProcessStatusService: TreatmentProcessStatusService,
-    private messageService: MessageService,
-    private confirmationService: ConfirmationService,
-    private l: LocalizationService
-  ) { }
+    private messageService: MessageService
+  ) {
+    super(injector);
+  }
 
   ngOnInit() {
     this.treatmentProcessStatusService.getTreatmentProcessStatusList().subscribe(data => this.treatmentProcessStatusList = data);
@@ -38,9 +40,9 @@ export class TreatmentProcessStatusComponent {
   }
 
   deleteTreatmentProcessStatus(treatmentProcessStatus: TreatmentProcessStatus) {
-    this.confirmationService.confirm({
+    this.confirm({
       message: 'Are you sure you want to delete ' + treatmentProcessStatus.Name + '?',
-      header: this.l.instant('::Confirm'),
+      header: this.l('::Confirm'),
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.treatmentProcessStatusList = this.treatmentProcessStatusList.filter(val => val.Id !== treatmentProcessStatus.Id);
