@@ -23,6 +23,7 @@ import { SharedModule } from './shared/shared.module';
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
+    SharedModule,
     CoreModule.forRoot({
       environment,
       registerLocaleFn: registerLocale(),
@@ -35,7 +36,7 @@ import { SharedModule } from './shared/shared.module';
     SettingManagementConfigModule.forRoot(),
     ThemeLeptonXModule.forRoot(),
     SideMenuLayoutModule.forRoot(),
-    FeatureManagementModule.forRoot(),
+    FeatureManagementModule.forRoot()
   ],
   declarations: [AppComponent],
   providers: [APP_ROUTE_PROVIDER],

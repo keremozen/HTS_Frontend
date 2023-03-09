@@ -29,7 +29,7 @@ export class HospitalComponent extends AppComponentBase {
         injector: Injector,
         private hospitalService: HospitalService,
         private messageService: MessageService
-    ) { 
+    ) {
         super(injector);
     }
 
@@ -51,13 +51,13 @@ export class HospitalComponent extends AppComponentBase {
 
     deleteHospital(hospital: Hospital) {
         this.confirm({
-            message: 'Are you sure you want to delete ' + hospital.Name + '?',
+            message: this.l('::Message:DeleteConfirmation', hospital.Name),
             header: this.l('::Confirm'),
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
                 this.hospitalList = this.hospitalList.filter(val => val.Id !== hospital.Id);
                 this.hospital = null;
-                this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Hospital Deleted', life: 3000 });
+                this.messageService.add({ severity: 'success', summary: this.l('::Message:Successful'), detail: this.l('::Message:SuccessfulDeletion', this.l('::Admin:Hospital:Name')), life: 3000 });
             }
         });
     }

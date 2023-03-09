@@ -1,5 +1,4 @@
 import { CoreTestingModule } from "@abp/ng.core/testing";
-import { ThemeBasicTestingModule } from "@abp/ng.theme.basic/testing";
 import { ThemeSharedTestingModule } from "@abp/ng.theme.shared/testing";
 import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { NgxValidateCoreModule } from "@ngx-validate/core";
@@ -19,7 +18,6 @@ describe("HomeComponent", () => {
         imports: [
           CoreTestingModule.withConfig(),
           ThemeSharedTestingModule.withConfig(),
-          ThemeBasicTestingModule.withConfig(),
           NgxValidateCoreModule,
         ],
         providers: [

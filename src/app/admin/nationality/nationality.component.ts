@@ -35,8 +35,7 @@ export class NationalityComponent extends AppComponentBase {
         this.submitted = false;
         this.nationalityDialog = true;
     }
-
-
+    
     editNationality(nationality: Nationality) {
         this.nationality = { ...nationality };
         this.nationalityDialog = true;
@@ -44,13 +43,13 @@ export class NationalityComponent extends AppComponentBase {
 
     deleteNationality(nationality: Nationality) {
         this.confirm({
-            message: 'Are you sure you want to delete ' + nationality.Name + '?',
+            message: this.l('::Message:DeleteConfirmation', nationality.Name),
             header: this.l('::Confirm'),
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
                 this.nationalityList = this.nationalityList.filter(val => val.Id !== nationality.Id);
                 this.nationality = null;
-                this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Nationality Deleted', life: 3000 });
+                this.messageService.add({ severity: 'success', summary: this.l('::Message:Successful'), detail: this.l('::Message:SuccessfulDeletion', this.l('::Admin:Nationality:Name')), life: 3000 });
             }
         });
     }

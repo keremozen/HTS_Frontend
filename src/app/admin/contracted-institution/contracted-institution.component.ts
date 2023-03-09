@@ -40,13 +40,13 @@ export class ContractedInstitutionComponent extends AppComponentBase {
 
   deleteContractedInstitution(contractedInstitution: ContractedInstitution) {
     this.confirm({
-      message: 'Are you sure you want to delete ' + contractedInstitution.Name + '?',
+      message: this.l('::Message:DeleteConfirmation', contractedInstitution.Name),
       header: this.l('::Confirm'),
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.contractedInstitutionList = this.contractedInstitutionList.filter(val => val.Id !== contractedInstitution.Id);
         this.contractedInstitution = null;
-        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Contracted Institution Deleted', life: 3000 });
+        this.messageService.add({ severity: 'success', summary: this.l('::Message:Successful'), detail: this.l('::Message:SuccessfulDeletion', this.l('::Admin:ContractedInstitution:Name')), life: 3000 });
       }
     });
   }

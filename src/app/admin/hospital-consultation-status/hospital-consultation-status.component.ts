@@ -22,7 +22,7 @@ export class HospitalConsultationStatusComponent extends AppComponentBase {
     private messageService: MessageService
   ) {
     super(injector);
-   }
+  }
 
   ngOnInit() {
     this.hospitalConsultationStatusService.getHospitalConsultationStatusList().subscribe(data => this.hospitalConsultationStatusList = data);
@@ -41,13 +41,13 @@ export class HospitalConsultationStatusComponent extends AppComponentBase {
 
   deleteHospitalConsultationStatus(hospitalConsultationStatus: HospitalConsultationStatus) {
     this.confirm({
-      message: 'Are you sure you want to delete ' + hospitalConsultationStatus.Name + '?',
+      message: this.l('::Message:DeleteConfirmation', hospitalConsultationStatus.Name),
       header: this.l('::Confirm'),
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.hospitalConsultationStatusList = this.hospitalConsultationStatusList.filter(val => val.Id !== hospitalConsultationStatus.Id);
         this.hospitalConsultationStatus = null;
-        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Hospital Consultation Status Deleted', life: 3000 });
+        this.messageService.add({ severity: 'success', summary: this.l('::Message:Successful'), detail: this.l('::Message:SuccessfulDeletion', this.l('::Admin:HospitalConsultationStatus:Name')), life: 3000 });
       }
     });
   }

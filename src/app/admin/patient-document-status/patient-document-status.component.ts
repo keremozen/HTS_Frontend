@@ -41,13 +41,13 @@ export class PatientDocumentStatusComponent extends AppComponentBase {
 
   deletePatientDocumentStatus(patientDocumentStatus: PatientDocumentStatus) {
     this.confirm({
-      message: 'Are you sure you want to delete ' + patientDocumentStatus.Name + '?',
+      message: this.l('::Message:DeleteConfirmation', patientDocumentStatus.Name),
       header: this.l('::Confirm'),
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.patientDocumentStatusList = this.patientDocumentStatusList.filter(val => val.Id !== patientDocumentStatus.Id);
         this.patientDocumentStatus = null;
-        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Patient Document Status Deleted', life: 3000 });
+        this.messageService.add({ severity: 'success', summary: this.l('::Message:Successful'), detail: this.l('::Message:SuccessfulDeletion', this.l('::Admin:PatientDocumentStatus:Name')), life: 3000 });
       }
     });
   }

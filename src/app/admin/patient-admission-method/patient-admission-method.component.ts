@@ -41,13 +41,13 @@ export class PatientAdmissionMethodComponent extends AppComponentBase {
 
   deletePatientAdmissionMethod(patientAdmissionMethod: PatientAdmissionMethod) {
     this.confirm({
-      message: 'Are you sure you want to delete ' + patientAdmissionMethod.Name + '?',
+      message: this.l('::Message:DeleteConfirmation', patientAdmissionMethod.Name),
       header: this.l('::Confirm'),
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.patientAdmissionMethodList = this.patientAdmissionMethodList.filter(val => val.Id !== patientAdmissionMethod.Id);
         this.patientAdmissionMethod = null;
-        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Patient Admission Method Deleted', life: 3000 });
+        this.messageService.add({ severity: 'success', summary: this.l('::Message:Successful'), detail: this.l('::Message:SuccessfulDeletion', this.l('::Admin:PatientAdmissionMethod:Name')), life: 3000 });
       }
     });
   }

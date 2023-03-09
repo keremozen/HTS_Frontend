@@ -51,13 +51,13 @@ export class LanguageComponent extends AppComponentBase {
 
     deleteLanguage(language: Language) {
         this.confirm({
-            message: 'Are you sure you want to delete ' + language.Name + '?',
+            message: this.l('::Message:DeleteConfirmation', language.Name),
             header: this.l('::Confirm'),
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
                 this.languageList = this.languageList.filter(val => val.Id !== language.Id);
                 this.language = null;
-                this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Language Deleted', life: 3000 });
+                this.messageService.add({ severity: 'success', summary: this.l('::Message:Successful'), detail: this.l('::Message:SuccessfulDeletion', this.l('::Admin:Language:Name')), life: 3000 });
             }
         });
     }

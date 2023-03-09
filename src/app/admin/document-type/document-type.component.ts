@@ -40,13 +40,13 @@ export class DocumentTypeComponent extends AppComponentBase {
 
   deleteDocumentType(documentType: DocumentType) {
     this.confirm({
-      message: 'Are you sure you want to delete ' + documentType.Name + '?',
+      message: this.l('::Message:DeleteConfirmation', documentType.Name),
       header: this.l('::Confirm'),
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.documentTypeList = this.documentTypeList.filter(val => val.Id !== documentType.Id);
         this.documentType = null;
-        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Document Type Deleted', life: 3000 });
+        this.messageService.add({ severity: 'success', summary: this.l('::Message:Successful'), detail: this.l('::Message:SuccessfulDeletion', this.l('::Admin:DocumentType:Name')), life: 3000 });
       }
     });
   }

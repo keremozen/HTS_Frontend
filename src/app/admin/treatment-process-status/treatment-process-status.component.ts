@@ -41,13 +41,13 @@ export class TreatmentProcessStatusComponent extends AppComponentBase {
 
   deleteTreatmentProcessStatus(treatmentProcessStatus: TreatmentProcessStatus) {
     this.confirm({
-      message: 'Are you sure you want to delete ' + treatmentProcessStatus.Name + '?',
+      message: this.l('::Message:DeleteConfirmation', treatmentProcessStatus.Name),
       header: this.l('::Confirm'),
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.treatmentProcessStatusList = this.treatmentProcessStatusList.filter(val => val.Id !== treatmentProcessStatus.Id);
         this.treatmentProcessStatus = null;
-        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Treatment Process Status Deleted', life: 3000 });
+        this.messageService.add({ severity: 'success', summary: this.l('::Message:Successful'), detail: this.l('::Message:SuccessfulDeletion', this.l('::Admin:TreatmentProcessStatus:Name')), life: 3000 });
       }
     });
   }

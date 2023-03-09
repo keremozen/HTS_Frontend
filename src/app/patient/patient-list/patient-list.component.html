@@ -1,0 +1,55 @@
+<p-toast></p-toast>
+
+
+<h4>{{ '::Patients:Title' | abpLocalization }}</h4>
+
+<div class="card">
+    <p-toolbar styleClass="mb-4 gap-2">
+        <ng-template pTemplate="left">
+            <button pButton pRipple label="{{ '::Patients:NewPatient' | abpLocalization }}" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNewPatient()"></button>
+        </ng-template>
+    </p-toolbar>
+
+    <p-table #dt [value]="patientList" [rows]="10" [paginator]="true" [globalFilterFields]="[]" [tableStyle]="{'min-width': '75rem'}"
+        [rowHover]="true" dataKey="Id" currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}" [showCurrentPageReport]="true">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="Name">{{ '::Patients:Column:Name' | abpLocalization }} <p-sortIcon field="Name"></p-sortIcon></th>
+                <th pSortableColumn="Surname">{{ '::Patients:Column:Surname' | abpLocalization }} <p-sortIcon field="Surname"></p-sortIcon></th>
+                <th pSortableColumn="Nationality">{{ '::Patients:Column:Nationality' | abpLocalization }} <p-sortIcon field="Nationality"></p-sortIcon></th>
+                <th pSortableColumn="PassportNo">{{ '::Patients:Column:PassportNo' | abpLocalization }} <p-sortIcon field="PassportNo"></p-sortIcon></th>
+                <th pSortableColumn="BirthDate">{{ '::Patients:Column:BirthDate' | abpLocalization }} <p-sortIcon field="BirthDate"></p-sortIcon></th>
+                <th pSortableColumn="Sex">{{ '::Patients:Column:Sex' | abpLocalization }} <p-sortIcon field="Sex"></p-sortIcon></th>
+                <th pSortableColumn="Language">{{ '::Patients:Column:Language' | abpLocalization }} <p-sortIcon field="Language"></p-sortIcon></th>
+                <th pSortableColumn="TreatmentProcess">{{ '::Patients:Column:TreatmentProcess' | abpLocalization }} <p-sortIcon field="TreatmentProcess"></p-sortIcon></th>
+                <th pSortableColumn="Created">{{ '::Patients:Column:Created' | abpLocalization }} <p-sortIcon field="Created"></p-sortIcon></th>
+                <th pSortableColumn="CreatedBy">{{ '::Patients:Column:CreatedBy' | abpLocalization }} <p-sortIcon field="CreatedBy"></p-sortIcon></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-patient>
+            <tr>
+                <td>{{patient.Name}}</td>
+                <td>{{patient.Surname}}</td>
+                <td>{{patient.Nationality}}</td>
+                <td>{{patient.PassportNo}}</td>
+                <td>{{patient.BirthDate}}</td>
+                <td>{{patient.Sex}}</td>
+                <td>{{patient.Language}}</td>
+                <td>{{patient.TreatmentProcess}}</td>
+                <td>{{patient.Created}}</td>
+                <td>{{patient.CreatedBy}}</td>
+                <td>
+                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editPatient(patient)"></button>
+                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deletePatient(patient)"></button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="flex align-items-center justify-content-between">
+                {{ '::Table:Summary' | abpLocalization:(patientList ? patientList.length : 0):(("::Patients:Title" | abpLocalization) | lowercase) }}
+            </div>
+        </ng-template>
+    </p-table>
+</div>
+
+<p-confirmDialog [style]="{width: '450px'}" rejectLabel="{{ '::Reject' | abpLocalization }}" acceptLabel="{{ '::Accept' | abpLocalization }}"></p-confirmDialog>

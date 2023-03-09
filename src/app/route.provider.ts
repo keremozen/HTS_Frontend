@@ -17,6 +17,13 @@ function configureRoutes(routesService: RoutesService) {
         layout: eLayoutType.application
       },
       {
+        path: '/patient',
+        name: '::Menu:Patients',
+        iconClass: 'fas fa-hospital-user',
+        order: 2,
+        layout: eLayoutType.application
+      },
+      {
         path: '/admin/hospital',
         name: '::Menu:Admin:Hospital',
         iconClass: 'fas fa-h-square',

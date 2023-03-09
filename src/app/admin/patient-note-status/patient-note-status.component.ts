@@ -41,13 +41,13 @@ export class PatientNoteStatusComponent extends AppComponentBase {
 
   deletePatientNoteStatus(patientNoteStatus: PatientNoteStatus) {
     this.confirm({
-      message: 'Are you sure you want to delete ' + patientNoteStatus.Name + '?',
+      message: this.l('::Message:DeleteConfirmation', patientNoteStatus.Name),
       header: this.l('::Confirm'),
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.patientNoteStatusList = this.patientNoteStatusList.filter(val => val.Id !== patientNoteStatus.Id);
         this.patientNoteStatus = null;
-        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Patient Note Status Deleted', life: 3000 });
+        this.messageService.add({ severity: 'success', summary: this.l('::Message:Successful'), detail: this.l('::Message:SuccessfulDeletion', this.l('::Admin:PatientNoteStatus:Name')), life: 3000 });
       }
     });
   }
