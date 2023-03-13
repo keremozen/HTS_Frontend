@@ -1,0 +1,33 @@
+.filterAccordionClass .p-accordion-tab {
+    box-shadow: 0 0 20px 0 rgba(76, 87, 125, 0.12);
+}
+
+.filterDropDown.p-multiselect {
+    font-size: 0.875rem !important;
+    border-color: var(--surface-border) !important;
+    background-color: var(--surface-overlay) !important;
+    color: var(--text-color-secondary) !important;
+}
+
+.filterDropDown.p-multiselect .p-multiselect-label-container .p-multiselect-label {
+    padding: 0.5rem !important;
+}
+
+.filterDropDown.p-multiselect.p-multiselect-chip .p-multiselect-token {
+    padding: 0rem 0.3rem !important;
+    font-size: 0.875rem !important;
+    color: var(--text-color-secondary) !important;
+}
+
+.filterDropDown.p-dropdown {
+    border-color: var(--surface-border) !important;
+}
+
+.filterDropDown.p-dropdown .p-dropdown-label {
+    font-size: 0.875rem !important;
+    color: var(--text-color-secondary) !important;
+}
+
+.filterDropDown.p-dropdown .p-inputtext {
+    padding: 0.5rem !important;
+}

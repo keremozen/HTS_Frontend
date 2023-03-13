@@ -1,6 +1,6 @@
-@import  "../node_modules/primeicons/primeicons.css";
-@import  "../node_modules/primeng/resources/themes/lara-light-blue/theme.css";
-@import  "../node_modules/primeng/resources/primeng.min.css";
+@import "../node_modules/primeicons/primeicons.css";
+@import "../node_modules/primeng/resources/themes/lara-light-blue/theme.css";
+@import "../node_modules/primeng/resources/primeng.min.css";
 @import "../node_modules/primeng/resources/themes/mdc-light-indigo/theme.css";
 @import "../node_modules/primeflex/primeflex.css";
 
@@ -10,11 +10,13 @@
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
 }
-:root  {
+
+:root {
   --theme-color: #00adbb;
   --theme-light-color: #bee0ec;
   --lpx-logo: url('/assets/images/logo/logo-sb1.svg');
@@ -23,6 +25,7 @@
   --bs-nav-tabs-link-active-color: var(--theme-color);
   --bs-nav-tabs-link-active-border-color: var(--theme-color);
 }
+
 .donut {
   display: inline-block;
   border: 4px solid rgba(0, 0, 0, 0.1);
@@ -55,7 +58,8 @@
   background-color: var(--theme-color);
 }
 
-.dropdown-item.active, .dropdown-item:active {
+.dropdown-item.active,
+.dropdown-item:active {
   background-color: var(--theme-color);
 }
 
@@ -71,4 +75,55 @@
   font-size: 0.8rem;
 }*/
 
+.filterAccordionClass .p-accordion-tab {
+  box-shadow: 0 0 20px 0 rgba(76, 87, 125, 0.12);
+}
 
+.filterDropDown.p-multiselect {
+  font-size: 0.875rem !important;
+  border-color: var(--surface-border) !important;
+  background-color: var(--surface-overlay) !important;
+  color: var(--text-color-secondary) !important;
+}
+
+.filterDropDown.p-multiselect .p-multiselect-label-container .p-multiselect-label {
+  padding: 0.5rem !important;
+}
+
+.filterDropDown.p-multiselect.p-multiselect-chip .p-multiselect-token {
+  padding: 0rem 0.3rem !important;
+  font-size: 0.875rem !important;
+  color: var(--text-color-secondary) !important;
+}
+
+.filterDropDown.p-dropdown {
+  border-color: var(--surface-border) !important;
+}
+
+.filterDropDown.p-dropdown .p-dropdown-label {
+  font-size: 0.875rem !important;
+  color: var(--text-color-secondary) !important;
+}
+
+.filterDropDown.p-dropdown .p-inputtext {
+  padding: 0.5rem !important;
+}
+
+.customCalendar.p-calendar {
+  border-color: var(--surface-border) !important;
+}
+
+.customCalendar.p-calendar .p-inputtext {
+  padding: 0.5rem !important;
+  color: var(--text-color-secondary) !important;
+}
+
+.p-datepicker table td > span {
+  color: var(--text-color-secondary) !important;
+}
+
+.customInputMask.p-inputtext {
+  border-color: var(--surface-border) !important;
+  padding: 0.5rem !important;
+  color: var(--text-color-secondary) !important;
+}

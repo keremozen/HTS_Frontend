@@ -1,41 +1,86 @@
-import { Component, Injector } from '@angular/core';
+import { ConfigStateService } from '@abp/ng.core';
+import { Component, Injector, ViewEncapsulation } from '@angular/core';
+import { ActivatedRoute, Route, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { forkJoin } from 'rxjs';
+import { ILanguage } from 'src/app/models/language.model';
+import { INationality } from 'src/app/models/nationality.model';
+import { PatientFilter } from 'src/app/models/patient/patientFilter.model';
+import { LanguageService } from 'src/app/services/language.service';
+import { NationalityService } from 'src/app/services/nationality.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 @Component({
   selector: 'app-patient-list',
   templateUrl: './patient-list.component.html',
-  styleUrls: ['./patient-list.component.scss']
+  styleUrls: ['./patient-list.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 
 export class PatientListComponent extends AppComponentBase {
 
   patientList: any[] = [];
   patient: any;
-  submitted: boolean;
+  nationalityList: INationality[] = [];
+  languageList: ILanguage[] = [];
+  genderList: any[] = [{ Name: "Erkek" }, { Name: "Kadın" }];
+  patientFilter = new PatientFilter();
 
   constructor(
     injector: Injector,
-    private messageService: MessageService
+    private config: ConfigStateService,
+    private nationalityService: NationalityService,
+    private languageService: LanguageService,
+    private router: Router
   ) {
     super(injector);
-
   }
 
   ngOnInit() {
+    // this.config is instance of ConfigStateService
+
+const currentUser = this.config.getOne("currentUser");
+
+// or
+this.config.getOne$("currentUser").subscribe(currentUser => {
+   // use currentUser here
+   debugger;
+})
+
+    this.fetchData();
+  }
+  fetchData() {
+    forkJoin([
+      this.nationalityService.getNationalityList(),
+      this.languageService.getLanguageList()
+    ]).subscribe(
+      {
+        next: ([
+          resNationalityList,
+          resLanguageList
+        ]) => {
+          this.nationalityList = resNationalityList;
+          this.languageList = resLanguageList;
+        }
+      }
+    );
+  }
+
+  onClearFilters() {
+    this.patientFilter = new PatientFilter();
+  }
+
+  onFilter() {
 
   }
 
   openNewPatient() {
-    //this.patient = new Patient();
-    /*this.submitted = false;
-    this.hospitalDialog = true*/;
+    this.router.navigate(['/patient/new']);
   }
 
 
   editPatient(patient: any) {
-    /*this.hospital = { ...hospital };
-    this.hospitalDialog = true;*/
+      this.router.navigate(['/patient/edit/'+patient.Id]);
   }
 
   deletePatient(patient: any) {
@@ -49,14 +94,5 @@ export class PatientListComponent extends AppComponentBase {
             this.messageService.add({ severity: 'success', summary: this.l('::Message:Successful'), detail: this.l('::Message:SuccessfulDeletion', this.l('::Admin:Hospital:Name')), life: 3000 });
         }
     });*/
-  }
-
-  hideDialog() {
-    /* this.hospitalDialog = false;
-     this.submitted = false;*/
-  }
-
-  savePatient() {
-    //this.submitted = true;
   }
 }

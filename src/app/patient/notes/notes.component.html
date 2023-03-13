@@ -1,0 +1,47 @@
+<p-toolbar styleClass="mb-4 gap-2">
+    <ng-template pTemplate="left">
+        <button pButton pRipple label="{{ '::New' | abpLocalization }}" icon="pi pi-plus" class="p-button-success mr-2"
+            (click)="openNew()"></button>
+        <button pButton pRipple label="{{ '::Delete' | abpLocalization }}" icon="pi pi-trash" class="p-button-danger"
+            (click)="deleteSelected()" [disabled]="!selectedNotes || !selectedNotes.length" *ngIf="notes && notes.length > 0"></button>
+    </ng-template>
+</p-toolbar>
+
+<p-table #dt [value]="notes" [rows]="10" [paginator]="true" [globalFilterFields]="['Message','CreatedBy']" *ngIf="notes && notes.length > 0"
+    [(selection)]="selectedNotes" [rowHover]="true" dataKey="Id"
+    currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
+    [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
+    <ng-template pTemplate="header">
+        <tr>
+            <th style="width: 4rem">
+                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th>
+            <th pSortableColumn="Message">{{ '::Notes:Column:Message' | abpLocalization }} <p-sortIcon field="Message"></p-sortIcon></th>
+            <th pSortableColumn="CreatedBy">{{ '::Notes:Column:CreatedBy' | abpLocalization }} <p-sortIcon field="CreatedBy"></p-sortIcon></th>
+            <th pSortableColumn="Created">{{ '::Notes:Column:Created' | abpLocalization }} <p-sortIcon field="Created"></p-sortIcon></th>
+            <th></th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-note>
+        <tr>
+            <td>
+                <p-tableCheckbox [value]="note"></p-tableCheckbox>
+            </td>
+            <td>{{note.Message}}</td>
+            <td>{{note.CreatedBy}}</td>
+            <td>{{note.Created | date: 'dd.MM.yyyy'}}</td>
+            <td>
+                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
+                    (click)="editNote(note)"></button>
+                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                    (click)="deleteNote(note)"></button>
+            </td>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="summary">
+        <div class="flex align-items-center justify-content-between">
+            {{ '::Table:Summary' | abpLocalization:(notes ? notes.length : 0):(("::Notes:Title" |
+                abpLocalization) | lowercase) }}
+        </div>
+    </ng-template>
+</p-table>
