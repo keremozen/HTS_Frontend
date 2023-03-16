@@ -1,1 +1,9 @@
-<p>documents works!</p>
+<p-toolbar styleClass="customToolbar">
+    <div class="p-toolbar-group-start"></div>
+    <div class="p-toolbar-group-end p-0">
+        <button pButton pRipple label="{{ '::New' | abpLocalization }}" icon="pi pi-plus" class="p-button-success mr-2"
+        (click)="openNew()"></button>
+    <button pButton pRipple label="{{ '::Delete' | abpLocalization }}" icon="pi pi-trash" class="p-button-danger"
+        (click)="deleteSelected()" [disabled]="!selectedDocuments || !selectedDocuments.length" *ngIf="documents && documents.length > 0"></button>
+    </div>
+</p-toolbar>

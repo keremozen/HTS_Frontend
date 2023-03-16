@@ -12,13 +12,13 @@
                 <div class="field grid mb-2">
                     <label for="filterName" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::Patients:Column:Name' | abpLocalization }}</label>
                     <div class="col-12 md:col-9">
-                        <input id="filterName" type="text" [(ngModel)]="patientFilter.Name" class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                        <input id="filterName" pInputText type="text" [(ngModel)]="patientFilter.Name" class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
                     </div>
                 </div>
                 <div class="field grid mb-2">
                     <label for="filterSurname" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::Patients:Column:Surname' | abpLocalization }}</label>
                     <div class="col-12 md:col-9">
-                        <input id="filterSurname" type="text"  [(ngModel)]="patientFilter.Surname" class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                        <input id="filterSurname" pInputText type="text"  [(ngModel)]="patientFilter.Surname" class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
                     </div>
                 </div>
                 <div class="field grid mb-2">
@@ -31,7 +31,7 @@
                 <div class="field grid mb-2">
                     <label for="filterPassportNo" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::Patients:Column:PassportNo' | abpLocalization }}</label>
                     <div class="col-12 md:col-9">
-                        <input id="filterPassportNo" type="text" [(ngModel)]="patientFilter.PassportNo" class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                        <input id="filterPassportNo" pInputText type="text" [(ngModel)]="patientFilter.PassportNo" class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
                     </div>
                 </div>
             </div>
@@ -60,7 +60,7 @@
                 <div class="field grid mb-2">
                     <label for="filterTreatmentProcess" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::Patients:Column:TreatmentProcess' | abpLocalization }}</label>
                     <div class="col-12 md:col-9">
-                        <input id="filterTreatmentProcess" type="text" [(ngModel)]="patientFilter.TreatmentProcess"  class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                        <input id="filterTreatmentProcess" pInputText type="text" [(ngModel)]="patientFilter.TreatmentProcess"  class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
                     </div>
                 </div>
             </div>

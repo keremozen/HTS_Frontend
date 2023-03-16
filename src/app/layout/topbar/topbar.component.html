@@ -1,0 +1,18 @@
+<div class="layout-topbar text-left flex">
+    <div class="flex-none flex align-items-left justify-content-left">
+        <a class="navbar-brand" routerLink="/">
+            <img class="ml-4 mr-4 mt-1 " *ngIf="appInfo.logoUrl; else appName" [src]="appInfo.logoUrl"
+                [alt]="appInfo.name" height="50px" />
+        </a>
+        <ng-template #appName>
+            {{ appInfo.name }}
+        </ng-template>
+    </div>
+    <div class="flex-grow-1 flex align-items-center justify-content-center text-4xl" style="color: rgba(255,255,255,.7)">
+        {{ appInfo.name }}
+    </div>
+    <div class="flex-none flex align-items-center justify-content-end gap-3 mr-3">
+        <app-language></app-language>
+        <app-current-user></app-current-user>
+    </div>
+</div>

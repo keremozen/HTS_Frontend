@@ -1,7 +1,6 @@
 import { ConfigStateService } from '@abp/ng.core';
 import { Component, Injector, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute, Route, Router } from '@angular/router';
-import { MessageService } from 'primeng/api';
+import { Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { ILanguage } from 'src/app/models/language.model';
 import { INationality } from 'src/app/models/nationality.model';
@@ -44,7 +43,6 @@ const currentUser = this.config.getOne("currentUser");
 // or
 this.config.getOne$("currentUser").subscribe(currentUser => {
    // use currentUser here
-   debugger;
 })
 
     this.fetchData();
@@ -75,12 +73,12 @@ this.config.getOne$("currentUser").subscribe(currentUser => {
   }
 
   openNewPatient() {
-    this.router.navigate(['/patient/new']);
+    this.router.navigate(['/patient/detail']);
   }
 
 
   editPatient(patient: any) {
-      this.router.navigate(['/patient/edit/'+patient.Id]);
+      this.router.navigate(['/patient/detail/'+patient.Id]);
   }
 
   deletePatient(patient: any) {

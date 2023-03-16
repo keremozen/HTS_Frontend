@@ -1,6 +1,4 @@
-import { LocalizationService } from '@abp/ng.core';
 import { Component, Injector } from '@angular/core';
-import { ConfirmationService, MessageService } from 'primeng/api';
 import { Nationality, INationality } from 'src/app/models/nationality.model';
 import { NationalityService } from 'src/app/services/nationality.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
@@ -20,8 +18,7 @@ export class NationalityComponent extends AppComponentBase {
 
     constructor(
         injector: Injector,
-        private nationalityService: NationalityService,
-        private messageService: MessageService
+        private nationalityService: NationalityService
     ) {
         super(injector);
     }
@@ -49,7 +46,7 @@ export class NationalityComponent extends AppComponentBase {
             accept: () => {
                 this.nationalityList = this.nationalityList.filter(val => val.Id !== nationality.Id);
                 this.nationality = null;
-                this.messageService.add({ severity: 'success', summary: this.l('::Message:Successful'), detail: this.l('::Message:SuccessfulDeletion', this.l('::Admin:Nationality:Name')), life: 3000 });
+                this.success(this.l("::ToastTitle:Successful"), this.l('::Message:SuccessfulDeletion', this.l('::Admin:Nationality:Name')));
             }
         });
     }

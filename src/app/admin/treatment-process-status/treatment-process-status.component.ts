@@ -1,6 +1,4 @@
-import { LocalizationService } from '@abp/ng.core';
 import { Component, Injector } from '@angular/core';
-import { ConfirmationService, MessageService } from 'primeng/api';
 import { ITreatmentProcessStatus, TreatmentProcessStatus } from 'src/app/models/treatmentProcessStatus.model';
 import { TreatmentProcessStatusService } from 'src/app/services/treatmentProcessStatus.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
@@ -18,8 +16,7 @@ export class TreatmentProcessStatusComponent extends AppComponentBase {
 
   constructor(
     injector: Injector,
-    private treatmentProcessStatusService: TreatmentProcessStatusService,
-    private messageService: MessageService
+    private treatmentProcessStatusService: TreatmentProcessStatusService
   ) {
     super(injector);
   }
@@ -47,7 +44,7 @@ export class TreatmentProcessStatusComponent extends AppComponentBase {
       accept: () => {
         this.treatmentProcessStatusList = this.treatmentProcessStatusList.filter(val => val.Id !== treatmentProcessStatus.Id);
         this.treatmentProcessStatus = null;
-        this.messageService.add({ severity: 'success', summary: this.l('::Message:Successful'), detail: this.l('::Message:SuccessfulDeletion', this.l('::Admin:TreatmentProcessStatus:Name')), life: 3000 });
+        this.success(this.l("::ToastTitle:Successful"), this.l('::Message:SuccessfulDeletion', this.l('::Admin:TreatmentProcessStatus:Name')));
       }
     });
   }

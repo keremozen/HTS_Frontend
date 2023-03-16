@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
 import { NationalityService } from '../services/nationality.service';
 import { LanguageService } from '../services/language.service';
-import { NewPatientComponent } from './new-patient/new-patient.component';
+import { PatientComponent } from './patient/patient.component';
 import { NotesComponent } from './notes/notes.component';
 import { DocumentsComponent } from './documents/documents.component';
 import { TreatmentProcessesComponent } from './treatment-processes/treatment-processes.component';
@@ -16,7 +16,7 @@ import { TreatmentProcessesComponent } from './treatment-processes/treatment-pro
 @NgModule({
   declarations: [
     PatientListComponent,
-    NewPatientComponent,
+    PatientComponent,
     NotesComponent,
     DocumentsComponent,
     TreatmentProcessesComponent

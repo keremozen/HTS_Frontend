@@ -1,0 +1,34 @@
+<div
+      *ngIf="((dropdownLanguages$ | async)?.length || 0) > 0"
+      class="dropdown languageDropdown"
+      ngbDropdown
+      #languageDropdown="ngbDropdown"
+      display="static"
+    >
+      <a
+        ngbDropdownToggle
+        class="nav-link"
+        href="javascript:void(0)"
+        role="button"
+        id="dropdownMenuLink"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
+        {{ defaultLanguage$ | async }}
+      </a>
+
+      <div
+        class="dropdown-menu dropdown-menu-end border-0 shadow-sm"
+        aria-labelledby="dropdownMenuLink"
+        [class.d-block]="languageDropdown.isOpen()"
+      >
+        <a
+          *ngFor="let lang of dropdownLanguages$ | async"
+          href="javascript:void(0)"
+          class="dropdown-item"
+          (click)="onChangeLang(lang.cultureName || '')"
+          >{{ lang?.displayName }}</a
+        >
+      </div>
+    </div>

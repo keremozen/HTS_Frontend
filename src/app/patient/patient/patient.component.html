@@ -1,0 +1,151 @@
+<p-toast></p-toast>
+
+<h4>{{title}}</h4>
+
+<p-card>
+    <fieldset class="border pl-3 pr-3 pt-2 pb-3 m-2 patientFieldSet">
+        <legend class="float-none w-auto pl-3 pr-3 text-sm patientFieldSetlegend">{{'::PatientDetail:Profile' |
+            abpLocalization}}
+        </legend>
+        <form #profileForm="ngForm">
+            <div class="grid gap-3">
+                <div class="col">
+                    <div class="field grid mb-2">
+                        <label for="patientName" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::Patients:Column:Name' |
+                            abpLocalization }}&nbsp;<font style="color:red">*</font></label>
+                        <div class="col-12 md:col-9">
+                            <input id="patientName" name="patientName" #patientName="ngModel" pInputText type="text" [(ngModel)]="patient.Name" required="true"
+                                class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                        </div>
+                    </div>
+                    <div class="field grid mb-2">
+                        <label for="patientSurname" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::Patients:Column:Surname'
+                            |
+                            abpLocalization }}&nbsp;<font style="color:red">*</font></label>
+                        <div class="col-12 md:col-9">
+                            <input id="patientSurname" name="patientSurname" #patientSurname="ngModel" pInputText type="text" [(ngModel)]="patient.Surname"
+                                required="true"
+                                class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                        </div>
+                    </div>
+                    <div class="field grid mb-2">
+                        <label for="patientNationality" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                            '::Patients:Column:Nationality'
+                            | abpLocalization }}&nbsp;<font style="color:red">*</font></label>
+                        <div class="col-12 md:col-9">
+                            <p-dropdown id="patientNationality" name="patientNationality" #patientNationality="ngModel" [options]="languageList"
+                                [(ngModel)]="patient.Nationality" placeholder="{{ '::Select' | abpLocalization }}"
+                                [style]="{'width':'100%'}" required="true" styleClass="filterDropDown" optionValue="Id"
+                                optionLabel="Name"></p-dropdown>
+                        </div>
+                    </div>
+                    <div class="field grid mb-2">
+                        <label for="patientPassportNo" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                            '::Patients:Column:PassportNo' |
+                            abpLocalization }}&nbsp;<font style="color:red">*</font></label>
+                        <div class="col-12 md:col-9">
+                            <input id="patientPassportNo" name="patientPassportNo" #patientPassportNo="ngModel" pInputText type="text" required="true"
+                                [(ngModel)]="patient.PassportNo"
+                                class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="field grid mb-2">
+                        <label for="patientBirthDate" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                            '::Patients:Column:BirthDate'
+                            |
+                            abpLocalization }}</label>
+                        <div class="col-12 md:col-9">
+                            <p-calendar [(ngModel)]="patient.BirthDate" id="patientBirthDate" name="patientBirthDate" #patientBirthDate="ngModel" dateFormat="dd.mm.yy" [showIcon]="true"
+                                inputId="icon" styleClass="customCalendar" [style]="{'width':'100%'}"></p-calendar>
+                        </div>
+                    </div>
+                    <div class="field grid mb-2">
+                        <label for="patientGender" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::Patients:Column:Gender' |
+                            abpLocalization }}</label>
+                        <div class="col-12 md:col-9">
+                            <p-dropdown id="patientGender" name="patientGender" #patientGender="ngModel" [options]="genderList" [(ngModel)]="patient.Gender"
+                                [style]="{'width':'100%'}" styleClass="filterDropDown" optionValue="Id"
+                                optionLabel="Name"></p-dropdown>
+                        </div>
+                    </div>
+                    <div class="field grid mb-2">
+                        <label for="patientPhoneNo" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::Patients:Column:PhoneNo'
+                            |
+                            abpLocalization }}</label>
+                        <div class="col-12 md:col-9">
+                            <p-inputMask id="patientPhoneNo" name="patientPhoneNo" #patientPhoneNo="ngModel" mask="(999) 999-9999" [(ngModel)]="patient.PhoneNo"
+                                placeholder="+99 (999) 999-9999" styleClass="customInputMask w-full"></p-inputMask>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="field grid mb-2">
+                        <label for="patientEmail" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::Patients:Column:Email' |
+                            abpLocalization }}</label>
+                        <div class="col-12 md:col-9">
+                            <input id="patientEmail" name="patientEmail" #patientEmail="ngModel" pInputText type="text" [(ngModel)]="patient.Email"
+                                class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                        </div>
+                    </div>
+                    <div class="field grid mb-2">
+                        <label for="patientNativeLanguage" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                            '::Patients:Column:NativeLanguage' | abpLocalization }}</label>
+                        <div class="col-12 md:col-9">
+                            <p-dropdown id="patientNativeLanguage" name="patientNativeLanguage" #patientNativeLanguage="ngModel" [options]="languageList"
+                                [(ngModel)]="patient.NativeLanguage" placeholder="{{ '::Select' | abpLocalization }}"
+                                [style]="{'width':'100%'}" styleClass="filterDropDown" optionValue="Id"
+                                optionLabel="Name"></p-dropdown>
+                        </div>
+                    </div>
+                    <div class="field grid mb-2">
+                        <label for="patientSecondLanguage" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                            '::Patients:Column:SecondLanguage' | abpLocalization }}</label>
+                        <div class="col-12 md:col-9">
+                            <p-dropdown id="patientSecondLanguage" name="patientSecondLanguage" #patientSecondLanguage="ngModel" [options]="languageList"
+                                [(ngModel)]="patient.SecondLanguage" placeholder="{{ '::Select' | abpLocalization }}"
+                                [style]="{'width':'100%'}" styleClass="filterDropDown" optionValue="Id"
+                                optionLabel="Name"></p-dropdown>
+                        </div>
+                    </div>
+                    <div class="field grid mb-2 mr-0 justify-content-end">
+                        <button pButton pRipple label="{{ '::PatientDetail:SaveProfile' | abpLocalization }}"
+                            icon="pi pi-save" class="p-button-success" [disabled]="!(profileForm.valid)" (click)="onSaveProfile()"></button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </fieldset>
+
+    <div class="grid" *ngIf="editMode">
+        <div class="col">
+            <fieldset class="border pl-3 pr-3 pt-2 pb-3 m-2 patientFieldSet">
+                <legend class="float-none w-auto pl-3 pr-3 text-sm patientFieldSetlegend">{{'::PatientDetail:Notes' |
+                    abpLocalization}}
+                </legend>
+                <app-notes></app-notes>
+            </fieldset>
+        </div>
+        <div class="col">
+            <fieldset class="border pl-3 pr-3 pt-2 pb-3 m-2 patientFieldSet">
+                <legend class="float-none w-auto pl-3 pr-3 text-sm patientFieldSetlegend">{{'::PatientDetail:Documents'
+                    | abpLocalization}}
+                </legend>
+                <app-documents></app-documents>
+            </fieldset>
+        </div>
+    </div>
+
+    <div class="grid" *ngIf="editMode">
+        <div class="col">
+            <fieldset class="border pl-3 pr-3 pt-2 pb-3 m-2 patientFieldSet">
+                <legend class="float-none w-auto pl-3 pr-3 text-sm patientFieldSetlegend">
+                    {{'::PatientDetail:TreatmentProcesses' |
+                    abpLocalization}}
+                </legend>
+                <app-treatment-processes></app-treatment-processes>
+            </fieldset>
+        </div>
+    </div>
+</p-card>

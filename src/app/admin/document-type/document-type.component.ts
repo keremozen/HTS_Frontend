@@ -1,5 +1,4 @@
 import { Component, Injector } from '@angular/core';
-import { ConfirmationService, MessageService } from 'primeng/api';
 import { IDocumentType, DocumentType } from 'src/app/models/documentType.model';
 import { DocumentTypeService } from 'src/app/services/documentType.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
@@ -17,8 +16,7 @@ export class DocumentTypeComponent extends AppComponentBase {
 
   constructor(
     injector: Injector,
-    private documentTypeService: DocumentTypeService,
-    private messageService: MessageService
+    private documentTypeService: DocumentTypeService
   ) {
     super(injector);
   }
@@ -46,7 +44,7 @@ export class DocumentTypeComponent extends AppComponentBase {
       accept: () => {
         this.documentTypeList = this.documentTypeList.filter(val => val.Id !== documentType.Id);
         this.documentType = null;
-        this.messageService.add({ severity: 'success', summary: this.l('::Message:Successful'), detail: this.l('::Message:SuccessfulDeletion', this.l('::Admin:DocumentType:Name')), life: 3000 });
+        this.success(this.l("::ToastTitle:Successful"), this.l('::Message:SuccessfulDeletion', this.l('::Admin:DocumentType:Name')));
       }
     });
   }

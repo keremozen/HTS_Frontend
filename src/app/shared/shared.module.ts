@@ -30,6 +30,7 @@ import { FormsModule } from '@angular/forms';
 import { AccordionModule } from 'primeng/accordion';
 import { FieldsetModule } from 'primeng/fieldset';
 import { CardModule } from 'primeng/card';
+import { MenubarModule } from 'primeng/menubar';
 
 /**************/
 
@@ -62,7 +63,8 @@ import { CardModule } from 'primeng/card';
     InputTextareaModule,
     AccordionModule,
     FieldsetModule,
-    CardModule
+    CardModule,
+    MenubarModule
   ],
   exports: [
     CoreModule,
@@ -92,8 +94,9 @@ import { CardModule } from 'primeng/card';
     InputTextareaModule,
     AccordionModule,
     FieldsetModule,
-    CardModule
+    CardModule,
+    MenubarModule
   ],
-  providers: [MessageService, ConfirmationService]
+  providers: [ConfirmationService, MessageService]
 })
 export class SharedModule { }

@@ -1,7 +1,6 @@
 @import "../node_modules/primeicons/primeicons.css";
-@import "../node_modules/primeng/resources/themes/lara-light-blue/theme.css";
 @import "../node_modules/primeng/resources/primeng.min.css";
-@import "../node_modules/primeng/resources/themes/mdc-light-indigo/theme.css";
+@import "../node_modules/primeng/resources/themes/saga-blue/theme.css";
 @import "../node_modules/primeflex/primeflex.css";
 
 /* You can add global styles to this file, and also import other style files */
@@ -126,4 +125,29 @@
   border-color: var(--surface-border) !important;
   padding: 0.5rem !important;
   color: var(--text-color-secondary) !important;
+}
+
+.layout-wrapper.layout-menu-horizontal .layout-sidebar {
+  top: 45px;
+  padding: 0px 0px 3px 10px;
+}
+
+.layout-wrapper.layout-menu-horizontal .layout-main {
+  padding-top: 100px;
+}
+
+.p-menubar .p-menubar-root-list > .p-menuitem > .p-menuitem-link {
+  font-size: 0.9rem;
+}
+
+.p-menubar .p-menuitem-link {
+  font-size: 0.9rem;
+}
+
+.p-menubar .p-submenu-list {
+  width:20rem;
+}
+
+.p-toolbar {
+  border: 0px;
 }

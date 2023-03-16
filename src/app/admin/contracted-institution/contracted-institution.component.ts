@@ -1,5 +1,4 @@
 import { Component, Injector } from '@angular/core';
-import { ConfirmationService, MessageService } from 'primeng/api';
 import { IContractedInstitution, ContractedInstitution } from 'src/app/models/contractedInstitution.model';
 import { ContractedInstitutionService } from 'src/app/services/contractedInstitution.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
@@ -17,8 +16,7 @@ export class ContractedInstitutionComponent extends AppComponentBase {
 
   constructor(
     injector: Injector,
-    private contractedInstitutionService: ContractedInstitutionService,
-    private messageService: MessageService
+    private contractedInstitutionService: ContractedInstitutionService
   ) {
     super(injector);
   }
@@ -46,7 +44,7 @@ export class ContractedInstitutionComponent extends AppComponentBase {
       accept: () => {
         this.contractedInstitutionList = this.contractedInstitutionList.filter(val => val.Id !== contractedInstitution.Id);
         this.contractedInstitution = null;
-        this.messageService.add({ severity: 'success', summary: this.l('::Message:Successful'), detail: this.l('::Message:SuccessfulDeletion', this.l('::Admin:ContractedInstitution:Name')), life: 3000 });
+        this.success(this.l("::ToastTitle:Successful"), this.l('::Message:SuccessfulDeletion', this.l('::Admin:ContractedInstitution:Name')));
       }
     });
   }

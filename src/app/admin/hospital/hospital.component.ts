@@ -1,6 +1,4 @@
-import { LocalizationService } from '@abp/ng.core';
 import { Component, Injector } from '@angular/core';
-import { ConfirmationService, MessageService } from 'primeng/api';
 import { Hospital, IHospital } from 'src/app/models/hospital.model';
 import { HospitalService } from 'src/app/services/hospital.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
@@ -27,8 +25,7 @@ export class HospitalComponent extends AppComponentBase {
 
     constructor(
         injector: Injector,
-        private hospitalService: HospitalService,
-        private messageService: MessageService
+        private hospitalService: HospitalService
     ) {
         super(injector);
     }
@@ -57,7 +54,7 @@ export class HospitalComponent extends AppComponentBase {
             accept: () => {
                 this.hospitalList = this.hospitalList.filter(val => val.Id !== hospital.Id);
                 this.hospital = null;
-                this.messageService.add({ severity: 'success', summary: this.l('::Message:Successful'), detail: this.l('::Message:SuccessfulDeletion', this.l('::Admin:Hospital:Name')), life: 3000 });
+                this.success(this.l("::ToastTitle:Successful"), this.l('::Message:SuccessfulDeletion', this.l('::Admin:Hospital:Name')));
             }
         });
     }

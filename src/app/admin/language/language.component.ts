@@ -1,6 +1,4 @@
-import { LocalizationService } from '@abp/ng.core';
 import { Component, Injector } from '@angular/core';
-import { ConfirmationService, MessageService } from 'primeng/api';
 import { Language, ILanguage } from 'src/app/models/language.model';
 import { LanguageService } from 'src/app/services/language.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
@@ -27,8 +25,7 @@ export class LanguageComponent extends AppComponentBase {
 
     constructor(
         injector: Injector,
-        private languageService: LanguageService,
-        private messageService: MessageService
+        private languageService: LanguageService
     ) { 
         super(injector);
     }
@@ -57,7 +54,7 @@ export class LanguageComponent extends AppComponentBase {
             accept: () => {
                 this.languageList = this.languageList.filter(val => val.Id !== language.Id);
                 this.language = null;
-                this.messageService.add({ severity: 'success', summary: this.l('::Message:Successful'), detail: this.l('::Message:SuccessfulDeletion', this.l('::Admin:Language:Name')), life: 3000 });
+                this.success(this.l("::ToastTitle:Successful"), this.l('::Message:SuccessfulDeletion', this.l('::Admin:Language:Name')));
             }
         });
     }

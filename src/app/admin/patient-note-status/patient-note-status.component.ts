@@ -1,6 +1,4 @@
-import { LocalizationService } from '@abp/ng.core';
 import { Component, Injector } from '@angular/core';
-import { ConfirmationService, MessageService } from 'primeng/api';
 import { IPatientNoteStatus, PatientNoteStatus } from 'src/app/models/patientNoteStatus.model';
 import { PatientNoteStatusService } from 'src/app/services/patientNoteStatus.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
@@ -18,8 +16,7 @@ export class PatientNoteStatusComponent extends AppComponentBase {
 
   constructor(
     injector: Injector,
-    private patientNoteStatusService: PatientNoteStatusService,
-    private messageService: MessageService
+    private patientNoteStatusService: PatientNoteStatusService
   ) { 
     super(injector)
   }
@@ -47,7 +44,7 @@ export class PatientNoteStatusComponent extends AppComponentBase {
       accept: () => {
         this.patientNoteStatusList = this.patientNoteStatusList.filter(val => val.Id !== patientNoteStatus.Id);
         this.patientNoteStatus = null;
-        this.messageService.add({ severity: 'success', summary: this.l('::Message:Successful'), detail: this.l('::Message:SuccessfulDeletion', this.l('::Admin:PatientNoteStatus:Name')), life: 3000 });
+        this.success(this.l("::ToastTitle:Successful"), this.l('::Message:SuccessfulDeletion', this.l('::Admin:PatientNoteStatus:Name')));
       }
     });
   }

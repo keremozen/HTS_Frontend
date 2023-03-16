@@ -1,10 +1,11 @@
-<p-toolbar styleClass="mb-4 gap-2">
-    <ng-template pTemplate="left">
+<p-toolbar styleClass="customToolbar">
+    <div class="p-toolbar-group-start"></div>
+    <div class="p-toolbar-group-end p-0">
         <button pButton pRipple label="{{ '::New' | abpLocalization }}" icon="pi pi-plus" class="p-button-success mr-2"
-            (click)="openNew()"></button>
-        <button pButton pRipple label="{{ '::Delete' | abpLocalization }}" icon="pi pi-trash" class="p-button-danger"
-            (click)="deleteSelected()" [disabled]="!selectedNotes || !selectedNotes.length" *ngIf="notes && notes.length > 0"></button>
-    </ng-template>
+        (click)="openNew()"></button>
+    <button pButton pRipple label="{{ '::Delete' | abpLocalization }}" icon="pi pi-trash" class="p-button-danger"
+        (click)="deleteSelected()" [disabled]="!selectedNotes || !selectedNotes.length" *ngIf="notes && notes.length > 0"></button>
+    </div>
 </p-toolbar>
 
 <p-table #dt [value]="notes" [rows]="10" [paginator]="true" [globalFilterFields]="['Message','CreatedBy']" *ngIf="notes && notes.length > 0"
@@ -45,3 +46,18 @@
         </div>
     </ng-template>
 </p-table>
+
+<p-dialog [(visible)]="noteDialog" [style]="{width: '450px'}" header="{{ '::Notes:NoteDetails' | abpLocalization }}" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="field">
+            <label for="message">{{ '::Notes:Column:Message' | abpLocalization }} *</label>
+            <textarea rows="5" pInputText id="message" [(ngModel)]="note.Message" required autofocus></textarea>
+            <small class="p-error" *ngIf="submitted && !note.Message">{{ '::Message:RequiredField' | abpLocalization }}</small>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" class="p-button-text" (click)="saveNote()"></button>
+    </ng-template>
+</p-dialog>

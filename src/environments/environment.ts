@@ -6,8 +6,8 @@ export const environment = {
   production: false,
   application: {
     baseUrl,
-    name: 'HTS',
-    logoUrl: '',
+    name: 'Hasta Takip Sistemi',
+    logoUrl: 'assets/images/logo/logo-sb1.svg',
   },
   oAuthConfig: {
     issuer: 'https://localhost:44381/',
