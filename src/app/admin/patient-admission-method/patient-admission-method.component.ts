@@ -44,7 +44,7 @@ export class PatientAdmissionMethodComponent extends AppComponentBase {
       accept: () => {
         this.patientAdmissionMethodList = this.patientAdmissionMethodList.filter(val => val.Id !== patientAdmissionMethod.Id);
         this.patientAdmissionMethod = null;
-        this.success(this.l("::ToastTitle:Successful"), this.l('::Message:SuccessfulDeletion', this.l('::Admin:PatientAdmissionMethod:Name')));
+        this.success(this.l('::Message:SuccessfulDeletion', this.l('::Admin:PatientAdmissionMethod:Name')));
       }
     });
   }

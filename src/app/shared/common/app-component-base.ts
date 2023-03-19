@@ -1,4 +1,5 @@
 import { LocalizationService } from "@abp/ng.core";
+import { ThemeSharedTestingModule } from "@abp/ng.theme.shared/testing";
 import { Directive, Injector } from "@angular/core";
 import { Confirmation, ConfirmationService, MessageService } from "primeng/api";
 
@@ -30,15 +31,33 @@ export abstract class AppComponentBase  {
         this.confirmation.confirm(confirmation);
     }
 
-    success(title: string, detail: string, life: number = 3000) {
+    success(detail: string,title?: string,  life?: number) {
+        if (!title) {
+            title = this.l("::ToastTitle:Successful");
+        }
+        if (!life) {
+            life = 3000;
+        }
         this.message.add({ severity: 'success', summary: title, detail: detail, life: life });
     }
 
-    error(title: string, detail: string, life: number = 3000) {
+    error(detail: string,title?: string,  life?: number) {
+        if (!title) {
+            title = this.l("::ToastTitle:Error");
+        }
+        if (!life) {
+            life = 3000;
+        }
         this.message.add({ severity: 'error', summary: title, detail: detail, life: life });
     }
 
-    info(title: string, detail: string, life: number = 3000) {
+    info(detail: string,title?: string,  life?: number) {
+        if (!title) {
+            title = this.l("::ToastTitle:Info");
+        }
+        if (!life) {
+            life = 3000;
+        }
         this.message.add({ severity: 'info', summary: title, detail: detail, life: life });
     }
 

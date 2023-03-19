@@ -54,7 +54,7 @@ export class HospitalComponent extends AppComponentBase {
             accept: () => {
                 this.hospitalList = this.hospitalList.filter(val => val.Id !== hospital.Id);
                 this.hospital = null;
-                this.success(this.l("::ToastTitle:Successful"), this.l('::Message:SuccessfulDeletion', this.l('::Admin:Hospital:Name')));
+                this.success(this.l('::Message:SuccessfulDeletion', this.l('::Admin:Hospital:Name')));
             }
         });
     }

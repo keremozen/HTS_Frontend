@@ -44,7 +44,7 @@ export class TreatmentProcessStatusComponent extends AppComponentBase {
       accept: () => {
         this.treatmentProcessStatusList = this.treatmentProcessStatusList.filter(val => val.Id !== treatmentProcessStatus.Id);
         this.treatmentProcessStatus = null;
-        this.success(this.l("::ToastTitle:Successful"), this.l('::Message:SuccessfulDeletion', this.l('::Admin:TreatmentProcessStatus:Name')));
+        this.success(this.l('::Message:SuccessfulDeletion', this.l('::Admin:TreatmentProcessStatus:Name')));
       }
     });
   }

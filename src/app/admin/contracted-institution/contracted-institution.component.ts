@@ -44,7 +44,7 @@ export class ContractedInstitutionComponent extends AppComponentBase {
       accept: () => {
         this.contractedInstitutionList = this.contractedInstitutionList.filter(val => val.Id !== contractedInstitution.Id);
         this.contractedInstitution = null;
-        this.success(this.l("::ToastTitle:Successful"), this.l('::Message:SuccessfulDeletion', this.l('::Admin:ContractedInstitution:Name')));
+        this.success(this.l('::Message:SuccessfulDeletion', this.l('::Admin:ContractedInstitution:Name')));
       }
     });
   }

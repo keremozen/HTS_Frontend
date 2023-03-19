@@ -44,7 +44,7 @@ export class DocumentTypeComponent extends AppComponentBase {
       accept: () => {
         this.documentTypeList = this.documentTypeList.filter(val => val.Id !== documentType.Id);
         this.documentType = null;
-        this.success(this.l("::ToastTitle:Successful"), this.l('::Message:SuccessfulDeletion', this.l('::Admin:DocumentType:Name')));
+        this.success(this.l('::Message:SuccessfulDeletion', this.l('::Admin:DocumentType:Name')));
       }
     });
   }

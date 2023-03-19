@@ -1,9 +1,84 @@
 <p-toolbar styleClass="customToolbar">
-    <div class="p-toolbar-group-start"></div>
+    <div class="p-toolbar-group-start">
+        <div class="ml-3" *ngIf="documents && documents.length > 0 && revokedRecordCount > 0">
+            <p-checkbox [(ngModel)]="showRevokedRecords" [binary]="true" inputId="chkShowRevokedRecords"></p-checkbox>
+            <label class="ml-3" for="chkShowRevokedRecords">{{"::ShowRevokedRecords" | abpLocalization}}</label>
+        </div>
+    </div>
     <div class="p-toolbar-group-end p-0">
         <button pButton pRipple label="{{ '::New' | abpLocalization }}" icon="pi pi-plus" class="p-button-success mr-2"
-        (click)="openNew()"></button>
-    <button pButton pRipple label="{{ '::Delete' | abpLocalization }}" icon="pi pi-trash" class="p-button-danger"
-        (click)="deleteSelected()" [disabled]="!selectedDocuments || !selectedDocuments.length" *ngIf="documents && documents.length > 0"></button>
+            (click)="openNew()"></button>
+        <button pButton pRipple label="{{ '::Revoke' | abpLocalization }}" icon="pi pi-trash" class="p-button-danger"
+            (click)="revokeSelected()" [disabled]="!selectedDocuments || !selectedDocuments.length"
+            *ngIf="documents && documents.length > 0"></button>
     </div>
 </p-toolbar>
+
+<p-table #dt [value]="documents" [rows]="5" styleClass="pt-3" [paginator]="true"
+    [globalFilterFields]="['Description','CreatedBy']" *ngIf="documents && documents.length > 0" [(selection)]="selectedDocuments"
+    [rowHover]="true" dataKey="Id"
+    currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
+    [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
+    <ng-template pTemplate="header">
+        <tr>
+            <th style="width: 4rem">
+                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th>
+            <th pSortableColumn="Description">{{ '::Documents:Column:Description' | abpLocalization }} <p-sortIcon
+                    field="Description"></p-sortIcon></th>
+            <th style="width: 12rem" pSortableColumn="CreatedBy">{{ '::Documents:Column:CreatedBy' | abpLocalization }}
+                <p-sortIcon field="CreatedBy"></p-sortIcon>
+            </th>
+            <th style="width: 12rem" pSortableColumn="Created">{{ '::Documents:Column:Created' | abpLocalization }}
+                <p-sortIcon field="Created"></p-sortIcon>
+            </th>
+            <th style="width: 4rem"></th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-document>
+        <tr>
+            <td>
+                <p-tableCheckbox [value]="document"></p-tableCheckbox>
+            </td>
+            <td>
+                <div class="overflow cursor-pointer" [pTooltip]="document.Description" tooltipStyleClass="wideTooltip"
+                    tooltipPosition="bottom">{{document.Description}}</div>
+            </td>
+            <td>{{document.CreatedBy}}</td>
+            <td>{{document.Created | date: 'dd.MM.yyyy'}}</td>
+            <td>
+                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"
+                    (click)="revokeDocument(document)"></button>
+            </td>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="summary">
+        <div class="flex align-items-center justify-content-between">
+            {{ '::Table:Summary' | abpLocalization:(documents ? documents.length : 0):(("::Documents:Title" |
+            abpLocalization) | lowercase) }}
+        </div>
+    </ng-template>
+</p-table>
+
+<p-dialog [(visible)]="documentDialog" [style]="{width: '450px'}" header="{{ '::Documents:DocumentDetails' | abpLocalization }}"
+    [modal]="true" styleClass="p-fluid" (onHide)="hideDialog()">
+    <ng-template pTemplate="content">
+        <div class="field">
+            <label for="description">{{ '::Documents:Column:Description' | abpLocalization }} <font style="color:red">*</font>
+            </label>
+            <textarea rows="5" pInputText id="description" [(ngModel)]="document.Description" required autofocus></textarea>
+            <small class="p-error" *ngIf="submitted && !document.Description">{{ '::Message:RequiredField' | abpLocalization
+                }}</small>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" class="p-button-text"
+            (click)="hideDialog()"></button>
+        <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" class="p-button-text"
+            (click)="saveDocument()"></button>
+    </ng-template>
+</p-dialog>
+
+<p-confirmDialog [style]="{width: '450px'}" rejectLabel="{{ '::Reject' | abpLocalization }}"
+    acceptLabel="{{ '::Accept' | abpLocalization }}"></p-confirmDialog>

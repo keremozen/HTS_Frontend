@@ -44,7 +44,7 @@ export class HospitalConsultationStatusComponent extends AppComponentBase {
       accept: () => {
         this.hospitalConsultationStatusList = this.hospitalConsultationStatusList.filter(val => val.Id !== hospitalConsultationStatus.Id);
         this.hospitalConsultationStatus = null;
-        this.success(this.l("::ToastTitle:Successful"), this.l('::Message:SuccessfulDeletion', this.l('::Admin:HospitalConsultationStatus:Name')));
+        this.success(this.l('::Message:SuccessfulDeletion', this.l('::Admin:HospitalConsultationStatus:Name')));
       }
     });
   }

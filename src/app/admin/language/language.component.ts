@@ -54,7 +54,7 @@ export class LanguageComponent extends AppComponentBase {
             accept: () => {
                 this.languageList = this.languageList.filter(val => val.Id !== language.Id);
                 this.language = null;
-                this.success(this.l("::ToastTitle:Successful"), this.l('::Message:SuccessfulDeletion', this.l('::Admin:Language:Name')));
+                this.success(this.l('::Message:SuccessfulDeletion', this.l('::Admin:Language:Name')));
             }
         });
     }

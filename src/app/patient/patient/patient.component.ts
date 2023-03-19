@@ -55,7 +55,7 @@ export class PatientComponent extends AppComponentBase {
 
   onSaveProfile() {
     //TODO: Kerem - Save etme işlemleri
-    this.success(this.l("::ToastTitle:Successful"), this.l("::PatientDetail:SaveSuccessful"), 5000);
+    this.success(this.l("::PatientDetail:SaveSuccessful"));
     this.editMode = true;
   }
 }

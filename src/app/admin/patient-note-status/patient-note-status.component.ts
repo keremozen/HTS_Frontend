@@ -44,7 +44,7 @@ export class PatientNoteStatusComponent extends AppComponentBase {
       accept: () => {
         this.patientNoteStatusList = this.patientNoteStatusList.filter(val => val.Id !== patientNoteStatus.Id);
         this.patientNoteStatus = null;
-        this.success(this.l("::ToastTitle:Successful"), this.l('::Message:SuccessfulDeletion', this.l('::Admin:PatientNoteStatus:Name')));
+        this.success(this.l('::Message:SuccessfulDeletion', this.l('::Admin:PatientNoteStatus:Name')));
       }
     });
   }

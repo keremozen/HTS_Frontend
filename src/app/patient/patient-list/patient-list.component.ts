@@ -89,7 +89,7 @@ this.config.getOne$("currentUser").subscribe(currentUser => {
         accept: () => {
             this.hospitalList = this.hospitalList.filter(val => val.Id !== hospital.Id);
             this.hospital = null;
-            this.messageService.add({ severity: 'success', summary: this.l('::Message:Successful'), detail: this.l('::Message:SuccessfulDeletion', this.l('::Admin:Hospital:Name')), life: 3000 });
+            
         }
     });*/
   }

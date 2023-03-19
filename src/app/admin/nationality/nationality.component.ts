@@ -46,7 +46,7 @@ export class NationalityComponent extends AppComponentBase {
             accept: () => {
                 this.nationalityList = this.nationalityList.filter(val => val.Id !== nationality.Id);
                 this.nationality = null;
-                this.success(this.l("::ToastTitle:Successful"), this.l('::Message:SuccessfulDeletion', this.l('::Admin:Nationality:Name')));
+                this.success(this.l('::Message:SuccessfulDeletion', this.l('::Admin:Nationality:Name')));
             }
         });
     }

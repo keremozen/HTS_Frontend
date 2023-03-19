@@ -31,6 +31,7 @@ import { AccordionModule } from 'primeng/accordion';
 import { FieldsetModule } from 'primeng/fieldset';
 import { CardModule } from 'primeng/card';
 import { MenubarModule } from 'primeng/menubar';
+import {CheckboxModule} from 'primeng/checkbox';
 
 /**************/
 
@@ -64,7 +65,8 @@ import { MenubarModule } from 'primeng/menubar';
     AccordionModule,
     FieldsetModule,
     CardModule,
-    MenubarModule
+    MenubarModule,
+    CheckboxModule
   ],
   exports: [
     CoreModule,
@@ -95,7 +97,8 @@ import { MenubarModule } from 'primeng/menubar';
     AccordionModule,
     FieldsetModule,
     CardModule,
-    MenubarModule
+    MenubarModule,
+    CheckboxModule
   ],
   providers: [ConfirmationService, MessageService]
 })
