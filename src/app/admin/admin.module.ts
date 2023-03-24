@@ -6,9 +6,7 @@ import { HospitalService } from '../services/hospital.service';
 import { SharedModule } from '../shared/shared.module';
 import { FormsModule } from '@angular/forms';
 import { NationalityComponent } from './nationality/nationality.component';
-import { NationalityService } from '../services/nationality.service';
 import { LanguageComponent } from './language/language.component';
-import { LanguageService } from '../services/language.service';
 import { PatientNoteStatusComponent } from './patient-note-status/patient-note-status.component';
 import { PatientNoteStatusService } from '../services/patientNoteStatus.service';
 import { DocumentTypeComponent } from './document-type/document-type.component';
@@ -46,8 +44,6 @@ import { HospitalConsultationStatusComponent } from './hospital-consultation-sta
   ],
   providers: [
     HospitalService,
-    NationalityService,
-    LanguageService,
     PatientNoteStatusService,
     DocumentTypeService,
     PatientDocumentStatusService,

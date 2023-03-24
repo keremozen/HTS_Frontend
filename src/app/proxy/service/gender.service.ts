@@ -1,7 +1,7 @@
 import { RestService } from '@abp/ng.core';
 import type { ListResultDto } from '@abp/ng.core';
 import { Injectable } from '@angular/core';
-import type { GenderDto } from '../dto/models';
+import type { GenderDto } from '../dto/gender/models';
 
 @Injectable({
   providedIn: 'root',

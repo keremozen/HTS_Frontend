@@ -1,10 +1,9 @@
 import { Component, Injector, ViewEncapsulation } from '@angular/core';
+import { LanguageDto } from '@proxy/dto/language';
+import { NationalityDto } from '@proxy/dto/nationality';
+import { LanguageService, NationalityService } from '@proxy/service';
 import { forkJoin } from 'rxjs';
-import { ILanguage } from 'src/app/models/language.model';
-import { INationality } from 'src/app/models/nationality.model';
 import { CRUDPatient } from 'src/app/models/patient/crudPatient.model';
-import { LanguageService } from 'src/app/services/language.service';
-import { NationalityService } from 'src/app/services/nationality.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 @Component({
@@ -18,8 +17,8 @@ export class PatientComponent extends AppComponentBase {
   title: string;
   editMode: boolean = false;
   patient: CRUDPatient = new CRUDPatient();
-  nationalityList: INationality[] = [];
-  languageList: ILanguage[] = [];
+  nationalityList: NationalityDto[] = [];
+  languageList: LanguageDto[] = [];
   genderList: any[] = [{ Name: "Erkek" }, { Name: "Kadın" }];
 
   constructor(
@@ -37,16 +36,16 @@ export class PatientComponent extends AppComponentBase {
 
   fetchData() {
     forkJoin([
-      this.nationalityService.getNationalityList(),
-      this.languageService.getLanguageList()
+      this.nationalityService.getList(),
+      this.languageService.getList()
     ]).subscribe(
       {
         next: ([
           resNationalityList,
           resLanguageList
         ]) => {
-          this.nationalityList = resNationalityList;
-          this.languageList = resLanguageList;
+          this.nationalityList = resNationalityList.items;
+          this.languageList = resLanguageList.items;
           
         }
       }

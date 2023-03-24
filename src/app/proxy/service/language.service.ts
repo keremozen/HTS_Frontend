@@ -1,5 +1,5 @@
 import { RestService } from '@abp/ng.core';
-import type { PagedAndSortedResultRequestDto, PagedResultDto } from '@abp/ng.core';
+import type { PagedResultDto } from '@abp/ng.core';
 import { Injectable } from '@angular/core';
 import type { LanguageDto, SaveLanguageDto } from '../dto/language/models';
 
@@ -10,11 +10,11 @@ export class LanguageService {
   apiName = 'Default';
   
 
-  create = (input: SaveLanguageDto) =>
+  create = (language: SaveLanguageDto) =>
     this.restService.request<any, LanguageDto>({
       method: 'POST',
       url: '/api/app/language',
-      body: input,
+      body: language,
     },
     { apiName: this.apiName });
   
@@ -35,20 +35,19 @@ export class LanguageService {
     { apiName: this.apiName });
   
 
-  getList = (input: PagedAndSortedResultRequestDto) =>
+  getList = () =>
     this.restService.request<any, PagedResultDto<LanguageDto>>({
       method: 'GET',
       url: '/api/app/language',
-      params: { sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
     },
     { apiName: this.apiName });
   
 
-  update = (id: number, input: SaveLanguageDto) =>
+  update = (id: number, language: SaveLanguageDto) =>
     this.restService.request<any, LanguageDto>({
       method: 'PUT',
       url: `/api/app/language/${id}`,
-      body: input,
+      body: language,
     },
     { apiName: this.apiName });
 

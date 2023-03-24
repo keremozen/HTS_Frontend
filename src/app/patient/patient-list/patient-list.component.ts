@@ -1,12 +1,11 @@
 import { ConfigStateService } from '@abp/ng.core';
 import { Component, Injector, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
+import { LanguageDto } from '@proxy/dto/language';
+import { NationalityDto } from '@proxy/dto/nationality';
+import { LanguageService, NationalityService } from '@proxy/service';
 import { forkJoin } from 'rxjs';
-import { ILanguage } from 'src/app/models/language.model';
-import { INationality } from 'src/app/models/nationality.model';
 import { PatientFilter } from 'src/app/models/patient/patientFilter.model';
-import { LanguageService } from 'src/app/services/language.service';
-import { NationalityService } from 'src/app/services/nationality.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 @Component({
@@ -20,8 +19,8 @@ export class PatientListComponent extends AppComponentBase {
 
   patientList: any[] = [];
   patient: any;
-  nationalityList: INationality[] = [];
-  languageList: ILanguage[] = [];
+  nationalityList: NationalityDto[] = [];
+  languageList: LanguageDto[] = [];
   genderList: any[] = [{ Name: "Erkek" }, { Name: "Kadın" }];
   patientFilter = new PatientFilter();
 
@@ -38,27 +37,27 @@ export class PatientListComponent extends AppComponentBase {
   ngOnInit() {
     // this.config is instance of ConfigStateService
 
-const currentUser = this.config.getOne("currentUser");
+    const currentUser = this.config.getOne("currentUser");
 
-// or
-this.config.getOne$("currentUser").subscribe(currentUser => {
-   // use currentUser here
-})
+    // or
+    this.config.getOne$("currentUser").subscribe(currentUser => {
+      // use currentUser here
+    })
 
     this.fetchData();
   }
   fetchData() {
     forkJoin([
-      this.nationalityService.getNationalityList(),
-      this.languageService.getLanguageList()
+      this.nationalityService.getList(),
+      this.languageService.getList()
     ]).subscribe(
       {
         next: ([
           resNationalityList,
           resLanguageList
         ]) => {
-          this.nationalityList = resNationalityList;
-          this.languageList = resLanguageList;
+          this.nationalityList = resNationalityList.items;
+          this.languageList = resLanguageList.items;
         }
       }
     );
@@ -78,7 +77,7 @@ this.config.getOne$("currentUser").subscribe(currentUser => {
 
 
   editPatient(patient: any) {
-      this.router.navigate(['/patient/detail/'+patient.Id]);
+    this.router.navigate(['/patient/detail/' + patient.Id]);
   }
 
   deletePatient(patient: any) {

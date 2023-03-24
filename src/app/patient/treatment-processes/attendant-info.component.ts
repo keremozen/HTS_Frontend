@@ -1,7 +1,6 @@
 import { Component, Injector, ViewEncapsulation } from '@angular/core';
+import { NationalityDto } from '@proxy/dto/nationality';
 import { IContractedInstitution } from 'src/app/models/contractedInstitution.model';
-import { INationality } from 'src/app/models/nationality.model';
-import { IPatientNote, PatientNote } from 'src/app/models/patient/patientNote.model';
 import { IPatientAdmissionMethod } from 'src/app/models/patientAdmissionMethod.model';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
@@ -16,7 +15,7 @@ export class AttendantInfoComponent extends AppComponentBase {
   patientAdmissionMethodList: IPatientAdmissionMethod[] = [];
   contractedInstitutionList: IContractedInstitution[] = [];
   institutionOfficerList: any[] = [];
-  nationalityList: INationality[] = [];
+  nationalityList: NationalityDto[] = [];
 
   attendantInfo: any;
 

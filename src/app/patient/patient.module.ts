@@ -5,8 +5,6 @@ import { PatientRoutingModule } from './patient-routing.module';
 import { PatientListComponent } from './patient-list/patient-list.component';
 import { FormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
-import { NationalityService } from '../services/nationality.service';
-import { LanguageService } from '../services/language.service';
 import { PatientComponent } from './patient/patient.component';
 import { NotesComponent } from './notes/notes.component';
 import { DocumentsComponent } from './documents/documents.component';
@@ -36,8 +34,6 @@ import { HospitalConsultationComponent } from './treatment-processes/hospital-co
     PatientRoutingModule
   ],
   providers: [
-    NationalityService,
-    LanguageService
   ]
 })
 export class PatientModule { }

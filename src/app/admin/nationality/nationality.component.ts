@@ -1,6 +1,6 @@
 import { Component, Injector } from '@angular/core';
-import { Nationality, INationality } from 'src/app/models/nationality.model';
-import { NationalityService } from 'src/app/services/nationality.service';
+import { NationalityDto, SaveNationalityDto } from '@proxy/dto/nationality';
+import { NationalityService } from '@proxy/service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 
@@ -12,9 +12,10 @@ import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 export class NationalityComponent extends AppComponentBase {
 
     nationalityDialog: boolean;
-    nationalityList: INationality[];
-    nationality: Nationality;
-    submitted: boolean;
+    nationalityList: NationalityDto[];
+    nationality: SaveNationalityDto;
+    isEdit: boolean;
+    nationalityToBeEdited: NationalityDto;
 
     constructor(
         injector: Injector,
@@ -24,41 +25,74 @@ export class NationalityComponent extends AppComponentBase {
     }
 
     ngOnInit() {
-        this.nationalityService.getNationalityList().subscribe(data => this.nationalityList = data);
+        this.fetchData();
+    }
+
+    fetchData() {
+        this.nationalityService.getList().subscribe(data => this.nationalityList = data.items);
     }
 
     openNewNationality() {
-        this.nationality = new Nationality();
-        this.submitted = false;
+        this.isEdit = false;
+        this.nationality = {} as SaveNationalityDto;
+        this.nationality.isActive = true;
         this.nationalityDialog = true;
     }
     
-    editNationality(nationality: Nationality) {
-        this.nationality = { ...nationality };
+    editNationality(nationality: NationalityDto) {
+        this.isEdit = true;
+        this.nationalityToBeEdited = nationality;
+        this.nationality = { ...nationality as SaveNationalityDto };
         this.nationalityDialog = true;
     }
 
-    deleteNationality(nationality: Nationality) {
+    deleteNationality(nationality: NationalityDto) {
         this.confirm({
-            message: this.l('::Message:DeleteConfirmation', nationality.Name),
+            message: this.l('::Message:DeleteConfirmation', nationality.name),
             header: this.l('::Confirm'),
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
-                this.nationalityList = this.nationalityList.filter(val => val.Id !== nationality.Id);
-                this.nationality = null;
-                this.success(this.l('::Message:SuccessfulDeletion', this.l('::Admin:Nationality:Name')));
+                this.nationalityService.delete(nationality.id).subscribe({
+                    next: () => {
+                        this.success(this.l('::Message:SuccessfulDeletion', this.l('::Admin:Nationality:Name')));
+                        this.fetchData();
+                        this.hideDialog();
+                    }
+                });
             }
         });
     }
 
-    hideDialog() {
-        this.nationalityDialog = false;
-        this.submitted = false;
-    }
-
     saveNationality() {
-        this.submitted = true;
+        if (!this.isEdit) {
+            this.nationalityService.create(this.nationality).subscribe({
+                next: () => {
+                    this.fetchData();
+                    this.hideDialog();
+                    this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:Nationality:Name')));
+                },
+                error: (error: any) => {
+                    this.hideDialog();
+                }
+            });
+        }
+        else {
+            this.nationalityService.update(this.nationalityToBeEdited.id, this.nationality).subscribe({
+                next: () => {
+                    this.fetchData();
+                    this.hideDialog();
+                    this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:Nationality:Name')));
+                },
+                error: (error: any) => {
+                    this.hideDialog();
+                }
+            });
+        }
     }
 
-
+    hideDialog() {
+        this.nationality = null;
+        this.nationalityToBeEdited = null;
+        this.nationalityDialog = false;
+    }
 }
