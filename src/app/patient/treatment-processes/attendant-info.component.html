@@ -1,0 +1,109 @@
+<div class="grid gap-3">
+    <div class="col">
+        <div class="field grid mb-2">
+            <label for="patientAdmissionMethod" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                '::AttendantInfo:Column:PatientAdmissionMethod' | abpLocalization }}</label>
+            <div class="col-12 md:col-9">
+                <p-dropdown id="patientAdmissionMethod" name="patientAdmissionMethod" 
+                    [options]="patientAdmissionMethodList" 
+                    placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}" 
+                    styleClass="filterDropDown" optionValue="Id" optionLabel="Name"></p-dropdown>
+            </div>
+        </div>
+        <div class="field grid mb-2">
+            <label for="contractedInstitutionName" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                '::AttendantInfo:Column:ContractedInstitutionName' | abpLocalization }}</label>
+            <div class="col-12 md:col-9">
+                <p-dropdown id="contractedInstitutionName" name="contractedInstitutionName" 
+                    [options]="contractedInstitutionList" 
+                    placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}" 
+                    styleClass="filterDropDown" optionValue="Id" optionLabel="Name"></p-dropdown>
+            </div>
+        </div>
+        <div class="field grid mb-2">
+            <label for="institutionOfficer" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                '::AttendantInfo:Column:InstitutionOfficerName' | abpLocalization }}</label>
+            <div class="col-12 md:col-9">
+                <p-dropdown id="institutionOfficer" name="institutionOfficer" 
+                    [options]="institutionOfficerList" 
+                    placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}" 
+                    styleClass="filterDropDown" optionValue="Id" optionLabel="Name"></p-dropdown>
+            </div>
+        </div>
+        <div class="field grid mb-2">
+            <label for="instituionOfficerEmail" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::AttendantInfo:Column:InstitutionOfficerEmail'
+                |
+                abpLocalization }}</label>
+            <div class="col-12 md:col-9">
+                <input id="instituionOfficerEmail" name="instituionOfficerEmail" pInputText type="text" [readonly]="true"
+                    class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+            </div>
+        </div>
+        <div class="field grid mb-2">
+            <label for="instituionOfficerPhone" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::AttendantInfo:Column:InstitutionOfficerPhoneNumber'
+                |
+                abpLocalization }}</label>
+            <div class="col-12 md:col-9">
+                <input id="instituionOfficerPhone" name="instituionOfficerPhone" pInputText type="text" [readonly]="true"
+                    class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="field grid mb-2">
+            <label for="attendantNameSurname" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::AttendantInfo:Column:AttendantNameSurname'
+                |
+                abpLocalization }}</label>
+            <div class="col-12 md:col-9">
+                <input id="attendantNameSurname" name="attendantNameSurname" pInputText type="text"
+                    class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+            </div>
+        </div>
+        <div class="field grid mb-2">
+            <label for="attendantNationality" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                '::AttendantInfo:Column:AttendantNationality' | abpLocalization }}</label>
+            <div class="col-12 md:col-9">
+                <p-dropdown id="attendantNationality" name="attendantNationality" 
+                    [options]="nationalityList" 
+                    placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}" 
+                    styleClass="filterDropDown" optionValue="Id" optionLabel="Name"></p-dropdown>
+            </div>
+        </div>
+        <div class="field grid mb-2">
+            <label for="attendantPassportNo" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::AttendantInfo:Column:AttendantPassportNo'
+                |
+                abpLocalization }}</label>
+            <div class="col-12 md:col-9">
+                <input id="attendantPassportNo" name="attendantPassportNo" pInputText type="text"
+                    class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+            </div>
+        </div>
+        <div class="field grid mb-2">
+            <label for="attendantEmail" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::AttendantInfo:Column:AttendantEmail'
+                |
+                abpLocalization }}</label>
+            <div class="col-12 md:col-9">
+                <input id="attendantEmail" name="attendantEmail" pInputText type="text"
+                    class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+            </div>
+        </div>
+        <div class="field grid mb-2">
+            <label for="attendantPhoneNumber" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::AttendantInfo:Column:AttendantPhoneNumber'
+                |
+                abpLocalization }}</label>
+            <div class="col-12 md:col-9">
+                <input id="attendantPhoneNumber" name="attendantPhoneNumber" pInputText type="text"
+                    class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+            </div>
+        </div>
+        <div class="field grid mb-2">
+            <label for="attendantRelationship" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::AttendantInfo:Column:AttendantRelationship'
+                |
+                abpLocalization }}</label>
+            <div class="col-12 md:col-9">
+                <input id="attendantRelationship" name="attendantRelationship" pInputText type="text"
+                    class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+            </div>
+        </div>
+    </div>
+</div>

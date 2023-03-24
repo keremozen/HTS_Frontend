@@ -2,7 +2,8 @@ export interface IPatientDocument {
     Id: number;
     PatientId: number;
     TypeId: number;
-    Document: string;
+    Content: string;
+    FileName: string;
     Description: string;
     StatusId: number;
     CreatedBy: string;
@@ -13,7 +14,8 @@ export class PatientDocument implements IPatientDocument {
     Id: number;
     PatientId: number;
     TypeId: number;
-    Document: string;
+    Content: string;
+    FileName: string;
     Description: string;
     StatusId: number;
     CreatedBy: string;

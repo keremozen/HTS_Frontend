@@ -15,8 +15,8 @@
 </p-toolbar>
 
 <p-table #dt [value]="documents" [rows]="5" styleClass="pt-3" [paginator]="true"
-    [globalFilterFields]="['Description','CreatedBy']" *ngIf="documents && documents.length > 0" [(selection)]="selectedDocuments"
-    [rowHover]="true" dataKey="Id"
+    [globalFilterFields]="['Description','CreatedBy']" *ngIf="documents && documents.length > 0"
+    [(selection)]="selectedDocuments" [rowHover]="true" dataKey="Id"
     currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
     [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
     <ng-template pTemplate="header">
@@ -24,6 +24,8 @@
             <th style="width: 4rem">
                 <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
             </th>
+            <th pSortableColumn="FileName">{{ '::Documents:Column:FileName' | abpLocalization }} <p-sortIcon
+                field="FileName"></p-sortIcon></th>
             <th pSortableColumn="Description">{{ '::Documents:Column:Description' | abpLocalization }} <p-sortIcon
                     field="Description"></p-sortIcon></th>
             <th style="width: 12rem" pSortableColumn="CreatedBy">{{ '::Documents:Column:CreatedBy' | abpLocalization }}
@@ -40,6 +42,7 @@
             <td>
                 <p-tableCheckbox [value]="document"></p-tableCheckbox>
             </td>
+            <td>{{document.FileName}}</td>
             <td>
                 <div class="overflow cursor-pointer" [pTooltip]="document.Description" tooltipStyleClass="wideTooltip"
                     tooltipPosition="bottom">{{document.Description}}</div>
@@ -60,24 +63,90 @@
     </ng-template>
 </p-table>
 
-<p-dialog [(visible)]="documentDialog" [style]="{width: '450px'}" header="{{ '::Documents:DocumentDetails' | abpLocalization }}"
-    [modal]="true" styleClass="p-fluid" (onHide)="hideDialog()">
-    <ng-template pTemplate="content">
-        <div class="field">
-            <label for="description">{{ '::Documents:Column:Description' | abpLocalization }} <font style="color:red">*</font>
-            </label>
-            <textarea rows="5" pInputText id="description" [(ngModel)]="document.Description" required autofocus></textarea>
-            <small class="p-error" *ngIf="submitted && !document.Description">{{ '::Message:RequiredField' | abpLocalization
-                }}</small>
+<p-dialog [(visible)]="documentDialog" [style]="{width: '450px'}"
+    header="{{ '::Documents:DocumentDetails' | abpLocalization }}" [modal]="true" styleClass="p-fluid"
+    (onHide)="hideDialog()">
+    <form #documentForm="ngForm">
+        <div *ngIf="document">
+            <div class="field">
+                <label for="description">{{ '::Documents:Column:Document' | abpLocalization }} <font style="color:red">*
+                    </font>
+                </label>
+                <p-fileUpload #documents id="documents" name="documents"
+                    chooseLabel="{{ '::ChooseFile' | abpLocalization}}" (onSelect)="onSelect($event)"
+                    maxFileSize="1000000" [auto]="true">
+                    <ng-template let-file pTemplate="file">
+                        <div class="inline-flex m-2">
+                            <div class="fileContainer flex flex-wrap">
+                                <div class="flex align-items-center justify-content-center">
+                                    <div class="flex p-2">
+                                        <i class="pi pi-image fileIcon"
+                                            *ngIf="file.type == 'image/jpeg' || file.type == 'image/png'"></i>
+                                        <i class="pi pi-file-pdf fileIcon" *ngIf="file.type == 'application/pdf'"></i>
+                                        <i class="pi pi-file-word fileIcon"
+                                            *ngIf="file.type == 'application/msword' || file.type == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'"></i>
+                                        <i class="pi pi-file-excel fileIcon"
+                                            *ngIf="file.type == 'application/msexcel' || file.type == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'"></i>
+                                        <i class="pi pi-file fileIcon" *ngIf="file.type != 'application/pdf' && 
+                                            file.type != 'application/msword' && 
+                                            file.type != 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' && 
+                                            file.type != 'application/msexcel' && 
+                                            file.type != 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' && 
+                                            file.type != 'image/jpeg' && 
+                                            file.type != 'image/png'"></i>
+                                    </div>
+                                    <div class="flex flex-column p-2">
+                                        <div class="fileName mb-2 font-medium cursor-pointer" (click)="openFile(file)">
+                                            {{file.name}}</div>
+                                        <div class="fileSize">{{file.size / 1024 | number: '1.0-2'}} Kb</div>
+                                    </div>
+                                    <div class="flex p-2 cursor-pointer" (click)="removeFile()">
+                                        <i class="pi pi-times-circle text-xl"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-template>
+                </p-fileUpload>
+                <small class="p-error" *ngIf="!uploadedDocuments || uploadedDocuments?.length == 0">{{
+                    '::Message:RequiredField' | abpLocalization }}</small>
+            </div>
+            <div class="field">
+                <label for="documentType">{{ '::Documents:Column:DocumentType' | abpLocalization }} <font
+                        style="color:red">
+                        *
+                    </font>
+                </label>
+                <p-dropdown id="documentType" name="documentType" #documentType="ngModel" [options]="documentTypeList"
+                    [(ngModel)]="document.TypeId" placeholder="{{ '::Select' | abpLocalization }}"
+                    [style]="{'width':'100%'}" required="true" styleClass="filterDropDown" optionValue="Id"
+                    optionLabel="Name"></p-dropdown>
+                <small class="p-error" *ngIf="!(documentType.valid || documentType.pristine)">{{
+                    '::Message:RequiredField' |
+                    abpLocalization
+                    }}</small>
+            </div>
+            <div class="field">
+                <label for="description">{{ '::Documents:Column:Description' | abpLocalization }} <font
+                        style="color:red">*
+                    </font>
+                </label>
+                <textarea rows="5" pInputText id="description" name="description" #description="ngModel"
+                    [(ngModel)]="document.Description" required autofocus></textarea>
+                <small class="p-error" *ngIf="!(description.valid || description.pristine)">{{ '::Message:RequiredField'
+                    |
+                    abpLocalization
+                    }}</small>
+            </div>
         </div>
-    </ng-template>
-
-    <ng-template pTemplate="footer">
+    </form>
+    <p-footer>
         <button pButton pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" class="p-button-text"
             (click)="hideDialog()"></button>
         <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" class="p-button-text"
-            (click)="saveDocument()"></button>
-    </ng-template>
+            (click)="saveDocument()" [disabled]="!(documentForm.valid) || uploadedDocuments?.length== 0"></button>
+    </p-footer>
+
 </p-dialog>
 
 <p-confirmDialog [style]="{width: '450px'}" rejectLabel="{{ '::Reject' | abpLocalization }}"

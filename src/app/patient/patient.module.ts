@@ -11,6 +11,10 @@ import { PatientComponent } from './patient/patient.component';
 import { NotesComponent } from './notes/notes.component';
 import { DocumentsComponent } from './documents/documents.component';
 import { TreatmentProcessesComponent } from './treatment-processes/treatment-processes.component';
+import { AttendantInfoComponent } from './treatment-processes/attendant-info.component';
+import { OperationalInfoComponent } from './treatment-processes/operational-info.component';
+import { QuotationComponent } from './treatment-processes/quotation.component';
+import { HospitalConsultationComponent } from './treatment-processes/hospital-consultation.component';
 
 
 @NgModule({
@@ -19,7 +23,11 @@ import { TreatmentProcessesComponent } from './treatment-processes/treatment-pro
     PatientComponent,
     NotesComponent,
     DocumentsComponent,
-    TreatmentProcessesComponent
+    TreatmentProcessesComponent,
+    AttendantInfoComponent,
+    HospitalConsultationComponent,
+    OperationalInfoComponent,
+    QuotationComponent
   ],
   imports: [
     SharedModule,

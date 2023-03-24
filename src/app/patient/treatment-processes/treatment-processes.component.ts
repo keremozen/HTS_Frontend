@@ -1,4 +1,5 @@
 import { Component, Injector, ViewEncapsulation } from '@angular/core';
+import { MenuItem } from 'primeng/api';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 @Component({
@@ -10,15 +11,22 @@ import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 export class TreatmentProcessesComponent extends AppComponentBase {
   processes: any[] = [];
   selectedProcesses: any[];
+  processDialog: boolean = false;
+  showCompletedRecords: boolean = false;
+  completedRecordCount: number = 0;
+  displayProcessDetail: boolean = false;
+  process: any;
 
-  constructor(
-    injector: Injector
-  ) {
+  constructor(injector: Injector) {
     super(injector);
-
   }
 
-  openNew() {
+  newTreatmentProcess() {
+    this.displayProcessDetail = true;
+    this.process = {};
+  }
+
+  deleteProcess(process: any) {
 
   }
 }

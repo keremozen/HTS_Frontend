@@ -1,0 +1,205 @@
+<p-toolbar styleClass="customToolbar">
+    <div class="p-toolbar-group-start">
+    </div>
+    <div class="p-toolbar-group-end p-0">
+        <button pButton pRipple label="{{ '::HospitalConsultation:NewConsultation' | abpLocalization }}"
+            icon="pi pi-plus" class="p-button-success ml-2" (click)="onNewConsultation()"></button>
+    </div>
+</p-toolbar>
+
+<p-table #dt [value]="consultations" [rows]="5" styleClass="pt-3" [paginator]="true"
+    [globalFilterFields]="['Message','CreatedBy']" *ngIf="consultations && consultations.length > 0" [rowHover]="true"
+    currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
+    [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
+    <ng-template pTemplate="header">
+        <tr>
+            <th style="width: 12rem" pSortableColumn="ConsultationNo">{{ '::HospitalConsultation:Column:ConsultationNo'
+                | abpLocalization }} <p-sortIcon field="ConsultationNo"></p-sortIcon></th>
+            <th style="width: 12rem" pSortableColumn="CreatedBy">{{ '::HospitalConsultation:Column:CreatedBy' |
+                abpLocalization }}
+                <p-sortIcon field="CreatedBy"></p-sortIcon>
+            </th>
+            <th style="width: 12rem" pSortableColumn="Created">{{ '::HospitalConsultation:Column:Created' |
+                abpLocalization }}
+                <p-sortIcon field="Created"></p-sortIcon>
+            </th>
+            <th pSortableColumn="Hospital">{{ '::HospitalConsultation:Column:Hospital' | abpLocalization }}
+                <p-sortIcon field="Hospital"></p-sortIcon>
+            </th>
+            <th style="width: 12rem" pSortableColumn="State">{{ '::HospitalConsultation:Column:State' | abpLocalization
+                }}
+                <p-sortIcon field="State"></p-sortIcon>
+            </th>
+            <th class="text-center" style="width: 20rem">{{ '::HospitalConsultation:Column:DetailsAndActions' | abpLocalization }}</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-consultation>
+        <tr>
+            <td>{{consultation.ConsultationNo}}</td>
+            <td>{{consultation.CreatedBy}}</td>
+            <td>{{consultation.Created | date: 'dd.MM.yyyy'}}</td>
+            <td>{{consultation.Hospital}}</td>
+            <td>{{consultation.State}}</td>
+            <td class="text-right">
+                <button pButton pRipple label="{{ '::HospitalConsultation:Button:Consultation' | abpLocalization }}" class="p-button-info ml-2" (click)="openConsultation()"></button>
+                <button pButton pRipple label="{{ '::HospitalConsultation:Button:Answer' | abpLocalization }}" class="p-button-warning ml-2" (click)="openAnswer()" disabled="true"></button>
+                <button pButton pRipple class="p-button-success ml-2" icon="pi pi-check" (click)="approve()"></button>
+                <button pButton pRipple class="p-button-danger ml-2" icon="pi pi-times" (click)="reject()"></button>
+            </td>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="summary">
+        <div class="flex align-items-center justify-content-between">
+            {{ '::Table:Summary' | abpLocalization:(consultations ? consultations.length :
+            0):(("::HospitalConsultation:Title" |
+            abpLocalization) | lowercase) }}
+        </div>
+    </ng-template>
+</p-table>
+
+<p-dialog [(visible)]="consultationDialog" [style]="{width: '85vw'}"
+    header="{{ '::HospitalConsultation:Title' | abpLocalization }}" [modal]="true" styleClass="p-fluid"
+    (onHide)="hideConsultationDialog()">
+    <ng-template pTemplate="content">
+        <div class="grid">
+            <div class="col">
+                <fieldset class="border pl-3 pr-3 pt-2 pb-3 m-2 patientFieldSet consultationFieldHeight">
+                    <legend class="float-none w-auto pl-3 pr-3 text-sm patientFieldSetlegend">
+                        {{'::HospitalConsultation:FieldLegend:HospitalChoice' |
+                        abpLocalization}}
+                    </legend>
+                    <p-listbox [options]="hospitalList" [(ngModel)]="selectedHospitals" optionLabel="Name"
+                        [checkbox]="true" [filter]="true" [multiple]="true" [metaKeySelection]="false"
+                        emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" styleClass="hospitalListStyle"
+                        emptyFilterMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-listbox>
+                </fieldset>
+            </div>
+            <div class="col">
+                <fieldset class="border pl-3 pr-3 pt-2 pb-3 m-2 patientFieldSet consultationFieldHeight">
+                    <legend class="float-none w-auto pl-3 pr-3 text-sm patientFieldSetlegend">
+                        {{'::HospitalConsultation:FieldLegend:PatientComplaintAndDescription' |
+                        abpLocalization}}
+                    </legend>
+                    <textarea pInputText id="description" name="description" required style="height:100%"></textarea>
+                </fieldset>
+            </div>
+            <div class="col">
+                <fieldset class="border pl-3 pr-3 pt-2 pb-3 m-2 patientFieldSet consultationFieldHeight">
+                    <legend class="float-none w-auto pl-3 pr-3 text-sm patientFieldSetlegend">
+                        {{'::HospitalConsultation:FieldLegend:Documents' |
+                        abpLocalization}}
+                    </legend>
+                    <div>
+                        <p-toolbar styleClass="customToolbar">
+                            <div class="p-toolbar-group-start">
+                            </div>
+                            <div class="p-toolbar-group-end p-0">
+                                <div>
+                                    <button pButton pRipple label="{{ '::Import' | abpLocalization }}"
+                                        icon="pi pi-file-import" class="p-button-info"></button>
+                                </div>
+                                <div>
+                                    <button pButton pRipple label="{{ '::New' | abpLocalization }}" icon="pi pi-plus"
+                                        class="p-button-success ml-2" (click)="openNewDocument()"></button>
+                                </div>
+                            </div>
+                        </p-toolbar>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" class="p-button-text"
+            (click)="hideConsultationDialog()"></button>
+        <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" class="p-button-text"
+            (click)="saveConsultation()"></button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="documentDialog" [style]="{width: '450px'}"
+    header="{{ '::Documents:DocumentDetails' | abpLocalization }}" [modal]="true" styleClass="p-fluid"
+    (onHide)="hideDocumentDialog()">
+    <form #consultationDocumentForm="ngForm">
+        <div *ngIf="document">
+            <div class="field">
+                <label for="description">{{ '::Documents:Column:Document' | abpLocalization }} <font style="color:red">*
+                    </font>
+                </label>
+                <p-fileUpload #documents id="documents" name="documents"
+                    chooseLabel="{{ '::ChooseFile' | abpLocalization}}" (onSelect)="onSelect($event)"
+                    maxFileSize="1000000" [auto]="true">
+                    <ng-template let-file pTemplate="file">
+                        <div class="inline-flex m-2">
+                            <div class="fileContainer flex flex-wrap">
+                                <div class="flex align-items-center justify-content-center">
+                                    <div class="flex p-2">
+                                        <i class="pi pi-image fileIcon"
+                                            *ngIf="file.type == 'image/jpeg' || file.type == 'image/png'"></i>
+                                        <i class="pi pi-file-pdf fileIcon" *ngIf="file.type == 'application/pdf'"></i>
+                                        <i class="pi pi-file-word fileIcon"
+                                            *ngIf="file.type == 'application/msword' || file.type == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'"></i>
+                                        <i class="pi pi-file-excel fileIcon"
+                                            *ngIf="file.type == 'application/msexcel' || file.type == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'"></i>
+                                        <i class="pi pi-file fileIcon" *ngIf="file.type != 'application/pdf' && 
+                                            file.type != 'application/msword' && 
+                                            file.type != 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' && 
+                                            file.type != 'application/msexcel' && 
+                                            file.type != 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' && 
+                                            file.type != 'image/jpeg' && 
+                                            file.type != 'image/png'"></i>
+                                    </div>
+                                    <div class="flex flex-column p-2">
+                                        <div class="fileName mb-2 font-medium cursor-pointer" (click)="openFile(file)">
+                                            {{file.name}}</div>
+                                        <div class="fileSize">{{file.size / 1024 | number: '1.0-2'}} Kb</div>
+                                    </div>
+                                    <div class="flex p-2 cursor-pointer" (click)="removeFile()">
+                                        <i class="pi pi-times-circle text-xl"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-template>
+                </p-fileUpload>
+                <small class="p-error" *ngIf="!uploadedDocuments || uploadedDocuments?.length == 0">{{
+                    '::Message:RequiredField' | abpLocalization }}</small>
+            </div>
+            <div class="field">
+                <label for="documentType">{{ '::Documents:Column:DocumentType' | abpLocalization }} <font
+                        style="color:red">
+                        *
+                    </font>
+                </label>
+                <p-dropdown id="documentType" name="documentType" #documentType="ngModel" [options]="documentTypeList"
+                    [(ngModel)]="document.TypeId" placeholder="{{ '::Select' | abpLocalization }}"
+                    [style]="{'width':'100%'}" required="true" styleClass="filterDropDown" optionValue="Id"
+                    optionLabel="Name"></p-dropdown>
+                <small class="p-error" *ngIf="!(documentType.valid || documentType.pristine)">{{
+                    '::Message:RequiredField' |
+                    abpLocalization
+                    }}</small>
+            </div>
+            <div class="field">
+                <label for="description">{{ '::Documents:Column:Description' | abpLocalization }} <font
+                        style="color:red">*
+                    </font>
+                </label>
+                <textarea rows="5" pInputText id="description" name="description" #description="ngModel"
+                    [(ngModel)]="document.Description" required autofocus></textarea>
+                <small class="p-error" *ngIf="!(description.valid || description.pristine)">{{ '::Message:RequiredField'
+                    |
+                    abpLocalization
+                    }}</small>
+            </div>
+        </div>
+    </form>
+    <p-footer>
+        <button pButton pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" class="p-button-text"
+            (click)="hideDocumentDialog()"></button>
+        <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" class="p-button-text"
+            (click)="saveDocument()" [disabled]="!(consultationDocumentForm.valid) || uploadedDocuments?.length== 0"></button>
+    </p-footer>
+
+</p-dialog>

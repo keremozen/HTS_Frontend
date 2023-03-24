@@ -1,9 +1,89 @@
 <p-toolbar styleClass="customToolbar">
-    <div class="p-toolbar-group-start"></div>
+    <div class="p-toolbar-group-start">
+        <div class="ml-3" *ngIf="processes && processes.length > 0 && completedRecordCount > 0">
+            <p-checkbox [(ngModel)]="showCompletedRecords" [binary]="true"
+                inputId="chkShowCompletedRecords"></p-checkbox>
+            <label class="ml-3" for="chkShowCompletedRecords">{{"::TreatmentProcess:ShowCompletedRecords" |
+                abpLocalization}}</label>
+        </div>
+    </div>
     <div class="p-toolbar-group-end p-0">
-        <button pButton pRipple label="{{ '::New' | abpLocalization }}" icon="pi pi-plus" class="p-button-success mr-2"
-        (click)="openNew()"></button>
-    <button pButton pRipple label="{{ '::Delete' | abpLocalization }}" icon="pi pi-trash" class="p-button-danger"
-        (click)="deleteSelected()" [disabled]="!selectedProcesses || !selectedProcesses.length" *ngIf="processes && processes.length > 0"></button>
+        <button pButton pRipple label="{{ '::TreatmentProcess:StartTreatmentProcess' | abpLocalization }}"
+            icon="pi pi-plus" class="p-button-success mr-2" (click)="newTreatmentProcess()"></button>
     </div>
 </p-toolbar>
+
+<p-table #dt [value]="processes" [rows]="5" styleClass="pt-3" [paginator]="true" [globalFilterFields]="['CreatedBy']"
+    *ngIf="!displayProcessDetail && processes && processes.length > 0" [rowHover]="true"
+    currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
+    [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
+    <ng-template pTemplate="header">
+        <tr>
+            <th pSortableColumn="Code">{{ '::TreatmentProcess:Column:Code' | abpLocalization }} <p-sortIcon
+                    field="Code"></p-sortIcon></th>
+            <th style="width: 12rem" pSortableColumn="CreatedBy">{{ '::TreatmentProcess:Column:CreatedBy' |
+                abpLocalization }}
+                <p-sortIcon field="CreatedBy"></p-sortIcon>
+            </th>
+            <th style="width: 12rem" pSortableColumn="Created">{{ '::TreatmentProcess:Column:Created' | abpLocalization
+                }}
+                <p-sortIcon field="Created"></p-sortIcon>
+            </th>
+            <th style="width: 12rem" pSortableColumn="State">{{ '::TreatmentProcess:Column:State' | abpLocalization }}
+                <p-sortIcon field="state"></p-sortIcon>
+            </th>
+            <th style="width: 4rem"></th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-process>
+        <tr>
+            <td>{{process.Code}}</td>
+            <td>{{process.CreatedBy}}</td>
+            <td>{{process.Created | date: 'dd.MM.yyyy'}}</td>
+            <td>{{process.State}}</td>
+            <td>
+                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"
+                    (click)="deleteProcess(process)"></button>
+            </td>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="summary">
+        <div class="flex align-items-center justify-content-between">
+            {{ '::Table:Summary' | abpLocalization:(documents ? documents.length : 0):(("::TreatmentProcess:Title" |
+            abpLocalization) | lowercase) }}
+        </div>
+    </ng-template>
+</p-table>
+
+<div *ngIf="displayProcessDetail">
+    <p-tabView>
+        <p-tabPanel>
+            <ng-template pTemplate="header">
+                <i class="fas fa-hospital-user text-sm mr-2"></i>
+                <span>{{'::TreatmentProcess:Step:SalesAndAttendantInfo'|abpLocalization}}</span>
+            </ng-template>
+            <app-attendant-info></app-attendant-info>
+        </p-tabPanel>
+        <p-tabPanel>
+            <ng-template pTemplate="header">
+                <i class="fas fa-hospital-symbol text-sm mr-2"></i>
+                <span>{{'::TreatmentProcess:Step:HospitalConsultation'|abpLocalization}}</span>
+            </ng-template>
+            <app-hospital-consultation></app-hospital-consultation>
+        </p-tabPanel>
+        <p-tabPanel>
+            <ng-template pTemplate="header">
+                <i class="fas fa-project-diagram text-sm mr-2"></i>
+                <span>{{'::TreatmentProcess:Step:OperationalInformation'|abpLocalization}}</span>
+            </ng-template>
+            <app-operational-info></app-operational-info>
+        </p-tabPanel>
+        <p-tabPanel>
+            <ng-template pTemplate="header">
+                <i class="fas fa-file-invoice-dollar text-sm mr-2"></i>
+                <span>{{'::TreatmentProcess:Step:ProcessQuotationRevenue'|abpLocalization}}</span>
+            </ng-template>
+            <app-quotation></app-quotation>
+        </p-tabPanel>
+    </p-tabView>
+</div>

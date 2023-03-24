@@ -3,6 +3,7 @@ import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgModule } from '@angular/core';
 import { ThemeSharedModule } from '@abp/ng.theme.shared';
 import { NgxValidateCoreModule } from '@ngx-validate/core';
+import { FormsModule } from '@angular/forms';
 
 /* PrimeNg Modules */
 import { TableModule } from 'primeng/table';
@@ -26,12 +27,14 @@ import { ConfirmationService } from 'primeng/api';
 import { MessageService } from 'primeng/api';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { InputMaskModule } from 'primeng/inputmask';
-import { FormsModule } from '@angular/forms';
 import { AccordionModule } from 'primeng/accordion';
 import { FieldsetModule } from 'primeng/fieldset';
 import { CardModule } from 'primeng/card';
 import { MenubarModule } from 'primeng/menubar';
-import {CheckboxModule} from 'primeng/checkbox';
+import { CheckboxModule } from 'primeng/checkbox';
+import { TabMenuModule } from 'primeng/tabmenu';
+import { TabViewModule } from 'primeng/tabview';
+import { ListboxModule } from 'primeng/listbox';
 
 /**************/
 
@@ -66,7 +69,10 @@ import {CheckboxModule} from 'primeng/checkbox';
     FieldsetModule,
     CardModule,
     MenubarModule,
-    CheckboxModule
+    CheckboxModule,
+    TabMenuModule,
+    TabViewModule,
+    ListboxModule
   ],
   exports: [
     CoreModule,
@@ -98,7 +104,10 @@ import {CheckboxModule} from 'primeng/checkbox';
     FieldsetModule,
     CardModule,
     MenubarModule,
-    CheckboxModule
+    CheckboxModule,
+    TabMenuModule,
+    TabViewModule,
+    ListboxModule
   ],
   providers: [ConfirmationService, MessageService]
 })
