@@ -137,35 +137,4 @@
             </div>
         </form>
     </fieldset>
-
-    <div class="grid">
-        <div class="col">
-            <fieldset class="border pl-3 pr-3 pt-2 pb-3 m-2 patientFieldSet">
-                <legend class="float-none w-auto pl-3 pr-3 text-sm patientFieldSetlegend">{{'::PatientDetail:Notes' |
-                    abpLocalization}}
-                </legend>
-                <app-notes [patientId]="patientId"></app-notes>
-            </fieldset>
-        </div>
-        <div class="col">
-            <fieldset class="border pl-3 pr-3 pt-2 pb-3 m-2 patientFieldSet">
-                <legend class="float-none w-auto pl-3 pr-3 text-sm patientFieldSetlegend">{{'::PatientDetail:Documents'
-                    | abpLocalization}}
-                </legend>
-                <app-documents></app-documents>
-            </fieldset>
-        </div>
-    </div>
-
-    <div class="grid">
-        <div class="col">
-            <fieldset class="border pl-3 pr-3 pt-2 pb-3 m-2 patientFieldSet">
-                <legend class="float-none w-auto pl-3 pr-3 text-sm patientFieldSetlegend">
-                    {{'::PatientDetail:TreatmentProcesses' |
-                    abpLocalization}}
-                </legend>
-                <app-treatment-processes></app-treatment-processes>
-            </fieldset>
-        </div>
-    </div>
 </p-card>

@@ -1,5 +1,8 @@
-import { Component, Injector, ViewEncapsulation } from '@angular/core';
-import { IPatientNote, PatientNote } from 'src/app/models/patient/patientNote.model';
+import { Component, Injector, Input, ViewEncapsulation } from '@angular/core';
+import { Patient } from '@proxy/dto';
+import { PatientNoteDto, SavePatientNoteDto } from '@proxy/dto/patient-note';
+import { EntityEnum_PatientNoteStatusEnum } from '@proxy/enum';
+import { PatientNoteService } from '@proxy/service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 @Component({
@@ -10,61 +13,98 @@ import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 })
 export class NotesComponent extends AppComponentBase {
 
-  notes: IPatientNote[] = [];
-  selectedNotes: IPatientNote[];
+  @Input() patientId: number;
+  allNotes: PatientNoteDto[] = [];
+  notesToBeDisplayed: PatientNoteDto[] = [];
+  selectedNotes: PatientNoteDto[];
   noteDialog: boolean = false;
-  note: IPatientNote;
+  note: SavePatientNoteDto;
   showRevokedRecords: boolean = false;
-  revokedRecordCount:number = 0;
+  revokedRecordCount: number = 0;
+  loading: boolean;
+  totalRecords: number;
+  public patientNoteStatusEnum = EntityEnum_PatientNoteStatusEnum;
 
   constructor(
-    injector: Injector
+    injector: Injector,
+    private patientNoteService: PatientNoteService
   ) {
     super(injector);
 
   }
 
-  openNew() {
-    this.note = new PatientNote();
-    this.noteDialog = true;
+  ngOnInit(): void {
+    this.fetchData();
   }
 
-  saveNote() {
-    this.note.Created = new Date();
-    this.note.CreatedBy = "Kerem Özen";
-    this.notes.push(this.note);
-    this.success(this.l('::Message:SuccessfulSave', this.l('::Notes:NameSingular')));
-    this.hideDialog();
-  }
-
-  hideDialog() {
-    this.note = null;
-    this.noteDialog = false;
-  }
-
-  revokeSelected() {
-    if (this.selectedNotes.length > 0) {
-      this.confirm({
-        message: this.l('::Message:RevokeMultipleConfirmation'),
-        header: this.l('::Confirm'),
-        icon: 'pi pi-exclamation-triangle',
-        accept: () => {
-          this.notes = this.notes.filter(val => !this.selectedNotes.map(n => n.Id).includes(val.Id));
-          this.success(this.l('::Message:SuccessfulMultipleRevokation', this.l('::Notes:NamePlural')));
+  fetchData() {
+    this.loading = true;
+    if (this.patientId) {
+      this.patientNoteService.getList(this.patientId).subscribe({
+        next: (notes) => {
+          this.allNotes = notes.items;
+          this.revokedRecordCount = notes.items.filter(n => n.patientNoteStatusId === this.patientNoteStatusEnum.Revoked).length;
+this.manageNotesToBeDisplayed();
+        },
+        complete: () => {
+          this.loading = false;
         }
       });
     }
   }
 
-  revokeNote(noteToBeRevoked: IPatientNote) {
+  manageNotesToBeDisplayed() {
+    if (!this.showRevokedRecords) {
+      this.notesToBeDisplayed = [...this.allNotes.filter(n => n.patientNoteStatusId !== EntityEnum_PatientNoteStatusEnum.Revoked)];
+    }
+    else {
+      this.notesToBeDisplayed = [...this.allNotes];
+    }
+    this.totalRecords = this.notesToBeDisplayed.length;
+  }
+
+  openNew() {
+    this.note = {} as SavePatientNoteDto;
+    this.noteDialog = true;
+  }
+
+  saveNote() {
+    this.note.patientId = this.patientId;
+    this.patientNoteService.create(this.note).subscribe({
+      next: () => {
+        this.fetchData();
+        this.success(this.l('::Message:SuccessfulSave', this.l('::Notes:NameSingular')));
+        this.hideDialog();
+      },
+      error: () => {
+        this.hideDialog();
+      }
+    });
+  }
+
+  revokeNote(noteToBeRevoked: PatientNoteDto) {
     this.confirm({
       message: this.l('::Message:RevokeConfirmation'),
       header: this.l('::Confirm'),
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.notes = this.notes.filter(val => val.Id !== noteToBeRevoked.Id);
-        this.success(this.l('::Message:SuccessfulRevokation', this.l('::Notes:NameSingular')));
+        this.patientNoteService.updateStatusByIdAndStatusId(+noteToBeRevoked.id, EntityEnum_PatientNoteStatusEnum.Revoked).subscribe({
+          next: () => {
+            this.fetchData();
+            this.success(this.l('::Message:SuccessfulRevokation', this.l('::Notes:NameSingular')));
+          }
+        });
       }
     });
+  }
+
+  onShowRevokedRecords() {
+    this.manageNotesToBeDisplayed();
+  }
+
+
+  hideDialog() {
+    this.note = null;
+    this.noteDialog = false;
   }
 }

@@ -1,6 +1,6 @@
 import { Component, Injector } from '@angular/core';
-import { IPatientAdmissionMethod, PatientAdmissionMethod } from 'src/app/models/patientAdmissionMethod.model';
-import { PatientAdmissionMethodService } from 'src/app/services/patientAdmissionMethod.service';
+import { PatientAdmissionMethodDto, SavePatientAdmissionMethodDto } from '@proxy/dto/patient-admission-method';
+import { PatientAdmissionMethodService } from '@proxy/service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 @Component({
@@ -10,9 +10,12 @@ import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 })
 export class PatientAdmissionMethodComponent extends AppComponentBase {
   patientAdmissionMethodDialog: boolean;
-  patientAdmissionMethodList: IPatientAdmissionMethod[];
-  patientAdmissionMethod: PatientAdmissionMethod;
-  submitted: boolean;
+  patientAdmissionMethodList: PatientAdmissionMethodDto[];
+  patientAdmissionMethod: SavePatientAdmissionMethodDto;
+  isEdit: boolean;
+  patientAdmissionMethodToBeEdited: PatientAdmissionMethodDto;
+  loading: boolean;
+  totalRecords: number = 0;
 
   constructor(
     injector: Injector,
@@ -22,39 +25,85 @@ export class PatientAdmissionMethodComponent extends AppComponentBase {
   }
 
   ngOnInit() {
-    this.patientAdmissionMethodService.getPatientAdmissionMethodList().subscribe(data => this.patientAdmissionMethodList = data);
+    this.fetchData();
   }
 
-  openNewPatientAdmissionMethod() {
-    this.patientAdmissionMethod = new PatientAdmissionMethod();
-    this.submitted = false;
-    this.patientAdmissionMethodDialog = true;
-  }
-
-  editPatientAdmissionMethod(patientAdmissionMethod: PatientAdmissionMethod) {
-    this.patientAdmissionMethod = { ...patientAdmissionMethod };
-    this.patientAdmissionMethodDialog = true;
-  }
-
-  deletePatientAdmissionMethod(patientAdmissionMethod: PatientAdmissionMethod) {
-    this.confirm({
-      message: this.l('::Message:DeleteConfirmation', patientAdmissionMethod.Name),
-      header: this.l('::Confirm'),
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        this.patientAdmissionMethodList = this.patientAdmissionMethodList.filter(val => val.Id !== patientAdmissionMethod.Id);
-        this.patientAdmissionMethod = null;
-        this.success(this.l('::Message:SuccessfulDeletion', this.l('::Admin:PatientAdmissionMethod:Name')));
+  fetchData() {
+    this.loading = true;
+    this.patientAdmissionMethodService.getList().subscribe({
+      next: data => {
+        this.patientAdmissionMethodList = data.items;
+        this.totalRecords = data.totalCount;
+      },
+      complete: () => {
+        this.loading = false;
       }
     });
   }
 
-  hideDialog() {
-    this.patientAdmissionMethodDialog = false;
-    this.submitted = false;
+  openNewPatientAdmissionMethod() {
+    this.isEdit = false;
+    this.patientAdmissionMethod = {} as SavePatientAdmissionMethodDto;
+    this.patientAdmissionMethod.isActive = true;
+    this.patientAdmissionMethodDialog = true;
+  }
+
+  editPatientAdmissionMethod(patientAdmissionMethod: PatientAdmissionMethodDto) {
+    this.isEdit = true;
+    this.patientAdmissionMethodToBeEdited = patientAdmissionMethod;
+    this.patientAdmissionMethod = { ...patientAdmissionMethod as SavePatientAdmissionMethodDto };
+    this.patientAdmissionMethodDialog = true;
+  }
+
+  deletePatientAdmissionMethod(patientAdmissionMethod: PatientAdmissionMethodDto) {
+    this.confirm({
+      message: this.l('::Message:DeleteConfirmation', patientAdmissionMethod.name),
+      header: this.l('::Confirm'),
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.patientAdmissionMethodService.delete(patientAdmissionMethod.id).subscribe({
+          next: () => {
+            this.success(this.l('::Message:SuccessfulDeletion', this.l('::Admin:PatientAdmissionMethod:Name')));
+            this.fetchData();
+            this.hideDialog();
+          }
+        });
+      }
+    });
   }
 
   savePatientAdmissionMethod() {
-    this.submitted = true;
+    if (!this.isEdit) {
+      this.patientAdmissionMethodService.create(this.patientAdmissionMethod).subscribe({
+        next: () => {
+          this.fetchData();
+          this.hideDialog();
+          this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:PatientAdmissionMethod:Name')));
+        },
+        error: (error: any) => {
+          this.hideDialog();
+        }
+      });
+    }
+    else {
+      this.patientAdmissionMethodService.update(+this.patientAdmissionMethodToBeEdited.id, this.patientAdmissionMethod).subscribe({
+        next: () => {
+          this.fetchData();
+          this.hideDialog();
+          this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:PatientAdmissionMethod:Name')));
+        },
+        error: (error: any) => {
+          this.hideDialog();
+        }
+      });
+    }
   }
+
+  hideDialog() {
+    this.patientAdmissionMethod = null;
+    this.patientAdmissionMethodToBeEdited = null;
+    this.patientAdmissionMethodDialog = false;
+  }
+
+
 }

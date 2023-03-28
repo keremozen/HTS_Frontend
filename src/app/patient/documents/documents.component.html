@@ -7,23 +7,16 @@
     </div>
     <div class="p-toolbar-group-end p-0">
         <button pButton pRipple label="{{ '::New' | abpLocalization }}" icon="pi pi-plus" class="p-button-success mr-2"
-            (click)="openNew()"></button>
-        <button pButton pRipple label="{{ '::Revoke' | abpLocalization }}" icon="pi pi-trash" class="p-button-danger"
-            (click)="revokeSelected()" [disabled]="!selectedDocuments || !selectedDocuments.length"
-            *ngIf="documents && documents.length > 0"></button>
+            (click)="openNew()" [loading]="loading"></button>
     </div>
 </p-toolbar>
 
 <p-table #dt [value]="documents" [rows]="5" styleClass="pt-3" [paginator]="true"
-    [globalFilterFields]="['Description','CreatedBy']" *ngIf="documents && documents.length > 0"
-    [(selection)]="selectedDocuments" [rowHover]="true" dataKey="Id"
+    [globalFilterFields]="['Description','CreatedBy']" [rowHover]="true" [loading]="loading"
     currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
     [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
     <ng-template pTemplate="header">
         <tr>
-            <th style="width: 4rem">
-                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-            </th>
             <th pSortableColumn="FileName">{{ '::Documents:Column:FileName' | abpLocalization }} <p-sortIcon
                 field="FileName"></p-sortIcon></th>
             <th pSortableColumn="Description">{{ '::Documents:Column:Description' | abpLocalization }} <p-sortIcon
@@ -39,9 +32,6 @@
     </ng-template>
     <ng-template pTemplate="body" let-document>
         <tr>
-            <td>
-                <p-tableCheckbox [value]="document"></p-tableCheckbox>
-            </td>
             <td>{{document.FileName}}</td>
             <td>
                 <div class="overflow cursor-pointer" [pTooltip]="document.Description" tooltipStyleClass="wideTooltip"
@@ -55,10 +45,14 @@
             </td>
         </tr>
     </ng-template>
+    <ng-template pTemplate="emptymessage">
+        <div class="m-3">
+            {{ '::Table:EmptyMessage' | abpLocalization }}
+        </div>
+    </ng-template>
     <ng-template pTemplate="summary">
-        <div class="flex align-items-center justify-content-between">
-            {{ '::Table:Summary' | abpLocalization:(documents ? documents.length : 0):(("::Documents:Title" |
-            abpLocalization) | lowercase) }}
+        <div class="flex align-items-center justify-content-between" *ngIf="totalRecords > 0">
+            {{ '::Table:Summary' | abpLocalization: totalRecords }}
         </div>
     </ng-template>
 </p-table>

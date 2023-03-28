@@ -22,6 +22,8 @@ export class HospitalComponent extends AppComponentBase {
     hospitalList: IHospital[];
     hospital: Hospital;
     submitted: boolean;
+    loading: boolean;
+    totalRecords: number = 0;
 
     constructor(
         injector: Injector,
@@ -31,7 +33,10 @@ export class HospitalComponent extends AppComponentBase {
     }
 
     ngOnInit() {
-        this.hospitalService.getHospitalList().subscribe(data => this.hospitalList = data);
+        this.hospitalService.getHospitalList().subscribe(data => { 
+            this.hospitalList = data; 
+            
+        });
     }
 
     openNewHospital() {

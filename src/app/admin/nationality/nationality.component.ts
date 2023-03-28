@@ -16,6 +16,8 @@ export class NationalityComponent extends AppComponentBase {
     nationality: SaveNationalityDto;
     isEdit: boolean;
     nationalityToBeEdited: NationalityDto;
+    loading: boolean;
+    totalRecords: number = 0;
 
     constructor(
         injector: Injector,
@@ -29,7 +31,16 @@ export class NationalityComponent extends AppComponentBase {
     }
 
     fetchData() {
-        this.nationalityService.getList().subscribe(data => this.nationalityList = data.items);
+        this.loading = true;
+        this.nationalityService.getList().subscribe({
+          next: data => {
+            this.nationalityList = data.items;
+            this.totalRecords = data.totalCount;
+          },
+          complete: () => {
+            this.loading = false;
+          }
+        });
     }
 
     openNewNationality() {

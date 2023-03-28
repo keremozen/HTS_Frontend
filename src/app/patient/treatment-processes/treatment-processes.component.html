@@ -49,8 +49,7 @@
     </ng-template>
     <ng-template pTemplate="summary">
         <div class="flex align-items-center justify-content-between">
-            {{ '::Table:Summary' | abpLocalization:(documents ? documents.length : 0):(("::TreatmentProcess:Title" |
-            abpLocalization) | lowercase) }}
+            {{ '::Table:Summary' | abpLocalization:(documents ? documents.length : 0) }}
         </div>
     </ng-template>
 </p-table>
@@ -62,7 +61,7 @@
                 <i class="fas fa-hospital-user text-sm mr-2"></i>
                 <span>{{'::TreatmentProcess:Step:SalesAndAttendantInfo'|abpLocalization}}</span>
             </ng-template>
-            <app-attendant-info></app-attendant-info>
+            <app-companion-info></app-companion-info>
         </p-tabPanel>
         <p-tabPanel>
             <ng-template pTemplate="header">

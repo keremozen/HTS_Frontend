@@ -7,13 +7,13 @@
     <p-toolbar styleClass="mb-4 gap-2">
         <ng-template pTemplate="left">
             <button pButton pRipple label="{{ '::Admin:Language:NewLanguage' | abpLocalization }}" icon="pi pi-plus"
-                class="p-button-success mr-2" (click)="openNewLanguage()"></button>
+                class="p-button-success mr-2" (click)="openNewLanguage()" [loading]="loading"></button>
         </ng-template>
     </p-toolbar>
 
     <p-table #dt [value]="languageList" [rows]="10" [paginator]="true"
         [globalFilterFields]="['name','code','description']" [tableStyle]="{'min-width': '75rem'}" [rowHover]="true"
-        dataKey="Id"
+        dataKey="Id" [loading]="loading"
         currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
         [showCurrentPageReport]="true">
         <ng-template pTemplate="header">
@@ -22,9 +22,6 @@
                         field="name"></p-sortIcon></th>
                 <th pSortableColumn="code">{{ '::Admin:Language:Column:Code' | abpLocalization }} <p-sortIcon
                         field="code"></p-sortIcon></th>
-                <th pSortableColumn="description">{{ '::Admin:Language:Column:Description' | abpLocalization }}
-                    <p-sortIcon field="description"></p-sortIcon>
-                </th>
                 <th>{{ '::Admin:Language:Column:IsActive' | abpLocalization }}</th>
                 <th style="width:8rem;"></th>
             </tr>
@@ -33,7 +30,6 @@
             <tr>
                 <td>{{language.name}}</td>
                 <td>{{language.code}}</td>
-                <td>{{language.description}}</td>
                 <td><i class="pi" [ngClass]="{ 'text-green-500 pi-check-circle': language.isActive, 'text-red-500 pi-times-circle': !language.isActive }"></i></td>
                 <td>
                     <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
@@ -43,10 +39,14 @@
                 </td>
             </tr>
         </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <div class="m-3">
+                {{ '::Table:EmptyMessage' | abpLocalization }}
+            </div>
+        </ng-template>
         <ng-template pTemplate="summary">
-            <div class="flex align-items-center justify-content-between">
-                {{ '::Table:Summary' | abpLocalization:(languageList ? languageList.length :
-                0):(("::Admin:Language:Name" | abpLocalization) | lowercase) }}
+            <div class="flex align-items-center justify-content-between" *ngIf="totalRecords > 0">
+                {{ '::Table:Summary' | abpLocalization:(totalRecords) }}
             </div>
         </ng-template>
     </p-table>
@@ -73,15 +73,6 @@
                 <small class="p-error" *ngIf="!(code.valid || code.pristine)">{{ '::Message:RequiredField' |
                     abpLocalization
                     }}</small>
-            </div>
-            <div class="field">
-                <label for="description">{{ '::Admin:Language:Column:Description' | abpLocalization }}&nbsp;<font
-                        style="color:red">*</font></label>
-                <textarea rows="5" pInputText id="description" name="description" #description="ngModel"
-                    [(ngModel)]="language.description" required></textarea>
-                <small class="p-error" *ngIf="!(description.valid || description.pristine)">{{ '::Message:RequiredField'
-                    |
-                    abpLocalization }}</small>
             </div>
             <div class="field">
                 <label for="isActive">{{ '::Admin:Language:Column:IsActive' | abpLocalization }}</label>

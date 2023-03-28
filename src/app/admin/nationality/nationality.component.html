@@ -4,22 +4,20 @@
     <p-toolbar styleClass="mb-4 gap-2">
         <ng-template pTemplate="left">
             <button pButton pRipple label="{{ '::Admin:Nationality:NewNationality' | abpLocalization }}"
-                icon="pi pi-plus" class="p-button-success mr-2" (click)="openNewNationality()"></button>
+                icon="pi pi-plus" class="p-button-success mr-2" (click)="openNewNationality()" [loading]="loading"></button>
         </ng-template>
     </p-toolbar>
     <p-table #dt [value]="nationalityList" [rows]="10" [paginator]="true"
-        [globalFilterFields]="['name','code','description']" [tableStyle]="{'min-width': '75rem'}" [rowHover]="true"
-        dataKey="Id"
+        [globalFilterFields]="['name','phoneCode','description']" [tableStyle]="{'min-width': '75rem'}" [rowHover]="true"
+        dataKey="Id" [loading]="loading"
         currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
         [showCurrentPageReport]="true">
         <ng-template pTemplate="header">
             <tr>
                 <th pSortableColumn="name">{{ '::Admin:Nationality:Column:Name' | abpLocalization }} <p-sortIcon
                         field="name"></p-sortIcon></th>
-                <th pSortableColumn="code">{{ '::Admin:Nationality:Column:Code' | abpLocalization }} <p-sortIcon
-                        field="code"></p-sortIcon></th>
-                <th pSortableColumn="description">{{ '::Admin:Nationality:Column:Description' | abpLocalization }} <p-sortIcon
-                        field="description"></p-sortIcon></th>
+                <th pSortableColumn="phoneCode">{{ '::Admin:Nationality:Column:PhoneCode' | abpLocalization }} <p-sortIcon
+                        field="phoneCode"></p-sortIcon></th>
                 <th>{{ '::Admin:Nationality:Column:IsActive' | abpLocalization }}</th>
                 <th style="width:8rem;"></th>
             </tr>
@@ -27,8 +25,7 @@
         <ng-template pTemplate="body" let-nationality>
             <tr>
                 <td>{{nationality.name}}</td>
-                <td>{{nationality.code}}</td>
-                <td>{{nationality.description}}</td>
+                <td>{{nationality.phoneCode}}</td>
                 <td><i class="pi"
                         [ngClass]="{ 'text-green-500 pi-check-circle': nationality.isActive, 'text-red-500 pi-times-circle': !nationality.isActive }"></i>
                 </td>
@@ -40,10 +37,14 @@
                 </td>
             </tr>
         </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <div class="m-3">
+                {{ '::Table:EmptyMessage' | abpLocalization }}
+            </div>
+        </ng-template>
         <ng-template pTemplate="summary">
-            <div class="flex align-items-center justify-content-between">
-                {{ '::Table:Summary' | abpLocalization:(nationalityList ? nationalityList.length :
-                0):(("::Admin:Nationality:Name" | abpLocalization) | lowercase) }}
+            <div class="flex align-items-center justify-content-between" *ngIf="totalRecords > 0">
+                {{ '::Table:Summary' | abpLocalization:(totalRecords) }}
             </div>
         </ng-template>
     </p-table>
@@ -53,7 +54,7 @@
     <form #languageForm="ngForm">
         <div *ngIf="nationality">
             <div class="field">
-                <label for="name">{{ '::Admin:Nationality:Column:Name' | abpLocalization }} *</label>
+                <label for="name">{{ '::Admin:Nationality:Column:Name' | abpLocalization }}&nbsp;<font style="color:red">*</font></label>
                 <input type="text" pInputText id="name" name="name" #name="ngModel" [(ngModel)]="nationality.name"
                     required autofocus />
                 <small class="p-error" *ngIf="!(name.valid || name.pristine)">{{ '::Message:RequiredField' |
@@ -61,20 +62,11 @@
                     }}</small>
             </div>
             <div class="field">
-                <label for="code">{{ '::Admin:Nationality:Column:Code' | abpLocalization }} *</label>
-                <input type="text" pInputText id="code" name="code" #code="ngModel" [(ngModel)]="nationality.code" required />
-                <small class="p-error" *ngIf="!(code.valid || code.pristine)">{{ '::Message:RequiredField' |
+                <label for="phoneCode">{{ '::Admin:Nationality:Column:PhoneCode' | abpLocalization }}&nbsp;<font style="color:red">*</font></label>
+                <input type="text" pInputText id="phoneCode" name="phoneCode" #phoneCode="ngModel" [(ngModel)]="nationality.phoneCode" required />
+                <small class="p-error" *ngIf="!(phoneCode.valid || phoneCode.pristine)">{{ '::Message:RequiredField' |
                     abpLocalization
                     }}</small>
-            </div>
-            <div class="field">
-                <label for="description">{{ '::Admin:Nationality:Column:Description' | abpLocalization }}&nbsp;<font
-                        style="color:red">*</font></label>
-                <textarea rows="5" pInputText id="description" name="description" #description="ngModel"
-                    [(ngModel)]="nationality.description" required></textarea>
-                <small class="p-error" *ngIf="!(description.valid || description.pristine)">{{ '::Message:RequiredField'
-                    |
-                    abpLocalization }}</small>
             </div>
             <div class="field">
                 <label for="isActive">{{ '::Admin:Nationality:Column:IsActive' | abpLocalization }}</label>

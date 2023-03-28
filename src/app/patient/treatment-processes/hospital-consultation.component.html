@@ -48,11 +48,14 @@
             </td>
         </tr>
     </ng-template>
+    <ng-template pTemplate="emptymessage">
+        <div class="m-3">
+            {{ '::Table:EmptyMessage' | abpLocalization }}
+        </div>
+    </ng-template>
     <ng-template pTemplate="summary">
-        <div class="flex align-items-center justify-content-between">
-            {{ '::Table:Summary' | abpLocalization:(consultations ? consultations.length :
-            0):(("::HospitalConsultation:Title" |
-            abpLocalization) | lowercase) }}
+        <div class="flex align-items-center justify-content-between" *ngIf="totalRecords > 0">
+            {{ '::Table:Summary' | abpLocalization:(totalRecords) }}
         </div>
     </ng-template>
 </p-table>

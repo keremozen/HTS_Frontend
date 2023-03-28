@@ -1,6 +1,6 @@
 import { Component, Injector } from '@angular/core';
-import { IDocumentType, DocumentType } from 'src/app/models/documentType.model';
-import { DocumentTypeService } from 'src/app/services/documentType.service';
+import { DocumentTypeDto, SaveDocumentTypeDto } from '@proxy/dto/document-type';
+import { DocumentTypeService } from '@proxy/service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 @Component({
@@ -10,9 +10,12 @@ import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 })
 export class DocumentTypeComponent extends AppComponentBase {
   documentTypeDialog: boolean;
-  documentTypeList: IDocumentType[];
-  documentType: DocumentType;
-  submitted: boolean;
+  documentTypeList: DocumentTypeDto[];
+  documentType: SaveDocumentTypeDto;
+  isEdit: boolean;
+  documentTypeToBeEdited: DocumentTypeDto;
+  loading: boolean;
+  totalRecords: number = 0;
 
   constructor(
     injector: Injector,
@@ -22,39 +25,83 @@ export class DocumentTypeComponent extends AppComponentBase {
   }
 
   ngOnInit() {
-    this.documentTypeService.getDocumentTypeList().subscribe(data => this.documentTypeList = data);
+    this.fetchData();
   }
 
-  openNewDocumentType() {
-    this.documentType = new DocumentType();
-    this.submitted = false;
-    this.documentTypeDialog = true;
-  }
-
-  editDocumentType(documentType: DocumentType) {
-    this.documentType = { ...documentType };
-    this.documentTypeDialog = true;
-  }
-
-  deleteDocumentType(documentType: DocumentType) {
-    this.confirm({
-      message: this.l('::Message:DeleteConfirmation', documentType.Name),
-      header: this.l('::Confirm'),
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        this.documentTypeList = this.documentTypeList.filter(val => val.Id !== documentType.Id);
-        this.documentType = null;
-        this.success(this.l('::Message:SuccessfulDeletion', this.l('::Admin:DocumentType:Name')));
+  fetchData() {
+    this.loading = true;
+    this.documentTypeService.getList().subscribe({
+      next: data => {
+        this.documentTypeList = data.items;
+        this.totalRecords = data.totalCount;
+      },
+      complete: () => {
+        this.loading = false;
       }
     });
   }
 
-  hideDialog() {
-    this.documentTypeDialog = false;
-    this.submitted = false;
+  openNewDocumentType() {
+    this.isEdit = false;
+    this.documentType = {} as SaveDocumentTypeDto;
+    this.documentType.isActive = true;
+    this.documentTypeDialog = true;
+  }
+
+  editDocumentType(documentType: DocumentTypeDto) {
+    this.isEdit = true;
+    this.documentTypeToBeEdited = documentType;
+    this.documentType = { ...documentType as SaveDocumentTypeDto };
+    this.documentTypeDialog = true;
+  }
+
+  deleteDocumentType(documentType: DocumentTypeDto) {
+    this.confirm({
+      message: this.l('::Message:DeleteConfirmation', documentType.name),
+      header: this.l('::Confirm'),
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.documentTypeService.delete(documentType.id).subscribe({
+          next: () => {
+            this.success(this.l('::Message:SuccessfulDeletion', this.l('::Admin:DocumentType:Name')));
+            this.fetchData();
+            this.hideDialog();
+          }
+        });
+      }
+    });
   }
 
   saveDocumentType() {
-    this.submitted = true;
+    if (!this.isEdit) {
+      this.documentTypeService.create(this.documentType).subscribe({
+        next: () => {
+          this.fetchData();
+          this.hideDialog();
+          this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:DocumentType:Name')));
+        },
+        error: (error: any) => {
+          this.hideDialog();
+        }
+      });
+    }
+    else {
+      this.documentTypeService.update(this.documentTypeToBeEdited.id, this.documentType).subscribe({
+        next: () => {
+          this.fetchData();
+          this.hideDialog();
+          this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:DocumentType:Name')));
+        },
+        error: (error: any) => {
+          this.hideDialog();
+        }
+      });
+    }
+  }
+
+  hideDialog() {
+    this.documentType = null;
+    this.documentTypeToBeEdited = null;
+    this.documentTypeDialog = false;
   }
 }

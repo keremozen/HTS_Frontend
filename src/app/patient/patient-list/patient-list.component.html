@@ -4,74 +4,96 @@
 <h4>{{ '::Patients:Title' | abpLocalization }}</h4>
 
 <div class="mb-3">
-<p-accordion styleClass="filterAccordionClass">
-    <p-accordionTab iconPos="start" >
-        <ng-template pTemplate="header"><i class="pi pi-filter mr-2 opacity-70"></i><b>{{ '::Filter' | abpLocalization }}</b></ng-template>
-        <div class="grid">
-            <div class="col mr-4">
-                <div class="field grid mb-2">
-                    <label for="filterName" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::Patients:Column:Name' | abpLocalization }}</label>
-                    <div class="col-12 md:col-9">
-                        <input id="filterName" pInputText type="text" [(ngModel)]="patientFilter.Name" class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+    <p-accordion styleClass="filterAccordionClass">
+        <p-accordionTab iconPos="start">
+            <ng-template pTemplate="header"><i class="pi pi-filter mr-2 opacity-70"></i><b>{{ '::Filter' |
+                    abpLocalization }}</b></ng-template>
+            <div class="grid">
+                <div class="col mr-4">
+                    <div class="field grid mb-2">
+                        <label for="filterName" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::Patients:Column:Name' |
+                            abpLocalization }}</label>
+                        <div class="col-12 md:col-9">
+                            <input id="filterName" pInputText type="text" [(ngModel)]="patientFilter.Name"
+                                class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                        </div>
+                    </div>
+                    <div class="field grid mb-2">
+                        <label for="filterSurname" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::Patients:Column:Surname' |
+                            abpLocalization }}</label>
+                        <div class="col-12 md:col-9">
+                            <input id="filterSurname" pInputText type="text" [(ngModel)]="patientFilter.Surname"
+                                class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                        </div>
+                    </div>
+                    <div class="field grid mb-2">
+                        <label for="filterNationality" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                            '::Patients:Column:Nationality' | abpLocalization }}</label>
+                        <div class="col-12 md:col-9">
+                            <p-multiSelect id="filterNationality" [options]="nationalityList"
+                                [(ngModel)]="patientFilter.Nationalities" display="chip" [style]="{'width':'100%'}"
+                                styleClass="filterDropDown" optionValue="Id" optionLabel="Name"></p-multiSelect>
+                        </div>
+                    </div>
+                    <div class="field grid mb-2">
+                        <label for="filterPassportNo" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                            '::Patients:Column:PassportNo' | abpLocalization }}</label>
+                        <div class="col-12 md:col-9">
+                            <input id="filterPassportNo" pInputText type="text" [(ngModel)]="patientFilter.PassportNo"
+                                class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                        </div>
                     </div>
                 </div>
-                <div class="field grid mb-2">
-                    <label for="filterSurname" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::Patients:Column:Surname' | abpLocalization }}</label>
-                    <div class="col-12 md:col-9">
-                        <input id="filterSurname" pInputText type="text"  [(ngModel)]="patientFilter.Surname" class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                <div class="col mr-4">
+                    <div class="field grid mb-2">
+                        <label for="filterGender" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::Patients:Column:Gender' |
+                            abpLocalization }}</label>
+                        <div class="col-12 md:col-9">
+                            <p-multiSelect id="filterGender" [options]="genderList" [(ngModel)]="patientFilter.Genders"
+                                display="chip" [style]="{'width':'100%'}" styleClass="filterDropDown" optionValue="Id"
+                                optionLabel="Name"></p-multiSelect>
+                        </div>
+                    </div>
+                    <div class="field grid mb-2">
+                        <label for="filterNativeLanguage" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                            '::Patients:Column:NativeLanguage' | abpLocalization }}</label>
+                        <div class="col-12 md:col-9">
+                            <p-dropdown id="filterNativeLanguage" [options]="languageList"
+                                [(ngModel)]="patientFilter.NativeLanguage"
+                                placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
+                                styleClass="filterDropDown" optionValue="Id" optionLabel="Name"></p-dropdown>
+                        </div>
+                    </div>
+                    <div class="field grid mb-2">
+                        <label for="filterSecondLanguage" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                            '::Patients:Column:SecondLanguage' | abpLocalization }}</label>
+                        <div class="col-12 md:col-9">
+                            <p-dropdown id="filterSecondLanguage" [options]="languageList"
+                                [(ngModel)]="patientFilter.SecondLanguage"
+                                placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
+                                styleClass="filterDropDown" optionValue="Id" optionLabel="Name"></p-dropdown>
+                        </div>
+                    </div>
+                    <div class="field grid mb-2">
+                        <label for="filterTreatmentProcess" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                            '::Patients:Column:TreatmentProcess' | abpLocalization }}</label>
+                        <div class="col-12 md:col-9">
+                            <input id="filterTreatmentProcess" pInputText type="text"
+                                [(ngModel)]="patientFilter.TreatmentProcess"
+                                class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                        </div>
                     </div>
                 </div>
-                <div class="field grid mb-2">
-                    <label for="filterNationality" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::Patients:Column:Nationality' | abpLocalization }}</label>
-                    <div class="col-12 md:col-9">
-                        <p-multiSelect id="filterNationality" [options]="nationalityList" [(ngModel)]="patientFilter.Nationalities" 
-                        display="chip" [style]="{'width':'100%'}" styleClass="filterDropDown" optionValue="Id" optionLabel="Name"></p-multiSelect>
-                    </div>
-                </div>
-                <div class="field grid mb-2">
-                    <label for="filterPassportNo" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::Patients:Column:PassportNo' | abpLocalization }}</label>
-                    <div class="col-12 md:col-9">
-                        <input id="filterPassportNo" pInputText type="text" [(ngModel)]="patientFilter.PassportNo" class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
-                    </div>
+                <div class="col flex align-self-end mb-2">
+                    <button pButton pRipple label="{{ '::ClearFilter' | abpLocalization }}" icon="pi pi-filter-slash"
+                        class="p-button-success" (click)="onClearFilters()"></button>
+                    <button pButton pRipple label="{{ '::Filter' | abpLocalization }}" icon="pi pi-filter-fill"
+                        class="p-button-success ml-2" (click)="onFilter()"></button>
                 </div>
             </div>
-            <div class="col mr-4">
-                <div class="field grid mb-2">
-                    <label for="filterGender" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::Patients:Column:Gender' | abpLocalization }}</label>
-                    <div class="col-12 md:col-9">
-                        <p-multiSelect id="filterGender" [options]="genderList" [(ngModel)]="patientFilter.Genders" 
-                        display="chip" [style]="{'width':'100%'}" styleClass="filterDropDown" optionValue="Id" optionLabel="Name"></p-multiSelect>
-                    </div>
-                </div>
-                <div class="field grid mb-2">
-                    <label for="filterNativeLanguage" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::Patients:Column:NativeLanguage' | abpLocalization }}</label>
-                    <div class="col-12 md:col-9">
-                        <p-dropdown id="filterNativeLanguage" [options]="languageList" [(ngModel)]="patientFilter.NativeLanguage" placeholder="{{ '::Select' | abpLocalization }}"
-                        [style]="{'width':'100%'}" styleClass="filterDropDown" optionValue="Id" optionLabel="Name"></p-dropdown>
-                    </div>
-                </div>
-                <div class="field grid mb-2">
-                    <label for="filterSecondLanguage" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::Patients:Column:SecondLanguage' | abpLocalization }}</label>
-                    <div class="col-12 md:col-9">
-                        <p-dropdown id="filterSecondLanguage" [options]="languageList" [(ngModel)]="patientFilter.SecondLanguage"  placeholder="{{ '::Select' | abpLocalization }}"
-                        [style]="{'width':'100%'}" styleClass="filterDropDown" optionValue="Id" optionLabel="Name"></p-dropdown>
-                    </div>
-                </div>
-                <div class="field grid mb-2">
-                    <label for="filterTreatmentProcess" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::Patients:Column:TreatmentProcess' | abpLocalization }}</label>
-                    <div class="col-12 md:col-9">
-                        <input id="filterTreatmentProcess" pInputText type="text" [(ngModel)]="patientFilter.TreatmentProcess"  class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
-                    </div>
-                </div>
-            </div>
-            <div class="col flex align-self-end mb-2">
-                <button pButton pRipple label="{{ '::ClearFilter' | abpLocalization }}" icon="pi pi-filter-slash" class="p-button-success" (click)="onClearFilters()"></button>
-                <button pButton pRipple label="{{ '::Filter' | abpLocalization }}" icon="pi pi-filter-fill" class="p-button-success ml-2" (click)="onFilter()"></button>
-            </div>
-        </div>
-        
-    </p-accordionTab>
-</p-accordion>
+
+        </p-accordionTab>
+    </p-accordion>
 </div>
 <div class="card">
     <p-toolbar styleClass="mb-4 gap-2">
@@ -84,55 +106,61 @@
     <p-table #dt [value]="patientList" [rows]="10" [paginator]="true" [globalFilterFields]="[]"
         [tableStyle]="{'min-width': '75rem'}" [rowHover]="true" dataKey="Id"
         currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
-        [showCurrentPageReport]="true">
+        [showCurrentPageReport]="true" [totalRecords]="totalRecords" [loading]="loading">
         <ng-template pTemplate="header">
             <tr>
-                <th pSortableColumn="Name">{{ '::Patients:Column:Name' | abpLocalization }} <p-sortIcon
+                <th pSortableColumn="name">{{ '::Patients:Column:Name' | abpLocalization }} <p-sortIcon
                         field="Name"></p-sortIcon></th>
-                <th pSortableColumn="Surname">{{ '::Patients:Column:Surname' | abpLocalization }} <p-sortIcon
+                <th pSortableColumn="surname">{{ '::Patients:Column:Surname' | abpLocalization }} <p-sortIcon
                         field="Surname"></p-sortIcon></th>
-                <th pSortableColumn="Nationality">{{ '::Patients:Column:Nationality' | abpLocalization }} <p-sortIcon
-                        field="Nationality"></p-sortIcon></th>
-                <th pSortableColumn="PassportNo">{{ '::Patients:Column:PassportNo' | abpLocalization }} <p-sortIcon
-                        field="PassportNo"></p-sortIcon></th>
-                <th pSortableColumn="BirthDate">{{ '::Patients:Column:BirthDate' | abpLocalization }} <p-sortIcon
-                        field="BirthDate"></p-sortIcon></th>
-                <th pSortableColumn="Gender">{{ '::Patients:Column:Gender' | abpLocalization }} <p-sortIcon
-                        field="Gender"></p-sortIcon></th>
-                <th pSortableColumn="Language">{{ '::Patients:Column:NativeLanguage' | abpLocalization }} <p-sortIcon
-                        field="Language"></p-sortIcon></th>
-                <th pSortableColumn="TreatmentProcess">{{ '::Patients:Column:TreatmentProcess' | abpLocalization }}
-                    <p-sortIcon field="TreatmentProcess"></p-sortIcon></th>
-                <th pSortableColumn="Created">{{ '::Patients:Column:Created' | abpLocalization }} <p-sortIcon
-                        field="Created"></p-sortIcon></th>
-                <th pSortableColumn="CreatedBy">{{ '::Patients:Column:CreatedBy' | abpLocalization }} <p-sortIcon
-                        field="CreatedBy"></p-sortIcon></th>
+                <th pSortableColumn="nationality">{{ '::Patients:Column:Nationality' | abpLocalization }} <p-sortIcon
+                        field="nationality"></p-sortIcon></th>
+                <th pSortableColumn="passportNumber">{{ '::Patients:Column:PassportNo' | abpLocalization }} <p-sortIcon
+                        field="passportNunber"></p-sortIcon></th>
+                <th pSortableColumn="birthDate">{{ '::Patients:Column:BirthDate' | abpLocalization }} <p-sortIcon
+                        field="birthDate"></p-sortIcon></th>
+                <th pSortableColumn="gender">{{ '::Patients:Column:Gender' | abpLocalization }} <p-sortIcon
+                        field="gender"></p-sortIcon></th>
+                <th pSortableColumn="language">{{ '::Patients:Column:NativeLanguage' | abpLocalization }} <p-sortIcon
+                        field="language"></p-sortIcon></th>
+                <th pSortableColumn="treatmentProcess">{{ '::Patients:Column:TreatmentProcess' | abpLocalization }}
+                    <p-sortIcon field="treatmentProcess"></p-sortIcon>
+                </th>
+                <th pSortableColumn="creationTime">{{ '::Patients:Column:Created' | abpLocalization }} <p-sortIcon
+                        field="creationTime"></p-sortIcon></th>
+                <th pSortableColumn="creator.name">{{ '::Patients:Column:CreatedBy' | abpLocalization }} <p-sortIcon
+                        field="creator.name"></p-sortIcon></th>
+                <th class="w-8rem"></th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-patient>
             <tr>
-                <td>{{patient.Name}}</td>
-                <td>{{patient.Surname}}</td>
-                <td>{{patient.Nationality}}</td>
-                <td>{{patient.PassportNo}}</td>
-                <td>{{patient.BirthDate}}</td>
-                <td>{{patient.Gender}}</td>
-                <td>{{patient.Language}}</td>
-                <td>{{patient.TreatmentProcess}}</td>
-                <td>{{patient.Created}}</td>
-                <td>{{patient.CreatedBy}}</td>
-                <td>
+                <td>{{patient.name}}</td>
+                <td>{{patient.surname}}</td>
+                <td>{{patient.nationality}}</td>
+                <td>{{patient.passportNumber}}</td>
+                <td>{{patient.birthDate | date: "dd.MM.yyyy"}}</td>
+                <td>{{patient.gender}}</td>
+                <td>{{patient.language}}</td>
+                <td>{{patient.treatmentProcess}}</td>
+                <td>{{patient.creationTime | date: "dd.MM.yyyy"}}</td>
+                <td>{{patient.creator?.name}}</td>
+                <td class="text-right">
                     <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
-                        (click)="editPatient(patient)"></button>
+                        (click)="editPatient(patient.id)"></button>
                     <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
                         (click)="deletePatient(patient)"></button>
                 </td>
             </tr>
         </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <div class="m-3">
+                {{ '::Table:EmptyMessage' | abpLocalization }}
+            </div>
+        </ng-template>
         <ng-template pTemplate="summary">
-            <div class="flex align-items-center justify-content-between">
-                {{ '::Table:Summary' | abpLocalization:(patientList ? patientList.length : 0):(("::Patients:Title" |
-                abpLocalization) | lowercase) }}
+            <div class="flex align-items-center justify-content-between" *ngIf="totalRecords">
+                {{ '::Table:Summary' | abpLocalization:(totalRecords) }}
             </div>
         </ng-template>
     </p-table>

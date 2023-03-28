@@ -1,5 +1,5 @@
 import { Component, Injector, ViewEncapsulation } from '@angular/core';
-import { IDocumentType } from 'src/app/models/documentType.model';
+import { DocumentTypeDto } from '@proxy/dto/document-type';
 import { IHospital } from 'src/app/models/hospital.model';
 import { IPatientDocument, PatientDocument } from 'src/app/models/patient/patientDocument.model';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
@@ -18,9 +18,11 @@ export class HospitalConsultationComponent extends AppComponentBase {
   selectedHospitals: IHospital[] = [];
   documentDialog: boolean = false;
   document: IPatientDocument;
-  documentTypeList: IDocumentType[] = [];
+  documentTypeList: DocumentTypeDto[] = [];
   uploadedDocuments: any[] = [];
   documents: IPatientDocument[] = [];
+  loading: boolean;
+  totalRecords: number = 0;
 
   constructor(
     injector: Injector
@@ -28,13 +30,6 @@ export class HospitalConsultationComponent extends AppComponentBase {
     super(injector);
 
     //TODO: Kerem silinecek
-
-    this.documentTypeList.push({
-      Id: 1,
-      Name: "Belge Tipi 1",
-      Description: "Örnek Belge Tipidir"
-    });
-
     this.consultations.push({
       ConsultationNo: 1,
       CreatedBy: "Kerem Özen",

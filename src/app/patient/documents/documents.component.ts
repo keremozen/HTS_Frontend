@@ -1,7 +1,9 @@
 import { Component, Injector, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Form } from '@angular/forms';
+import { DocumentTypeDto } from '@proxy/dto/document-type';
+import { DocumentTypeService } from '@proxy/service';
 import { FileUpload } from 'primeng/fileupload';
-import { IDocumentType } from 'src/app/models/documentType.model';
+import { forkJoin } from 'rxjs';
 import { IPatientDocument, PatientDocument } from 'src/app/models/patient/patientDocument.model';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
@@ -13,27 +15,41 @@ import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 })
 export class DocumentsComponent extends AppComponentBase {
   documents: IPatientDocument[] = [];
-  selectedDocuments: any[];
   documentDialog: boolean = false;
   document: IPatientDocument;
   showRevokedRecords: boolean = false;
   revokedRecordCount: number = 0;
-  documentTypeList: IDocumentType[] = [];
+  documentTypeList: DocumentTypeDto[] = [];
   uploadedDocuments: any[] = [];
+  loading: boolean;
+  totalRecords: number = 0;
   @ViewChild("documents", { static: false }) documentUpload: FileUpload;
   @ViewChild("documentForm", {static:false}) documentForm: Form;
 
   constructor(
-    injector: Injector
+    injector: Injector,
+    private documentTypeService: DocumentTypeService
   ) {
     super(injector);
+  }
 
-    this.documentTypeList.push({
-      Id: 1,
-      Name: "Belge Tipi 1",
-      Description: "Örnek Belge Tipidir"
-    });
+  ngOnInit(): void {
+    this.fetchData();
+  }
 
+  fetchData() {
+    forkJoin([
+      this.documentTypeService.getList()
+    ]).subscribe(
+      {
+        next: ([
+          resDocumentTypeList
+        ]) => {
+          this.documentTypeList = resDocumentTypeList.items;
+          this.totalRecords = resDocumentTypeList.totalCount;
+        }
+      }
+    );
   }
 
   openNew() {
@@ -42,7 +58,6 @@ export class DocumentsComponent extends AppComponentBase {
   }
 
   saveDocument() {
-
     let fileReader = new FileReader();
     fileReader.readAsDataURL(this.uploadedDocuments[0]);
     fileReader.onload = (r) => {
@@ -62,20 +77,6 @@ export class DocumentsComponent extends AppComponentBase {
     this.document = null;
     this.uploadedDocuments = [];
     this.documentDialog = false;
-  }
-
-  revokeSelected() {
-    if (this.selectedDocuments.length > 0) {
-      this.confirm({
-        message: this.l('::Message:RevokeMultipleConfirmation'),
-        header: this.l('::Confirm'),
-        icon: 'pi pi-exclamation-triangle',
-        accept: () => {
-          this.documents = this.documents.filter(val => !this.selectedDocuments.map(n => n.Id).includes(val.Id));
-          this.success(this.l('::Message:SuccessfulMultipleRevokation', this.l('::Documents:NamePlural')));
-        }
-      });
-    }
   }
 
   revokeDocument(documentsToBeRevoked: IPatientDocument) {

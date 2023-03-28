@@ -23,6 +23,8 @@ export class LanguageComponent extends AppComponentBase {
     language: SaveLanguageDto;
     isEdit: boolean;
     languageToBeEdited: LanguageDto;
+    loading: boolean;
+    totalRecords: number = 0;
 
     constructor(
         injector: Injector,
@@ -36,7 +38,16 @@ export class LanguageComponent extends AppComponentBase {
     }
 
     fetchData() {
-        this.languageService.getList().subscribe(data => this.languageList = data.items as LanguageDto[]);
+        this.loading = true;
+        this.languageService.getList().subscribe({
+          next: data => {
+            this.languageList = data.items;
+            this.totalRecords = data.totalCount;
+          },
+          complete: () => {
+            this.loading = false;
+          }
+        });
     }
 
     openNewLanguage() {

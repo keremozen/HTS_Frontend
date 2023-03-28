@@ -48,35 +48,11 @@ function configureRoutes(routesService: RoutesService) {
         layout: eLayoutType.application
       },
       {
-        path: '/admin/patientNoteStatus',
-        name: '::Menu:Admin:PatientNoteStatus',
-        iconClass: 'fas fa-notes-medical',
-        parentName: eThemeSharedRouteNames.Administration,
-        order: 103,
-        layout: eLayoutType.application
-      },
-      {
         path: '/admin/documentType',
         name: '::Menu:Admin:DocumentType',
         iconClass: 'fas fa-file-alt',
         parentName: eThemeSharedRouteNames.Administration,
-        order: 104,
-        layout: eLayoutType.application
-      },
-      {
-        path: '/admin/patientDocumentStatus',
-        name: '::Menu:Admin:PatientDocumentStatus',
-        iconClass: 'fas fa-notes-medical',
-        parentName: eThemeSharedRouteNames.Administration,
-        order: 105,
-        layout: eLayoutType.application
-      },
-      {
-        path: '/admin/treatmentProcessStatus',
-        name: '::Menu:Admin:TreatmentProcessStatus',
-        iconClass: 'fas fa-prescription-bottle-alt',
-        parentName: eThemeSharedRouteNames.Administration,
-        order: 106,
+        order: 103,
         layout: eLayoutType.application
       },
       {
@@ -84,7 +60,7 @@ function configureRoutes(routesService: RoutesService) {
         name: '::Menu:Admin:PatientAdmissionMethod',
         iconClass: 'fas fa-hospital-user',
         parentName: eThemeSharedRouteNames.Administration,
-        order: 107,
+        order: 104,
         layout: eLayoutType.application
       },
       {
@@ -92,15 +68,7 @@ function configureRoutes(routesService: RoutesService) {
         name: '::Menu:Admin:ContractedInstitution',
         iconClass: 'fas fa-clinic-medical',
         parentName: eThemeSharedRouteNames.Administration,
-        order: 107,
-        layout: eLayoutType.application
-      },
-      {
-        path: '/admin/hospitalConsultationStatus',
-        name: '::Menu:Admin:HospitalConsultationStatus',
-        iconClass: 'fas fa-comment-medical',
-        parentName: eThemeSharedRouteNames.Administration,
-        order: 108,
+        order: 105,
         layout: eLayoutType.application
       }
     ]);

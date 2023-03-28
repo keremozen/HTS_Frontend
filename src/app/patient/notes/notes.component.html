@@ -1,36 +1,30 @@
 <p-toolbar styleClass="customToolbar">
     <div class="p-toolbar-group-start">
-        <div class="ml-3" *ngIf="notes && notes.length > 0 && revokedRecordCount > 0">
-            <p-checkbox [(ngModel)]="showRevokedRecords" [binary]="true" inputId="chkShowRevokedRecords"></p-checkbox>
+        <div class="ml-3" *ngIf="allNotes && allNotes.length > 0 && revokedRecordCount > 0">
+            <p-checkbox [(ngModel)]="showRevokedRecords" [binary]="true" inputId="chkShowRevokedRecords"
+                (click)="onShowRevokedRecords()"></p-checkbox>
             <label class="ml-3" for="chkShowRevokedRecords">{{"::ShowRevokedRecords" | abpLocalization}}</label>
         </div>
     </div>
     <div class="p-toolbar-group-end p-0">
         <button pButton pRipple label="{{ '::New' | abpLocalization }}" icon="pi pi-plus" class="p-button-success mr-2"
-            (click)="openNew()"></button>
-        <button pButton pRipple label="{{ '::Revoke' | abpLocalization }}" icon="pi pi-trash" class="p-button-danger"
-            (click)="revokeSelected()" [disabled]="!selectedNotes || !selectedNotes.length"
-            *ngIf="notes && notes.length > 0"></button>
+            (click)="openNew()" [loading]="loading"></button>
     </div>
 </p-toolbar>
 
-<p-table #dt [value]="notes" [rows]="5" styleClass="pt-3" [paginator]="true"
-    [globalFilterFields]="['Message','CreatedBy']" *ngIf="notes && notes.length > 0" [(selection)]="selectedNotes"
-    [rowHover]="true" dataKey="Id"
+<p-table #dt [value]="notesToBeDisplayed" [rows]="4" styleClass="pt-3" [paginator]="true"
+    [globalFilterFields]="['note','createdBy']" [rowHover]="true"
     currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
-    [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
+    [showCurrentPageReport]="false" [alwaysShowPaginator]="false" [loading]="loading">
     <ng-template pTemplate="header">
         <tr>
-            <th style="width: 4rem">
-                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            <th pSortableColumn="note">{{ '::Notes:Column:Note' | abpLocalization }} <p-sortIcon
+                    field="note"></p-sortIcon></th>
+            <th style="width: 12rem" pSortableColumn="creator.name">{{ '::Notes:Column:CreatedBy' | abpLocalization }}
+                <p-sortIcon field="creator.name"></p-sortIcon>
             </th>
-            <th pSortableColumn="Note">{{ '::Notes:Column:Message' | abpLocalization }} <p-sortIcon
-                    field="Note"></p-sortIcon></th>
-            <th style="width: 12rem" pSortableColumn="CreatedBy">{{ '::Notes:Column:CreatedBy' | abpLocalization }}
-                <p-sortIcon field="CreatedBy"></p-sortIcon>
-            </th>
-            <th style="width: 12rem" pSortableColumn="Created">{{ '::Notes:Column:Created' | abpLocalization }}
-                <p-sortIcon field="Created"></p-sortIcon>
+            <th style="width: 12rem" pSortableColumn="creationTime">{{ '::Notes:Column:Created' | abpLocalization }}
+                <p-sortIcon field="creationTime"></p-sortIcon>
             </th>
             <th style="width: 4rem"></th>
         </tr>
@@ -38,46 +32,53 @@
     <ng-template pTemplate="body" let-note>
         <tr>
             <td>
-                <p-tableCheckbox [value]="note"></p-tableCheckbox>
+                <div class="overflow cursor-pointer" [pTooltip]="note.note" tooltipStyleClass="wideTooltip"
+                    tooltipPosition="bottom">{{note.note}}
+                    <p-tag severity="warning" value="{{ '::Revoked' | abpLocalization }}" [rounded]="true" styleClass="revokeTag" class="ml-3" *ngIf="note.patientNoteStatusId === patientNoteStatusEnum.Revoked"></p-tag>
+                </div>
+                    
             </td>
-            <td>
-                <div class="overflow cursor-pointer" [pTooltip]="note.Note" tooltipStyleClass="wideTooltip"
-                    tooltipPosition="bottom">{{note.Note}}</div>
-            </td>
-            <td>{{note.CreatedBy}}</td>
-            <td>{{note.Created | date: 'dd.MM.yyyy'}}</td>
+            <td>{{note.creator?.name}}</td>
+            <td>{{note.creationTime | date: 'dd.MM.yyyy'}}</td>
             <td>
                 <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"
-                    (click)="revokeNote(note)"></button>
+                    (click)="revokeNote(note)" [disabled]="note.patientNoteStatusId === patientNoteStatusEnum.Revoked"></button>
             </td>
         </tr>
     </ng-template>
+    <ng-template pTemplate="emptymessage">
+        <div class="m-3">
+            {{ '::Table:EmptyMessage' | abpLocalization }}
+        </div>
+    </ng-template>
     <ng-template pTemplate="summary">
-        <div class="flex align-items-center justify-content-between">
-            {{ '::Table:Summary' | abpLocalization:(notes ? notes.length : 0):(("::Notes:Title" |
-            abpLocalization) | lowercase) }}
+        <div class="flex align-items-center justify-content-between" *ngIf="totalRecords > 0">
+            {{ '::Table:Summary' | abpLocalization: totalRecords }}
         </div>
     </ng-template>
 </p-table>
 
 <p-dialog [(visible)]="noteDialog" [style]="{width: '450px'}" header="{{ '::Notes:NoteDetails' | abpLocalization }}"
     [modal]="true" styleClass="p-fluid" (onHide)="hideDialog()">
-    <ng-template pTemplate="content">
-        <div class="field">
-            <label for="message">{{ '::Notes:Column:Message' | abpLocalization }} <font style="color:red">*</font>
-            </label>
-            <textarea rows="5" pInputText id="message" [(ngModel)]="note.Note" required autofocus></textarea>
-            <small class="p-error" *ngIf="submitted && !note.Note">{{ '::Message:RequiredField' | abpLocalization
-                }}</small>
+    <form #noteForm="ngForm">
+        <div *ngIf="note">
+            <div class="field">
+                <label for="noteText">{{ '::Notes:Column:Note' | abpLocalization }} <font style="color:red">*</font>
+                </label>
+                <textarea rows="5" pInputText id="noteText" name="noteText" #noteText="ngModel" [(ngModel)]="note.note"
+                    required autofocus></textarea>
+                <small class="p-error" *ngIf="!(noteText.valid || noteText.pristine)">{{ '::Message:RequiredField' |
+                    abpLocalization
+                    }}</small>
+            </div>
         </div>
-    </ng-template>
-
-    <ng-template pTemplate="footer">
+    </form>
+    <p-footer>
         <button pButton pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" class="p-button-text"
             (click)="hideDialog()"></button>
         <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" class="p-button-text"
-            (click)="saveNote()"></button>
-    </ng-template>
+            (click)="saveNote()" [disabled]="!(noteForm.valid)"></button>
+    </p-footer>
 </p-dialog>
 
 <p-confirmDialog [style]="{width: '450px'}" rejectLabel="{{ '::Reject' | abpLocalization }}"

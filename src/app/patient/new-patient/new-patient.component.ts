@@ -9,15 +9,14 @@ import { forkJoin } from 'rxjs';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 @Component({
-  selector: 'app-patient',
-  templateUrl: './patient.component.html',
-  styleUrls: ['./patient.component.scss'],
+  selector: 'app-new-patient',
+  templateUrl: './new-patient.component.html',
+  styleUrls: ['./new-patient.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class PatientComponent extends AppComponentBase {
+export class NewPatientComponent extends AppComponentBase {
 
   title: string;
-  patientId: number;
   patient: SavePatientDto = {} as SavePatientDto;
   nationalityList: NationalityDto[] = [];
   languageList: LanguageDto[] = [];
@@ -29,30 +28,14 @@ export class PatientComponent extends AppComponentBase {
     private nationalityService: NationalityService,
     private genderService: GenderService,
     private languageService: LanguageService,
-    private patientService: PatientService,
-    private route: ActivatedRoute
+    private patientService: PatientService
   ) {
     super(injector);
   }
 
   ngOnInit() {
-    if (this.route.snapshot.paramMap.get('id')) {
-      this.patientId = +this.route.snapshot.paramMap.get('id');
-      if (this.patient) {
-        this.patientService.get(this.patientId).subscribe({
-          next: (patient) => {
-            this.patient = patient as SavePatientDto;
-          },
-          complete: () => {
-            if (this.patient) {
-              this.patient.birthDate = new Date(this.patient.birthDate);
-              this.title = this.l("::PatientDetail:EditTitle");
-              this.fetchData();
-            }
-          }
-        });
-      }
-    }
+    this.title = this.l("::PatientDetail:NewTitle")
+    this.fetchData();
   }
 
   fetchData() {
@@ -82,11 +65,12 @@ export class PatientComponent extends AppComponentBase {
   onSaveProfile() {
     this.loading = true;
     this.patientService.create(this.patient).subscribe({
-      next: () => {
+      next: (res) => {
         this.success(this.l("::PatientDetail:SaveSuccessful"));
       },
       complete: () => {
         this.loading = false;
+
       }
     });
 

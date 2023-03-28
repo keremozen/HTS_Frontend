@@ -35,6 +35,8 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { TabMenuModule } from 'primeng/tabmenu';
 import { TabViewModule } from 'primeng/tabview';
 import { ListboxModule } from 'primeng/listbox';
+import { MessagesModule } from 'primeng/messages';
+import { TagModule } from 'primeng/tag';
 
 /**************/
 
@@ -72,7 +74,9 @@ import { ListboxModule } from 'primeng/listbox';
     CheckboxModule,
     TabMenuModule,
     TabViewModule,
-    ListboxModule
+    ListboxModule,
+    MessagesModule,
+    TagModule
   ],
   exports: [
     CoreModule,
@@ -107,7 +111,9 @@ import { ListboxModule } from 'primeng/listbox';
     CheckboxModule,
     TabMenuModule,
     TabViewModule,
-    ListboxModule
+    ListboxModule,
+    MessagesModule,
+    TagModule
   ],
   providers: [ConfirmationService, MessageService]
 })
