@@ -37,6 +37,9 @@ export class NationalityComponent extends AppComponentBase {
             this.nationalityList = data.items;
             this.totalRecords = data.totalCount;
           },
+          error: () => {
+            this.loading = false;
+          },
           complete: () => {
             this.loading = false;
           }
@@ -64,7 +67,7 @@ export class NationalityComponent extends AppComponentBase {
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
                 this.nationalityService.delete(nationality.id).subscribe({
-                    next: () => {
+                    complete: () => {
                         this.success(this.l('::Message:SuccessfulDeletion', this.l('::Admin:Nationality:Name')));
                         this.fetchData();
                         this.hideDialog();
@@ -77,25 +80,19 @@ export class NationalityComponent extends AppComponentBase {
     saveNationality() {
         if (!this.isEdit) {
             this.nationalityService.create(this.nationality).subscribe({
-                next: () => {
+                complete: () => {
                     this.fetchData();
                     this.hideDialog();
                     this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:Nationality:Name')));
-                },
-                error: (error: any) => {
-                    this.hideDialog();
                 }
             });
         }
         else {
             this.nationalityService.update(this.nationalityToBeEdited.id, this.nationality).subscribe({
-                next: () => {
+                complete: () => {
                     this.fetchData();
                     this.hideDialog();
                     this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:Nationality:Name')));
-                },
-                error: (error: any) => {
-                    this.hideDialog();
                 }
             });
         }

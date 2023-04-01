@@ -63,6 +63,9 @@ export class PatientListComponent extends AppComponentBase {
           this.patientList = resPatientList.items;
           this.totalRecords = resPatientList.totalCount;
         },
+        error: ()=> {
+          this.loading = false;
+        },
         complete: ()=> {
           this.loading = false;
         }
@@ -94,7 +97,7 @@ export class PatientListComponent extends AppComponentBase {
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.patientService.delete(+patient.id).subscribe({
-          next: (res) => {
+          complete: () => {
             this.success(this.l('::Message:SuccessfulDeletion', this.l('::Patient:Name')));
             this.fetchData();
           }

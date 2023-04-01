@@ -35,6 +35,9 @@ export class DocumentTypeComponent extends AppComponentBase {
         this.documentTypeList = data.items;
         this.totalRecords = data.totalCount;
       },
+      error: () => {
+        this.loading = false;
+      },
       complete: () => {
         this.loading = false;
       }
@@ -62,7 +65,7 @@ export class DocumentTypeComponent extends AppComponentBase {
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.documentTypeService.delete(documentType.id).subscribe({
-          next: () => {
+          complete: () => {
             this.success(this.l('::Message:SuccessfulDeletion', this.l('::Admin:DocumentType:Name')));
             this.fetchData();
             this.hideDialog();
@@ -79,21 +82,15 @@ export class DocumentTypeComponent extends AppComponentBase {
           this.fetchData();
           this.hideDialog();
           this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:DocumentType:Name')));
-        },
-        error: (error: any) => {
-          this.hideDialog();
         }
       });
     }
     else {
       this.documentTypeService.update(this.documentTypeToBeEdited.id, this.documentType).subscribe({
-        next: () => {
+        complete: () => {
           this.fetchData();
           this.hideDialog();
           this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:DocumentType:Name')));
-        },
-        error: (error: any) => {
-          this.hideDialog();
         }
       });
     }

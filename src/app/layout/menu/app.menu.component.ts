@@ -1,4 +1,4 @@
-import { ABP, RoutesService, TreeNode } from '@abp/ng.core';
+import { ABP, PermissionService, RoutesService, TreeNode } from '@abp/ng.core';
 import { Component, Injector, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
@@ -15,17 +15,19 @@ export class AppMenuComponent extends AppComponentBase implements OnInit {
     constructor(
         injector: Injector,
         public app: PrimeApplicationLayoutComponent,
-        public routes: RoutesService
+        public routes: RoutesService,
+        private permissionService: PermissionService
     ) {
         super(injector);
     }
 
     ngOnInit(): void {
-        this.items = [];
         this.routes.tree$.subscribe(res => {
+            this.items = [];
             res.forEach(route => {
                 let menuItem = this.convertRouteToMenuItem(route);
                 if (menuItem) {
+                    menuItem.visible = menuItem.items?.filter(m=>m.visible).length > 0 || route.path != undefined; 
                     this.items.push(menuItem);
                 }
             });
@@ -39,7 +41,8 @@ export class AppMenuComponent extends AppComponentBase implements OnInit {
             menuItem.label = this.l(route.name);
             menuItem.icon = route.iconClass;
             menuItem.routerLink = route.path;
-            menuItem.routerLinkActiveOptions = {exact: true};
+            menuItem.routerLinkActiveOptions = { exact: true };
+            menuItem.visible = !route.requiredPolicy || (route.requiredPolicy && this.permissionService.getGrantedPolicy(route.requiredPolicy));
             if (route.children && route.children.length > 0) {
                 menuItem.items = [];
                 route.children.forEach(childRoute => {

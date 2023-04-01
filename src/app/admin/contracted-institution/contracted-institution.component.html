@@ -8,7 +8,8 @@
         <ng-template pTemplate="left">
             <button pButton pRipple
                 label="{{ '::Admin:ContractedInstitution:NewContractedInstitution' | abpLocalization }}"
-                icon="pi pi-plus" class="p-button-success mr-2" (click)="openNewContractedInstitution()" [loading]="loading"></button>
+                icon="pi pi-plus" class="p-button-success mr-2" (click)="openNewContractedInstitution()"
+                [loading]="loading"></button>
         </ng-template>
     </p-toolbar>
 
@@ -20,24 +21,30 @@
         <ng-template pTemplate="header">
             <tr>
                 <th pSortableColumn="name">{{ '::Admin:ContractedInstitution:Column:Name' | abpLocalization }}
-                    <p-sortIcon field="name"></p-sortIcon></th>
+                    <p-sortIcon field="name"></p-sortIcon>
+                </th>
                 <th pSortableColumn="description">{{ '::Admin:ContractedInstitution:Column:Description' |
                     abpLocalization }} <p-sortIcon field="description"></p-sortIcon></th>
+                <th>{{ '::Admin:ContractedInstitution:Column:Staffs' |
+                    abpLocalization }}</th>    
                 <th>{{ '::Admin:ContractedInstitution:Column:IsActive' | abpLocalization }}</th>
-                <th style="width:8rem;"></th>
+                <th style="width:11rem;"></th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-contractedInstitution>
             <tr>
                 <td>{{contractedInstitution.name}}</td>
                 <td>{{contractedInstitution.description}}</td>
+                <td>{{contractedInstitution.staffList}}</td>
                 <td><i class="pi"
                         [ngClass]="{ 'text-green-500 pi-check-circle': contractedInstitution.isActive, 'text-red-500 pi-times-circle': !contractedInstitution.isActive }"></i>
                 </td>
-                <td>
-                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
+                <td class="text-right">
+                    <button pButton pRipple icon="pi pi-users" class="p-button-rounded p-button-info"
+                        (click)="openStaffDialog(contractedInstitution)"></button>
+                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success ml-2"
                         (click)="editContractedInstitution(contractedInstitution)"></button>
-                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning ml-2"
                         (click)="deleteContractedInstitution(contractedInstitution)"></button>
                 </td>
             </tr>
@@ -62,15 +69,15 @@
         <div *ngIf="contractedInstitution">
             <div class="field">
                 <label for="name">{{ '::Admin:ContractedInstitution:Column:Name' | abpLocalization }}&nbsp;<font
-                    style="color:red">*</font></label>
+                        style="color:red">*</font></label>
                 <input type="text" pInputText id="name" name="name" #name="ngModel"
                     [(ngModel)]="contractedInstitution.name" required autofocus />
                 <small class="p-error" *ngIf="!(name.valid || name.pristine)">{{ '::Message:RequiredField' |
                     abpLocalization }}</small>
             </div>
             <div class="field">
-                <label for="description">{{ '::Admin:ContractedInstitution:Column:Description' | abpLocalization }}&nbsp;<font
-                    style="color:red">*</font></label>
+                <label for="description">{{ '::Admin:ContractedInstitution:Column:Description' | abpLocalization
+                    }}&nbsp;<font style="color:red">*</font></label>
                 <input type="text" pInputText id="description" name="description" #description="ngModel"
                     [(ngModel)]="contractedInstitution.description" required />
                 <small class="p-error" *ngIf="!(description.valid || description.pristine)">{{ '::Message:RequiredField'
@@ -79,8 +86,8 @@
             <div class="field">
                 <label for="isActive">{{ '::Admin:ContractedInstitution:Column:IsActive' | abpLocalization }}</label>
                 <div class="w-full">
-                    <p-checkbox id="isActive" name="isActive" #isActive="ngModel" [(ngModel)]="contractedInstitution.isActive"
-                        [binary]="true"></p-checkbox>
+                    <p-checkbox id="isActive" name="isActive" #isActive="ngModel"
+                        [(ngModel)]="contractedInstitution.isActive" [binary]="true"></p-checkbox>
                 </div>
             </div>
         </div>
@@ -90,6 +97,115 @@
             (click)="hideDialog()"></button>
         <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" class="p-button-text"
             (click)="saveContractedInstitution()" [disabled]="!(contractedInstitutionForm.valid)"></button>
+    </p-footer>
+</p-dialog>
+
+<p-dialog [(visible)]="contractedInstitutionStaffDialog" [style]="{width: '80vw'}"
+    header="{{ '::Admin:ContractedInstitution:ContractedInstitutionStaffManagement' | abpLocalization }}" [modal]="true"
+    styleClass="p-fluid" (onHide)="refreshContractedInstitution()">
+    <form #contractedInstitutionStaffForm="ngForm">
+        <p-toolbar styleClass="mb-4 gap-2">
+            <ng-template pTemplate="left">
+                <button pButton pRipple
+                    label="{{ '::Admin:ContractedInstitutionStaff:NewContractedInstitutionStaff' | abpLocalization }}"
+                    icon="pi pi-plus" class="p-button-success mr-2" (click)="openNewStaff()"
+                    [loading]="loading"></button>
+            </ng-template>
+        </p-toolbar>
+        <p-table #dt [value]="staffList" [rows]="10" [paginator]="true"
+            [globalFilterFields]="['nameSurname','phoneNumber','email']" [tableStyle]="{'min-width': '100%'}"
+            [rowHover]="true" [loading]="loading"
+            currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
+            [showCurrentPageReport]="true">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="nameSurname">{{ '::Admin:ContractedInstitutionStaff:Column:NameSurname' |
+                        abpLocalization }} <p-sortIcon field="nameSurname"></p-sortIcon></th>
+                    <th pSortableColumn="phoneNumber">{{ '::Admin:ContractedInstitutionStaff:Column:PhoneNumber' |
+                        abpLocalization }} <p-sortIcon field="phoneNumber"></p-sortIcon></th>
+                    <th pSortableColumn="email">{{ '::Admin:ContractedInstitutionStaff:Column:EMail' | abpLocalization
+                        }} <p-sortIcon field="email"></p-sortIcon></th>
+                    <th>{{ '::Admin:ContractedInstitutionStaff:Column:IsActive' | abpLocalization }}</th>
+                    <th style="width:8rem;"></th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-staff let-editing="editing" let-ri="rowIndex">
+                <tr [pEditableRow]="staff">
+                    <td>{{staff.nameSurname}}</td>
+                    <td>{{staff.phoneNumber}}</td>
+                    <td>{{staff.email}}</td>
+                    <td><i class="pi"
+                            [ngClass]="{ 'text-green-500 pi-check-circle': staff.isActive, 'text-red-500 pi-times-circle': !staff.isActive }"></i>
+                    </td>
+                    <td>
+                        <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
+                            (click)="editStaff(staff)"></button>
+                        <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                            (click)="deleteStaff(staff)"></button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <div class="m-3">
+                    {{ '::Table:EmptyMessage' | abpLocalization }}
+                </div>
+            </ng-template>
+            <ng-template pTemplate="summary">
+                <div class="flex align-items-center justify-content-between" *ngIf="staffTotalRecords > 0">
+                    {{ '::Table:Summary' | abpLocalization:(staffTotalRecords) }}
+                </div>
+            </ng-template>
+        </p-table>
+    </form>
+</p-dialog>
+
+<p-dialog [(visible)]="contractedInstitutionStaffEditDialog" [style]="{width: '450px'}"
+    header="{{ '::Admin:ContractedInstitutionStaff:ContractedInstitutionStaffDetails' | abpLocalization }}" [modal]="true"
+    styleClass="p-fluid">
+    <form #contractedInstitutionStaffEditForm="ngForm">
+        <div *ngIf="contractedInstitutionStaff">
+            <div class="field">
+                <label for="nameSurname">{{ '::Admin:ContractedInstitutionStaff:Column:NameSurname' | abpLocalization }}&nbsp;<font
+                        style="color:red">*</font></label>
+                <input type="text" pInputText id="nameSurname" name="nameSurname" #nameSurname="ngModel"
+                    [(ngModel)]="contractedInstitutionStaff.nameSurname" required autofocus />
+                <small class="p-error" *ngIf="!(nameSurname.valid || nameSurname.pristine)">{{ '::Message:RequiredField' |
+                    abpLocalization }}</small>
+            </div>
+            <div class="field">
+                <label for="phoneNumber">{{ '::Admin:ContractedInstitutionStaff:Column:PhoneNumber' | abpLocalization }}</label>
+                <div class="flex">
+                    <p-dropdown id="phoneCountryCode" name="phoneCountryCode" [filter]="true" filterBy="name"
+                        [showClear]="true" #phoneCountryCode="ngModel" [options]="nationalityList"
+                        [(ngModel)]="contractedInstitutionStaff.phoneCountryCodeId" [style]="{'width':'100px', 'margin-right':'10px'}"
+                        styleClass="filterDropDown" optionValue="id" placeholder="{{ '::Select' | abpLocalization }}"
+                        optionLabel="phoneCode" appendTo="body">
+                        <ng-template let-country pTemplate="item">
+                            <div><b>{{ country.phoneCode }}</b> - {{ country.name }}</div>
+                        </ng-template>
+                    </p-dropdown>
+                    <input type="text" pInputText id="phoneNumber" name="phoneNumber" #phoneNumber="ngModel"
+                        [(ngModel)]="contractedInstitutionStaff.phoneNumber" maxlength="20" class="w-10rem" />
+                </div>
+            </div>
+            <div class="field">
+                <label for="email">{{ '::Admin:ContractedInstitutionStaff:Column:EMail' | abpLocalization }}</label>
+                <input type="text" pInputText id="email" name="email" #email="ngModel" [(ngModel)]="contractedInstitutionStaff.email"/>
+            </div>
+            <div class="field">
+                <label for="isActive">{{ '::Admin:ContractedInstitutionStaff:Column:IsActive' | abpLocalization }}</label>
+                <div class="w-full">
+                    <p-checkbox id="isActive" name="isActive" #isActive="ngModel"
+                        [(ngModel)]="contractedInstitutionStaff.isActive" [binary]="true"></p-checkbox>
+                </div>
+            </div>
+        </div>
+    </form>
+    <p-footer>
+        <button pButton pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" class="p-button-text"
+            (click)="hideStaffDialog()"></button>
+        <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" class="p-button-text"
+            (click)="saveContractedInstitutionStaff()" [disabled]="!(contractedInstitutionStaffEditForm.valid)"></button>
     </p-footer>
 </p-dialog>
 

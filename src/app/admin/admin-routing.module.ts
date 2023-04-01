@@ -1,3 +1,4 @@
+import { PermissionGuard } from '@abp/ng.core';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ContractedInstitutionComponent } from './contracted-institution/contracted-institution.component';
@@ -9,22 +10,40 @@ import { PatientAdmissionMethodComponent } from './patient-admission-method/pati
 
 const routes: Routes = [
   {
-    path: 'hospital', component: HospitalComponent
+    path: 'hospital', component: HospitalComponent, canActivate: [PermissionGuard],
+    data: {
+        requiredPolicy: 'HTS.HospitalManagement' 
+    }
   },
   {
-    path: 'nationality', component: NationalityComponent
+    path: 'nationality', component: NationalityComponent, canActivate: [PermissionGuard],
+    data: {
+        requiredPolicy: 'HTS.NationalityManagement' 
+    }
   },
   {
-    path: 'language', component: LanguageComponent
+    path: 'language', component: LanguageComponent, canActivate: [PermissionGuard],
+    data: {
+        requiredPolicy: 'HTS.LanguageManagement' 
+    }
   },
   {
-    path: 'documentType', component: DocumentTypeComponent
+    path: 'documentType', component: DocumentTypeComponent, canActivate: [PermissionGuard],
+    data: {
+        requiredPolicy: 'HTS.DocumentTypeManagement' 
+    }
   },
   {
-    path: 'patientAdmissionMethod', component: PatientAdmissionMethodComponent
+    path: 'patientAdmissionMethod', component: PatientAdmissionMethodComponent, canActivate: [PermissionGuard],
+    data: {
+        requiredPolicy: 'HTS.PatientAdmissionMethodManagement' 
+    }
   },
   {
-    path: 'contractedInstitution', component: ContractedInstitutionComponent
+    path: 'contractedInstitution', component: ContractedInstitutionComponent, canActivate: [PermissionGuard],
+    data: {
+        requiredPolicy: 'HTS.ContractedInstitutionManagement' 
+    }
   }
 ];
 

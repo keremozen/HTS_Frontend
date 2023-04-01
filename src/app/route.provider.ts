@@ -29,6 +29,7 @@ function configureRoutes(routesService: RoutesService) {
         iconClass: 'fas fa-h-square',
         parentName: eThemeSharedRouteNames.Administration,
         order: 100,
+        requiredPolicy: 'HTS.HospitalManagement',
         layout: eLayoutType.application
       },
       {
@@ -37,6 +38,7 @@ function configureRoutes(routesService: RoutesService) {
         iconClass: 'fas fa-passport',
         parentName: eThemeSharedRouteNames.Administration,
         order: 101,
+        requiredPolicy: 'HTS.NationalityManagement',
         layout: eLayoutType.application
       },
       {
@@ -45,6 +47,7 @@ function configureRoutes(routesService: RoutesService) {
         iconClass: 'fas fa-language',
         parentName: eThemeSharedRouteNames.Administration,
         order: 102,
+        requiredPolicy: 'HTS.LanguageManagement',
         layout: eLayoutType.application
       },
       {
@@ -53,6 +56,7 @@ function configureRoutes(routesService: RoutesService) {
         iconClass: 'fas fa-file-alt',
         parentName: eThemeSharedRouteNames.Administration,
         order: 103,
+        requiredPolicy: 'HTS.DocumentTypeManagement',
         layout: eLayoutType.application
       },
       {
@@ -61,6 +65,7 @@ function configureRoutes(routesService: RoutesService) {
         iconClass: 'fas fa-hospital-user',
         parentName: eThemeSharedRouteNames.Administration,
         order: 104,
+        requiredPolicy: 'HTS.PatientAdmissionMethodManagement',
         layout: eLayoutType.application
       },
       {
@@ -69,6 +74,7 @@ function configureRoutes(routesService: RoutesService) {
         iconClass: 'fas fa-clinic-medical',
         parentName: eThemeSharedRouteNames.Administration,
         order: 105,
+        requiredPolicy: 'HTS.ContractedInstitutionManagement',
         layout: eLayoutType.application
       }
     ]);

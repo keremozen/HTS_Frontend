@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AdminRoutingModule } from './admin-routing.module';
 import { HospitalComponent } from './hospital/hospital.component';
-import { HospitalService } from '../services/hospital.service';
 import { SharedModule } from '../shared/shared.module';
 import { FormsModule } from '@angular/forms';
 import { NationalityComponent } from './nationality/nationality.component';
@@ -31,7 +30,6 @@ import { ContractedInstitutionComponent } from './contracted-institution/contrac
     AdminRoutingModule
   ],
   providers: [
-    HospitalService,
     PatientNoteStatusService,
     PatientDocumentStatusService,
     TreatmentProcessStatusService,

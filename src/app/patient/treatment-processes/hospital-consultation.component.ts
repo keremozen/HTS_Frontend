@@ -1,6 +1,6 @@
 import { Component, Injector, ViewEncapsulation } from '@angular/core';
 import { DocumentTypeDto } from '@proxy/dto/document-type';
-import { IHospital } from 'src/app/models/hospital.model';
+import { HospitalDto } from '@proxy/dto/hospital';
 import { IPatientDocument, PatientDocument } from 'src/app/models/patient/patientDocument.model';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
@@ -14,8 +14,8 @@ export class HospitalConsultationComponent extends AppComponentBase {
 
   consultations: any[] = [];
   consultationDialog: boolean = false;
-  hospitalList: IHospital[] = [];
-  selectedHospitals: IHospital[] = [];
+  hospitalList: HospitalDto[] = [];
+  selectedHospitals: HospitalDto[] = [];
   documentDialog: boolean = false;
   document: IPatientDocument;
   documentTypeList: DocumentTypeDto[] = [];
@@ -36,14 +36,6 @@ export class HospitalConsultationComponent extends AppComponentBase {
       Created: new Date(),
       Hospital: "Memorial Ankara Hastanesi",
       State: "Cevap Bekleniyor"
-    });
-
-    this.hospitalList.push({
-      Id: 1,
-      Name: "Memorial Ankara Hastanesi",
-      ContactInfoName: "Kerem Özen",
-      ContactInfoPhoneNumber: "905057388503",
-      PhoneNumber: "905057388503"
     });
 
   }

@@ -44,7 +44,10 @@ export class NotesComponent extends AppComponentBase {
         next: (notes) => {
           this.allNotes = notes.items;
           this.revokedRecordCount = notes.items.filter(n => n.patientNoteStatusId === this.patientNoteStatusEnum.Revoked).length;
-this.manageNotesToBeDisplayed();
+          this.manageNotesToBeDisplayed();
+        },
+        error: () => {
+          this.loading = false;
         },
         complete: () => {
           this.loading = false;
@@ -71,12 +74,9 @@ this.manageNotesToBeDisplayed();
   saveNote() {
     this.note.patientId = this.patientId;
     this.patientNoteService.create(this.note).subscribe({
-      next: () => {
+      complete: () => {
         this.fetchData();
         this.success(this.l('::Message:SuccessfulSave', this.l('::Notes:NameSingular')));
-        this.hideDialog();
-      },
-      error: () => {
         this.hideDialog();
       }
     });
@@ -89,7 +89,7 @@ this.manageNotesToBeDisplayed();
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.patientNoteService.updateStatusByIdAndStatusId(+noteToBeRevoked.id, EntityEnum_PatientNoteStatusEnum.Revoked).subscribe({
-          next: () => {
+          complete: () => {
             this.fetchData();
             this.success(this.l('::Message:SuccessfulRevokation', this.l('::Notes:NameSingular')));
           }

@@ -1,9 +1,12 @@
 import * as ContractedInstitution from './contracted-institution';
+import * as ContractedInstitutionStaff from './contracted-institution-staff';
 import * as DocumentType from './document-type';
 import * as Gender from './gender';
+import * as Hospital from './hospital';
+import * as HospitalStaff from './hospital-staff';
 import * as Language from './language';
 import * as Nationality from './nationality';
 import * as Patient from './patient';
 import * as PatientAdmissionMethod from './patient-admission-method';
 import * as PatientNote from './patient-note';
-export { ContractedInstitution, DocumentType, Gender, Language, Nationality, Patient, PatientAdmissionMethod, PatientNote };
+export { ContractedInstitution, ContractedInstitutionStaff, DocumentType, Gender, Hospital, HospitalStaff, Language, Nationality, Patient, PatientAdmissionMethod, PatientNote };

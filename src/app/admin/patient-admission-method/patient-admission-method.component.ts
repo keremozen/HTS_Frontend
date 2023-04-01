@@ -35,6 +35,9 @@ export class PatientAdmissionMethodComponent extends AppComponentBase {
         this.patientAdmissionMethodList = data.items;
         this.totalRecords = data.totalCount;
       },
+      error: () => {
+        this.loading = false;
+      },
       complete: () => {
         this.loading = false;
       }
@@ -62,7 +65,7 @@ export class PatientAdmissionMethodComponent extends AppComponentBase {
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.patientAdmissionMethodService.delete(patientAdmissionMethod.id).subscribe({
-          next: () => {
+          complete: () => {
             this.success(this.l('::Message:SuccessfulDeletion', this.l('::Admin:PatientAdmissionMethod:Name')));
             this.fetchData();
             this.hideDialog();
@@ -75,25 +78,19 @@ export class PatientAdmissionMethodComponent extends AppComponentBase {
   savePatientAdmissionMethod() {
     if (!this.isEdit) {
       this.patientAdmissionMethodService.create(this.patientAdmissionMethod).subscribe({
-        next: () => {
+        complete: () => {
           this.fetchData();
           this.hideDialog();
           this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:PatientAdmissionMethod:Name')));
-        },
-        error: (error: any) => {
-          this.hideDialog();
         }
       });
     }
     else {
       this.patientAdmissionMethodService.update(+this.patientAdmissionMethodToBeEdited.id, this.patientAdmissionMethod).subscribe({
-        next: () => {
+        complete: () => {
           this.fetchData();
           this.hideDialog();
           this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:PatientAdmissionMethod:Name')));
-        },
-        error: (error: any) => {
-          this.hideDialog();
         }
       });
     }
@@ -104,6 +101,4 @@ export class PatientAdmissionMethodComponent extends AppComponentBase {
     this.patientAdmissionMethodToBeEdited = null;
     this.patientAdmissionMethodDialog = false;
   }
-
-
 }

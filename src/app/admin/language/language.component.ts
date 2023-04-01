@@ -44,6 +44,9 @@ export class LanguageComponent extends AppComponentBase {
             this.languageList = data.items;
             this.totalRecords = data.totalCount;
           },
+          error: () => {
+            this.loading = false;
+          },
           complete: () => {
             this.loading = false;
           }
@@ -71,7 +74,7 @@ export class LanguageComponent extends AppComponentBase {
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
                 this.languageService.delete(language.id).subscribe({
-                    next: () => {
+                    complete: () => {
                         this.success(this.l('::Message:SuccessfulDeletion', this.l('::Admin:Language:Name')));
                         this.fetchData();
                         this.hideDialog();
@@ -84,25 +87,19 @@ export class LanguageComponent extends AppComponentBase {
     saveLanguage() {
         if (!this.isEdit) {
             this.languageService.create(this.language).subscribe({
-                next: () => {
+                complete: () => {
                     this.fetchData();
                     this.hideDialog();
                     this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:Language:Name')));
-                },
-                error: (error: any) => {
-                    this.hideDialog();
                 }
             });
         }
         else {
             this.languageService.update(this.languageToBeEdited.id, this.language).subscribe({
-                next: () => {
+                complete: () => {
                     this.fetchData();
                     this.hideDialog();
                     this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:Language:Name')));
-                },
-                error: (error: any) => {
-                    this.hideDialog();
                 }
             });
         }

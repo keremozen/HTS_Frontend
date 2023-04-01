@@ -55,6 +55,9 @@ export class NewPatientComponent extends AppComponentBase {
           this.nationalityList = resNationalityList.items;
           this.languageList = resLanguageList.items;
         },
+        error: () => {
+          this.loading = false;
+        },
         complete: () => {
           this.loading = false;
         }
@@ -68,9 +71,11 @@ export class NewPatientComponent extends AppComponentBase {
       next: (res) => {
         this.success(this.l("::PatientDetail:SaveSuccessful"));
       },
+      error: () => {
+        this.loading = false;
+      },
       complete: () => {
         this.loading = false;
-
       }
     });
 

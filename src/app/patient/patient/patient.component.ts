@@ -36,6 +36,7 @@ export class PatientComponent extends AppComponentBase {
   }
 
   ngOnInit() {
+    
     if (this.route.snapshot.paramMap.get('id')) {
       this.patientId = +this.route.snapshot.paramMap.get('id');
       if (this.patient) {
@@ -72,6 +73,9 @@ export class PatientComponent extends AppComponentBase {
           this.nationalityList = resNationalityList.items;
           this.languageList = resLanguageList.items;
         },
+        error: () => {
+          this.loading = false;
+        },
         complete: () => {
           this.loading = false;
         }
@@ -81,11 +85,12 @@ export class PatientComponent extends AppComponentBase {
 
   onSaveProfile() {
     this.loading = true;
-    this.patientService.create(this.patient).subscribe({
-      next: () => {
-        this.success(this.l("::PatientDetail:SaveSuccessful"));
-      },
+    this.patientService.update(this.patientId, this.patient).subscribe({
       complete: () => {
+        this.success(this.l("::PatientDetail:SaveSuccessful"));
+        this.loading = false;
+      },
+      error: () => {
         this.loading = false;
       }
     });

@@ -1,7 +1,11 @@
 import { Component, Injector } from '@angular/core';
 import { SaveContractedInstitutionDto } from '@proxy';
+import { ContractedInstitution } from '@proxy/dto';
 import { ContractedInstitutionDto } from '@proxy/dto/contracted-institution';
-import { ContractedInstitutionService } from '@proxy/service';
+import { ContractedInstitutionStaffDto, SaveContractedInstitutionStaffDto } from '@proxy/dto/contracted-institution-staff';
+import { NationalityDto } from '@proxy/dto/nationality';
+import { ContractedInstitutionService, ContractedInstitutionStaffService, NationalityService } from '@proxy/service';
+import { forkJoin } from 'rxjs';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 @Component({
@@ -11,16 +15,25 @@ import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 })
 export class ContractedInstitutionComponent extends AppComponentBase {
   contractedInstitutionDialog: boolean;
-  contractedInstitutionList: ContractedInstitutionDto[];
+  contractedInstitutionStaffDialog: boolean;
+  contractedInstitutionStaffEditDialog: boolean;
+  contractedInstitutionList: ContractedInstitutionWithStaff[];
   contractedInstitution: SaveContractedInstitutionDto;
   isEdit: boolean;
   contractedInstitutionToBeEdited: ContractedInstitutionDto;
   loading: boolean;
   totalRecords: number = 0;
+  staffList: ContractedInstitutionStaffDto[] = [];
+  staffTotalCount: number = 0;
+  contractedInstitutionStaff: SaveContractedInstitutionStaffDto;
+  contractedInstitutionStaffToBeEdited: ContractedInstitutionStaffDto;
+  nationalityList: NationalityDto[] = [];
 
   constructor(
     injector: Injector,
-    private contractedInstitutionService: ContractedInstitutionService
+    private contractedInstitutionService: ContractedInstitutionService,
+    private contractedInstitutionStaffService: ContractedInstitutionStaffService,
+    private nationalityService: NationalityService
   ) {
     super(injector);
   }
@@ -29,17 +42,40 @@ export class ContractedInstitutionComponent extends AppComponentBase {
     this.fetchData();
   }
 
+
   fetchData() {
     this.loading = true;
-    this.contractedInstitutionService.getList().subscribe({
-      next: data => {
-        this.contractedInstitutionList = data.items;
-        this.totalRecords = data.totalCount;
-      },
-      complete: () => {
-        this.loading = false;
+
+    forkJoin([
+      this.nationalityService.getList(),
+      this.contractedInstitutionService.getList()
+    ]).subscribe(
+      {
+        next: ([
+          resNationalityList,
+          resContractedInstitutionList
+        ]) => {
+          this.nationalityList = resNationalityList.items;
+          this.contractedInstitutionList = [];
+          resContractedInstitutionList.items.forEach(inst => {
+            let instwithstaff = inst as ContractedInstitutionWithStaff;
+            this.contractedInstitutionStaffService.getByInstitutionList(inst.id).subscribe({
+              next: (res) => {
+                instwithstaff.staffList = res.items.map(s=>s.nameSurname).join(", ");
+              }
+            });
+            this.contractedInstitutionList.push(instwithstaff);
+          });
+          this.totalRecords = resContractedInstitutionList.totalCount;
+        },
+        error: () => {
+          this.loading = false;
+        },
+        complete: () => {
+          this.loading = false;
+        }
       }
-    });
+    );
   }
 
   openNewContractedInstitution() {
@@ -63,7 +99,7 @@ export class ContractedInstitutionComponent extends AppComponentBase {
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.contractedInstitutionService.delete(contractedInstitution.id).subscribe({
-          next: () => {
+          complete: () => {
             this.success(this.l('::Message:SuccessfulDeletion', this.l('::Admin:ContractedInstitution:Name')));
             this.fetchData();
             this.hideDialog();
@@ -76,28 +112,45 @@ export class ContractedInstitutionComponent extends AppComponentBase {
   saveContractedInstitution() {
     if (!this.isEdit) {
       this.contractedInstitutionService.create(this.contractedInstitution).subscribe({
-        next: () => {
+        complete: () => {
           this.fetchData();
           this.hideDialog();
           this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:ContractedInstitution:Name')));
-        },
-        error: (error: any) => {
-          this.hideDialog();
         }
       });
     }
     else {
       this.contractedInstitutionService.update(this.contractedInstitutionToBeEdited.id, this.contractedInstitution).subscribe({
-        next: () => {
+        complete: () => {
           this.fetchData();
           this.hideDialog();
           this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:ContractedInstitution:Name')));
-        },
-        error: (error: any) => {
-          this.hideDialog();
         }
       });
     }
+  }
+
+  openStaffDialog(contractedInstitution: ContractedInstitutionDto) {
+    this.contractedInstitutionToBeEdited = contractedInstitution;
+    this.fetchStaffData();
+  }
+
+  fetchStaffData() {
+    this.loading = true;
+    this.contractedInstitutionStaffService.getByInstitutionList(this.contractedInstitutionToBeEdited.id).subscribe({
+      next: (resStaffList) => {
+        this.staffList = resStaffList.items;
+        this.staffTotalCount = resStaffList.totalCount;
+      },
+      error: () => {
+        this.loading = false;
+        this.contractedInstitutionToBeEdited = null;
+      },
+      complete: () => {
+        this.contractedInstitutionStaffDialog = true;
+        this.loading = false;
+      }
+    });
   }
 
   hideDialog() {
@@ -106,5 +159,76 @@ export class ContractedInstitutionComponent extends AppComponentBase {
     this.contractedInstitutionDialog = false;
   }
 
+  refreshContractedInstitution() {
+    this.fetchData();
+  }
 
+  openNewStaff() {
+    this.isEdit = false;
+    this.contractedInstitutionStaff = {} as SaveContractedInstitutionStaffDto;
+    this.contractedInstitutionStaff.contractedInstitutionId = this.contractedInstitutionToBeEdited.id;
+    this.contractedInstitutionStaff.isActive = true;
+    this.contractedInstitutionStaffEditDialog = true;
+  }
+
+  editStaff(contractedInstitutionStaff: ContractedInstitutionStaffDto) {
+    this.isEdit = true;
+    this.contractedInstitutionStaffToBeEdited = contractedInstitutionStaff;
+    this.contractedInstitutionStaff = { ...contractedInstitutionStaff as SaveContractedInstitutionStaffDto };
+    this.contractedInstitutionStaffEditDialog = true;
+  }
+
+  deleteStaff(contractedInstitutionStaff: ContractedInstitutionStaffDto) {
+    this.confirm({
+      message: this.l('::Message:DeleteConfirmation', contractedInstitutionStaff.nameSurname),
+      header: this.l('::Confirm'),
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.contractedInstitutionStaffService.delete(contractedInstitutionStaff.id).subscribe({
+          complete: () => {
+            this.success(this.l('::Message:SuccessfulDeletion', this.l('::Admin:ContractedInstitutionStaff:Name')));
+            this.fetchStaffData();
+            this.hideStaffDialog();
+          }
+        });
+      }
+    });
+  }
+
+  saveContractedInstitutionStaff() {
+    if (!this.isEdit) {
+      this.contractedInstitutionStaffService.create(this.contractedInstitutionStaff).subscribe({
+        complete: () => {
+          this.fetchStaffData();
+          this.hideStaffDialog();
+          this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:ContractedInstitutionStaff:Name')));
+        }
+      });
+    }
+    else {
+      this.contractedInstitutionStaffService.update(this.contractedInstitutionStaffToBeEdited.id, this.contractedInstitutionStaff).subscribe({
+        complete: () => {
+          this.fetchStaffData();
+          this.hideStaffDialog();
+          this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:ContractedInstitutionStaff:Name')));
+        }
+      });
+    }
+  }
+
+  hideStaffDialog() {
+    this.contractedInstitutionStaff = null;
+    this.contractedInstitutionStaffToBeEdited = null;
+    this.contractedInstitutionStaffEditDialog = false;
+  }
+
+
+}
+
+class ContractedInstitutionWithStaff implements ContractedInstitutionDto {
+  name?: string;
+  description?: string;
+  isActive: boolean;
+  id?: number;
+  staffList: string;
 }

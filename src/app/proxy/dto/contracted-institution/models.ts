@@ -8,6 +8,6 @@ export interface ContractedInstitutionDto extends EntityDto<number> {
 
 export interface SaveContractedInstitutionDto {
   name: string;
-  description: string;
+  description?: string;
   isActive: boolean;
 }
