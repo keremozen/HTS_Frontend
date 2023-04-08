@@ -30,7 +30,7 @@
                 }}
                 <p-sortIcon field="State"></p-sortIcon>
             </th>
-            <th class="text-center" style="width: 20rem">{{ '::HospitalConsultation:Column:DetailsAndActions' | abpLocalization }}</th>
+            <th class="text-center" style="width: 22rem">{{ '::HospitalConsultation:Column:DetailsAndActions' | abpLocalization }}</th>
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-consultation>
@@ -178,7 +178,7 @@
                 <p-dropdown id="documentType" name="documentType" #documentType="ngModel" [options]="documentTypeList"
                     [(ngModel)]="document.TypeId" placeholder="{{ '::Select' | abpLocalization }}"
                     [style]="{'width':'100%'}" required="true" styleClass="filterDropDown" optionValue="Id"
-                    optionLabel="Name"></p-dropdown>
+                    optionLabel="Name" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
                 <small class="p-error" *ngIf="!(documentType.valid || documentType.pristine)">{{
                     '::Message:RequiredField' |
                     abpLocalization

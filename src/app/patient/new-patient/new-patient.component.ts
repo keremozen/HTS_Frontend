@@ -5,6 +5,7 @@ import { LanguageDto } from '@proxy/dto/language';
 import { NationalityDto } from '@proxy/dto/nationality';
 import { SavePatientDto } from '@proxy/dto/patient';
 import { GenderService, LanguageService, NationalityService, PatientService } from '@proxy/service';
+import * as moment from 'moment';
 import { forkJoin } from 'rxjs';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
@@ -22,6 +23,7 @@ export class NewPatientComponent extends AppComponentBase {
   languageList: LanguageDto[] = [];
   genderList: GenderDto[] = [];
   loading: boolean;
+  maxBirthDate: Date = moment().toDate();
 
   constructor(
     injector: Injector,
@@ -31,6 +33,7 @@ export class NewPatientComponent extends AppComponentBase {
     private patientService: PatientService
   ) {
     super(injector);
+    console.log(this.maxBirthDate);
   }
 
   ngOnInit() {
@@ -70,6 +73,12 @@ export class NewPatientComponent extends AppComponentBase {
     this.patientService.create(this.patient).subscribe({
       next: (res) => {
         this.success(this.l("::PatientDetail:SaveSuccessful"));
+        if (res.id) {
+          this.router.navigate(['/patient/edit/' + res.id]);
+        }
+        else {
+          this.router.navigate(['/patient']);
+        }
       },
       error: () => {
         this.loading = false;

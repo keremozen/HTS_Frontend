@@ -78,7 +78,8 @@
                         [showClear]="true" #phoneCountryCode="ngModel" [options]="nationalityList"
                         [(ngModel)]="hospital.phoneCountryCodeId" [style]="{'width':'100px', 'margin-right':'10px'}"
                         styleClass="filterDropDown" optionValue="id" placeholder="{{ '::Select' | abpLocalization }}"
-                        optionLabel="phoneCode" appendTo="body">
+                        optionLabel="phoneCode" appendTo="body" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" 
+                        emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}">
                         <ng-template let-country pTemplate="item">
                             <div><b>{{ country.phoneCode }}</b> - {{ country.name }}</div>
                         </ng-template>
@@ -167,7 +168,19 @@
                 <p-multiSelect id="staff" name="staff" #staff="ngModel" [filter]="true" filterBy="name"
                     [showClear]="true" [options]="uhbUserList" [(ngModel)]="selectedHospitalStaff"
                     placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
-                    styleClass="filterDropDown" optionValue="id" optionLabel="name"></p-multiSelect>
+                    styleClass="filterDropDown" appendTo="body">
+                    <ng-template let-value pTemplate="selectedItems">
+                        <div class="flex align-items-center gap-2" *ngFor="let staff of selectedHospitalStaff">
+                            <div>{{ staff.name + " " + staff.surname }}</div>
+                        </div>
+                        <div *ngIf="!selectedHospitalStaff || selectedHospitalStaff.length === 0">{{ '::Select' | abpLocalization }}</div>
+                    </ng-template>
+                    <ng-template let-staff pTemplate="item">
+                        <div class="flex align-items-center gap-2">
+                            <div>{{ staff.name  + " " + staff.surname}}</div>
+                        </div>
+                    </ng-template>
+                </p-multiSelect>
                 <small class="p-error" *ngIf="!(staff.valid || staff.pristine)">{{ '::Message:RequiredField'
                     |
                     abpLocalization }}</small>

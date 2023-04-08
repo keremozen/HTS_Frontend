@@ -26,7 +26,7 @@
                 <th pSortableColumn="description">{{ '::Admin:ContractedInstitution:Column:Description' |
                     abpLocalization }} <p-sortIcon field="description"></p-sortIcon></th>
                 <th>{{ '::Admin:ContractedInstitution:Column:Staffs' |
-                    abpLocalization }}</th>    
+                    abpLocalization }}</th>
                 <th>{{ '::Admin:ContractedInstitution:Column:IsActive' | abpLocalization }}</th>
                 <th style="width:11rem;"></th>
             </tr>
@@ -160,40 +160,51 @@
 </p-dialog>
 
 <p-dialog [(visible)]="contractedInstitutionStaffEditDialog" [style]="{width: '450px'}"
-    header="{{ '::Admin:ContractedInstitutionStaff:ContractedInstitutionStaffDetails' | abpLocalization }}" [modal]="true"
-    styleClass="p-fluid">
+    header="{{ '::Admin:ContractedInstitutionStaff:ContractedInstitutionStaffDetails' | abpLocalization }}"
+    [modal]="true" styleClass="p-fluid">
     <form #contractedInstitutionStaffEditForm="ngForm">
         <div *ngIf="contractedInstitutionStaff">
             <div class="field">
-                <label for="nameSurname">{{ '::Admin:ContractedInstitutionStaff:Column:NameSurname' | abpLocalization }}&nbsp;<font
-                        style="color:red">*</font></label>
+                <label for="nameSurname">{{ '::Admin:ContractedInstitutionStaff:Column:NameSurname' | abpLocalization
+                    }}&nbsp;<font style="color:red">*</font></label>
                 <input type="text" pInputText id="nameSurname" name="nameSurname" #nameSurname="ngModel"
                     [(ngModel)]="contractedInstitutionStaff.nameSurname" required autofocus />
-                <small class="p-error" *ngIf="!(nameSurname.valid || nameSurname.pristine)">{{ '::Message:RequiredField' |
+                <small class="p-error" *ngIf="!(nameSurname.valid || nameSurname.pristine)">{{ '::Message:RequiredField'
+                    |
                     abpLocalization }}</small>
             </div>
             <div class="field">
-                <label for="phoneNumber">{{ '::Admin:ContractedInstitutionStaff:Column:PhoneNumber' | abpLocalization }}</label>
+                <label for="phoneNumber">{{ '::Admin:ContractedInstitutionStaff:Column:PhoneNumber' | abpLocalization
+                    }}&nbsp;<font style="color:red">*</font></label>
                 <div class="flex">
                     <p-dropdown id="phoneCountryCode" name="phoneCountryCode" [filter]="true" filterBy="name"
                         [showClear]="true" #phoneCountryCode="ngModel" [options]="nationalityList"
-                        [(ngModel)]="contractedInstitutionStaff.phoneCountryCodeId" [style]="{'width':'100px', 'margin-right':'10px'}"
-                        styleClass="filterDropDown" optionValue="id" placeholder="{{ '::Select' | abpLocalization }}"
-                        optionLabel="phoneCode" appendTo="body">
+                        [(ngModel)]="contractedInstitutionStaff.phoneCountryCodeId"
+                        [style]="{'width':'100px', 'margin-right':'10px'}" styleClass="filterDropDown" optionValue="id"
+                        placeholder="{{ '::Select' | abpLocalization }}" optionLabel="phoneCode" appendTo="body"
+                        emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}" required>
                         <ng-template let-country pTemplate="item">
                             <div><b>{{ country.phoneCode }}</b> - {{ country.name }}</div>
                         </ng-template>
                     </p-dropdown>
                     <input type="text" pInputText id="phoneNumber" name="phoneNumber" #phoneNumber="ngModel"
-                        [(ngModel)]="contractedInstitutionStaff.phoneNumber" maxlength="20" class="w-10rem" />
+                        [(ngModel)]="contractedInstitutionStaff.phoneNumber" maxlength="20" class="w-10rem" required />
+                    <small class="p-error" *ngIf="!(phoneCountryCode.valid || phoneCountryCode.pristine) || !(phoneNumber.valid || phoneNumber.pristine)">{{
+                        '::Message:RequiredField' |
+                        abpLocalization }}</small>
                 </div>
             </div>
             <div class="field">
-                <label for="email">{{ '::Admin:ContractedInstitutionStaff:Column:EMail' | abpLocalization }}</label>
-                <input type="text" pInputText id="email" name="email" #email="ngModel" [(ngModel)]="contractedInstitutionStaff.email"/>
+                <label for="email">{{ '::Admin:ContractedInstitutionStaff:Column:EMail' | abpLocalization }}&nbsp;<font
+                        style="color:red">*</font></label>
+                <input type="text" pInputText id="email" name="email" #email="ngModel"
+                    [(ngModel)]="contractedInstitutionStaff.email" required />
+                <small class="p-error" *ngIf="!(email.valid || email.pristine)">{{ '::Message:RequiredField' |
+                    abpLocalization }}</small>
             </div>
             <div class="field">
-                <label for="isActive">{{ '::Admin:ContractedInstitutionStaff:Column:IsActive' | abpLocalization }}</label>
+                <label for="isActive">{{ '::Admin:ContractedInstitutionStaff:Column:IsActive' | abpLocalization
+                    }}</label>
                 <div class="w-full">
                     <p-checkbox id="isActive" name="isActive" #isActive="ngModel"
                         [(ngModel)]="contractedInstitutionStaff.isActive" [binary]="true"></p-checkbox>
@@ -205,7 +216,8 @@
         <button pButton pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" class="p-button-text"
             (click)="hideStaffDialog()"></button>
         <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" class="p-button-text"
-            (click)="saveContractedInstitutionStaff()" [disabled]="!(contractedInstitutionStaffEditForm.valid)"></button>
+            (click)="saveContractedInstitutionStaff()"
+            [disabled]="!(contractedInstitutionStaffEditForm.valid)"></button>
     </p-footer>
 </p-dialog>
 

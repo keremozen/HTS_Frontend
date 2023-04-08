@@ -37,7 +37,7 @@ export class HospitalComponent extends AppComponentBase {
   hospitalStaff: SaveHospitalStaffDto;
   hospitalStaffToBeEdited: HospitalStaffDto;
   uhbUserList: IdentityUserDto[] = [];
-  selectedHospitalStaff: string[] = [];
+  selectedHospitalStaff: IdentityUserDto[] = [];
 
   constructor(
     injector: Injector,
@@ -212,7 +212,7 @@ export class HospitalComponent extends AppComponentBase {
         staffDtoList.push({
           hospitalId: this.hospitalToBeEdited.id,
           isActive: this.hospitalStaff.isActive,
-          userId: staff
+          userId: staff.id
         })
       });
       this.hospitalStaffService.save(this.hospitalToBeEdited.id, staffDtoList).subscribe({

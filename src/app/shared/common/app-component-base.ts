@@ -1,6 +1,7 @@
 import { LocalizationService } from "@abp/ng.core";
 import { ThemeSharedTestingModule } from "@abp/ng.theme.shared/testing";
 import { Directive, Injector } from "@angular/core";
+import { Router } from "@angular/router";
 import { Confirmation, ConfirmationService, MessageService } from "primeng/api";
 
 @Directive()
@@ -9,6 +10,7 @@ export abstract class AppComponentBase  {
     localization: LocalizationService;
     confirmation: ConfirmationService;
     message: MessageService;
+    router: Router;
 
     protected constructor(
         injector: Injector
@@ -17,6 +19,7 @@ export abstract class AppComponentBase  {
         this.localization = injector.get(LocalizationService);
         this.confirmation= injector.get(ConfirmationService);
         this.message = injector.get(MessageService);
+        this.router = injector.get(Router);
     }
 
     /*l(key: string): string {

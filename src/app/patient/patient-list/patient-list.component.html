@@ -61,7 +61,8 @@
                             <p-dropdown id="filterNativeLanguage" [options]="languageList"
                                 [(ngModel)]="patientFilter.NativeLanguage"
                                 placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
-                                styleClass="filterDropDown" optionValue="Id" optionLabel="Name"></p-dropdown>
+                                styleClass="filterDropDown" optionValue="Id" optionLabel="Name" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" 
+                                emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}"></p-dropdown>
                         </div>
                     </div>
                     <div class="field grid mb-2">
@@ -71,7 +72,8 @@
                             <p-dropdown id="filterSecondLanguage" [options]="languageList"
                                 [(ngModel)]="patientFilter.SecondLanguage"
                                 placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
-                                styleClass="filterDropDown" optionValue="Id" optionLabel="Name"></p-dropdown>
+                                styleClass="filterDropDown" optionValue="Id" optionLabel="Name" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" 
+                                emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}"></p-dropdown>
                         </div>
                     </div>
                     <div class="field grid mb-2">
@@ -137,12 +139,12 @@
             <tr>
                 <td>{{patient.name}}</td>
                 <td>{{patient.surname}}</td>
-                <td>{{patient.nationality}}</td>
+                <td>{{patient.nationality?.name}}</td>
                 <td>{{patient.passportNumber}}</td>
                 <td>{{patient.birthDate | date: "dd.MM.yyyy"}}</td>
-                <td>{{patient.gender}}</td>
-                <td>{{patient.language}}</td>
-                <td>{{patient.treatmentProcess}}</td>
+                <td>{{patient.gender?.name}}</td>
+                <td>{{patient.motherTongue?.name}}</td>
+                <td>{{patient.patientTreatmentProcess?.treatmentCode}}</td>
                 <td>{{patient.creationTime | date: "dd.MM.yyyy"}}</td>
                 <td>{{patient.creator?.name}}</td>
                 <td class="text-right">

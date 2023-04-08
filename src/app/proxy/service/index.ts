@@ -8,5 +8,7 @@ export * from './language.service';
 export * from './nationality.service';
 export * from './patient-admission-method.service';
 export * from './patient-note.service';
+export * from './patient-treatment-process.service';
 export * from './patient.service';
+export * from './sales-method-and-companion-info.service';
 export * from './user.service';

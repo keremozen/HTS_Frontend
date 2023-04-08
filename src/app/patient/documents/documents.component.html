@@ -114,7 +114,7 @@
                 <p-dropdown id="documentType" name="documentType" #documentType="ngModel" [options]="documentTypeList"
                     [(ngModel)]="document.TypeId" placeholder="{{ '::Select' | abpLocalization }}"
                     [style]="{'width':'100%'}" required="true" styleClass="filterDropDown" optionValue="Id"
-                    optionLabel="Name"></p-dropdown>
+                    optionLabel="Name" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
                 <small class="p-error" *ngIf="!(documentType.valid || documentType.pristine)">{{
                     '::Message:RequiredField' |
                     abpLocalization

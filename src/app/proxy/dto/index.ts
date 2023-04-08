@@ -9,4 +9,6 @@ import * as Nationality from './nationality';
 import * as Patient from './patient';
 import * as PatientAdmissionMethod from './patient-admission-method';
 import * as PatientNote from './patient-note';
-export { ContractedInstitution, ContractedInstitutionStaff, DocumentType, Gender, Hospital, HospitalStaff, Language, Nationality, Patient, PatientAdmissionMethod, PatientNote };
+import * as PatientTreatmentProcess from './patient-treatment-process';
+import * as SalesMethodAndCompanionInfo from './sales-method-and-companion-info';
+export { ContractedInstitution, ContractedInstitutionStaff, DocumentType, Gender, Hospital, HospitalStaff, Language, Nationality, Patient, PatientAdmissionMethod, PatientNote, PatientTreatmentProcess, SalesMethodAndCompanionInfo };

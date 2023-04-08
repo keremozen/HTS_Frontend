@@ -1,4 +1,4 @@
-import { Component, Injector, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, Injector, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Form } from '@angular/forms';
 import { DocumentTypeDto } from '@proxy/dto/document-type';
 import { DocumentTypeService } from '@proxy/service';
@@ -14,6 +14,7 @@ import { AppComponentBase } from 'src/app/shared/common/app-component-base';
   encapsulation: ViewEncapsulation.None
 })
 export class DocumentsComponent extends AppComponentBase {
+  @Input() patientId: number;
   documents: IPatientDocument[] = [];
   documentDialog: boolean = false;
   document: IPatientDocument;

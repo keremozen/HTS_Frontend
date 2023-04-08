@@ -2,106 +2,130 @@
     <div class="col">
         <div class="field grid mb-2">
             <label for="patientAdmissionMethod" class="col-12 mb-2 md:col-3 md:mb-0">{{
-                '::AttendantInfo:Column:PatientAdmissionMethod' | abpLocalization }}</label>
+                '::SalesAndCompanionInfo:Column:PatientAdmissionMethod' | abpLocalization }}</label>
             <div class="col-12 md:col-9">
-                <p-dropdown id="patientAdmissionMethod" name="patientAdmissionMethod" 
-                    [options]="patientAdmissionMethodList" 
-                    placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}" 
-                    styleClass="filterDropDown" optionValue="Id" optionLabel="Name"></p-dropdown>
+                <p-dropdown id="patientAdmissionMethod" name="patientAdmissionMethod" #patientAdmissionMethod="ngModel"
+                    [options]="patientAdmissionMethodList" [(ngModel)]="salesAndCompanionInfo.patientAdmissionMethodId"
+                    placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
+                    styleClass="filterDropDown" optionValue="id" optionLabel="name"></p-dropdown>
             </div>
         </div>
         <div class="field grid mb-2">
             <label for="contractedInstitutionName" class="col-12 mb-2 md:col-3 md:mb-0">{{
-                '::AttendantInfo:Column:ContractedInstitutionName' | abpLocalization }}</label>
+                '::SalesAndCompanionInfo:Column:ContractedInstitutionName' | abpLocalization }}</label>
             <div class="col-12 md:col-9">
-                <p-dropdown id="contractedInstitutionName" name="contractedInstitutionName" 
-                    [options]="contractedInstitutionList" 
-                    placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}" 
-                    styleClass="filterDropDown" optionValue="Id" optionLabel="Name"></p-dropdown>
+                <p-dropdown id="contractedInstitutionName" name="contractedInstitutionName"
+                    [options]="contractedInstitutionList" #contractedInstitutionName="ngModel"
+                    [(ngModel)]="salesAndCompanionInfo.contractedInstitutionId" (onChange)="onInstitutionSelect()"
+                    placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
+                    styleClass="filterDropDown" optionValue="id" optionLabel="name" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
             </div>
         </div>
         <div class="field grid mb-2">
-            <label for="institutionOfficer" class="col-12 mb-2 md:col-3 md:mb-0">{{
-                '::AttendantInfo:Column:InstitutionOfficerName' | abpLocalization }}</label>
+            <label for="institutionStaff" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                '::SalesAndCompanionInfo:Column:InstitutionStaffName' | abpLocalization }}</label>
             <div class="col-12 md:col-9">
-                <p-dropdown id="institutionOfficer" name="institutionOfficer" 
-                    [options]="institutionOfficerList" 
-                    placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}" 
-                    styleClass="filterDropDown" optionValue="Id" optionLabel="Name"></p-dropdown>
+                <p-dropdown id="institutionStaff" name="institutionStaff" #institutionStaff="ngModel"
+                    [(ngModel)]="salesAndCompanionInfo.contractedInstitutionStaffId" [options]="institutionStaffList"
+                    placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}" (onChange)="onInstitutionStaffSelect()"
+                    styleClass="filterDropDown" optionValue="id" optionLabel="nameSurname" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
             </div>
         </div>
         <div class="field grid mb-2">
-            <label for="instituionOfficerEmail" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::AttendantInfo:Column:InstitutionOfficerEmail'
+            <label for="institutionStaffEmail" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                '::SalesAndCompanionInfo:Column:InstitutionStaffEmail'
                 |
                 abpLocalization }}</label>
             <div class="col-12 md:col-9">
-                <input id="instituionOfficerEmail" name="instituionOfficerEmail" pInputText type="text" [readonly]="true"
+                <input id="institutionStaffEmail" name="institutionStaffEmail" pInputText type="text" [disabled]="true"
+                    #institutionStaffEmail="ngModel" [(ngModel)]="selectedStaffEmail"
                     class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
             </div>
         </div>
         <div class="field grid mb-2">
-            <label for="instituionOfficerPhone" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::AttendantInfo:Column:InstitutionOfficerPhoneNumber'
+            <label for="institutionStaffPhone" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                '::SalesAndCompanionInfo:Column:InstitutionStaffPhoneNumber'
                 |
                 abpLocalization }}</label>
             <div class="col-12 md:col-9">
-                <input id="instituionOfficerPhone" name="instituionOfficerPhone" pInputText type="text" [readonly]="true"
+                <input id="institutionStaffPhone" name="institutionStaffPhone" pInputText type="text" [disabled]="true"
+                    #institutionStaffPhone="ngModel" [(ngModel)]="selectedStaffPhone"
                     class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
             </div>
         </div>
     </div>
     <div class="col">
         <div class="field grid mb-2">
-            <label for="attendantNameSurname" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::AttendantInfo:Column:AttendantNameSurname'
+            <label for="companionNameSurname" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                '::SalesAndCompanionInfo:Column:CompanionNameSurname'
                 |
                 abpLocalization }}</label>
             <div class="col-12 md:col-9">
-                <input id="attendantNameSurname" name="attendantNameSurname" pInputText type="text"
+                <input id="companionNameSurname" name="companionNameSurname" pInputText type="text"
                     class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
             </div>
         </div>
         <div class="field grid mb-2">
-            <label for="attendantNationality" class="col-12 mb-2 md:col-3 md:mb-0">{{
-                '::AttendantInfo:Column:AttendantNationality' | abpLocalization }}</label>
+            <label for="companionNationality" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                '::SalesAndCompanionInfo:Column:CompanionNationality' | abpLocalization }}</label>
             <div class="col-12 md:col-9">
-                <p-dropdown id="attendantNationality" name="attendantNationality" 
-                    [options]="nationalityList" 
-                    placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}" 
-                    styleClass="filterDropDown" optionValue="Id" optionLabel="Name"></p-dropdown>
+                <p-dropdown id="companionNationality" name="companionNationality" [options]="nationalityList"
+                    #companionNationality="ngModel" [(ngModel)]="salesAndCompanionInfo.companionNationalityId"
+                    placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
+                    styleClass="filterDropDown" optionValue="id" optionLabel="name" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
             </div>
         </div>
         <div class="field grid mb-2">
-            <label for="attendantPassportNo" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::AttendantInfo:Column:AttendantPassportNo'
+            <label for="companionPassportNo" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                '::SalesAndCompanionInfo:Column:CompanionPassportNo'
                 |
                 abpLocalization }}</label>
             <div class="col-12 md:col-9">
-                <input id="attendantPassportNo" name="attendantPassportNo" pInputText type="text"
+                <input id="companionPassportNo" name="companionPassportNo" pInputText type="text"
+                    #companionPassportNo="ngModel" [(ngModel)]="salesAndCompanionInfo.companionPassportNumber"
                     class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
             </div>
         </div>
         <div class="field grid mb-2">
-            <label for="attendantEmail" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::AttendantInfo:Column:AttendantEmail'
+            <label for="companionEmail" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                '::SalesAndCompanionInfo:Column:CompanionEmail'
                 |
                 abpLocalization }}</label>
             <div class="col-12 md:col-9">
-                <input id="attendantEmail" name="attendantEmail" pInputText type="text"
+                <input id="companionEmail" name="companionEmail" pInputText type="text" #companionEmail="ngModel"
+                    [(ngModel)]="salesAndCompanionInfo.companionEmail"
                     class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
             </div>
         </div>
         <div class="field grid mb-2">
-            <label for="attendantPhoneNumber" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::AttendantInfo:Column:AttendantPhoneNumber'
+            <label for="companionPhoneNumber" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                '::SalesAndCompanionInfo:Column:CompanionPhoneNumber'
                 |
                 abpLocalization }}</label>
             <div class="col-12 md:col-9">
-                <input id="attendantPhoneNumber" name="attendantPhoneNumber" pInputText type="text"
-                    class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                <p-dropdown id="phoneCountryCode" name="phoneCountryCode" [filter]="true" filterBy="name"
+                    [showClear]="true" #phoneCountryCode="ngModel" [options]="nationalityList"
+                    [(ngModel)]="salesAndCompanionInfo.phoneCountryCodeId"
+                    [style]="{'width':'100px', 'margin-right':'10px'}" styleClass="filterDropDown" optionValue="id"
+                    placeholder="{{ '::Select' | abpLocalization }}" optionLabel="phoneCode" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" 
+                    emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}">
+                    <ng-template let-country pTemplate="item">
+                        <div><b>{{ country.phoneCode }}</b> - {{ country.name }}</div>
+                    </ng-template>
+                </p-dropdown>
+                <input id="companionPhoneNo" name="companionPhoneNo" #companionPhoneNo="ngModel" pInputText type="text"
+                    [(ngModel)]="salesAndCompanionInfo.companionPhoneNumber" maxlength="20"
+                    class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary">
             </div>
         </div>
         <div class="field grid mb-2">
-            <label for="attendantRelationship" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::AttendantInfo:Column:AttendantRelationship'
+            <label for="companionRelationship" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                '::SalesAndCompanionInfo:Column:CompanionRelationship'
                 |
                 abpLocalization }}</label>
             <div class="col-12 md:col-9">
-                <input id="attendantRelationship" name="attendantRelationship" pInputText type="text"
+                <input id="companionRelationship" name="companionRelationship" pInputText type="text"
+                    #companionRelationship="ngModel" [(ngModel)]="salesAndCompanionInfo.companionRelationship"
                     class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
             </div>
         </div>

@@ -4,7 +4,7 @@ import { GenderDto } from '@proxy/dto/gender';
 import { LanguageDto } from '@proxy/dto/language';
 import { NationalityDto } from '@proxy/dto/nationality';
 import { SavePatientDto } from '@proxy/dto/patient';
-import { GenderService, LanguageService, NationalityService, PatientService } from '@proxy/service';
+import { GenderService, LanguageService, NationalityService, PatientAdmissionMethodService, PatientService } from '@proxy/service';
 import { forkJoin } from 'rxjs';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
@@ -30,7 +30,7 @@ export class PatientComponent extends AppComponentBase {
     private genderService: GenderService,
     private languageService: LanguageService,
     private patientService: PatientService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
   ) {
     super(injector);
   }

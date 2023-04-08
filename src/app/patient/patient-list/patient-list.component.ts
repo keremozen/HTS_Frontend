@@ -33,8 +33,7 @@ export class PatientListComponent extends AppComponentBase {
     private genderService: GenderService,
     private nationalityService: NationalityService,
     private languageService: LanguageService,
-    private patientService: PatientService,
-    private router: Router
+    private patientService: PatientService
   ) {
     super(injector);
   }

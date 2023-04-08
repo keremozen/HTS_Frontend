@@ -38,7 +38,8 @@
                                 [filter]="true" filterBy="name" [showClear]="true" [options]="nationalityList"
                                 [(ngModel)]="patient.nationalityId" placeholder="{{ '::Select' | abpLocalization }}"
                                 [style]="{'width':'100%'}" required="true" styleClass="filterDropDown" optionValue="id"
-                                optionLabel="name"></p-dropdown>
+                                optionLabel="name" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" 
+                                emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}"></p-dropdown>
                         </div>
                     </div>
                     <div class="field grid mb-2">
@@ -71,7 +72,7 @@
                             <p-dropdown id="patientGender" name="patientGender" #patientGender="ngModel"
                                 [options]="genderList" [(ngModel)]="patient.genderId" [style]="{'width':'100%'}"
                                 styleClass="filterDropDown" placeholder="{{ '::Select' | abpLocalization }}"
-                                optionValue="id" optionLabel="name"></p-dropdown>
+                                optionValue="id" optionLabel="name" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
                         </div>
                     </div>
                     <div class="field grid mb-2">
@@ -84,7 +85,8 @@
                                 [(ngModel)]="patient.phoneCountryCodeId"
                                 [style]="{'width':'100px', 'margin-right':'10px'}" styleClass="filterDropDown"
                                 optionValue="id" placeholder="{{ '::Select' | abpLocalization }}"
-                                optionLabel="phoneCode">
+                                optionLabel="phoneCode" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" 
+                                emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}">
                                 <ng-template let-country pTemplate="item">
                                     <div><b>{{ country.phoneCode }}</b> - {{ country.name }}</div>
                                 </ng-template>
@@ -114,7 +116,8 @@
                                 #patientNativeLanguage="ngModel" [filter]="true" filterBy="name" [showClear]="true"
                                 [options]="languageList" [(ngModel)]="patient.motherTongueId"
                                 placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
-                                styleClass="filterDropDown" optionValue="id" optionLabel="name"></p-dropdown>
+                                styleClass="filterDropDown" optionValue="id" optionLabel="name" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" 
+                                emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}"></p-dropdown>
                         </div>
                     </div>
                     <div class="field grid mb-2">
@@ -125,7 +128,8 @@
                                 #patientSecondLanguage="ngModel" [filter]="true" filterBy="name" [showClear]="true"
                                 [options]="languageList" [(ngModel)]="patient.secondTongueId"
                                 placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
-                                styleClass="filterDropDown" optionValue="id" optionLabel="name"></p-dropdown>
+                                styleClass="filterDropDown" optionValue="id" optionLabel="name" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" 
+                                emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}"></p-dropdown>
                         </div>
                     </div>
                     <div class="field grid mb-2 mr-0 justify-content-end">
@@ -152,7 +156,7 @@
                 <legend class="float-none w-auto pl-3 pr-3 text-sm patientFieldSetlegend">{{'::PatientDetail:Documents'
                     | abpLocalization}}
                 </legend>
-                <app-documents></app-documents>
+                <app-documents [patientId]="patientId"></app-documents>
             </fieldset>
         </div>
     </div>
@@ -164,7 +168,7 @@
                     {{'::PatientDetail:TreatmentProcesses' |
                     abpLocalization}}
                 </legend>
-                <app-treatment-processes></app-treatment-processes>
+                <app-treatment-processes [patientId]="patientId"></app-treatment-processes>
             </fieldset>
         </div>
     </div>
