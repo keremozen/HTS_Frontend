@@ -37,6 +37,7 @@ import { TabViewModule } from 'primeng/tabview';
 import { ListboxModule } from 'primeng/listbox';
 import { MessagesModule } from 'primeng/messages';
 import { TagModule } from 'primeng/tag';
+import { ChartModule } from 'primeng/chart';
 
 /**************/
 
@@ -76,7 +77,8 @@ import { TagModule } from 'primeng/tag';
     TabViewModule,
     ListboxModule,
     MessagesModule,
-    TagModule
+    TagModule,
+    ChartModule
   ],
   exports: [
     CoreModule,
@@ -113,7 +115,8 @@ import { TagModule } from 'primeng/tag';
     TabViewModule,
     ListboxModule,
     MessagesModule,
-    TagModule
+    TagModule,
+    ChartModule
   ],
   providers: [ConfirmationService, MessageService]
 })

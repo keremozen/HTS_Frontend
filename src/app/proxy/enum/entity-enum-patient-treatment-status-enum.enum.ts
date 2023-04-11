@@ -5,6 +5,7 @@ export enum EntityEnum_PatientTreatmentStatusEnum {
   HospitalAsked = 2,
   AssessmentWaiting = 3,
   QuotationWaiting = 4,
+  Discharged = 5,
 }
 
 export const entityEnum_PatientTreatmentStatusEnumOptions = mapEnumToOptions(EntityEnum_PatientTreatmentStatusEnum);

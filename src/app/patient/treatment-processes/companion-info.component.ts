@@ -1,10 +1,11 @@
-import { Component, Injector, ViewEncapsulation } from '@angular/core';
+import { Component, Injector, Input, ViewEncapsulation } from '@angular/core';
 import { ContractedInstitutionDto } from '@proxy';
 import { ContractedInstitutionStaffDto } from '@proxy/dto/contracted-institution-staff';
 import { LanguageDto } from '@proxy/dto/language';
 import { NationalityDto } from '@proxy/dto/nationality';
 import { PatientAdmissionMethodDto } from '@proxy/dto/patient-admission-method';
-import { ContractedInstitutionService, ContractedInstitutionStaffService, LanguageService, NationalityService, PatientAdmissionMethodService } from '@proxy/service';
+import { SalesMethodAndCompanionInfoDto } from '@proxy/dto/sales-method-and-companion-info';
+import { ContractedInstitutionService, ContractedInstitutionStaffService, LanguageService, NationalityService, PatientAdmissionMethodService, SalesMethodAndCompanionInfoService } from '@proxy/service';
 import { forkJoin } from 'rxjs';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
@@ -16,14 +17,14 @@ import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 })
 export class CompanionInfoComponent extends AppComponentBase {
 
+  @Input() treatmentProcessId: number;
   patientAdmissionMethodList: PatientAdmissionMethodDto[] = [];
   contractedInstitutionList: ContractedInstitutionDto[] = [];
   institutionStaffList: ContractedInstitutionStaffDto[] = [];
   nationalityList: NationalityDto[] = [];
   languageList: LanguageDto[] = [];
-  attendantInfo: any;
   loading: boolean;
-  salesAndCompanionInfo: any = {};
+  salesAndCompanionInfo: SalesMethodAndCompanionInfoDto;
   selectedStaffEmail: string;
   selectedStaffPhone: string;
 
@@ -33,7 +34,8 @@ export class CompanionInfoComponent extends AppComponentBase {
     private languageService: LanguageService,
     private contractedInstitutionService: ContractedInstitutionService,
     private contractedInstitutionStaffService: ContractedInstitutionStaffService,
-    private admissionMethodService: PatientAdmissionMethodService
+    private admissionMethodService: PatientAdmissionMethodService,
+    private salesAndCompanionInfoService: SalesMethodAndCompanionInfoService
   ) {
     super(injector);
   }
@@ -48,19 +50,30 @@ export class CompanionInfoComponent extends AppComponentBase {
       this.nationalityService.getList(),
       this.languageService.getList(),
       this.contractedInstitutionService.getList(),
-      this.admissionMethodService.getList()
+      this.admissionMethodService.getList(),
+      this.salesAndCompanionInfoService.getByPatientTreatmentProcessId(this.treatmentProcessId)
     ]).subscribe(
       {
         next: ([
           resNationalityList,
           resLanguageList,
           resContractedInstitutionList,
-          resAdmissionMethodList
+          resAdmissionMethodList,
+          resSalesAndCompanionInfo
         ]) => {
           this.nationalityList = resNationalityList.items;
           this.languageList = resLanguageList.items;
           this.contractedInstitutionList = resContractedInstitutionList.items;
           this.patientAdmissionMethodList = resAdmissionMethodList.items;
+          if (resSalesAndCompanionInfo) {
+          this.salesAndCompanionInfo = resSalesAndCompanionInfo;
+          if (this.salesAndCompanionInfo.contractedInstitutionId) {
+            this.onInstitutionSelect();
+          }
+          }
+          else {
+            this.salesAndCompanionInfo = {} as SalesMethodAndCompanionInfoDto;
+          }
         },
         error: () => {
           this.loading = false;
@@ -77,6 +90,9 @@ export class CompanionInfoComponent extends AppComponentBase {
       this.contractedInstitutionStaffService.getByInstitutionList(this.salesAndCompanionInfo.contractedInstitutionId).subscribe({
         next: (staffList) => {
           this.institutionStaffList = staffList.items;
+          if (this.salesAndCompanionInfo.contractedInstitutionStaffId) {
+            this.onInstitutionStaffSelect();
+          }
         }
       });
     }
@@ -90,5 +106,13 @@ export class CompanionInfoComponent extends AppComponentBase {
     }
   }
 
+  saveSalesAndCompanionInfo() {
+    this.salesAndCompanionInfo.patientTreatmentProcessId = this.treatmentProcessId;
+    this.salesAndCompanionInfoService.save(this.salesAndCompanionInfo).subscribe({
+      complete: () => {
+        this.success(this.l('::Message:SuccessfulSave', this.l('::SalesAndCompanionInfo:Name')));
+      }
+    });
+  }
   
 }

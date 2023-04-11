@@ -30,9 +30,11 @@
                         <label for="filterNationality" class="col-12 mb-2 md:col-3 md:mb-0">{{
                             '::Patients:Column:Nationality' | abpLocalization }}</label>
                         <div class="col-12 md:col-9">
-                            <p-multiSelect id="filterNationality" [options]="nationalityList"
-                                [(ngModel)]="patientFilter.Nationalities" display="chip" [style]="{'width':'100%'}"
-                                styleClass="filterDropDown" optionValue="Id" optionLabel="Name"></p-multiSelect>
+                            <p-multiSelect id="filterNationality" [options]="nationalityList" [filter]="true"
+                                filterBy="name" [(ngModel)]="patientFilter.Nationalities" display="chip"
+                                [style]="{'width':'100%'}" styleClass="filterDropDown" optionValue="Id"
+                                optionLabel="Name" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
+                                emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}"></p-multiSelect>
                         </div>
                     </div>
                     <div class="field grid mb-2">
@@ -51,7 +53,8 @@
                         <div class="col-12 md:col-9">
                             <p-multiSelect id="filterGender" [options]="genderList" [(ngModel)]="patientFilter.Genders"
                                 display="chip" [style]="{'width':'100%'}" styleClass="filterDropDown" optionValue="Id"
-                                optionLabel="Name"></p-multiSelect>
+                                optionLabel="Name"
+                                emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-multiSelect>
                         </div>
                     </div>
                     <div class="field grid mb-2">
@@ -59,9 +62,10 @@
                             '::Patients:Column:NativeLanguage' | abpLocalization }}</label>
                         <div class="col-12 md:col-9">
                             <p-dropdown id="filterNativeLanguage" [options]="languageList"
-                                [(ngModel)]="patientFilter.NativeLanguage"
+                                [(ngModel)]="patientFilter.NativeLanguage" [filter]="true" filterBy="name"
                                 placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
-                                styleClass="filterDropDown" optionValue="Id" optionLabel="Name" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" 
+                                styleClass="filterDropDown" optionValue="Id" optionLabel="Name"
+                                emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
                                 emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}"></p-dropdown>
                         </div>
                     </div>
@@ -70,9 +74,10 @@
                             '::Patients:Column:SecondLanguage' | abpLocalization }}</label>
                         <div class="col-12 md:col-9">
                             <p-dropdown id="filterSecondLanguage" [options]="languageList"
-                                [(ngModel)]="patientFilter.SecondLanguage"
+                                [(ngModel)]="patientFilter.SecondLanguage" [filter]="true" filterBy="name"
                                 placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
-                                styleClass="filterDropDown" optionValue="Id" optionLabel="Name" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" 
+                                styleClass="filterDropDown" optionValue="Id" optionLabel="Name"
+                                emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
                                 emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}"></p-dropdown>
                         </div>
                     </div>
@@ -139,14 +144,15 @@
             <tr>
                 <td>{{patient.name}}</td>
                 <td>{{patient.surname}}</td>
-                <td>{{patient.nationality?.name}}</td>
+                <td>{{patient.nationality ? patient.nationality.name : '-'}}</td>
                 <td>{{patient.passportNumber}}</td>
                 <td>{{patient.birthDate | date: "dd.MM.yyyy"}}</td>
                 <td>{{patient.gender?.name}}</td>
-                <td>{{patient.motherTongue?.name}}</td>
-                <td>{{patient.patientTreatmentProcess?.treatmentCode}}</td>
+                <td>{{patient.motherTongue ? patient.motherTongue.name : '-'}}</td>
+                <td>{{patient.patientTreatmentProcesses[0]?.treatmentCode + " (" +
+                    patient.patientTreatmentProcesses[0]?.treatmentProcessStatus?.name + ")"}}</td>
                 <td>{{patient.creationTime | date: "dd.MM.yyyy"}}</td>
-                <td>{{patient.creator?.name}}</td>
+                <td>{{patient.creator?.name + (patient.creator?.surname ? (" " + patient.creator?.surname) : "")}}</td>
                 <td class="text-right">
                     <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
                         (click)="editPatient(patient.id)"></button>

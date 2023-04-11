@@ -1,4 +1,4 @@
-<div class="grid gap-3">
+<div class="grid gap-3" *ngIf="salesAndCompanionInfo">
     <div class="col">
         <div class="field grid mb-2">
             <label for="patientAdmissionMethod" class="col-12 mb-2 md:col-3 md:mb-0">{{
@@ -61,7 +61,7 @@
                 |
                 abpLocalization }}</label>
             <div class="col-12 md:col-9">
-                <input id="companionNameSurname" name="companionNameSurname" pInputText type="text"
+                <input id="companionNameSurname" name="companionNameSurname" pInputText type="text" #companionNameSurname="ngModel" [(ngModel)]="salesAndCompanionInfo.companionNameSurname"
                     class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
             </div>
         </div>
@@ -128,6 +128,9 @@
                     #companionRelationship="ngModel" [(ngModel)]="salesAndCompanionInfo.companionRelationship"
                     class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
             </div>
+        </div>
+        <div class="field grid mb-2 justify-content-end">
+            <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-save" class="p-button-secondary mr-2" (click)="saveSalesAndCompanionInfo()"></button>
         </div>
     </div>
 </div>

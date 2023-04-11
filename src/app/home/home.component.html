@@ -1,15 +1,104 @@
 <div class="container">
   <div class="p-5 text-center">
-    <div class="mb-6">
-      <img src="../../assets/images/logo/logo-sb2.png">
+    <div class="mb-2">
+      <img src="../../assets/images/logo/logo-sb2.png" width="400px">
     </div>
-    <div class="d-inline-block bg-success text-white p-1 h5 rounded mb-4" role="alert">
-      <h5 class="m-1">
-        <i class="fas fa-rocket"></i> Welcome to <strong>HTS</strong>
-      </h5>
+    <a *ngIf="!hasLoggedIn" (click)="login()" class="px-4 btn btn-primary ms-1" role="button"><i
+        class="fa fa-sign-in"></i> {{ 'AbpAccount::Login' | abpLocalization }}</a>
+  </div>
+</div>
+
+<div class="px-4 py-5 md:px-6 lg:px-8">
+  <div class="grid">
+    <div class="col-12 md:col-6 lg:col-3">
+      <div class="surface-card shadow-2 p-3 border-round">
+        <div class="flex justify-content-between mb-3">
+          <div>
+            <span class="block text-500 font-medium mb-3">Hasta Sayısı</span>
+            <div class="text-900 font-medium text-xl">28441</div>
+          </div>
+          <div class="flex align-items-center justify-content-center bg-cyan-100 border-round"
+            style="width:2.5rem;height:2.5rem">
+            <i class="pi pi-inbox text-cyan-500 text-xl"></i>
+          </div>
+        </div>
+        <span class="text-green-500 font-medium">520 </span>
+        <span class="text-500">yeni kayıt</span>
+      </div>
     </div>
-    <h1>{{ '::Welcome' | abpLocalization }}</h1>
-    <p class="lead px-lg-5 mx-lg-5">{{ '::LongWelcomeMessage' | abpLocalization }}</p>
-    <a *ngIf="!hasLoggedIn" (click)="login()" class="px-4 btn btn-primary ms-1" role="button"><i class="fa fa-sign-in"></i> {{ 'AbpAccount::Login' | abpLocalization }}</a>
+    <div class="col-12 md:col-6 lg:col-3">
+      <div class="surface-card shadow-2 p-3 border-round">
+        <div class="flex justify-content-between mb-3">
+          <div>
+            <span class="block text-500 font-medium mb-3">Aktif Tedavi Süreci</span>
+            <div class="text-900 font-medium text-xl">152</div>
+          </div>
+          <div class="flex align-items-center justify-content-center bg-blue-100 border-round"
+            style="width:2.5rem;height:2.5rem">
+            <i class="pi pi-shopping-cart text-blue-500 text-xl"></i>
+          </div>
+        </div>
+        <span class="text-green-500 font-medium">24 yeni </span>
+        <span class="text-500">son girişten sonra</span>
+      </div>
+    </div>
+    <div class="col-12 md:col-6 lg:col-3">
+      <div class="surface-card shadow-2 p-3 border-round">
+        <div class="flex justify-content-between mb-3">
+          <div>
+            <span class="block text-500 font-medium mb-3">Ödemeler</span>
+            <div class="text-900 font-medium text-xl">2.100.000₺</div>
+          </div>
+          <div class="flex align-items-center justify-content-center bg-orange-100 border-round"
+            style="width:2.5rem;height:2.5rem">
+            <i class="pi pi-map-marker text-orange-500 text-xl"></i>
+          </div>
+        </div>
+        <span class="text-green-500 font-medium">%52+ </span>
+        <span class="text-500">geçen haftaya göre</span>
+      </div>
+    </div>
+    <div class="col-12 md:col-6 lg:col-3">
+      <div class="surface-card shadow-2 p-3 border-round">
+        <div class="flex justify-content-between mb-3">
+          <div>
+            <span class="block text-500 font-medium mb-3">Danışılan Hastane Sayısı</span>
+            <div class="text-900 font-medium text-xl">152</div>
+          </div>
+          <div class="flex align-items-center justify-content-center bg-purple-100 border-round"
+            style="width:2.5rem;height:2.5rem">
+            <i class="pi pi-comment text-purple-500 text-xl"></i>
+          </div>
+        </div>
+        <span class="text-green-500 font-medium">85 </span>
+        <span class="text-500">cevap verildi</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="px-4 py-5 md:px-6 lg:px-8">
+  <div class="grid">
+    <div class="col-12 md:col-6 lg:col-3">
+      <div class="surface-card shadow-2 p-2 border-round">
+        <p-chart type="bar" [data]="barData" [options]="barOptions" height="320px"></p-chart>
+      </div>
+    </div>
+    <div class="col-12 md:col-6 lg:col-3">
+      <div class="surface-card shadow-2 p-2 border-round">
+        <p-chart type="doughnut" [data]="doughnutData" [options]="doughnutOptions" height="320px"></p-chart>
+      </div>
+    </div>
+    <div class="col-12 md:col-6 lg:col-3">
+      <div class="surface-card shadow-2 p-2 border-round">
+        <p-chart type="polarArea" [data]="polarData" [options]="polarOptions" height="320px"></p-chart>
+      </div>
+    </div>
+    <div class="col-12 md:col-6 lg:col-3">
+      <div class="surface-card shadow-2 p-3 border-round">
+        <p-chart type="bar" [data]="barData2" [options]="barOptions2" height="320px"></p-chart>
+      </div>
+    </div>
   </div>
 </div>

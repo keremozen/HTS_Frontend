@@ -1,7 +1,6 @@
 import { Component, Injector, Input, ViewEncapsulation } from '@angular/core';
 import { PatientTreatmentProcessDto } from '@proxy/dto/patient-treatment-process';
-import { PatientAdmissionMethodService, PatientTreatmentProcessService } from '@proxy/service';
-import { MenuItem } from 'primeng/api';
+import { PatientTreatmentProcessService } from '@proxy/service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 @Component({
@@ -27,19 +26,30 @@ export class TreatmentProcessesComponent extends AppComponentBase {
     super(injector);
   }
 
+  ngOnInit(): void {
+    this.fetchData();
+  }
+
+  fetchData() {
+    this.patientTreatmentProcessService.getListByPatientId(this.patientId).subscribe({
+      next: (res) => {
+        this.processes = res.items;
+        this.totalRecords = res.totalCount;
+      }
+    });
+  }
+
   newTreatmentProcess() {
     this.patientTreatmentProcessService.start(this.patientId).subscribe({
       next: (res) => {
-        debugger;
-        this.processes.push(res);
-      },
-      error: () => {
-
-      },
-      complete: () => {
-        this.displayProcessDetail = true;
+        this.fetchData();
       }
     });
+  }
+
+  onDisplayTreatmentProcessDetail(code: string) {
+    this.process = this.processes.find(p=>p.treatmentCode == code);
+    this.displayProcessDetail = true;
   }
 
   deleteProcess(process: any) {

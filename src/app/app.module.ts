@@ -22,6 +22,24 @@ import { AppMenuComponent } from './layout/menu/app.menu.component';
 import { TopbarComponent } from './layout/topbar/topbar.component';
 import { LanguageComponent } from './layout/language/language.component';
 import { CurrentUserComponent } from './layout/current-user/current-user.component';
+import { NgxEchartsModule } from 'ngx-echarts';
+import * as echarts from 'echarts/core';
+import { LineChart } from 'echarts/charts';
+import {
+  TitleComponent,
+  TooltipComponent,
+  GridComponent
+} from 'echarts/components';
+// Import the Canvas renderer, note that introducing the CanvasRenderer or SVGRenderer is a required step
+import {
+  CanvasRenderer
+} from 'echarts/renderers';
+import Marcaron from './shared/common/marcaron';
+
+echarts.use(
+  [TitleComponent, TooltipComponent, GridComponent, LineChart, CanvasRenderer]
+);
+echarts.registerTheme('macarons', Marcaron);
 
 @NgModule({
   imports: [
@@ -41,7 +59,8 @@ import { CurrentUserComponent } from './layout/current-user/current-user.compone
     SettingManagementConfigModule.forRoot(),
     ThemeLeptonXModule.forRoot(),
     SideMenuLayoutModule.forRoot(),
-    FeatureManagementModule.forRoot()
+    FeatureManagementModule.forRoot(),
+    NgxEchartsModule.forRoot({ echarts }),
   ],
   declarations: [AppComponent, PrimeApplicationLayoutComponent, AppMenuComponent, TopbarComponent, LanguageComponent, CurrentUserComponent],
   providers: [

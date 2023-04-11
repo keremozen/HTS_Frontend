@@ -38,7 +38,7 @@
                 </div>
                     
             </td>
-            <td>{{note.creator?.name}}</td>
+            <td>{{note.creator?.name + (note.creator?.surname ? (" " + note.creator?.surname) : "")}}</td>
             <td>{{note.creationTime | date: 'dd.MM.yyyy'}}</td>
             <td>
                 <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"

@@ -14,33 +14,33 @@
 </p-toolbar>
 
 <p-table #dt [value]="processes" [rows]="5" styleClass="pt-3" [paginator]="true" [globalFilterFields]="['CreatedBy']"
-    *ngIf="!displayProcessDetail && processes && processes.length > 0" [rowHover]="true"
+    *ngIf="processes && processes.length > 0" [rowHover]="true"
     currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
     [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
     <ng-template pTemplate="header">
         <tr>
-            <th pSortableColumn="Code">{{ '::TreatmentProcess:Column:Code' | abpLocalization }} <p-sortIcon
-                    field="Code"></p-sortIcon></th>
-            <th style="width: 12rem" pSortableColumn="CreatedBy">{{ '::TreatmentProcess:Column:CreatedBy' |
+            <th pSortableColumn="treatmentCode">{{ '::TreatmentProcess:Column:Code' | abpLocalization }} <p-sortIcon
+                    field="treatmentCode"></p-sortIcon></th>
+            <th style="width: 15rem" pSortableColumn="CreatedBy">{{ '::TreatmentProcess:Column:CreatedBy' |
                 abpLocalization }}
                 <p-sortIcon field="CreatedBy"></p-sortIcon>
             </th>
-            <th style="width: 12rem" pSortableColumn="Created">{{ '::TreatmentProcess:Column:Created' | abpLocalization
+            <th style="width: 15rem" pSortableColumn="creationTime">{{ '::TreatmentProcess:Column:Created' | abpLocalization
                 }}
-                <p-sortIcon field="Created"></p-sortIcon>
+                <p-sortIcon field="creationTime"></p-sortIcon>
             </th>
-            <th style="width: 12rem" pSortableColumn="State">{{ '::TreatmentProcess:Column:State' | abpLocalization }}
+            <th style="width: 15rem" pSortableColumn="State">{{ '::TreatmentProcess:Column:State' | abpLocalization }}
                 <p-sortIcon field="state"></p-sortIcon>
             </th>
             <th style="width: 4rem"></th>
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-process>
-        <tr>
-            <td>{{process.Code}}</td>
-            <td>{{process.CreatedBy}}</td>
-            <td>{{process.Created | date: 'dd.MM.yyyy'}}</td>
-            <td>{{process.State}}</td>
+        <tr (click)="onDisplayTreatmentProcessDetail(process.treatmentCode)">
+            <td>{{process.treatmentCode}}</td>
+            <td>{{process.creator?.name + (process.creator?.surname ? (" " + process.creator?.surname) : "")}}</td>
+            <td>{{process.creationTime | date: 'dd.MM.yyyy'}}</td>
+            <td>{{process.treatmentProcessStatus?.name}}</td>
             <td>
                 <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"
                     (click)="deleteProcess(process)"></button>
@@ -59,14 +59,14 @@
     </ng-template>
 </p-table>
 
-<div *ngIf="displayProcessDetail">
+<div class="mt-2" *ngIf="displayProcessDetail">
     <p-tabView>
         <p-tabPanel>
             <ng-template pTemplate="header">
                 <i class="fas fa-hospital-user text-sm mr-2"></i>
                 <span>{{'::TreatmentProcess:Step:SalesAndAttendantInfo'|abpLocalization}}</span>
             </ng-template>
-            <app-companion-info></app-companion-info>
+            <app-companion-info [treatmentProcessId]="process.id"></app-companion-info>
         </p-tabPanel>
         <p-tabPanel>
             <ng-template pTemplate="header">

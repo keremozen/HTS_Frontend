@@ -11,4 +11,5 @@ import * as PatientAdmissionMethod from './patient-admission-method';
 import * as PatientNote from './patient-note';
 import * as PatientTreatmentProcess from './patient-treatment-process';
 import * as SalesMethodAndCompanionInfo from './sales-method-and-companion-info';
-export { ContractedInstitution, ContractedInstitutionStaff, DocumentType, Gender, Hospital, HospitalStaff, Language, Nationality, Patient, PatientAdmissionMethod, PatientNote, PatientTreatmentProcess, SalesMethodAndCompanionInfo };
+import * as TreatmentProcessStatus from './treatment-process-status';
+export { ContractedInstitution, ContractedInstitutionStaff, DocumentType, Gender, Hospital, HospitalStaff, Language, Nationality, Patient, PatientAdmissionMethod, PatientNote, PatientTreatmentProcess, SalesMethodAndCompanionInfo, TreatmentProcessStatus };

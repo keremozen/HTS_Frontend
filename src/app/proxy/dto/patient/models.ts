@@ -23,7 +23,7 @@ export interface PatientDto extends AuditedEntityWithUserDto<number, IdentityUse
   gender: GenderDto;
   secondTongue: LanguageDto;
   motherTongue: LanguageDto;
-  patientTreatmentProcess: PatientTreatmentProcessDto;
+  patientTreatmentProcesses: PatientTreatmentProcessDto[];
 }
 
 export interface SavePatientDto {
