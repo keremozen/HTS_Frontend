@@ -1,5 +1,4 @@
 import { Component, Injector, ViewEncapsulation } from '@angular/core';
-import { IPatientNote, PatientNote } from 'src/app/models/patient/patientNote.model';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 @Component({

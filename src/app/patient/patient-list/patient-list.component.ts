@@ -1,6 +1,4 @@
-import { ConfigStateService } from '@abp/ng.core';
 import { Component, Injector, ViewEncapsulation } from '@angular/core';
-import { Router } from '@angular/router';
 import { GenderDto } from '@proxy/dto/gender';
 import { LanguageDto } from '@proxy/dto/language';
 import { NationalityDto } from '@proxy/dto/nationality';

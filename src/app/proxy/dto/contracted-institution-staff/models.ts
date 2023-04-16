@@ -5,15 +5,17 @@ export interface ContractedInstitutionStaffDto extends EntityDto<number> {
   phoneNumber?: string;
   email?: string;
   contractedInstitutionId: number;
-  phoneCountryCodeId: number;
+  phoneCountryCodeId?: number;
+  isDefault: boolean;
   isActive: boolean;
 }
 
 export interface SaveContractedInstitutionStaffDto {
   nameSurname: string;
-  phoneNumber: string;
+  phoneNumber?: string;
   email?: string;
   contractedInstitutionId: number;
-  phoneCountryCodeId: number;
+  phoneCountryCodeId?: number;
   isActive: boolean;
+  isDefault: boolean;
 }

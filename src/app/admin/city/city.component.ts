@@ -1,13 +1,13 @@
 import { Component, Injector } from '@angular/core';
-import { LanguageDto, SaveLanguageDto } from '@proxy/dto/language';
-import { LanguageService } from '@proxy/service/language.service';
+import { CityDto, SaveCityDto } from '@proxy/dto/city';
+import { CityService } from '@proxy/service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 
 @Component({
-    selector: 'app-language',
-    templateUrl: './language.component.html',
-    styleUrls: ['./language.component.scss'],
+    selector: 'app-city',
+    templateUrl: './city.component.html',
+    styleUrls: ['./city.component.scss'],
     styles: [`
         :host ::ng-deep .p-dialog .product-image {
             width: 150px;
@@ -16,19 +16,19 @@ import { AppComponentBase } from 'src/app/shared/common/app-component-base';
         }
     `]
 })
-export class LanguageComponent extends AppComponentBase {
+export class CityComponent extends AppComponentBase {
 
-    languageDialog: boolean;
-    languageList: LanguageDto[];
-    language: SaveLanguageDto;
+    cityDialog: boolean;
+    cityList: CityDto[];
+    city: SaveCityDto;
     isEdit: boolean;
-    languageToBeEdited: LanguageDto;
+    cityToBeEdited: CityDto;
     loading: boolean;
     totalRecords: number = 0;
 
     constructor(
         injector: Injector,
-        private languageService: LanguageService
+        private cityService: CityService
     ) {
         super(injector);
     }
@@ -39,9 +39,9 @@ export class LanguageComponent extends AppComponentBase {
 
     fetchData() {
         this.loading = true;
-        this.languageService.getList().subscribe({
+        this.cityService.getList().subscribe({
           next: data => {
-            this.languageList = data.items;
+            this.cityList = data.items;
             this.totalRecords = data.totalCount;
           },
           error: () => {
@@ -53,29 +53,28 @@ export class LanguageComponent extends AppComponentBase {
         });
     }
 
-    openNewLanguage() {
+    openNewCity() {
         this.isEdit = false;
-        this.language = {} as SaveLanguageDto;
-        this.language.isActive = true;
-        this.languageDialog = true;
+        this.city = {} as SaveCityDto;
+        this.cityDialog = true;
     }
 
-    editLanguage(language: LanguageDto) {
+    editCity(city: CityDto) {
         this.isEdit = true;
-        this.languageToBeEdited = language;
-        this.language = { ...language as SaveLanguageDto };
-        this.languageDialog = true;
+        this.cityToBeEdited = city;
+        this.city = { ...city as SaveCityDto };
+        this.cityDialog = true;
     }
 
-    deleteLanguage(language: LanguageDto) {
+    deleteCity(city: CityDto) {
         this.confirm({
-            message: this.l('::Message:DeleteConfirmation', language.name),
+            message: this.l('::Message:DeleteConfirmation', city.name),
             header: this.l('::Confirm'),
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
-                this.languageService.delete(language.id).subscribe({
+                this.cityService.delete(city.id).subscribe({
                     complete: () => {
-                        this.success(this.l('::Message:SuccessfulDeletion', this.l('::Admin:Language:Name')));
+                        this.success(this.l('::Message:SuccessfulDeletion', this.l('::Admin:City:Name')));
                         this.fetchData();
                         this.hideDialog();
                     }
@@ -84,13 +83,13 @@ export class LanguageComponent extends AppComponentBase {
         });
     }
 
-    saveLanguage() {
+    saveCity() {
         if (!this.isEdit) {
-            this.languageService.create(this.language).subscribe({
+            this.cityService.create(this.city).subscribe({
                 complete: () => {
                     this.fetchData();
                     this.hideDialog();
-                    this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:Language:Name')));
+                    this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:City:Name')));
                 },
                 error: (error: any) => {
                   this.hideDialog();
@@ -98,11 +97,11 @@ export class LanguageComponent extends AppComponentBase {
             });
         }
         else {
-            this.languageService.update(this.languageToBeEdited.id, this.language).subscribe({
+            this.cityService.update(this.cityToBeEdited.id, this.city).subscribe({
                 complete: () => {
                     this.fetchData();
                     this.hideDialog();
-                    this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:Language:Name')));
+                    this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:City:Name')));
                 },
                 error: (error: any) => {
                   this.hideDialog();
@@ -112,9 +111,9 @@ export class LanguageComponent extends AppComponentBase {
     }
 
     hideDialog() {
-        this.language = null;
-        this.languageToBeEdited = null;
-        this.languageDialog = false;
+        this.city = null;
+        this.cityToBeEdited = null;
+        this.cityDialog = false;
     }
 
 }

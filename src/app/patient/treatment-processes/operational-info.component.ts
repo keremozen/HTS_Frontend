@@ -1,5 +1,4 @@
 import { Component, Injector, ViewEncapsulation } from '@angular/core';
-import { IPatientNote, PatientNote } from 'src/app/models/patient/patientNote.model';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 @Component({
@@ -10,13 +9,10 @@ import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 })
 export class OperationalInfoComponent extends AppComponentBase {
 
-  
   constructor(
     injector: Injector
   ) {
     super(injector);
-
   }
 
-  
 }

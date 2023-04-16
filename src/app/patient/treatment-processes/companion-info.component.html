@@ -18,7 +18,8 @@
                     [options]="contractedInstitutionList" #contractedInstitutionName="ngModel"
                     [(ngModel)]="salesAndCompanionInfo.contractedInstitutionId" (onChange)="onInstitutionSelect()"
                     placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
-                    styleClass="filterDropDown" optionValue="id" optionLabel="name" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
+                    styleClass="filterDropDown" optionValue="id" optionLabel="name"
+                    emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
             </div>
         </div>
         <div class="field grid mb-2">
@@ -27,8 +28,9 @@
             <div class="col-12 md:col-9">
                 <p-dropdown id="institutionStaff" name="institutionStaff" #institutionStaff="ngModel"
                     [(ngModel)]="salesAndCompanionInfo.contractedInstitutionStaffId" [options]="institutionStaffList"
-                    placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}" (onChange)="onInstitutionStaffSelect()"
-                    styleClass="filterDropDown" optionValue="id" optionLabel="nameSurname" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
+                    placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
+                    (onChange)="onInstitutionStaffSelect()" styleClass="filterDropDown" optionValue="id"
+                    optionLabel="nameSurname" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
             </div>
         </div>
         <div class="field grid mb-2">
@@ -61,7 +63,8 @@
                 |
                 abpLocalization }}</label>
             <div class="col-12 md:col-9">
-                <input id="companionNameSurname" name="companionNameSurname" pInputText type="text" #companionNameSurname="ngModel" [(ngModel)]="salesAndCompanionInfo.companionNameSurname"
+                <input id="companionNameSurname" name="companionNameSurname" pInputText type="text"
+                    #companionNameSurname="ngModel" [(ngModel)]="salesAndCompanionInfo.companionNameSurname"
                     class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
             </div>
         </div>
@@ -72,7 +75,8 @@
                 <p-dropdown id="companionNationality" name="companionNationality" [options]="nationalityList"
                     #companionNationality="ngModel" [(ngModel)]="salesAndCompanionInfo.companionNationalityId"
                     placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
-                    styleClass="filterDropDown" optionValue="id" optionLabel="name" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
+                    styleClass="filterDropDown" optionValue="id" optionLabel="name"
+                    emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
             </div>
         </div>
         <div class="field grid mb-2">
@@ -93,8 +97,10 @@
                 abpLocalization }}</label>
             <div class="col-12 md:col-9">
                 <input id="companionEmail" name="companionEmail" pInputText type="text" #companionEmail="ngModel"
-                    [(ngModel)]="salesAndCompanionInfo.companionEmail"
+                    [(ngModel)]="salesAndCompanionInfo.companionEmail" [email]="true"
                     class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                <small class="p-error" *ngIf="companionEmail.errors?.email">{{ '::Message:WrongEmailFormat' |
+                    abpLocalization }}</small>
             </div>
         </div>
         <div class="field grid mb-2">
@@ -107,7 +113,8 @@
                     [showClear]="true" #phoneCountryCode="ngModel" [options]="nationalityList"
                     [(ngModel)]="salesAndCompanionInfo.phoneCountryCodeId"
                     [style]="{'width':'100px', 'margin-right':'10px'}" styleClass="filterDropDown" optionValue="id"
-                    placeholder="{{ '::Select' | abpLocalization }}" optionLabel="phoneCode" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" 
+                    placeholder="{{ '::Select' | abpLocalization }}" optionLabel="phoneCode"
+                    emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
                     emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}">
                     <ng-template let-country pTemplate="item">
                         <div><b>{{ country.phoneCode }}</b> - {{ country.name }}</div>
@@ -130,7 +137,8 @@
             </div>
         </div>
         <div class="field grid mb-2 justify-content-end">
-            <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-save" class="p-button-secondary mr-2" (click)="saveSalesAndCompanionInfo()"></button>
+            <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-save"
+                class="p-button-secondary mr-2" (click)="saveSalesAndCompanionInfo()"></button>
         </div>
     </div>
 </div>

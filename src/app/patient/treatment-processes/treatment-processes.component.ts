@@ -40,9 +40,18 @@ export class TreatmentProcessesComponent extends AppComponentBase {
   }
 
   newTreatmentProcess() {
-    this.patientTreatmentProcessService.start(this.patientId).subscribe({
-      next: (res) => {
-        this.fetchData();
+    this.confirm({
+      key: 'noteConfirm',
+      message: this.l('::TreatmentProcess:Message:StartConfirmation'),
+      header: this.l('::Confirm'),
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.patientTreatmentProcessService.start(this.patientId).subscribe({
+          complete: () => {
+            this.fetchData();
+            this.success(this.l('::TreatmentProcess:Message:SuccessfulStart'));
+          }
+        });
       }
     });
   }

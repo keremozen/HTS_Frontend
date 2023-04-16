@@ -38,7 +38,7 @@
                                 [filter]="true" filterBy="name" [showClear]="true" [options]="nationalityList"
                                 [(ngModel)]="patient.nationalityId" placeholder="{{ '::Select' | abpLocalization }}"
                                 [style]="{'width':'100%'}" required="true" styleClass="filterDropDown" optionValue="id"
-                                optionLabel="name" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" 
+                                optionLabel="name" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
                                 emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}"></p-dropdown>
                         </div>
                     </div>
@@ -62,7 +62,8 @@
                         <div class="col-12 md:col-9">
                             <p-calendar [(ngModel)]="patient.birthDate" id="patientBirthDate" name="patientBirthDate"
                                 #patientBirthDate="ngModel" dateFormat="dd.mm.yy" [showIcon]="true" inputId="icon"
-                                [maxDate]="maxBirthDate" styleClass="customCalendar" [style]="{'width':'100%'}"></p-calendar>
+                                [maxDate]="maxBirthDate" styleClass="customCalendar"
+                                [style]="{'width':'100%'}"></p-calendar>
                         </div>
                     </div>
                     <div class="field grid mb-2">
@@ -72,7 +73,8 @@
                             <p-dropdown id="patientGender" name="patientGender" #patientGender="ngModel"
                                 [options]="genderList" [(ngModel)]="patient.genderId" [style]="{'width':'100%'}"
                                 styleClass="filterDropDown" placeholder="{{ '::Select' | abpLocalization }}"
-                                optionValue="id" optionLabel="name" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
+                                optionValue="id" optionLabel="name"
+                                emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
                         </div>
                     </div>
                     <div class="field grid mb-2">
@@ -85,7 +87,7 @@
                                 [(ngModel)]="patient.phoneCountryCodeId"
                                 [style]="{'width':'100px', 'margin-right':'10px'}" styleClass="filterDropDown"
                                 optionValue="id" placeholder="{{ '::Select' | abpLocalization }}"
-                                optionLabel="phoneCode" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" 
+                                optionLabel="phoneCode" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
                                 emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}">
                                 <ng-template let-country pTemplate="item">
                                     <div><b>{{ country.phoneCode }}</b> - {{ country.name }}</div>
@@ -104,8 +106,10 @@
                             abpLocalization }}</label>
                         <div class="col-12 md:col-9">
                             <input id="patientEmail" name="patientEmail" #patientEmail="ngModel" pInputText type="text"
-                                [(ngModel)]="patient.email"
+                                [email]="true" [(ngModel)]="patient.email"
                                 class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                            <small class="p-error" *ngIf="patientEmail.errors?.email">{{ '::Message:WrongEmailFormat' |
+                                abpLocalization }}</small>
                         </div>
                     </div>
                     <div class="field grid mb-2">
@@ -116,7 +120,8 @@
                                 #patientNativeLanguage="ngModel" [filter]="true" filterBy="name" [showClear]="true"
                                 [options]="languageList" [(ngModel)]="patient.motherTongueId"
                                 placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
-                                styleClass="filterDropDown" optionValue="id" optionLabel="name" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" 
+                                styleClass="filterDropDown" optionValue="id" optionLabel="name"
+                                emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
                                 emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}"></p-dropdown>
                         </div>
                     </div>
@@ -128,7 +133,8 @@
                                 #patientSecondLanguage="ngModel" [filter]="true" filterBy="name" [showClear]="true"
                                 [options]="languageList" [(ngModel)]="patient.secondTongueId"
                                 placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
-                                styleClass="filterDropDown" optionValue="id" optionLabel="name" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" 
+                                styleClass="filterDropDown" optionValue="id" optionLabel="name"
+                                emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
                                 emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}"></p-dropdown>
                         </div>
                     </div>

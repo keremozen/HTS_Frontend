@@ -1,3 +1,4 @@
+export * from './city.service';
 export * from './contracted-institution-staff.service';
 export * from './contracted-institution.service';
 export * from './document-type.service';

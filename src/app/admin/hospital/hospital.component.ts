@@ -129,6 +129,9 @@ export class HospitalComponent extends AppComponentBase {
           this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:Hospital:Name')));
           this.fetchData();
           this.hideDialog();
+        },
+        error: (error: any) => {
+          this.hideDialog();
         }
       });
     }
@@ -138,6 +141,9 @@ export class HospitalComponent extends AppComponentBase {
           this.fetchData();
           this.hideDialog();
           this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:Hospital:Name')));
+        },
+        error: (error: any) => {
+          this.hideDialog();
         }
       });
     }
@@ -212,6 +218,7 @@ export class HospitalComponent extends AppComponentBase {
         staffDtoList.push({
           hospitalId: this.hospitalToBeEdited.id,
           isActive: this.hospitalStaff.isActive,
+          isDefault: true,//TODO: Kerem
           userId: staff.id
         })
       });
@@ -220,6 +227,9 @@ export class HospitalComponent extends AppComponentBase {
           this.fetchStaffData();
           this.hideStaffDialog();
           this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:HospitalStaff:Name')));
+        },
+        error: (error: any) => {
+          this.hideStaffDialog();
         }
       });
     }
@@ -234,6 +244,9 @@ export class HospitalComponent extends AppComponentBase {
 }
 
 class HospitalWithStaff implements HospitalDto {
+  code?: string;
+  address?: string;
+  cityId: number;
   name?: string;
   phoneNumber?: string;
   phoneCountryCodeId?: number;

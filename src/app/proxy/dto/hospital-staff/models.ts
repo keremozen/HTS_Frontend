@@ -4,11 +4,13 @@ import type { IdentityUserDto } from '../../volo/abp/identity/models';
 export interface HospitalStaffDto extends EntityDto<number> {
   user: IdentityUserDto;
   hospitalId: number;
+  isDefault: boolean;
   isActive: boolean;
 }
 
 export interface SaveHospitalStaffDto {
   userId: string;
   hospitalId: number;
+  isDefault: boolean;
   isActive: boolean;
 }

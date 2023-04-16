@@ -1,3 +1,4 @@
+import * as City from './city';
 import * as ContractedInstitution from './contracted-institution';
 import * as ContractedInstitutionStaff from './contracted-institution-staff';
 import * as DocumentType from './document-type';
@@ -12,4 +13,4 @@ import * as PatientNote from './patient-note';
 import * as PatientTreatmentProcess from './patient-treatment-process';
 import * as SalesMethodAndCompanionInfo from './sales-method-and-companion-info';
 import * as TreatmentProcessStatus from './treatment-process-status';
-export { ContractedInstitution, ContractedInstitutionStaff, DocumentType, Gender, Hospital, HospitalStaff, Language, Nationality, Patient, PatientAdmissionMethod, PatientNote, PatientTreatmentProcess, SalesMethodAndCompanionInfo, TreatmentProcessStatus };
+export { City, ContractedInstitution, ContractedInstitutionStaff, DocumentType, Gender, Hospital, HospitalStaff, Language, Nationality, Patient, PatientAdmissionMethod, PatientNote, PatientTreatmentProcess, SalesMethodAndCompanionInfo, TreatmentProcessStatus };

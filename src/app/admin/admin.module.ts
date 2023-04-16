@@ -6,13 +6,10 @@ import { SharedModule } from '../shared/shared.module';
 import { FormsModule } from '@angular/forms';
 import { NationalityComponent } from './nationality/nationality.component';
 import { LanguageComponent } from './language/language.component';
-import { PatientNoteStatusService } from '../services/patientNoteStatus.service';
 import { DocumentTypeComponent } from './document-type/document-type.component';
-import { PatientDocumentStatusService } from '../services/patientDocumentStatus.service';
-import { TreatmentProcessStatusService } from '../services/treatmentProcessStatus.service';
-import { HospitalConsultationStatusService } from '../services/hospitalConsultationStatus.service';
 import { PatientAdmissionMethodComponent } from './patient-admission-method/patient-admission-method.component';
 import { ContractedInstitutionComponent } from './contracted-institution/contracted-institution.component';
+import { CityComponent } from './city/city.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +18,8 @@ import { ContractedInstitutionComponent } from './contracted-institution/contrac
     LanguageComponent,
     DocumentTypeComponent,
     PatientAdmissionMethodComponent,
-    ContractedInstitutionComponent
+    ContractedInstitutionComponent,
+    CityComponent
   ],
   imports: [
     SharedModule,
@@ -30,10 +28,6 @@ import { ContractedInstitutionComponent } from './contracted-institution/contrac
     AdminRoutingModule
   ],
   providers: [
-    PatientNoteStatusService,
-    PatientDocumentStatusService,
-    TreatmentProcessStatusService,
-    HospitalConsultationStatusService
   ]
 })
 export class AdminModule { }

@@ -82,6 +82,7 @@ export class DocumentsComponent extends AppComponentBase {
 
   revokeDocument(documentsToBeRevoked: IPatientDocument) {
     this.confirm({
+      key: 'documentConfirm',
       message: this.l('::Message:RevokeConfirmation'),
       header: this.l('::Confirm'),
       icon: 'pi pi-exclamation-triangle',

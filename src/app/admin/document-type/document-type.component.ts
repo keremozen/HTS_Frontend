@@ -82,6 +82,9 @@ export class DocumentTypeComponent extends AppComponentBase {
           this.fetchData();
           this.hideDialog();
           this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:DocumentType:Name')));
+        },
+        error: (error: any) => {
+          this.hideDialog();
         }
       });
     }
@@ -91,6 +94,9 @@ export class DocumentTypeComponent extends AppComponentBase {
           this.fetchData();
           this.hideDialog();
           this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:DocumentType:Name')));
+        },
+        error: (error: any) => {
+          this.hideDialog();
         }
       });
     }

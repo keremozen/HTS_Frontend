@@ -7,6 +7,7 @@ import { HospitalComponent } from './hospital/hospital.component';
 import { LanguageComponent } from './language/language.component';
 import { NationalityComponent } from './nationality/nationality.component';
 import { PatientAdmissionMethodComponent } from './patient-admission-method/patient-admission-method.component';
+import { CityComponent } from './city/city.component';
 
 const routes: Routes = [
   {
@@ -19,6 +20,12 @@ const routes: Routes = [
     path: 'nationality', component: NationalityComponent, canActivate: [PermissionGuard],
     data: {
         requiredPolicy: 'HTS.NationalityManagement' 
+    }
+  },
+  {
+    path: 'city', component: CityComponent, canActivate: [PermissionGuard],
+    data: {
+        requiredPolicy: 'HTS.CityManagement' 
     }
   },
   {

@@ -1,7 +1,5 @@
 import { Component, Injector } from '@angular/core';
-import { SaveContractedInstitutionDto } from '@proxy';
-import { ContractedInstitution } from '@proxy/dto';
-import { ContractedInstitutionDto } from '@proxy/dto/contracted-institution';
+import { ContractedInstitutionDto, SaveContractedInstitutionDto } from '@proxy/dto/contracted-institution';
 import { ContractedInstitutionStaffDto, SaveContractedInstitutionStaffDto } from '@proxy/dto/contracted-institution-staff';
 import { NationalityDto } from '@proxy/dto/nationality';
 import { ContractedInstitutionService, ContractedInstitutionStaffService, NationalityService } from '@proxy/service';
@@ -116,6 +114,9 @@ export class ContractedInstitutionComponent extends AppComponentBase {
           this.fetchData();
           this.hideDialog();
           this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:ContractedInstitution:Name')));
+        },
+        error: (error: any) => {
+          this.hideDialog();
         }
       });
     }
@@ -125,6 +126,9 @@ export class ContractedInstitutionComponent extends AppComponentBase {
           this.fetchData();
           this.hideDialog();
           this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:ContractedInstitution:Name')));
+        },
+        error: (error: any) => {
+          this.hideDialog();
         }
       });
     }
@@ -202,6 +206,9 @@ export class ContractedInstitutionComponent extends AppComponentBase {
           this.fetchStaffData();
           this.hideStaffDialog();
           this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:ContractedInstitutionStaff:Name')));
+        },
+        error: (error: any) => {
+          this.hideStaffDialog();
         }
       });
     }
@@ -211,6 +218,9 @@ export class ContractedInstitutionComponent extends AppComponentBase {
           this.fetchStaffData();
           this.hideStaffDialog();
           this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:ContractedInstitutionStaff:Name')));
+        },
+        error: (error: any) => {
+          this.hideStaffDialog();
         }
       });
     }
@@ -226,6 +236,14 @@ export class ContractedInstitutionComponent extends AppComponentBase {
 }
 
 class ContractedInstitutionWithStaff implements ContractedInstitutionDto {
+  email?: string;
+  phoneNumber?: string;
+  phoneCountryCodeId: number;
+  nationalityId: number;
+  site?: string;
+  address?: string;
+  phoneCountryCode: NationalityDto;
+  nationality: NationalityDto;
   name?: string;
   description?: string;
   isActive: boolean;

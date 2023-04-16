@@ -42,11 +42,20 @@ function configureRoutes(routesService: RoutesService) {
         layout: eLayoutType.application
       },
       {
+        path: '/admin/city',
+        name: '::Menu:Admin:City',
+        iconClass: 'fas fa-city',
+        parentName: eThemeSharedRouteNames.Administration,
+        order: 102,
+        requiredPolicy: 'HTS.CityManagement',
+        layout: eLayoutType.application
+      },
+      {
         path: '/admin/language',
         name: '::Menu:Admin:Language',
         iconClass: 'fas fa-language',
         parentName: eThemeSharedRouteNames.Administration,
-        order: 102,
+        order: 103,
         requiredPolicy: 'HTS.LanguageManagement',
         layout: eLayoutType.application
       },
@@ -55,7 +64,7 @@ function configureRoutes(routesService: RoutesService) {
         name: '::Menu:Admin:DocumentType',
         iconClass: 'fas fa-file-alt',
         parentName: eThemeSharedRouteNames.Administration,
-        order: 103,
+        order: 104,
         requiredPolicy: 'HTS.DocumentTypeManagement',
         layout: eLayoutType.application
       },
@@ -64,7 +73,7 @@ function configureRoutes(routesService: RoutesService) {
         name: '::Menu:Admin:PatientAdmissionMethod',
         iconClass: 'fas fa-hospital-user',
         parentName: eThemeSharedRouteNames.Administration,
-        order: 104,
+        order: 105,
         requiredPolicy: 'HTS.PatientAdmissionMethodManagement',
         layout: eLayoutType.application
       },
@@ -73,7 +82,7 @@ function configureRoutes(routesService: RoutesService) {
         name: '::Menu:Admin:ContractedInstitution',
         iconClass: 'fas fa-clinic-medical',
         parentName: eThemeSharedRouteNames.Administration,
-        order: 105,
+        order: 106,
         requiredPolicy: 'HTS.ContractedInstitutionManagement',
         layout: eLayoutType.application
       }
