@@ -1,144 +1,154 @@
-<div class="grid gap-3" *ngIf="salesAndCompanionInfo">
-    <div class="col">
-        <div class="field grid mb-2">
-            <label for="patientAdmissionMethod" class="col-12 mb-2 md:col-3 md:mb-0">{{
-                '::SalesAndCompanionInfo:Column:PatientAdmissionMethod' | abpLocalization }}</label>
-            <div class="col-12 md:col-9">
-                <p-dropdown id="patientAdmissionMethod" name="patientAdmissionMethod" #patientAdmissionMethod="ngModel"
-                    [options]="patientAdmissionMethodList" [(ngModel)]="salesAndCompanionInfo.patientAdmissionMethodId"
-                    placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
-                    styleClass="filterDropDown" optionValue="id" optionLabel="name"></p-dropdown>
+<form #salesAndCompanionInfoForm="ngForm">
+    <div class="grid gap-3" *ngIf="salesAndCompanionInfo">
+        <div class="col">
+            <div class="field grid mb-2">
+                <label for="patientAdmissionMethod" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                    '::SalesAndCompanionInfo:Column:PatientAdmissionMethod' | abpLocalization }}&nbsp;<font
+                        style="color:red">*
+                    </font></label>
+                <div class="col-12 md:col-9">
+                    <p-dropdown id="patientAdmissionMethod" name="patientAdmissionMethod"
+                        #patientAdmissionMethod="ngModel" [options]="patientAdmissionMethodList"
+                        [(ngModel)]="salesAndCompanionInfo.patientAdmissionMethodId"
+                        placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
+                        styleClass="filterDropDown" optionValue="id" optionLabel="name" required></p-dropdown>
+                </div>
+            </div>
+            <div class="field grid mb-2">
+                <label for="contractedInstitutionName" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                    '::SalesAndCompanionInfo:Column:ContractedInstitutionName' | abpLocalization }}&nbsp;<font
+                        style="color:red">*
+                    </font></label>
+                <div class="col-12 md:col-9">
+                    <p-dropdown id="contractedInstitutionName" name="contractedInstitutionName"
+                        [options]="contractedInstitutionList" #contractedInstitutionName="ngModel"
+                        [(ngModel)]="salesAndCompanionInfo.contractedInstitutionId" (onChange)="onInstitutionSelect()"
+                        placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
+                        styleClass="filterDropDown" optionValue="id" optionLabel="name"
+                        emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" required></p-dropdown>
+                </div>
+            </div>
+            <div class="field grid mb-2">
+                <label for="institutionStaff" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                    '::SalesAndCompanionInfo:Column:InstitutionStaffName' | abpLocalization }}</label>
+                <div class="col-12 md:col-9">
+                    <p-dropdown id="institutionStaff" name="institutionStaff" #institutionStaff="ngModel"
+                        [(ngModel)]="salesAndCompanionInfo.contractedInstitutionStaffId"
+                        [options]="institutionStaffList" placeholder="{{ '::Select' | abpLocalization }}"
+                        [style]="{'width':'100%'}" (onChange)="onInstitutionStaffSelect()" styleClass="filterDropDown"
+                        optionValue="id" optionLabel="nameSurname"
+                        emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
+                </div>
+            </div>
+            <div class="field grid mb-2">
+                <label for="institutionStaffEmail" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                    '::SalesAndCompanionInfo:Column:InstitutionStaffEmail'
+                    |
+                    abpLocalization }}</label>
+                <div class="col-12 md:col-9">
+                    <input id="institutionStaffEmail" name="institutionStaffEmail" pInputText type="text"
+                        [disabled]="true" #institutionStaffEmail="ngModel" [(ngModel)]="selectedStaffEmail"
+                        class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                </div>
+            </div>
+            <div class="field grid mb-2">
+                <label for="institutionStaffPhone" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                    '::SalesAndCompanionInfo:Column:InstitutionStaffPhoneNumber'
+                    |
+                    abpLocalization }}</label>
+                <div class="col-12 md:col-9">
+                    <input id="institutionStaffPhone" name="institutionStaffPhone" pInputText type="text"
+                        [disabled]="true" #institutionStaffPhone="ngModel" [(ngModel)]="selectedStaffPhone"
+                        class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                </div>
             </div>
         </div>
-        <div class="field grid mb-2">
-            <label for="contractedInstitutionName" class="col-12 mb-2 md:col-3 md:mb-0">{{
-                '::SalesAndCompanionInfo:Column:ContractedInstitutionName' | abpLocalization }}</label>
-            <div class="col-12 md:col-9">
-                <p-dropdown id="contractedInstitutionName" name="contractedInstitutionName"
-                    [options]="contractedInstitutionList" #contractedInstitutionName="ngModel"
-                    [(ngModel)]="salesAndCompanionInfo.contractedInstitutionId" (onChange)="onInstitutionSelect()"
-                    placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
-                    styleClass="filterDropDown" optionValue="id" optionLabel="name"
-                    emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
+        <div class="col">
+            <div class="field grid mb-2">
+                <label for="companionNameSurname" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                    '::SalesAndCompanionInfo:Column:CompanionNameSurname'
+                    |
+                    abpLocalization }}</label>
+                <div class="col-12 md:col-9">
+                    <input id="companionNameSurname" name="companionNameSurname" pInputText type="text"
+                        #companionNameSurname="ngModel" [(ngModel)]="salesAndCompanionInfo.companionNameSurname"
+                        class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                </div>
             </div>
-        </div>
-        <div class="field grid mb-2">
-            <label for="institutionStaff" class="col-12 mb-2 md:col-3 md:mb-0">{{
-                '::SalesAndCompanionInfo:Column:InstitutionStaffName' | abpLocalization }}</label>
-            <div class="col-12 md:col-9">
-                <p-dropdown id="institutionStaff" name="institutionStaff" #institutionStaff="ngModel"
-                    [(ngModel)]="salesAndCompanionInfo.contractedInstitutionStaffId" [options]="institutionStaffList"
-                    placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
-                    (onChange)="onInstitutionStaffSelect()" styleClass="filterDropDown" optionValue="id"
-                    optionLabel="nameSurname" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
+            <div class="field grid mb-2">
+                <label for="companionNationality" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                    '::SalesAndCompanionInfo:Column:CompanionNationality' | abpLocalization }}</label>
+                <div class="col-12 md:col-9">
+                    <p-dropdown id="companionNationality" name="companionNationality" [options]="nationalityList"
+                        #companionNationality="ngModel" [(ngModel)]="salesAndCompanionInfo.companionNationalityId"
+                        placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
+                        styleClass="filterDropDown" optionValue="id" optionLabel="name"
+                        emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
+                </div>
             </div>
-        </div>
-        <div class="field grid mb-2">
-            <label for="institutionStaffEmail" class="col-12 mb-2 md:col-3 md:mb-0">{{
-                '::SalesAndCompanionInfo:Column:InstitutionStaffEmail'
-                |
-                abpLocalization }}</label>
-            <div class="col-12 md:col-9">
-                <input id="institutionStaffEmail" name="institutionStaffEmail" pInputText type="text" [disabled]="true"
-                    #institutionStaffEmail="ngModel" [(ngModel)]="selectedStaffEmail"
-                    class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+            <div class="field grid mb-2">
+                <label for="companionPassportNo" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                    '::SalesAndCompanionInfo:Column:CompanionPassportNo'
+                    |
+                    abpLocalization }}</label>
+                <div class="col-12 md:col-9">
+                    <input id="companionPassportNo" name="companionPassportNo" pInputText type="text"
+                        #companionPassportNo="ngModel" [(ngModel)]="salesAndCompanionInfo.companionPassportNumber"
+                        class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                </div>
             </div>
-        </div>
-        <div class="field grid mb-2">
-            <label for="institutionStaffPhone" class="col-12 mb-2 md:col-3 md:mb-0">{{
-                '::SalesAndCompanionInfo:Column:InstitutionStaffPhoneNumber'
-                |
-                abpLocalization }}</label>
-            <div class="col-12 md:col-9">
-                <input id="institutionStaffPhone" name="institutionStaffPhone" pInputText type="text" [disabled]="true"
-                    #institutionStaffPhone="ngModel" [(ngModel)]="selectedStaffPhone"
-                    class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+            <div class="field grid mb-2">
+                <label for="companionEmail" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                    '::SalesAndCompanionInfo:Column:CompanionEmail'
+                    |
+                    abpLocalization }}</label>
+                <div class="col-12 md:col-9">
+                    <input id="companionEmail" name="companionEmail" pInputText type="text" #companionEmail="ngModel"
+                        [(ngModel)]="salesAndCompanionInfo.companionEmail" [email]="true"
+                        class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                    <small class="p-error" *ngIf="companionEmail.errors?.email">{{ '::Message:WrongEmailFormat' |
+                        abpLocalization }}</small>
+                </div>
+            </div>
+            <div class="field grid mb-2">
+                <label for="companionPhoneNumber" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                    '::SalesAndCompanionInfo:Column:CompanionPhoneNumber'
+                    |
+                    abpLocalization }}</label>
+                <div class="col-12 md:col-9">
+                    <p-dropdown id="phoneCountryCode" name="phoneCountryCode" [filter]="true" filterBy="name"
+                        [showClear]="true" #phoneCountryCode="ngModel" [options]="nationalityList"
+                        [(ngModel)]="salesAndCompanionInfo.phoneCountryCodeId"
+                        [style]="{'width':'100px', 'margin-right':'10px'}" styleClass="filterDropDown" optionValue="id"
+                        placeholder="{{ '::Select' | abpLocalization }}" optionLabel="phoneCode"
+                        emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
+                        emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}">
+                        <ng-template let-country pTemplate="item">
+                            <div><b>{{ country.phoneCode }}</b> - {{ country.name }}</div>
+                        </ng-template>
+                    </p-dropdown>
+                    <p-inputMask id="companionPhoneNo" name="companionPhoneNo" #companionPhoneNo="ngModel"
+                        [unmask]="true" mask="(999) 999-9999" [(ngModel)]="salesAndCompanionInfo.companionPhoneNumber"
+                        placeholder="(999) 999-9999"
+                        styleClass="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary"></p-inputMask>
+                </div>
+            </div>
+            <div class="field grid mb-2">
+                <label for="companionRelationship" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                    '::SalesAndCompanionInfo:Column:CompanionRelationship'
+                    |
+                    abpLocalization }}</label>
+                <div class="col-12 md:col-9">
+                    <input id="companionRelationship" name="companionRelationship" pInputText type="text"
+                        #companionRelationship="ngModel" [(ngModel)]="salesAndCompanionInfo.companionRelationship"
+                        class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                </div>
+            </div>
+            <div class="field grid mb-2 justify-content-end">
+                <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-save"
+                    class="p-button-secondary mr-2" [disabled]="!(salesAndCompanionInfoForm.valid)"
+                    (click)="saveSalesAndCompanionInfo()"></button>
             </div>
         </div>
     </div>
-    <div class="col">
-        <div class="field grid mb-2">
-            <label for="companionNameSurname" class="col-12 mb-2 md:col-3 md:mb-0">{{
-                '::SalesAndCompanionInfo:Column:CompanionNameSurname'
-                |
-                abpLocalization }}</label>
-            <div class="col-12 md:col-9">
-                <input id="companionNameSurname" name="companionNameSurname" pInputText type="text"
-                    #companionNameSurname="ngModel" [(ngModel)]="salesAndCompanionInfo.companionNameSurname"
-                    class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
-            </div>
-        </div>
-        <div class="field grid mb-2">
-            <label for="companionNationality" class="col-12 mb-2 md:col-3 md:mb-0">{{
-                '::SalesAndCompanionInfo:Column:CompanionNationality' | abpLocalization }}</label>
-            <div class="col-12 md:col-9">
-                <p-dropdown id="companionNationality" name="companionNationality" [options]="nationalityList"
-                    #companionNationality="ngModel" [(ngModel)]="salesAndCompanionInfo.companionNationalityId"
-                    placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
-                    styleClass="filterDropDown" optionValue="id" optionLabel="name"
-                    emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
-            </div>
-        </div>
-        <div class="field grid mb-2">
-            <label for="companionPassportNo" class="col-12 mb-2 md:col-3 md:mb-0">{{
-                '::SalesAndCompanionInfo:Column:CompanionPassportNo'
-                |
-                abpLocalization }}</label>
-            <div class="col-12 md:col-9">
-                <input id="companionPassportNo" name="companionPassportNo" pInputText type="text"
-                    #companionPassportNo="ngModel" [(ngModel)]="salesAndCompanionInfo.companionPassportNumber"
-                    class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
-            </div>
-        </div>
-        <div class="field grid mb-2">
-            <label for="companionEmail" class="col-12 mb-2 md:col-3 md:mb-0">{{
-                '::SalesAndCompanionInfo:Column:CompanionEmail'
-                |
-                abpLocalization }}</label>
-            <div class="col-12 md:col-9">
-                <input id="companionEmail" name="companionEmail" pInputText type="text" #companionEmail="ngModel"
-                    [(ngModel)]="salesAndCompanionInfo.companionEmail" [email]="true"
-                    class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
-                <small class="p-error" *ngIf="companionEmail.errors?.email">{{ '::Message:WrongEmailFormat' |
-                    abpLocalization }}</small>
-            </div>
-        </div>
-        <div class="field grid mb-2">
-            <label for="companionPhoneNumber" class="col-12 mb-2 md:col-3 md:mb-0">{{
-                '::SalesAndCompanionInfo:Column:CompanionPhoneNumber'
-                |
-                abpLocalization }}</label>
-            <div class="col-12 md:col-9">
-                <p-dropdown id="phoneCountryCode" name="phoneCountryCode" [filter]="true" filterBy="name"
-                    [showClear]="true" #phoneCountryCode="ngModel" [options]="nationalityList"
-                    [(ngModel)]="salesAndCompanionInfo.phoneCountryCodeId"
-                    [style]="{'width':'100px', 'margin-right':'10px'}" styleClass="filterDropDown" optionValue="id"
-                    placeholder="{{ '::Select' | abpLocalization }}" optionLabel="phoneCode"
-                    emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
-                    emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}">
-                    <ng-template let-country pTemplate="item">
-                        <div><b>{{ country.phoneCode }}</b> - {{ country.name }}</div>
-                    </ng-template>
-                </p-dropdown>
-                <input id="companionPhoneNo" name="companionPhoneNo" #companionPhoneNo="ngModel" pInputText type="text"
-                    [(ngModel)]="salesAndCompanionInfo.companionPhoneNumber" maxlength="20"
-                    class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary">
-            </div>
-        </div>
-        <div class="field grid mb-2">
-            <label for="companionRelationship" class="col-12 mb-2 md:col-3 md:mb-0">{{
-                '::SalesAndCompanionInfo:Column:CompanionRelationship'
-                |
-                abpLocalization }}</label>
-            <div class="col-12 md:col-9">
-                <input id="companionRelationship" name="companionRelationship" pInputText type="text"
-                    #companionRelationship="ngModel" [(ngModel)]="salesAndCompanionInfo.companionRelationship"
-                    class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
-            </div>
-        </div>
-        <div class="field grid mb-2 justify-content-end">
-            <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-save"
-                class="p-button-secondary mr-2" (click)="saveSalesAndCompanionInfo()"></button>
-        </div>
-    </div>
-</div>
+</form>

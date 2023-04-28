@@ -1,10 +1,10 @@
 import { Component, Injector, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Form } from '@angular/forms';
 import { DocumentTypeDto } from '@proxy/dto/document-type';
+import { PatientDocumentDto } from '@proxy/dto/patient-document';
 import { DocumentTypeService } from '@proxy/service';
 import { FileUpload } from 'primeng/fileupload';
 import { forkJoin } from 'rxjs';
-import { IPatientDocument, PatientDocument } from 'src/app/models/patient/patientDocument.model';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 @Component({
@@ -15,9 +15,9 @@ import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 })
 export class DocumentsComponent extends AppComponentBase {
   @Input() patientId: number;
-  documents: IPatientDocument[] = [];
+  documents: PatientDocumentDto[] = [];
   documentDialog: boolean = false;
-  document: IPatientDocument;
+  document: PatientDocumentDto;
   showRevokedRecords: boolean = false;
   revokedRecordCount: number = 0;
   documentTypeList: DocumentTypeDto[] = [];
@@ -54,7 +54,7 @@ export class DocumentsComponent extends AppComponentBase {
   }
 
   openNew() {
-    this.document = new PatientDocument();
+    this.document = {} as PatientDocumentDto;
     this.documentDialog = true;
   }
 
@@ -63,10 +63,8 @@ export class DocumentsComponent extends AppComponentBase {
     fileReader.readAsDataURL(this.uploadedDocuments[0]);
     fileReader.onload = (r) => {
       if (this.document) {
-        this.document.FileName = this.uploadedDocuments[0].name;
-        this.document.Content = fileReader.result as string;
-        this.document.Created = new Date();
-        this.document.CreatedBy = "Kerem Özen";
+        this.document.fileName = this.uploadedDocuments[0].name;
+        //this.document.Content = fileReader.result as string;
         this.documents.push(this.document);
         this.success(this.l('::Message:SuccessfulSave', this.l('::Documents:NameSingular')));
         this.hideDialog();
@@ -80,14 +78,14 @@ export class DocumentsComponent extends AppComponentBase {
     this.documentDialog = false;
   }
 
-  revokeDocument(documentsToBeRevoked: IPatientDocument) {
+  revokeDocument(documentsToBeRevoked: PatientDocumentDto) {
     this.confirm({
       key: 'documentConfirm',
       message: this.l('::Message:RevokeConfirmation'),
       header: this.l('::Confirm'),
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.documents = this.documents.filter(val => val.Id !== documentsToBeRevoked.Id);
+        this.documents = this.documents.filter(val => val.id !== documentsToBeRevoked.id);
         this.success(this.l('::Message:SuccessfulRevokation', this.l('::Documents:NameSingular')));
       }
     });

@@ -84,9 +84,6 @@ export class NationalityComponent extends AppComponentBase {
                     this.fetchData();
                     this.hideDialog();
                     this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:Nationality:Name')));
-                },
-                error: (error: any) => {
-                  this.hideDialog();
                 }
             });
         }
@@ -96,9 +93,6 @@ export class NationalityComponent extends AppComponentBase {
                     this.fetchData();
                     this.hideDialog();
                     this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:Nationality:Name')));
-                },
-                error: (error: any) => {
-                  this.hideDialog();
                 }
             });
         }

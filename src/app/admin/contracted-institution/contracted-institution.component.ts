@@ -114,9 +114,6 @@ export class ContractedInstitutionComponent extends AppComponentBase {
           this.fetchData();
           this.hideDialog();
           this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:ContractedInstitution:Name')));
-        },
-        error: (error: any) => {
-          this.hideDialog();
         }
       });
     }
@@ -126,9 +123,6 @@ export class ContractedInstitutionComponent extends AppComponentBase {
           this.fetchData();
           this.hideDialog();
           this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:ContractedInstitution:Name')));
-        },
-        error: (error: any) => {
-          this.hideDialog();
         }
       });
     }
@@ -206,9 +200,6 @@ export class ContractedInstitutionComponent extends AppComponentBase {
           this.fetchStaffData();
           this.hideStaffDialog();
           this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:ContractedInstitutionStaff:Name')));
-        },
-        error: (error: any) => {
-          this.hideStaffDialog();
         }
       });
     }
@@ -218,9 +209,6 @@ export class ContractedInstitutionComponent extends AppComponentBase {
           this.fetchStaffData();
           this.hideStaffDialog();
           this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:ContractedInstitutionStaff:Name')));
-        },
-        error: (error: any) => {
-          this.hideStaffDialog();
         }
       });
     }

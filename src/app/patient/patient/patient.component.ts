@@ -1,10 +1,12 @@
+import { IdentityUserDto } from '@abp/ng.identity/proxy';
 import { Component, Injector, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GenderDto } from '@proxy/dto/gender';
 import { LanguageDto } from '@proxy/dto/language';
 import { NationalityDto } from '@proxy/dto/nationality';
-import { SavePatientDto } from '@proxy/dto/patient';
+import { PatientDto, SavePatientDto } from '@proxy/dto/patient';
 import { GenderService, LanguageService, NationalityService, PatientAdmissionMethodService, PatientService } from '@proxy/service';
+import * as moment from 'moment';
 import { forkJoin } from 'rxjs';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
@@ -23,6 +25,10 @@ export class PatientComponent extends AppComponentBase {
   languageList: LanguageDto[] = [];
   genderList: GenderDto[] = [];
   loading: boolean;
+  maxBirthDate: Date = moment().toDate();
+  minBirthDate: Date = moment('01.01.1900').toDate();
+  creatorName: string;
+  creationTime: Date;
 
   constructor(
     injector: Injector,
@@ -42,6 +48,8 @@ export class PatientComponent extends AppComponentBase {
       if (this.patient) {
         this.patientService.get(this.patientId).subscribe({
           next: (patient) => {
+            this.creatorName = (patient.creator as unknown as IdentityUserDto).name;
+            this.creationTime = new Date(patient.creationTime);
             this.patient = patient as SavePatientDto;
           },
           complete: () => {

@@ -5,6 +5,18 @@ import type { LanguageDto } from '../language/models';
 import type { PatientTreatmentProcessDto } from '../patient-treatment-process/models';
 import { IdentityUserDto } from '@abp/ng.identity/proxy';
 
+export interface FilterPatientDto {
+  name?: string;
+  surname?: string;
+  passportNumber?: string;
+  phoneCountryCodeIds: number[];
+  nationalityIds: number[];
+  genderIds: number[];
+  motherTongueIds: number[];
+  secondTongueIds: number[];
+  patientTreatmentProcessIds: number[];
+}
+
 export interface PatientDto extends AuditedEntityWithUserDto<number, IdentityUserDto> {
   name?: string;
   surname?: string;

@@ -10,6 +10,15 @@ export class HospitalStaffService {
   apiName = 'Default';
   
 
+  create = (hospitalStaff: SaveHospitalStaffDto) =>
+    this.restService.request<any, void>({
+      method: 'POST',
+      url: '/api/app/hospital-staff',
+      body: hospitalStaff,
+    },
+    { apiName: this.apiName });
+  
+
   delete = (id: number) =>
     this.restService.request<any, void>({
       method: 'DELETE',
@@ -26,11 +35,11 @@ export class HospitalStaffService {
     { apiName: this.apiName });
   
 
-  save = (hospitalId: number, hospitalStaffs: SaveHospitalStaffDto[]) =>
+  update = (id: number, hospitalStaff: SaveHospitalStaffDto) =>
     this.restService.request<any, void>({
-      method: 'POST',
-      url: `/api/app/hospital-staff/save/${hospitalId}`,
-      body: hospitalStaffs,
+      method: 'PUT',
+      url: `/api/app/hospital-staff/${id}`,
+      body: hospitalStaff,
     },
     { apiName: this.apiName });
 

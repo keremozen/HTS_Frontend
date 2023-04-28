@@ -91,9 +91,6 @@ export class LanguageComponent extends AppComponentBase {
                     this.fetchData();
                     this.hideDialog();
                     this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:Language:Name')));
-                },
-                error: (error: any) => {
-                  this.hideDialog();
                 }
             });
         }
@@ -103,9 +100,6 @@ export class LanguageComponent extends AppComponentBase {
                     this.fetchData();
                     this.hideDialog();
                     this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:Language:Name')));
-                },
-                error: (error: any) => {
-                  this.hideDialog();
                 }
             });
         }

@@ -1,6 +1,5 @@
 <p-toast></p-toast>
 
-
 <h4>{{ '::Admin:ContractedInstitution:ContractedInstitutionManagement' | abpLocalization }}</h4>
 
 <div class="card">
@@ -107,8 +106,10 @@
                             <div><b>{{ country.phoneCode }}</b> - {{ country.name }}</div>
                         </ng-template>
                     </p-dropdown>
-                    <input type="text" pInputText id="phoneNumber" name="phoneNumber" #phoneNumber="ngModel"
-                        [(ngModel)]="contractedInstitution.phoneNumber" maxlength="20" class="w-10rem" />
+                    <p-inputMask id="phoneNumber" name="phoneNumber" #phoneNumber="ngModel" [unmask]="true"
+                        mask="(999) 999-9999" [(ngModel)]="contractedInstitution.phoneNumber"
+                        placeholder="(999) 999-9999"
+                        styleClass="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary"></p-inputMask>
                 </div>
             </div>
             <div class="field">
@@ -121,14 +122,16 @@
             <div class="field">
                 <label for="webSite">{{ '::Admin:ContractedInstitution:Column:WebSite' | abpLocalization }}</label>
                 <div class="p-inputgroup">
-                    <span class="p-inputgroup-addon">www</span>
+                    <span class="p-inputgroup-addon">
+                        <i class="pi pi-globe"></i>
+                    </span>
                     <input type="text" pInputText id="webSite" name="webSite" #webSite="ngModel"
                         [(ngModel)]="contractedInstitution.site" />
                 </div>
             </div>
             <div class="field">
                 <label for="address">{{ '::Admin:ContractedInstitution:Column:Address' | abpLocalization }}</label>
-                <textarea rows="2" pInputText id="address" name="address" #email="ngModel"
+                <textarea rows="2" pInputText id="address" name="address" #address="ngModel"
                     [(ngModel)]="contractedInstitution.address"></textarea>
             </div>
             <div class="field">
@@ -137,7 +140,7 @@
                 <p-dropdown id="country" name="country" [filter]="true" filterBy="name" [showClear]="true"
                     #country="ngModel" [options]="nationalityList" [(ngModel)]="contractedInstitution.nationalityId"
                     [style]="{'width':'100%'}" styleClass="filterDropDown" optionValue="id"
-                    placeholder="{{ '::Select' | abpLocalization }}" optionLabel="phoneCode" appendTo="body"
+                    placeholder="{{ '::Select' | abpLocalization }}" optionLabel="name" appendTo="body"
                     emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
                     emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}">
                     <ng-template let-country pTemplate="item">
@@ -261,8 +264,10 @@
                             <div><b>{{ country.phoneCode }}</b> - {{ country.name }}</div>
                         </ng-template>
                     </p-dropdown>
-                    <input type="text" pInputText id="phoneNumber" name="phoneNumber" #phoneNumber="ngModel"
-                        [(ngModel)]="contractedInstitutionStaff.phoneNumber" maxlength="20" class="w-10rem" />
+                    <p-inputMask id="phoneNumber" name="phoneNumber" #phoneNumber="ngModel" [unmask]="true"
+                        mask="(999) 999-9999" [(ngModel)]="contractedInstitutionStaff.phoneNumber"
+                        placeholder="(999) 999-9999"
+                        styleClass="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary"></p-inputMask>
                 </div>
             </div>
             <div class="field">

@@ -1,0 +1,253 @@
+<p-toast></p-toast>
+
+<h4>{{ '::Admin:Process:ProcessManagement' | abpLocalization }}</h4>
+
+<div class="card">
+    <p-toolbar styleClass="mb-4 gap-2">
+        <ng-template pTemplate="left">
+            <button pButton pRipple label="{{ '::Admin:Process:NewProcess' | abpLocalization }}" icon="pi pi-plus"
+                class="p-button-success mr-2" (click)="openNewProcess()" [loading]="loading"></button>
+        </ng-template>
+    </p-toolbar>
+
+    <p-table #dt [value]="processList" [rows]="10" [paginator]="true"
+        [globalFilterFields]="['name','code','description']" [tableStyle]="{'min-width': '75rem'}" [rowHover]="true"
+        dataKey="Id" [loading]="loading"
+        currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
+        [showCurrentPageReport]="true">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="code">{{ '::Admin:Process:Column:Code' | abpLocalization }} <p-sortIcon
+                        field="code"></p-sortIcon></th>
+                <th pSortableColumn="name">{{ '::Admin:Process:Column:Name' | abpLocalization }} <p-sortIcon
+                        field="name"></p-sortIcon></th>
+                <th pSortableColumn="description">{{ '::Admin:Process:Column:Description' | abpLocalization }}
+                    <p-sortIcon field="description"></p-sortIcon>
+                </th>
+                <th pSortableColumn="processType.name">{{ '::Admin:Process:Column:Type' | abpLocalization }} <p-sortIcon
+                        field="processType.name"></p-sortIcon></th>
+                <th>{{ '::Admin:Process:Column:IsActive' | abpLocalization }}</th>
+                <th style="width:8rem;"></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-process>
+            <tr>
+                <td>{{process.code}}</td>
+                <td>{{process.name}}</td>
+                <td>{{process.description}}</td>
+                <td>{{process.processType?.name}}</td>
+                <td><i class="pi"
+                        [ngClass]="{ 'text-green-500 pi-check-circle': process.isActive, 'text-red-500 pi-times-circle': !process.isActive }"></i>
+                </td>
+                <td>
+                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
+                        (click)="editProcess(process)"></button>
+                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                        (click)="deleteProcess(process)"></button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <div class="m-3">
+                {{ '::Table:EmptyMessage' | abpLocalization }}
+            </div>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="flex align-items-center justify-content-between" *ngIf="totalRecords > 0">
+                {{ '::Table:Summary' | abpLocalization:(totalRecords) }}
+            </div>
+        </ng-template>
+    </p-table>
+</div>
+
+<p-dialog [(visible)]="processDialog" [style]="{width: '70vw'}"
+    header="{{ '::Admin:Process:ProcessDetails' | abpLocalization }}" [modal]="true" styleClass="p-fluid">
+    <form #processForm="ngForm">
+        <div class="grid" *ngIf="process">
+            <div class="col-4">
+                <div class="field">
+                    <label for="code">{{ '::Admin:Process:Column:Code' | abpLocalization }}&nbsp;<font
+                            style="color:red">*
+                        </font></label>
+                    <input type="text" pInputText id="code" name="code" #code="ngModel" [(ngModel)]="process.code"
+                        required autofocus />
+                    <small class="p-error" *ngIf="!(code.valid || code.pristine)">{{ '::Message:RequiredField' |
+                        abpLocalization
+                        }}</small>
+                </div>
+                <div class="field">
+                    <label for="name">{{ '::Admin:Process:Column:Name' | abpLocalization }}&nbsp;<font
+                            style="color:red">*
+                        </font></label>
+                    <input type="text" pInputText id="name" name="name" #name="ngModel" [(ngModel)]="process.name"
+                        required />
+                    <small class="p-error" *ngIf="!(name.valid || name.pristine)">{{ '::Message:RequiredField' |
+                        abpLocalization
+                        }}</small>
+                </div>
+                <div class="field">
+                    <label for="description">{{ '::Admin:Process:Column:Description' | abpLocalization }}</label>
+                    <textarea rows="2" pInputText id="description" name="description" #description="ngModel"
+                        [(ngModel)]="process.description"></textarea>
+                </div>
+                <div class="field">
+                    <label for="processType">{{ '::Admin:Process:Column:Type' | abpLocalization
+                        }}&nbsp;<font style="color:red">*
+                        </font></label>
+                    <p-dropdown id="processType" name="processType" [filter]="true" filterBy="name" [showClear]="true"
+                        #processType="ngModel" [options]="processTypeList" [(ngModel)]="process.processTypeId"
+                        [style]="{'width':'100%'}" styleClass="filterDropDown" optionValue="id"
+                        placeholder="{{ '::Select' | abpLocalization }}" optionLabel="name" appendTo="body"
+                        emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
+                        emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}" required>
+                    </p-dropdown>
+                    <small class="p-error" *ngIf="!(processType.valid || processType.pristine)">{{
+                        '::Message:RequiredField' |
+                        abpLocalization
+                        }}</small>
+                </div>
+                <div class="field">
+                    <label for="isActive">{{ '::Admin:Process:Column:IsActive' | abpLocalization }}</label>
+                    <div class="w-full">
+                        <p-checkbox id="isActive" name="isActive" #isActive="ngModel" [(ngModel)]="process.isActive"
+                            [binary]="true"></p-checkbox>
+                    </div>
+                </div>
+            </div>
+            <div class="col-8">
+                <fieldset class="border pl-3 pr-3 pt-2 pb-3 m-2 processFieldSet" style="height:100%">
+                    <legend class="float-none w-auto pl-3 pr-3 text-sm processFieldSetlegend">
+                        {{'::Admin:Process:ProcessCost:Title' |
+                        abpLocalization}}
+                    </legend>
+                    <p-table #dt [value]="processCostList" [rows]="5" [paginator]="true"
+                        [tableStyle]="{'width': '100%'}" [rowHover]="true" [loading]="loading"
+                        currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
+                        [showCurrentPageReport]="true">
+                        <ng-template pTemplate="caption">
+                            <div class="flex align-items-center justify-content-end">
+                                <button pButton pRipple
+                                    label="{{ '::Admin:Process:ProcessCost:NewCost' | abpLocalization }}"
+                                    icon="pi pi-plus" class="p-button-success" (click)="openNewProcessCost()"
+                                    [loading]="loading" [style]="{'width':'unset'}"></button>
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th pSortableColumn="validityStartDate">{{
+                                    '::Admin:Process:ProcessCost:Column:ValidityStart' | abpLocalization }}
+                                    <p-sortIcon field="validityStartDate"></p-sortIcon>
+                                </th>
+                                <th pSortableColumn="validityEndDate">{{
+                                    '::Admin:Process:ProcessCost:Column:ValidityEnd' | abpLocalization }}
+                                    <p-sortIcon field="validityEndDate"></p-sortIcon>
+                                </th>
+                                <th pSortableColumn="hospitalPrice">{{ '::Admin:Process:ProcessCost:Column:HospitalCost'
+                                    | abpLocalization }}
+                                    <p-sortIcon field="hospitalPrice"></p-sortIcon>
+                                </th>
+                                <th pSortableColumn="ushasPrice">{{ '::Admin:Process:ProcessCost:Column:UshasCost' |
+                                    abpLocalization }}
+                                    <p-sortIcon field="ushasPrice"></p-sortIcon>
+                                </th>
+                                <th style="width:8rem;"></th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-processCost>
+                            <tr>
+                                <td>{{processCost.validityStartDate | date: 'dd.MM.yyyy'}}</td>
+                                <td>{{processCost.validityEndDate | date: 'dd.MM.yyyy'}}</td>
+                                <td>{{processCost.hospitalPrice}}</td>
+                                <td>{{processCost.ushasPrice}}</td>
+                                <td>
+                                    <button pButton pRipple icon="pi pi-pencil"
+                                        class="p-button-rounded p-button-success mr-2"
+                                        (click)="editProcessCost(process)"></button>
+                                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                                        (click)="deleteProcessCost(process)"></button>
+                                </td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="emptymessage">
+                            <div class="m-3">
+                                {{ '::Table:EmptyMessage' | abpLocalization }}
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="summary">
+                            <div class="flex align-items-center justify-content-between" *ngIf="totalRecords > 0">
+                                {{ '::Table:Summary' | abpLocalization:(totalRecords) }}
+                            </div>
+                        </ng-template>
+                    </p-table>
+                </fieldset>
+            </div>
+            <div class="col-12">
+                <fieldset class="border pl-3 pr-3 pt-2 pb-3 m-2 processFieldSet">
+                    <legend class="float-none w-auto pl-3 pr-3 text-sm processFieldSetlegend">
+                        {{'::Admin:Process:ProcessRelation:Title' |
+                        abpLocalization}}
+                    </legend>
+                    <p-table #dt [value]="processList" [rows]="10" [paginator]="true"
+                        [globalFilterFields]="['name','code','description']" [tableStyle]="{'min-width': '75rem'}"
+                        [rowHover]="true" dataKey="Id" [loading]="loading"
+                        currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
+                        [showCurrentPageReport]="true">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th pSortableColumn="code">{{ '::Admin:Process:Column:Code' | abpLocalization }}
+                                    <p-sortIcon field="code"></p-sortIcon></th>
+                                <th pSortableColumn="name">{{ '::Admin:Process:Column:Name' | abpLocalization }}
+                                    <p-sortIcon field="name"></p-sortIcon></th>
+                                <th pSortableColumn="description">{{ '::Admin:Process:Column:Description' |
+                                    abpLocalization }}
+                                    <p-sortIcon field="description"></p-sortIcon>
+                                </th>
+                                <th pSortableColumn="processType.name">{{ '::Admin:Process:Column:Type' |
+                                    abpLocalization }} <p-sortIcon field="processType.name"></p-sortIcon></th>
+                                <th>{{ '::Admin:Process:Column:IsActive' | abpLocalization }}</th>
+                                <th style="width:8rem;"></th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-process>
+                            <tr>
+                                <td>{{process.code}}</td>
+                                <td>{{process.name}}</td>
+                                <td>{{process.description}}</td>
+                                <td>{{process.processType?.name}}</td>
+                                <td><i class="pi"
+                                        [ngClass]="{ 'text-green-500 pi-check-circle': process.isActive, 'text-red-500 pi-times-circle': !process.isActive }"></i>
+                                </td>
+                                <td>
+                                    <button pButton pRipple icon="pi pi-pencil"
+                                        class="p-button-rounded p-button-success mr-2"
+                                        (click)="editProcess(process)"></button>
+                                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                                        (click)="deleteProcess(process)"></button>
+                                </td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="emptymessage">
+                            <div class="m-3">
+                                {{ '::Table:EmptyMessage' | abpLocalization }}
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="summary">
+                            <div class="flex align-items-center justify-content-between" *ngIf="totalRecords > 0">
+                                {{ '::Table:Summary' | abpLocalization:(totalRecords) }}
+                            </div>
+                        </ng-template>
+                    </p-table>
+                </fieldset>
+            </div>
+        </div>
+    </form>
+    <p-footer>
+        <button pButton pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" class="p-button-text"
+            (click)="hideDialog()"></button>
+        <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" class="p-button-text"
+            (click)="saveProcess()" [disabled]="!(processForm.valid)"></button>
+    </p-footer>
+</p-dialog>
+
+<p-confirmDialog [style]="{width: '450px'}" rejectLabel="{{ '::Reject' | abpLocalization }}"
+    acceptLabel="{{ '::Accept' | abpLocalization }}"></p-confirmDialog>

@@ -1,6 +1,6 @@
 import { Component, Injector, Input, ViewEncapsulation } from '@angular/core';
 import { PatientTreatmentProcessDto } from '@proxy/dto/patient-treatment-process';
-import { PatientTreatmentProcessService } from '@proxy/service';
+import { PatientTreatmentProcessService, SalesMethodAndCompanionInfoService } from '@proxy/service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 @Component({
@@ -19,10 +19,13 @@ export class TreatmentProcessesComponent extends AppComponentBase {
   displayProcessDetail: boolean = false;
   process: PatientTreatmentProcessDto;
   totalRecords: number = 0;
+  doesHaveAnySalesMethodAndCompanionInfo: boolean = false;
+
 
   constructor(
     injector: Injector,
-    private patientTreatmentProcessService: PatientTreatmentProcessService) {
+    private patientTreatmentProcessService: PatientTreatmentProcessService,
+    private salesAndCompanionInfoService: SalesMethodAndCompanionInfoService) {
     super(injector);
   }
 
@@ -58,7 +61,19 @@ export class TreatmentProcessesComponent extends AppComponentBase {
 
   onDisplayTreatmentProcessDetail(code: string) {
     this.process = this.processes.find(p=>p.treatmentCode == code);
-    this.displayProcessDetail = true;
+    
+    this.salesAndCompanionInfoService.getByPatientTreatmentProcessId(this.process.id as unknown as number).subscribe({
+      next: (res) => {
+        this.doesHaveAnySalesMethodAndCompanionInfo = (res != null || res != undefined);
+      },
+      complete: ()=> {
+        this.displayProcessDetail = true;
+      }
+    });
+  }
+
+  onSaveSalesInfoAndCompanionInfo() {
+    this.doesHaveAnySalesMethodAndCompanionInfo = true;
   }
 
   deleteProcess(process: any) {

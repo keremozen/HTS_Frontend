@@ -1,4 +1,7 @@
 import type { EntityDto } from '@abp/ng.core';
+import type { NationalityDto } from '../nationality/models';
+import type { CityDto } from '../city/models';
+import type { HospitalStaffDto } from '../hospital-staff/models';
 
 export interface HospitalDto extends EntityDto<number> {
   name?: string;
@@ -9,6 +12,9 @@ export interface HospitalDto extends EntityDto<number> {
   phoneCountryCodeId?: number;
   email?: string;
   isActive: boolean;
+  phoneCountryCode: NationalityDto;
+  city: CityDto;
+  hospitalStaffs: HospitalStaffDto[];
 }
 
 export interface SaveHospitalDto {

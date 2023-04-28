@@ -1,7 +1,12 @@
-import { Component, Injector, ViewEncapsulation } from '@angular/core';
+import { Component, Injector, Input, ViewEncapsulation } from '@angular/core';
 import { DocumentTypeDto } from '@proxy/dto/document-type';
 import { HospitalDto } from '@proxy/dto/hospital';
-import { IPatientDocument, PatientDocument } from 'src/app/models/patient/patientDocument.model';
+import { HospitalResponseDto } from '@proxy/dto/hospital-response';
+import { PatientDocumentDto } from '@proxy/dto/patient-document';
+import { ProcessDto } from '@proxy/dto/process';
+import { EntityEnum_PatientNoteStatusEnum } from '@proxy/enum';
+import { HospitalService, PatientNoteService } from '@proxy/service';
+import { forkJoin } from 'rxjs';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 @Component({
@@ -12,32 +17,61 @@ import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 })
 export class HospitalConsultationComponent extends AppComponentBase {
 
+  @Input() patientId: number;
   consultations: any[] = [];
   consultationDialog: boolean = false;
   hospitalList: HospitalDto[] = [];
   selectedHospitals: HospitalDto[] = [];
+  consolidatedDescription: string;
   documentDialog: boolean = false;
-  document: IPatientDocument;
+  hospitalResponseDialog: boolean = false;
+  document: PatientDocumentDto;
   documentTypeList: DocumentTypeDto[] = [];
   uploadedDocuments: any[] = [];
-  documents: IPatientDocument[] = [];
+  documents: PatientDocumentDto[] = [];
+  hospitalResponse: HospitalResponseDto;
+  anticipatedProcesses: ProcessDto[] = [];
+  anticipatedSupplies: any[] = [];
   loading: boolean;
   totalRecords: number = 0;
 
   constructor(
-    injector: Injector
+    injector: Injector,
+    private hospitalService: HospitalService,
+    private patientNoteService: PatientNoteService
   ) {
     super(injector);
 
-    //TODO: Kerem silinecek
-    this.consultations.push({
-      ConsultationNo: 1,
-      CreatedBy: "Kerem Özen",
-      Created: new Date(),
-      Hospital: "Memorial Ankara Hastanesi",
-      State: "Cevap Bekleniyor"
-    });
+  }
 
+  ngOnInit(): void {
+    this.fetchData();
+  }
+
+  fetchData() {
+    this.loading = true;
+    forkJoin([
+      this.hospitalService.getList(),
+      this.patientNoteService.getList(this.patientId)
+    ]).subscribe(
+      {
+        next: ([
+          resHospitalList,
+          resNoteList
+        ]) => {
+          this.hospitalList = resHospitalList.items;
+
+          this.consolidatedDescription = resNoteList.items.filter(n => n.patientNoteStatusId != EntityEnum_PatientNoteStatusEnum.Revoked).map(n => n.note).join("\n");
+          debugger;
+        },
+        error: () => {
+          this.loading = false;
+        },
+        complete: () => {
+          this.loading = false;
+        }
+      }
+    );
   }
 
   onNewConsultation() {
@@ -56,8 +90,12 @@ export class HospitalConsultationComponent extends AppComponentBase {
 
   }
 
-  openAnswer() {
+  openHospitalResponse() {
+    this.hospitalResponseDialog = true;
+  }
 
+  hideHospitalResponseDialog() {
+    this.hospitalResponseDialog = false;
   }
 
   approve() {
@@ -70,7 +108,7 @@ export class HospitalConsultationComponent extends AppComponentBase {
 
   openNewDocument() {
     this.documentDialog = true;
-    this.document = new PatientDocument();
+    this.document = {} as PatientDocumentDto;
   }
 
   hideDocumentDialog() {
@@ -83,10 +121,8 @@ export class HospitalConsultationComponent extends AppComponentBase {
     fileReader.readAsDataURL(this.uploadedDocuments[0]);
     fileReader.onload = (r) => {
       if (this.document) {
-        this.document.FileName = this.uploadedDocuments[0].name;
-        this.document.Content = fileReader.result as string;
-        this.document.Created = new Date();
-        this.document.CreatedBy = "Kerem Özen";
+        this.document.fileName = this.uploadedDocuments[0].name;
+        // this.document.content = fileReader.result as string;
         this.documents.push(this.document);
         this.success(this.l('::Message:SuccessfulSave', this.l('::Documents:NameSingular')));
         this.hideDocumentDialog();

@@ -2,10 +2,10 @@ import { Component, Injector, ViewEncapsulation } from '@angular/core';
 import { GenderDto } from '@proxy/dto/gender';
 import { LanguageDto } from '@proxy/dto/language';
 import { NationalityDto } from '@proxy/dto/nationality';
-import { PatientDto } from '@proxy/dto/patient';
-import { GenderService, LanguageService, NationalityService, PatientService } from '@proxy/service';
+import { FilterPatientDto, PatientDto } from '@proxy/dto/patient';
+import { PatientTreatmentProcessDto } from '@proxy/dto/patient-treatment-process';
+import { GenderService, LanguageService, NationalityService, PatientService, PatientTreatmentProcessService } from '@proxy/service';
 import { forkJoin } from 'rxjs';
-import { PatientFilter } from 'src/app/models/patient/patientFilter.model';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 @Component({
@@ -22,9 +22,12 @@ export class PatientListComponent extends AppComponentBase {
   nationalityList: NationalityDto[] = [];
   languageList: LanguageDto[] = [];
   genderList: GenderDto[] = [];
-  patientFilter = new PatientFilter();
+  processList: PatientTreatmentProcessDto[] = [];
+  patientFilter: FilterPatientDto = {} as FilterPatientDto;
   loading: boolean;
   totalRecords: number;
+  isAllowedToManage: boolean = false;
+  creatorNames: string;
 
   constructor(
     injector: Injector,
@@ -34,6 +37,7 @@ export class PatientListComponent extends AppComponentBase {
     private patientService: PatientService
   ) {
     super(injector);
+    this.isAllowedToManage = this.permission.getGrantedPolicy("HTS.PatientManagement")
   }
 
   ngOnInit() {
@@ -71,11 +75,35 @@ export class PatientListComponent extends AppComponentBase {
   }
 
   onClearFilters() {
-    this.patientFilter = new PatientFilter();
+    this.patientFilter = {} as FilterPatientDto;
+    this.patientService.getList().subscribe({
+      next: (res) => {
+        this.patientList = res.items;
+        this.totalRecords = res.totalCount;
+      },
+      error: ()=> {
+        this.loading = false;
+      },
+      complete: ()=> {
+        this.loading = false;
+      }
+    });
   }
 
   onFilter() {
-
+    this.loading = true;
+    this.patientService.filterList(this.patientFilter).subscribe({
+      next: (res) => {
+        this.patientList = res.items;
+        this.totalRecords = res.totalCount;
+      },
+      error: ()=> {
+        this.loading = false;
+      },
+      complete: ()=> {
+        this.loading = false;
+      }
+    });
   }
 
   openNewPatient() {

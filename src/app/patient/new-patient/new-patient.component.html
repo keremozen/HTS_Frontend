@@ -62,7 +62,7 @@
                         <div class="col-12 md:col-9">
                             <p-calendar [(ngModel)]="patient.birthDate" id="patientBirthDate" name="patientBirthDate"
                                 #patientBirthDate="ngModel" dateFormat="dd.mm.yy" [showIcon]="true" inputId="icon"
-                                [maxDate]="maxBirthDate" styleClass="customCalendar"
+                                [maxDate]="maxBirthDate" [minDate]="minBirthDate" styleClass="customCalendar" inputStyleClass="text-sm"
                                 [style]="{'width':'100%'}"></p-calendar>
                         </div>
                     </div>
@@ -93,9 +93,10 @@
                                     <div><b>{{ country.phoneCode }}</b> - {{ country.name }}</div>
                                 </ng-template>
                             </p-dropdown>
-                            <input id="patientPhoneNo" name="patientPhoneNo" #patientPhoneNo="ngModel" pInputText
-                                type="text" [(ngModel)]="patient.phoneNumber" maxlength="20"
-                                class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary">
+                            <p-inputMask id="patientPhoneNo" name="patientPhoneNo" #patientPhoneNo="ngModel"
+                                [unmask]="true" mask="(999) 999-9999" [(ngModel)]="patient.phoneNumber"
+                                placeholder="(999) 999-9999"
+                                styleClass="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary"></p-inputMask>
                         </div>
 
                     </div>

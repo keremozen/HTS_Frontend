@@ -18,23 +18,37 @@
         [showCurrentPageReport]="true">
         <ng-template pTemplate="header">
             <tr>
-                <th pSortableColumn="name" style="min-width:15rem">{{ '::Admin:Hospital:Column:Name' |
+                <th pSortableColumn="name">{{ '::Admin:Hospital:Column:Name' |
                     abpLocalization }} <p-sortIcon field="name"></p-sortIcon></th>
+                <th pSortableColumn="code">{{ '::Admin:Hospital:Column:Code' |
+                    abpLocalization }} <p-sortIcon field="code"></p-sortIcon></th>
+                <th pSortableColumn="address">{{ '::Admin:Hospital:Column:Address' |
+                    abpLocalization }} <p-sortIcon field="address"></p-sortIcon></th>
+                <th pSortableColumn="city.name">{{ '::Admin:Hospital:Column:City' |
+                    abpLocalization }} <p-sortIcon field="city.name"></p-sortIcon></th>
                 <th pSortableColumn="phoneNumber">{{ '::Admin:Hospital:Column:PhoneNumber' | abpLocalization
                     }} <p-sortIcon field="phoneNumber"></p-sortIcon></th>
                 <th pSortableColumn="email">{{ '::Admin:Hospital:Column:EMail' | abpLocalization
                     }} <p-sortIcon field="email"></p-sortIcon></th>
                 <th>{{ '::Admin:Hospital:Column:Staffs' |
                     abpLocalization }}</th>
+                <th>{{ '::Admin:Hospital:Column:IsActive' | abpLocalization }}</th>
                 <th style="width:11rem;"></th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-hospital>
             <tr>
                 <td>{{hospital.name}}</td>
-                <td>{{!hospital.phoneNumber ? '-' : hospital.phoneNumber}}</td>
+                <td>{{hospital.code}}</td>
+                <td>{{hospital.address}}</td>
+                <td>{{hospital.city?.name}}</td>
+                <td>{{hospital.phoneCountryCode?.phoneCode ?? hospital.phoneCountryCode?.phoneCode + '
+                    '}}{{hospital.phoneNumber}}</td>
                 <td>{{!hospital.email ? '-' : hospital.email}}</td>
-                <td>{{!hospital.staffList ? '-': hospital.staffList}}</td>
+                <td><div [innerHTML]="!hospital.hospitalStaffNames ? '-': hospital.hospitalStaffNames"></div></td>
+                <td><i class="pi"
+                        [ngClass]="{ 'text-green-500 pi-check-circle': hospital.isActive, 'text-red-500 pi-times-circle': !hospital.isActive }"></i>
+                </td>
                 <td class="text-right">
                     <button pButton pRipple icon="pi pi-users" class="p-button-rounded p-button-info"
                         (click)="openStaffDialog(hospital)"></button>
@@ -72,6 +86,40 @@
                     }}</small>
             </div>
             <div class="field">
+                <label for="code">{{ '::Admin:Hospital:Column:Code' | abpLocalization }}&nbsp;<font style="color:red">*
+                    </font></label>
+                <input type="text" pInputText id="code" name="code" #code="ngModel" [(ngModel)]="hospital.code"
+                    required />
+                <small class="p-error" *ngIf="!(code.valid || code.pristine)">{{ '::Message:RequiredField' |
+                    abpLocalization
+                    }}</small>
+            </div>
+            <div class="field">
+                <label for="address">{{ '::Admin:Hospital:Column:Address' | abpLocalization }}&nbsp;<font
+                        style="color:red">*
+                    </font></label>
+                <textarea rows="2" pInputText id="address" name="address" #address="ngModel"
+                    [(ngModel)]="hospital.address" required></textarea>
+                <small class="p-error" *ngIf="!(address.valid || address.pristine)">{{ '::Message:RequiredField' |
+                    abpLocalization
+                    }}</small>
+            </div>
+            <div class="field">
+                <label for="city">{{ '::Admin:Hospital:Column:City' | abpLocalization
+                    }}&nbsp;<font style="color:red">*
+                    </font></label>
+                <p-dropdown id="city" name="city" [filter]="true" filterBy="name" [showClear]="true" #city="ngModel"
+                    [options]="cityList" [(ngModel)]="hospital.cityId" [style]="{'width':'100%'}"
+                    styleClass="filterDropDown" optionValue="id" placeholder="{{ '::Select' | abpLocalization }}"
+                    optionLabel="name" appendTo="body" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
+                    emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}" required>
+
+                </p-dropdown>
+                <small class="p-error" *ngIf="!(city.valid || city.pristine)">{{ '::Message:RequiredField' |
+                    abpLocalization
+                    }}</small>
+            </div>
+            <div class="field">
                 <label for="phoneNumber">{{ '::Admin:Hospital:Column:PhoneNumber' | abpLocalization }}</label>
                 <div class="flex">
                     <p-dropdown id="phoneCountryCode" name="phoneCountryCode" [filter]="true" filterBy="name"
@@ -84,8 +132,9 @@
                             <div><b>{{ country.phoneCode }}</b> - {{ country.name }}</div>
                         </ng-template>
                     </p-dropdown>
-                    <input type="text" pInputText id="phoneNumber" name="phoneNumber" #phoneNumber="ngModel"
-                        [(ngModel)]="hospital.phoneNumber" maxlength="20" class="w-10rem" />
+                    <p-inputMask id="phoneNumber" name="phoneNumber" #phoneNumber="ngModel" [unmask]="true"
+                        mask="(999) 999-9999" [(ngModel)]="hospital.phoneNumber" placeholder="(999) 999-9999"
+                        styleClass="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary"></p-inputMask>
                 </div>
             </div>
             <div class="field">
@@ -94,6 +143,13 @@
                     [(ngModel)]="hospital.email" />
                 <small class="p-error" *ngIf="email.errors?.email">{{ '::Message:WrongEmailFormat' |
                     abpLocalization }}</small>
+            </div>
+            <div class="field">
+                <label for="isActive">{{ '::Admin:Hospital:Column:IsActive' | abpLocalization }}</label>
+                <div class="w-full">
+                    <p-checkbox id="isActive" name="isActive" #isActive="ngModel" [(ngModel)]="hospital.isActive"
+                        [binary]="true"></p-checkbox>
+                </div>
             </div>
         </div>
     </form>
@@ -129,6 +185,7 @@
                         abpLocalization }} <p-sortIcon field="phoneNumber"></p-sortIcon></th>
                     <th pSortableColumn="email">{{ '::Admin:HospitalStaff:Column:Email' | abpLocalization
                         }} <p-sortIcon field="email"></p-sortIcon></th>
+                    <th>{{ '::Admin:HospitalStaff:Column:IsDefault' | abpLocalization }}</th>
                     <th>{{ '::Admin:HospitalStaff:Column:IsActive' | abpLocalization }}</th>
                     <th style="width:8rem;"></th>
                 </tr>
@@ -139,9 +196,14 @@
                     <td>{{staff.user?.phoneNumber}}</td>
                     <td>{{staff.user?.email}}</td>
                     <td><i class="pi"
+                            [ngClass]="{ 'text-green-500 pi-check-circle': staff.isDefault, 'text-red-500 pi-times-circle': !staff.isDefault }"></i>
+                    </td>
+                    <td><i class="pi"
                             [ngClass]="{ 'text-green-500 pi-check-circle': staff.isActive, 'text-red-500 pi-times-circle': !staff.isActive }"></i>
                     </td>
                     <td class="text-right">
+                        <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
+                            (click)="editStaff(staff)"></button>
                         <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
                             (click)="deleteStaff(staff)"></button>
                     </td>
@@ -162,35 +224,40 @@
 </p-dialog>
 
 <p-dialog [(visible)]="hospitalStaffEditDialog" [style]="{width: '450px'}"
-    header="{{ '::Admin:HospitalStaff:HospitalStaffDetails' | abpLocalization }}" [modal]="true" styleClass="p-fluid">
+    header="{{ '::Admin:HospitalStaff:HospitalStaffDetails' | abpLocalization }}" [modal]="true" styleClass="p-fluid" (onHide)="hideStaffDialog()">
     <form #hospitalStaffEditForm="ngForm">
         <div *ngIf="hospitalStaff">
             <div class="field">
                 <label for="staff">{{ '::Admin:HospitalStaff:Column:Staff' | abpLocalization }}&nbsp;<font
                         style="color:red">*</font></label>
-                <p-multiSelect id="staff" name="staff" #staff="ngModel" [filter]="true" filterBy="name"
-                    [showClear]="true" [options]="uhbUserList" [(ngModel)]="selectedHospitalStaff"
+                <p-dropdown id="staff" name="staff" #staff="ngModel" [filter]="true" filterBy="name" [showClear]="true"
+                    [options]="uhbUserList" [(ngModel)]="selectedHospitalStaff"
                     placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
                     styleClass="filterDropDown" appendTo="body" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
-                    emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}">
-                    <ng-template let-value pTemplate="selectedItems">
-                        <div class="flex align-items-center gap-2" *ngFor="let staff of selectedHospitalStaff">
-                            <div>{{ staff.name + " " + staff.surname }}</div>
+                    emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}" required>
+                    <ng-template pTemplate="selectedItem">
+                        <div class="flex align-items-center gap-2" *ngIf="selectedHospitalStaff">
+                            <div>{{ selectedHospitalStaff.name }} {{ selectedHospitalStaff.surname }}</div>
                         </div>
-                        <div *ngIf="!selectedHospitalStaff || selectedHospitalStaff.length === 0">{{ '::Select' |
-                            abpLocalization }}</div>
                     </ng-template>
                     <ng-template let-staff pTemplate="item">
                         <div class="flex align-items-center gap-2">
-                            <div>{{ staff.name + " " + staff.surname}}</div>
+                            <div>{{ staff.name }} {{ staff.surname }}</div>
                         </div>
                     </ng-template>
-                </p-multiSelect>
+                </p-dropdown>
                 <small class="p-error" *ngIf="!(staff.valid || staff.pristine)">{{ '::Message:RequiredField'
                     |
                     abpLocalization }}</small>
             </div>
-
+            <div class="field">
+                <label for="isDefault">{{ '::Admin:HospitalStaff:Column:IsDefault' | abpLocalization
+                    }}</label>
+                <div class="w-full">
+                    <p-checkbox id="isDefault" name="isDefault" #isDefault="ngModel"
+                        [(ngModel)]="hospitalStaff.isDefault" [binary]="true"></p-checkbox>
+                </div>
+            </div>
             <div class="field">
                 <label for="isActive">{{ '::Admin:HospitalStaff:Column:IsActive' | abpLocalization }}</label>
                 <div class="w-full">

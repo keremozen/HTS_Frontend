@@ -33,10 +33,14 @@ const routes: Routes = [
     path: 'patient',
     loadChildren: () => import('./patient/patient.module').then(m => m.PatientModule)
   },
+  {
+    path: 'hospital-response',
+    loadChildren: () => import('./hospital-response/hospital-response.module').then(m => m.HospitalResponseModule)
+  },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, {})],
+  imports: [RouterModule.forRoot(routes, {enableTracing: true})],
   exports: [RouterModule],
 })
 export class AppRoutingModule { }

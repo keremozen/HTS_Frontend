@@ -10,6 +10,12 @@ import { DocumentTypeComponent } from './document-type/document-type.component';
 import { PatientAdmissionMethodComponent } from './patient-admission-method/patient-admission-method.component';
 import { ContractedInstitutionComponent } from './contracted-institution/contracted-institution.component';
 import { CityComponent } from './city/city.component';
+import { BranchComponent } from './branch/branch.component';
+import { TreatmentTypeComponent } from './treatment-type/treatment-type.component';
+import { ProcessTypeComponent } from './process-type/process-type.component';
+import { HospitalizationTypeComponent } from './hospitalization-type/hospitalization-type.component';
+import { HospitalResponseComponent } from './hospital-response/hospital-response.component';
+import { ProcessComponent } from './process/process.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +25,13 @@ import { CityComponent } from './city/city.component';
     DocumentTypeComponent,
     PatientAdmissionMethodComponent,
     ContractedInstitutionComponent,
-    CityComponent
+    CityComponent,
+    BranchComponent,
+    TreatmentTypeComponent,
+    ProcessTypeComponent,
+    HospitalizationTypeComponent,
+    HospitalResponseComponent,
+    ProcessComponent
   ],
   imports: [
     SharedModule,

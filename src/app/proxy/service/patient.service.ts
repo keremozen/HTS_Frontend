@@ -1,7 +1,7 @@
 import { RestService } from '@abp/ng.core';
 import type { PagedResultDto } from '@abp/ng.core';
 import { Injectable } from '@angular/core';
-import type { PatientDto, SavePatientDto } from '../dto/patient/models';
+import type { FilterPatientDto, PatientDto, SavePatientDto } from '../dto/patient/models';
 
 @Injectable({
   providedIn: 'root',
@@ -23,6 +23,15 @@ export class PatientService {
     this.restService.request<any, void>({
       method: 'DELETE',
       url: `/api/app/patient/${id}`,
+    },
+    { apiName: this.apiName });
+  
+
+  filterList = (filter: FilterPatientDto) =>
+    this.restService.request<any, PagedResultDto<PatientDto>>({
+      method: 'POST',
+      url: '/api/app/patient/filter-list',
+      body: filter,
     },
     { apiName: this.apiName });
   

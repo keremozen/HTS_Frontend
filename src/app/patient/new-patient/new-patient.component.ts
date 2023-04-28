@@ -24,6 +24,7 @@ export class NewPatientComponent extends AppComponentBase {
   genderList: GenderDto[] = [];
   loading: boolean;
   maxBirthDate: Date = moment().toDate();
+  minBirthDate: Date = moment('01.01.1900').toDate();
 
   constructor(
     injector: Injector,

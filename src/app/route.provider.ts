@@ -21,6 +21,7 @@ function configureRoutes(routesService: RoutesService) {
         name: '::Menu:Patients',
         iconClass: 'fas fa-hospital-user',
         order: 2,
+        requiredPolicy: 'HTS.PatientAccess',
         layout: eLayoutType.application
       },
       {
@@ -85,7 +86,61 @@ function configureRoutes(routesService: RoutesService) {
         order: 106,
         requiredPolicy: 'HTS.ContractedInstitutionManagement',
         layout: eLayoutType.application
-      }
+      },
+      {
+        path: '/admin/branch',
+        name: '::Menu:Admin:Branch',
+        iconClass: 'fas fa-code-branch',
+        parentName: eThemeSharedRouteNames.Administration,
+        order: 107,
+        requiredPolicy: 'HTS.BranchManagement',
+        layout: eLayoutType.application
+      },
+      {
+        path: '/admin/treatmentType',
+        name: '::Menu:Admin:TreatmentType',
+        iconClass: 'fas fa-list',
+        parentName: eThemeSharedRouteNames.Administration,
+        order: 108,
+        requiredPolicy: 'HTS.TreatmentTypeManagement',
+        layout: eLayoutType.application
+      },
+      {
+        path: '/admin/processType',
+        name: '::Menu:Admin:ProcessType',
+        iconClass: 'fas fa-list',
+        parentName: eThemeSharedRouteNames.Administration,
+        order: 109,
+        requiredPolicy: 'HTS.ProcessTypeManagement',
+        layout: eLayoutType.application
+      },
+      {
+        path: '/admin/hospitalizationType',
+        name: '::Menu:Admin:HospitalizationType',
+        iconClass: 'fas fa-bed',
+        parentName: eThemeSharedRouteNames.Administration,
+        order: 110,
+        requiredPolicy: 'HTS.HospitalizationTypeManagement',
+        layout: eLayoutType.application
+      },
+      {
+        path: '/admin/hospitalResponse',
+        name: '::Menu:Admin:HospitalResponse',
+        iconClass: 'fas fa-undo',
+        parentName: eThemeSharedRouteNames.Administration,
+        order: 111,
+        requiredPolicy: 'HTS.HospitalResponseManagement',
+        layout: eLayoutType.application
+      },
+      {
+        path: '/admin/process',
+        name: '::Menu:Admin:Process',
+        iconClass: 'fas fa-procedures',
+        parentName: eThemeSharedRouteNames.Administration,
+        order: 112,
+        requiredPolicy: 'HTS.ProcessManagement',
+        layout: eLayoutType.application
+      },
     ]);
   };
 }

@@ -1,4 +1,4 @@
-import { Component, Injector, Input, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Injector, Input, Output, ViewEncapsulation } from '@angular/core';
 import { ContractedInstitutionDto } from '@proxy';
 import { ContractedInstitutionStaffDto } from '@proxy/dto/contracted-institution-staff';
 import { LanguageDto } from '@proxy/dto/language';
@@ -27,6 +27,7 @@ export class CompanionInfoComponent extends AppComponentBase {
   salesAndCompanionInfo: SalesMethodAndCompanionInfoDto;
   selectedStaffEmail: string;
   selectedStaffPhone: string;
+  @Output() save: EventEmitter<any> = new EventEmitter();
 
   constructor(
     injector: Injector,
@@ -66,10 +67,10 @@ export class CompanionInfoComponent extends AppComponentBase {
           this.contractedInstitutionList = resContractedInstitutionList.items;
           this.patientAdmissionMethodList = resAdmissionMethodList.items;
           if (resSalesAndCompanionInfo) {
-          this.salesAndCompanionInfo = resSalesAndCompanionInfo;
-          if (this.salesAndCompanionInfo.contractedInstitutionId) {
-            this.onInstitutionSelect();
-          }
+            this.salesAndCompanionInfo = resSalesAndCompanionInfo;
+            if (this.salesAndCompanionInfo.contractedInstitutionId) {
+              this.onInstitutionSelect();
+            }
           }
           else {
             this.salesAndCompanionInfo = {} as SalesMethodAndCompanionInfoDto;
@@ -85,11 +86,12 @@ export class CompanionInfoComponent extends AppComponentBase {
     );
   }
 
-  onInstitutionSelect(){
+  onInstitutionSelect() {
     if (this.salesAndCompanionInfo.contractedInstitutionId) {
       this.contractedInstitutionStaffService.getByInstitutionList(this.salesAndCompanionInfo.contractedInstitutionId).subscribe({
         next: (staffList) => {
           this.institutionStaffList = staffList.items;
+          this.salesAndCompanionInfo.contractedInstitutionStaffId = this.institutionStaffList.find(s=>s.isActive && s.isDefault).id;
           if (this.salesAndCompanionInfo.contractedInstitutionStaffId) {
             this.onInstitutionStaffSelect();
           }
@@ -100,9 +102,9 @@ export class CompanionInfoComponent extends AppComponentBase {
 
   onInstitutionStaffSelect() {
     if (this.salesAndCompanionInfo.contractedInstitutionStaffId) {
-      let staff = this.institutionStaffList.find(s=>s.id == this.salesAndCompanionInfo.contractedInstitutionStaffId);
+      let staff = this.institutionStaffList.find(s => s.id == this.salesAndCompanionInfo.contractedInstitutionStaffId);
       this.selectedStaffEmail = staff.email;
-      this.selectedStaffPhone = this.nationalityList.find(n=>n.id == staff.phoneCountryCodeId)?.phoneCode +" "+ staff.phoneNumber;
+      this.selectedStaffPhone = this.nationalityList.find(n => n.id == staff.phoneCountryCodeId)?.phoneCode + " " + staff.phoneNumber;
     }
   }
 
@@ -111,8 +113,9 @@ export class CompanionInfoComponent extends AppComponentBase {
     this.salesAndCompanionInfoService.save(this.salesAndCompanionInfo).subscribe({
       complete: () => {
         this.success(this.l('::Message:SuccessfulSave', this.l('::SalesAndCompanionInfo:Name')));
+        this.save.emit();
       }
     });
   }
-  
+
 }

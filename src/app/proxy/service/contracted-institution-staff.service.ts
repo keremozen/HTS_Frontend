@@ -11,7 +11,7 @@ export class ContractedInstitutionStaffService {
   
 
   create = (contractedInstitutionStaff: SaveContractedInstitutionStaffDto) =>
-    this.restService.request<any, ContractedInstitutionStaffDto>({
+    this.restService.request<any, void>({
       method: 'POST',
       url: '/api/app/contracted-institution-staff',
       body: contractedInstitutionStaff,
@@ -44,7 +44,7 @@ export class ContractedInstitutionStaffService {
   
 
   update = (id: number, contractedInstitutionStaff: SaveContractedInstitutionStaffDto) =>
-    this.restService.request<any, ContractedInstitutionStaffDto>({
+    this.restService.request<any, void>({
       method: 'PUT',
       url: `/api/app/contracted-institution-staff/${id}`,
       body: contractedInstitutionStaff,

@@ -1,8 +1,9 @@
 import { Component, Injector } from '@angular/core';
+import { CityDto } from '@proxy/dto/city';
 import { HospitalDto, SaveHospitalDto } from '@proxy/dto/hospital';
 import { HospitalStaffDto, SaveHospitalStaffDto } from '@proxy/dto/hospital-staff';
 import { NationalityDto } from '@proxy/dto/nationality';
-import { HospitalService, HospitalStaffService, NationalityService, UserService } from '@proxy/service';
+import { CityService, HospitalService, HospitalStaffService, NationalityService, UserService } from '@proxy/service';
 import { IdentityUserDto } from '@proxy/volo/abp/identity';
 import { forkJoin } from 'rxjs';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
@@ -26,7 +27,7 @@ export class HospitalComponent extends AppComponentBase {
   hospitalDialog: boolean;
   hospitalStaffListDialog: boolean;
   hospitalStaffEditDialog: boolean;
-  hospitalList: HospitalWithStaff[];
+  hospitalList: HospitalWithStaffNames[];
   hospital: SaveHospitalDto;
   isEdit: boolean;
   hospitalToBeEdited: HospitalDto;
@@ -37,14 +38,16 @@ export class HospitalComponent extends AppComponentBase {
   hospitalStaff: SaveHospitalStaffDto;
   hospitalStaffToBeEdited: HospitalStaffDto;
   uhbUserList: IdentityUserDto[] = [];
-  selectedHospitalStaff: IdentityUserDto[] = [];
+  selectedHospitalStaff: IdentityUserDto;
+  cityList: CityDto[] = [];
 
   constructor(
     injector: Injector,
     private hospitalService: HospitalService,
     private hospitalStaffService: HospitalStaffService,
     private nationalityService: NationalityService,
-    private userService: UserService
+    private userService: UserService,
+    private cityService: CityService
   ) {
     super(injector);
   }
@@ -59,26 +62,26 @@ export class HospitalComponent extends AppComponentBase {
     forkJoin([
       this.nationalityService.getList(),
       this.hospitalService.getList(),
+      this.cityService.getList(),
       this.userService.getByRole("UHB Yetkilisi")
     ]).subscribe(
       {
         next: ([
           resNationalityList,
           resHospitalList,
+          resCityList,
           resUserList
         ]) => {
           this.nationalityList = resNationalityList.items;
+          this.totalRecords = resHospitalList.totalCount;
           this.hospitalList = [];
           resHospitalList.items.forEach(hospital => {
-            let hospitalwithstaff = hospital as HospitalWithStaff;
-            this.hospitalStaffService.getByInstitutionList(hospital.id).subscribe({
-              next: (res) => {
-                hospitalwithstaff.staffList = res.items.map(s=> (s.user?.name + " " + s.user?.surname)).join(", ");
-              }
-            });
+            let hospitalwithstaff = hospital as HospitalWithStaffNames;
+            hospitalwithstaff.hospitalStaffNames = hospital.hospitalStaffs.filter(s=>s.isActive).map(s=>s.user.name+ " " + s.user.surname).join("<br>");
             this.hospitalList.push(hospitalwithstaff);
           });
           this.uhbUserList = resUserList;
+          this.cityList = resCityList.items;
         },
         error: () => {
           this.loading = false;
@@ -96,7 +99,6 @@ export class HospitalComponent extends AppComponentBase {
     this.hospital.isActive = true;
     this.hospitalDialog = true;
   }
-
 
   editHospital(hospital: HospitalDto) {
     this.isEdit = true;
@@ -129,9 +131,6 @@ export class HospitalComponent extends AppComponentBase {
           this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:Hospital:Name')));
           this.fetchData();
           this.hideDialog();
-        },
-        error: (error: any) => {
-          this.hideDialog();
         }
       });
     }
@@ -141,9 +140,6 @@ export class HospitalComponent extends AppComponentBase {
           this.fetchData();
           this.hideDialog();
           this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:Hospital:Name')));
-        },
-        error: (error: any) => {
-          this.hideDialog();
         }
       });
     }
@@ -170,9 +166,6 @@ export class HospitalComponent extends AppComponentBase {
       next: (resStaffList) => {
         this.hospitalStaffList = resStaffList.items as HospitalStaffDto[];
         this.hospitalStaffTotalRecords = resStaffList.totalCount;
-        /*this.hospitalStaffList.forEach(staff => {
-          this.userService.getByIdById(staff.id)
-        });*/
       },
       error: () => {
         this.loading = false;
@@ -193,6 +186,13 @@ export class HospitalComponent extends AppComponentBase {
     this.hospitalStaffEditDialog = true;
   }
 
+  editStaff(hospitalStaff: HospitalStaffDto) {
+    this.isEdit = true;
+    this.hospitalStaffToBeEdited = hospitalStaff;
+    this.hospitalStaff = { ...hospitalStaff as SaveHospitalStaffDto };
+    this.selectedHospitalStaff = hospitalStaff.user;
+    this.hospitalStaffEditDialog = true;
+  }
 
   deleteStaff(hospitalStaff: HospitalStaffDto) {
     this.confirm({
@@ -212,26 +212,31 @@ export class HospitalComponent extends AppComponentBase {
   }
 
   saveHospitalStaff() {
-    if (!this.isEdit && this.selectedHospitalStaff.length > 0) {
-      let staffDtoList: SaveHospitalStaffDto[] = [];
-      this.selectedHospitalStaff.forEach(staff => {
-        staffDtoList.push({
-          hospitalId: this.hospitalToBeEdited.id,
-          isActive: this.hospitalStaff.isActive,
-          isDefault: true,//TODO: Kerem
-          userId: staff.id
-        })
-      });
-      this.hospitalStaffService.save(this.hospitalToBeEdited.id, staffDtoList).subscribe({
-        complete: () => {
-          this.fetchStaffData();
-          this.hideStaffDialog();
-          this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:HospitalStaff:Name')));
-        },
-        error: (error: any) => {
-          this.hideStaffDialog();
-        }
-      });
+    if (this.selectedHospitalStaff) {
+      let staffDto: SaveHospitalStaffDto = {
+        hospitalId: this.hospitalToBeEdited.id,
+        isActive: this.hospitalStaff.isActive,
+        isDefault: this.hospitalStaff.isDefault,
+        userId: this.selectedHospitalStaff.id
+      };
+      if (!this.isEdit) {
+        this.hospitalStaffService.create(staffDto).subscribe({
+          complete: () => {
+            this.fetchStaffData();
+            this.hideStaffDialog();
+            this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:HospitalStaff:Name')));
+          }
+        });
+      }
+      else {
+        this.hospitalStaffService.update(this.hospitalStaffToBeEdited.id, staffDto).subscribe({
+          complete: () => {
+            this.fetchStaffData();
+            this.hideStaffDialog();
+            this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:HospitalStaff:Name')));
+          }
+        });
+      }
     }
   }
 
@@ -239,19 +244,24 @@ export class HospitalComponent extends AppComponentBase {
     this.hospitalStaff = null;
     this.hospitalStaffToBeEdited = null;
     this.hospitalStaffEditDialog = false;
+    this.selectedHospitalStaff = null;
   }
 
 }
 
-class HospitalWithStaff implements HospitalDto {
+class HospitalWithStaffNames implements HospitalDto {
+  name?: string;
   code?: string;
   address?: string;
   cityId: number;
-  name?: string;
   phoneNumber?: string;
   phoneCountryCodeId?: number;
   email?: string;
   isActive: boolean;
+  phoneCountryCode: NationalityDto;
+  city: CityDto;
+  hospitalStaffs: HospitalStaffDto[];
+  hospitalStaffNames: string;
   id?: number;
-  staffList: string;
+
 }

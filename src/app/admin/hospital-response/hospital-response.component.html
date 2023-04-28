@@ -1,0 +1,98 @@
+<p-toast></p-toast>
+
+<h4>{{ '::Admin:HospitalResponse:HospitalResponseManagement' | abpLocalization }}</h4>
+
+<div class="card">
+    <p-toolbar styleClass="mb-4 gap-2">
+        <ng-template pTemplate="left">
+            <button pButton pRipple label="{{ '::Admin:HospitalResponse:NewHospitalResponse' | abpLocalization }}"
+                icon="pi pi-plus" class="p-button-success mr-2" (click)="openNewHospitalResponse()"
+                [loading]="loading"></button>
+        </ng-template>
+    </p-toolbar>
+
+    <p-table #dt [value]="hospitalResponseList" [rows]="10" [paginator]="true"
+        [globalFilterFields]="['name','code','description']" [tableStyle]="{'min-width': '75rem'}" [rowHover]="true"
+        dataKey="Id" [loading]="loading"
+        currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
+        [showCurrentPageReport]="true">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="response">{{ '::Admin:HospitalResponse:Column:Response' | abpLocalization }}
+                    <p-sortIcon field="response"></p-sortIcon></th>
+                <th>{{ '::Admin:HospitalResponse:Column:IsAssessable' | abpLocalization }}</th>
+                <th>{{ '::Admin:HospitalResponse:Column:IsActive' | abpLocalization }}</th>
+                <th style="width:8rem;"></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-hospitalResponse>
+            <tr>
+                <td>{{hospitalResponse.response}}</td>
+                <td><i class="pi"
+                    [ngClass]="{ 'text-green-500 pi-check-circle': hospitalResponse.isAssessable, 'text-red-500 pi-times-circle': !hospitalResponse.isAssessable }"></i>
+            </td>
+                <td><i class="pi"
+                        [ngClass]="{ 'text-green-500 pi-check-circle': hospitalResponse.isActive, 'text-red-500 pi-times-circle': !hospitalResponse.isActive }"></i>
+                </td>
+                <td>
+                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
+                        (click)="editHospitalResponse(hospitalResponse)"></button>
+                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                        (click)="deleteHospitalResponse(hospitalResponse)"></button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <div class="m-3">
+                {{ '::Table:EmptyMessage' | abpLocalization }}
+            </div>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="flex align-items-center justify-content-between" *ngIf="totalRecords > 0">
+                {{ '::Table:Summary' | abpLocalization:(totalRecords) }}
+            </div>
+        </ng-template>
+    </p-table>
+</div>
+
+<p-dialog [(visible)]="hospitalResponseDialog" [style]="{width: '450px'}"
+    header="{{ '::Admin:HospitalResponse:HospitalResponseDetails' | abpLocalization }}" [modal]="true"
+    styleClass="p-fluid">
+    <form #hospitalResponseForm="ngForm">
+        <div *ngIf="hospitalResponse">
+            <div class="field">
+                <label for="response">{{ '::Admin:HospitalResponse:Column:Response' | abpLocalization }}&nbsp;<font
+                        style="color:red">*
+                    </font></label>
+                <input type="text" pInputText id="response" name="response" #response="ngModel" [(ngModel)]="hospitalResponse.response"
+                    required autofocus />
+                <small class="p-error" *ngIf="!(response.valid || response.pristine)">{{ '::Message:RequiredField' |
+                    abpLocalization
+                    }}</small>
+            </div>
+            <div class="field">
+                <label for="isAssessable">{{ '::Admin:HospitalResponse:Column:IsAssessable' | abpLocalization }}</label>
+                <div class="w-full">
+                    <p-checkbox id="isAssessable" name="isAssessable" #isAssessable="ngModel"
+                        [(ngModel)]="hospitalResponse.isAssessable" [binary]="true"></p-checkbox>
+                </div>
+            </div>
+            <div class="field">
+                <label for="isActive">{{ '::Admin:HospitalResponse:Column:IsActive' | abpLocalization }}</label>
+                <div class="w-full">
+                    <p-checkbox id="isActive" name="isActive" #isActive="ngModel"
+                        [(ngModel)]="hospitalResponse.isActive" [binary]="true"></p-checkbox>
+                </div>
+            </div>
+        </div>
+    </form>
+    <p-footer>
+        <button pButton pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" class="p-button-text"
+            (click)="hideDialog()"></button>
+        <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" class="p-button-text"
+            (click)="saveHospitalResponse()" [disabled]="!(hospitalResponseForm.valid)"></button>
+    </p-footer>
+</p-dialog>
+
+<p-confirmDialog [style]="{width: '450px'}" rejectLabel="{{ '::Reject' | abpLocalization }}"
+    acceptLabel="{{ '::Accept' | abpLocalization }}"></p-confirmDialog>

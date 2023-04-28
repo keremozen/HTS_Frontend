@@ -15,8 +15,7 @@ export class AppMenuComponent extends AppComponentBase implements OnInit {
     constructor(
         injector: Injector,
         public app: PrimeApplicationLayoutComponent,
-        public routes: RoutesService,
-        private permissionService: PermissionService
+        public routes: RoutesService
     ) {
         super(injector);
     }
@@ -27,7 +26,7 @@ export class AppMenuComponent extends AppComponentBase implements OnInit {
             res.forEach(route => {
                 let menuItem = this.convertRouteToMenuItem(route);
                 if (menuItem) {
-                    menuItem.visible = menuItem.items?.filter(m=>m.visible).length > 0 || route.path != undefined; 
+                    menuItem.visible = menuItem.visible && (menuItem.items?.filter(m=>m.visible).length > 0 || route.path != undefined); 
                     this.items.push(menuItem);
                 }
             });
@@ -42,7 +41,7 @@ export class AppMenuComponent extends AppComponentBase implements OnInit {
             menuItem.icon = route.iconClass;
             menuItem.routerLink = route.path;
             menuItem.routerLinkActiveOptions = { exact: true };
-            menuItem.visible = !route.requiredPolicy || (route.requiredPolicy && this.permissionService.getGrantedPolicy(route.requiredPolicy));
+            menuItem.visible = !route.requiredPolicy || (route.requiredPolicy && this.permission.getGrantedPolicy(route.requiredPolicy));
             if (route.children && route.children.length > 0) {
                 menuItem.items = [];
                 route.children.forEach(childRoute => {
