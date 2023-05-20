@@ -1,5 +1,4 @@
 import { RestService } from '@abp/ng.core';
-import type { PagedResultDto } from '@abp/ng.core';
 import { Injectable } from '@angular/core';
 import type { HospitalResponseDto, SaveHospitalResponseDto } from '../dto/hospital-response/models';
 
@@ -10,19 +9,19 @@ export class HospitalResponseService {
   apiName = 'Default';
   
 
-  create = (hospitalResponse: SaveHospitalResponseDto) =>
-    this.restService.request<any, HospitalResponseDto>({
+  approve = (hospitalResponseId: number) =>
+    this.restService.request<any, void>({
       method: 'POST',
-      url: '/api/app/hospital-response',
-      body: hospitalResponse,
+      url: `/api/app/hospital-response/approve/${hospitalResponseId}`,
     },
     { apiName: this.apiName });
   
 
-  delete = (id: number) =>
+  create = (hospitalResponse: SaveHospitalResponseDto) =>
     this.restService.request<any, void>({
-      method: 'DELETE',
-      url: `/api/app/hospital-response/${id}`,
+      method: 'POST',
+      url: '/api/app/hospital-response',
+      body: hospitalResponse,
     },
     { apiName: this.apiName });
   
@@ -35,19 +34,10 @@ export class HospitalResponseService {
     { apiName: this.apiName });
   
 
-  getList = () =>
-    this.restService.request<any, PagedResultDto<HospitalResponseDto>>({
-      method: 'GET',
-      url: '/api/app/hospital-response',
-    },
-    { apiName: this.apiName });
-  
-
-  update = (id: number, hospitalResponse: SaveHospitalResponseDto) =>
-    this.restService.request<any, HospitalResponseDto>({
-      method: 'PUT',
-      url: `/api/app/hospital-response/${id}`,
-      body: hospitalResponse,
+  reject = (hospitalResponseId: number) =>
+    this.restService.request<any, void>({
+      method: 'POST',
+      url: `/api/app/hospital-response/reject/${hospitalResponseId}`,
     },
     { apiName: this.apiName });
 

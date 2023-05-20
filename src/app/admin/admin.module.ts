@@ -13,9 +13,8 @@ import { CityComponent } from './city/city.component';
 import { BranchComponent } from './branch/branch.component';
 import { TreatmentTypeComponent } from './treatment-type/treatment-type.component';
 import { ProcessTypeComponent } from './process-type/process-type.component';
-import { HospitalizationTypeComponent } from './hospitalization-type/hospitalization-type.component';
-import { HospitalResponseComponent } from './hospital-response/hospital-response.component';
 import { ProcessComponent } from './process/process.component';
+import { MaterialComponent } from './material/material.component';
 
 @NgModule({
   declarations: [
@@ -29,9 +28,8 @@ import { ProcessComponent } from './process/process.component';
     BranchComponent,
     TreatmentTypeComponent,
     ProcessTypeComponent,
-    HospitalizationTypeComponent,
-    HospitalResponseComponent,
-    ProcessComponent
+    ProcessComponent,
+    MaterialComponent
   ],
   imports: [
     SharedModule,

@@ -35,10 +35,11 @@ export class ContractedInstitutionService {
     { apiName: this.apiName });
   
 
-  getList = () =>
+  getList = (isActive?: boolean) =>
     this.restService.request<any, PagedResultDto<ContractedInstitutionDto>>({
       method: 'GET',
       url: '/api/app/contracted-institution',
+      params: { isActive },
     },
     { apiName: this.apiName });
   

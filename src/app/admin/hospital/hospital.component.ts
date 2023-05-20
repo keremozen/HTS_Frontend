@@ -77,11 +77,15 @@ export class HospitalComponent extends AppComponentBase {
           this.hospitalList = [];
           resHospitalList.items.forEach(hospital => {
             let hospitalwithstaff = hospital as HospitalWithStaffNames;
-            hospitalwithstaff.hospitalStaffNames = hospital.hospitalStaffs.filter(s=>s.isActive).map(s=>s.user.name+ " " + s.user.surname).join("<br>");
+            hospitalwithstaff.hospitalStaffNames = hospital.hospitalStaffs.filter(s => s.isActive).map(s => s.user.name + " " + s.user.surname).join("<br>");
             this.hospitalList.push(hospitalwithstaff);
           });
           this.uhbUserList = resUserList;
           this.cityList = resCityList.items;
+          if (this.hospitalToBeEdited) {
+            this.hospitalToBeEdited = this.hospitalList.find(h=>h.id == this.hospitalToBeEdited.id);
+            this.fetchHospitalStaff();
+          }
         },
         error: () => {
           this.loading = false;
@@ -157,25 +161,13 @@ export class HospitalComponent extends AppComponentBase {
 
   openStaffDialog(hospital: HospitalDto) {
     this.hospitalToBeEdited = hospital;
-    this.fetchStaffData();
+    this.fetchHospitalStaff();
+    this.hospitalStaffListDialog = true;
   }
 
-  fetchStaffData() {
-    this.loading = true;
-    this.hospitalStaffService.getByInstitutionList(this.hospitalToBeEdited.id).subscribe({
-      next: (resStaffList) => {
-        this.hospitalStaffList = resStaffList.items as HospitalStaffDto[];
-        this.hospitalStaffTotalRecords = resStaffList.totalCount;
-      },
-      error: () => {
-        this.loading = false;
-        this.hospitalStaffToBeEdited = null;
-      },
-      complete: () => {
-        this.hospitalStaffListDialog = true;
-        this.loading = false;
-      }
-    });
+  fetchHospitalStaff() {
+    this.hospitalStaffList = this.hospitalToBeEdited.hospitalStaffs as HospitalStaffDto[];
+    this.hospitalStaffTotalRecords = this.hospitalToBeEdited.hospitalStaffs.length;
   }
 
   openNewStaff() {
@@ -203,7 +195,7 @@ export class HospitalComponent extends AppComponentBase {
         this.hospitalStaffService.delete(hospitalStaff.id).subscribe({
           complete: () => {
             this.success(this.l('::Message:SuccessfulDeletion', this.l('::Admin:HospitalStaff:Name')));
-            this.fetchStaffData();
+            this.fetchData();
             this.hideStaffDialog();
           }
         });
@@ -222,7 +214,7 @@ export class HospitalComponent extends AppComponentBase {
       if (!this.isEdit) {
         this.hospitalStaffService.create(staffDto).subscribe({
           complete: () => {
-            this.fetchStaffData();
+            this.fetchData();
             this.hideStaffDialog();
             this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:HospitalStaff:Name')));
           }
@@ -231,7 +223,7 @@ export class HospitalComponent extends AppComponentBase {
       else {
         this.hospitalStaffService.update(this.hospitalStaffToBeEdited.id, staffDto).subscribe({
           complete: () => {
-            this.fetchStaffData();
+            this.fetchData();
             this.hideStaffDialog();
             this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:HospitalStaff:Name')));
           }

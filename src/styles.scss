@@ -158,3 +158,15 @@
 .p-component-overlay {
   background-color: rgba(0, 0, 0, 0.3);
 }
+
+.p-dropdown-panel .p-dropdown-items .p-dropdown-empty-message {
+  font-size: 0.875rem !important
+}
+
+.p-multiselect-panel .p-multiselect-items .p-multiselect-empty-message {
+  font-size: 0.875rem !important
+}
+
+.p-calendar .p-datepicker table {
+  font-size: 0.875rem !important
+}

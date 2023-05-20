@@ -11,9 +11,8 @@ import { CityComponent } from './city/city.component';
 import { BranchComponent } from './branch/branch.component';
 import { TreatmentTypeComponent } from './treatment-type/treatment-type.component';
 import { ProcessTypeComponent } from './process-type/process-type.component';
-import { HospitalizationTypeComponent } from './hospitalization-type/hospitalization-type.component';
-import { HospitalResponseComponent } from './hospital-response/hospital-response.component';
 import { ProcessComponent } from './process/process.component';
+import { MaterialComponent } from './material/material.component';
 
 const routes: Routes = [
   {
@@ -77,21 +76,15 @@ const routes: Routes = [
     }
   },
   {
-    path: 'hospitalizationType', component: HospitalizationTypeComponent, canActivate: [PermissionGuard],
-    data: {
-        requiredPolicy: 'HTS.HospitalizationTypeManagement' 
-    }
-  },
-  {
-    path: 'hospitalResponse', component: HospitalResponseComponent, canActivate: [PermissionGuard],
-    data: {
-        requiredPolicy: 'HTS.HospitalResponseManagement' 
-    }
-  },
-  {
     path: 'process', component: ProcessComponent, canActivate: [PermissionGuard],
     data: {
         requiredPolicy: 'HTS.ProcessManagement' 
+    }
+  },
+  {
+    path: 'material', component: MaterialComponent, canActivate: [PermissionGuard],
+    data: {
+        requiredPolicy: 'HTS.MaterialManagement' 
     }
   }
 ];

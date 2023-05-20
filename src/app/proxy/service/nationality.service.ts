@@ -35,10 +35,11 @@ export class NationalityService {
     { apiName: this.apiName });
   
 
-  getList = () =>
+  getList = (isActive?: boolean) =>
     this.restService.request<any, PagedResultDto<NationalityDto>>({
       method: 'GET',
       url: '/api/app/nationality',
+      params: { isActive },
     },
     { apiName: this.apiName });
   

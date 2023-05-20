@@ -1,8 +1,9 @@
 import { Component, Injector, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Form } from '@angular/forms';
 import { DocumentTypeDto } from '@proxy/dto/document-type';
-import { PatientDocumentDto } from '@proxy/dto/patient-document';
-import { DocumentTypeService } from '@proxy/service';
+import { PatientDocumentDto, SavePatientDocumentDto } from '@proxy/dto/patient-document';
+import { EntityEnum_PatientDocumentStatusEnum } from '@proxy/enum';
+import { DocumentTypeService, PatientDocumentService } from '@proxy/service';
 import { FileUpload } from 'primeng/fileupload';
 import { forkJoin } from 'rxjs';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
@@ -15,21 +16,24 @@ import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 })
 export class DocumentsComponent extends AppComponentBase {
   @Input() patientId: number;
-  documents: PatientDocumentDto[] = [];
+  allDocuments: PatientDocumentDto[] = [];
+  documentsToBeDisplayed: PatientDocumentDto[] = [];
   documentDialog: boolean = false;
-  document: PatientDocumentDto;
+  document: SavePatientDocumentDto;
   showRevokedRecords: boolean = false;
   revokedRecordCount: number = 0;
   documentTypeList: DocumentTypeDto[] = [];
   uploadedDocuments: any[] = [];
   loading: boolean;
   totalRecords: number = 0;
+  public patientDocumentStatusEnum = EntityEnum_PatientDocumentStatusEnum;
   @ViewChild("documents", { static: false }) documentUpload: FileUpload;
   @ViewChild("documentForm", {static:false}) documentForm: Form;
 
   constructor(
     injector: Injector,
-    private documentTypeService: DocumentTypeService
+    private documentTypeService: DocumentTypeService,
+    private documentService: PatientDocumentService
   ) {
     super(injector);
   }
@@ -39,22 +43,44 @@ export class DocumentsComponent extends AppComponentBase {
   }
 
   fetchData() {
+    this.loading = true;
     forkJoin([
-      this.documentTypeService.getList()
+      this.documentTypeService.getList(),
+      this.documentService.getList(this.patientId)
     ]).subscribe(
       {
         next: ([
-          resDocumentTypeList
+          resDocumentTypeList,
+          resDocumentList
         ]) => {
           this.documentTypeList = resDocumentTypeList.items;
-          this.totalRecords = resDocumentTypeList.totalCount;
+          this.allDocuments = resDocumentList.items;
+          this.revokedRecordCount = resDocumentList.items.filter(d => d.patientDocumentStatusId === this.patientDocumentStatusEnum.Revoked).length;
+          this.manageDocumentsToBeDisplayed();
+        },
+        error: () => {
+          this.loading = false;
+        },
+        complete: () => {
+          this.loading = false;
         }
       }
     );
   }
 
+  manageDocumentsToBeDisplayed() {
+    if (!this.showRevokedRecords) {
+      this.documentsToBeDisplayed = [...this.allDocuments.filter(n => n.patientDocumentStatusId !== EntityEnum_PatientDocumentStatusEnum.Revoked)];
+    }
+    else {
+      this.documentsToBeDisplayed = [...this.allDocuments];
+    }
+    this.totalRecords = this.documentsToBeDisplayed.length;
+  }
+
   openNew() {
-    this.document = {} as PatientDocumentDto;
+    this.document = {} as SavePatientDocumentDto;
+    this.document.patientId = this.patientId;
     this.documentDialog = true;
   }
 
@@ -64,10 +90,14 @@ export class DocumentsComponent extends AppComponentBase {
     fileReader.onload = (r) => {
       if (this.document) {
         this.document.fileName = this.uploadedDocuments[0].name;
-        //this.document.Content = fileReader.result as string;
-        this.documents.push(this.document);
-        this.success(this.l('::Message:SuccessfulSave', this.l('::Documents:NameSingular')));
-        this.hideDialog();
+        this.document.file = fileReader.result as string;
+        this.documentService.create(this.document).subscribe({
+          next: (res) => {
+            this.success(this.l('::Message:SuccessfulSave', this.l('::Documents:NameSingular')));
+            this.fetchData();
+            this.hideDialog();
+          }
+        });
       }
     };
   }
@@ -85,8 +115,13 @@ export class DocumentsComponent extends AppComponentBase {
       header: this.l('::Confirm'),
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.documents = this.documents.filter(val => val.id !== documentsToBeRevoked.id);
-        this.success(this.l('::Message:SuccessfulRevokation', this.l('::Documents:NameSingular')));
+        this.documentService.updateStatusByIdAndStatusId(documentsToBeRevoked.id as unknown as number, this.patientDocumentStatusEnum.Revoked).subscribe({
+          next: (res) => {
+            this.success(this.l('::Message:SuccessfulRevokation', this.l('::Documents:NameSingular')));
+            this.fetchData();
+          }
+        });
+        
       }
     });
   }
@@ -107,5 +142,9 @@ export class DocumentsComponent extends AppComponentBase {
   removeFile() {
     this.uploadedDocuments = [];
     this.documentUpload.clear();
+  }
+
+  onShowRevokedRecords() {
+    this.manageDocumentsToBeDisplayed();
   }
 }

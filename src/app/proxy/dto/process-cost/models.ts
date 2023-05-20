@@ -2,8 +2,8 @@ import type { EntityDto } from '@abp/ng.core';
 
 export interface ProcessCostDto extends EntityDto<number> {
   processId: number;
-  validityStartDate?: string;
-  validityEndDate?: string;
+  validityStartDate?: Date;
+  validityEndDate?: Date;
   hospitalPrice: number;
   ushasPrice: number;
   isActive: boolean;
@@ -11,8 +11,8 @@ export interface ProcessCostDto extends EntityDto<number> {
 
 export interface SaveProcessCostDto {
   processId: number;
-  validityStartDate: string;
-  validityEndDate: string;
+  validityStartDate: Date;
+  validityEndDate: Date;
   hospitalPrice: number;
   ushasPrice: number;
   isActive: boolean;

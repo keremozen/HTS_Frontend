@@ -9,10 +9,23 @@ import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 })
 export class OperationalInfoComponent extends AppComponentBase {
 
+  operations: any[] = [];
+  operationDialog: boolean = false;
+
   constructor(
     injector: Injector
   ) {
     super(injector);
+  }
+
+
+  onNewOperation() {
+    this.operationDialog = true;
+  }
+
+  hideOperationDialog() {
+    this.operationDialog = false;
+
   }
 
 }

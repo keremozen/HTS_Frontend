@@ -35,10 +35,11 @@ export class TreatmentTypeService {
     { apiName: this.apiName });
   
 
-  getList = () =>
+  getList = (isActive?: boolean) =>
     this.restService.request<any, PagedResultDto<TreatmentTypeDto>>({
       method: 'GET',
       url: '/api/app/treatment-type',
+      params: { isActive },
     },
     { apiName: this.apiName });
   

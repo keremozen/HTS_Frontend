@@ -2,3 +2,21 @@
     padding: 0px !important;
     background-color: transparent;
 }
+
+.overflow {
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+}
+
+.wideTooltip.p-tooltip .p-tooltip-text {
+    width: 30rem;
+}
+
+.revokeTag.p-tag .p-tag-value {
+    font-size: x-small;
+    padding: 2px;
+    line-height: 1;
+}

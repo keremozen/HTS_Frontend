@@ -10,11 +10,11 @@ export class PatientDocumentService {
   apiName = 'Default';
   
 
-  create = (patientNote: SavePatientDocumentDto) =>
+  create = (patientDocument: SavePatientDocumentDto) =>
     this.restService.request<any, PatientDocumentDto>({
       method: 'POST',
       url: '/api/app/patient-document',
-      body: patientNote,
+      body: patientDocument,
     },
     { apiName: this.apiName });
   

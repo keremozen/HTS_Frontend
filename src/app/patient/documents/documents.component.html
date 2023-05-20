@@ -1,7 +1,8 @@
 <p-toolbar styleClass="customToolbar">
     <div class="p-toolbar-group-start">
-        <div class="ml-3" *ngIf="documents && documents.length > 0 && revokedRecordCount > 0">
-            <p-checkbox [(ngModel)]="showRevokedRecords" [binary]="true" inputId="chkShowRevokedRecords"></p-checkbox>
+        <div class="ml-3" *ngIf="allDocuments && allDocuments.length > 0 && revokedRecordCount > 0">
+            <p-checkbox [(ngModel)]="showRevokedRecords" [binary]="true" inputId="chkShowRevokedRecords"
+                (click)="onShowRevokedRecords()"></p-checkbox>
             <label class="ml-3" for="chkShowRevokedRecords">{{"::ShowRevokedRecords" | abpLocalization}}</label>
         </div>
     </div>
@@ -11,17 +12,18 @@
     </div>
 </p-toolbar>
 
-<p-table #dt [value]="documents" [rows]="5" styleClass="pt-3" [paginator]="true"
+<p-table #dt [value]="documentsToBeDisplayed" [rows]="5" styleClass="pt-3" [paginator]="true"
     [globalFilterFields]="['fileName','description']" [rowHover]="true" [loading]="loading"
     currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
     [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
     <ng-template pTemplate="header">
         <tr>
             <th pSortableColumn="fileName">{{ '::Documents:Column:FileName' | abpLocalization }} <p-sortIcon
-                field="fileName"></p-sortIcon></th>
+                    field="fileName"></p-sortIcon></th>
             <th pSortableColumn="description">{{ '::Documents:Column:Description' | abpLocalization }} <p-sortIcon
                     field="description"></p-sortIcon></th>
-            <th style="width: 12rem" pSortableColumn="creator.name">{{ '::Documents:Column:CreatedBy' | abpLocalization }}
+            <th style="width: 12rem" pSortableColumn="creator.name">{{ '::Documents:Column:CreatedBy' | abpLocalization
+                }}
                 <p-sortIcon field="creator.name"></p-sortIcon>
             </th>
             <th style="width: 12rem" pSortableColumn="creationTime">{{ '::Documents:Column:Created' | abpLocalization }}
@@ -32,16 +34,18 @@
     </ng-template>
     <ng-template pTemplate="body" let-document>
         <tr>
-            <td>{{document.fileName}}</td>
+            <td>{{document.fileName}}
+                <p-tag severity="warning" value="{{ '::Revoked' | abpLocalization }}" [rounded]="true" styleClass="revokeTag" class="ml-3" *ngIf="document.patientDocumentStatusId === patientDocumentStatusEnum.Revoked"></p-tag>
+            </td>
             <td>
                 <div class="overflow cursor-pointer" [pTooltip]="document.description" tooltipStyleClass="wideTooltip"
                     tooltipPosition="bottom">{{document.description}}</div>
             </td>
-            <td>{{document.creator?.name}}</td>
+            <td>{{document.creator?.name + (document.creator?.surname ? (" " + document.creator?.surname) : "")}}</td>
             <td>{{document.creationTime | date: 'dd.MM.yyyy'}}</td>
             <td>
                 <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"
-                    (click)="revokeDocument(document)"></button>
+                    (click)="revokeDocument(document)" [disabled]="document.patientDocumentStatusId === patientDocumentStatusEnum.Revoked"></button>
             </td>
         </tr>
     </ng-template>

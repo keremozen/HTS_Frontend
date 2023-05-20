@@ -14,6 +14,7 @@ import { OperationalInfoComponent } from './treatment-processes/operational-info
 import { QuotationComponent } from './treatment-processes/quotation.component';
 import { HospitalConsultationComponent } from './treatment-processes/hospital-consultation.component';
 import { NewPatientComponent } from './new-patient/new-patient.component';
+import { EntityEnum_HospitalConsultationStatusEnum } from '@proxy/enum';
 
 
 @NgModule({
@@ -34,8 +35,10 @@ import { NewPatientComponent } from './new-patient/new-patient.component';
     CommonModule,
     FormsModule,
     PatientRoutingModule
+    
   ],
   providers: [
+    
   ]
 })
 export class PatientModule { }

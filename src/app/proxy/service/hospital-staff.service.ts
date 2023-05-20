@@ -27,10 +27,11 @@ export class HospitalStaffService {
     { apiName: this.apiName });
   
 
-  getByInstitutionList = (hospitalId: number) =>
+  getByHospitalList = (hospitalId: number, isActive?: boolean) =>
     this.restService.request<any, PagedResultDto<HospitalStaffDto>>({
       method: 'GET',
-      url: `/api/app/hospital-staff/by-institution-list/${hospitalId}`,
+      url: `/api/app/hospital-staff/by-hospital-list/${hospitalId}`,
+      params: { isActive },
     },
     { apiName: this.apiName });
   

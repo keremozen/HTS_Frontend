@@ -50,7 +50,7 @@
                 <td>{{contractedInstitution.address}}</td>
                 <td>{{contractedInstitution.nationality?.name}}</td>
                 <td>{{contractedInstitution.description}}</td>
-                <td>{{contractedInstitution.staffList}}</td>
+                <td><div [innerHTML]="!contractedInstitution.staffNames ? '-': contractedInstitution.staffNames"></div></td>
                 <td><i class="pi"
                         [ngClass]="{ 'text-green-500 pi-check-circle': contractedInstitution.isActive, 'text-red-500 pi-times-circle': !contractedInstitution.isActive }"></i>
                 </td>

@@ -7,28 +7,28 @@
     </div>
 </p-toolbar>
 
-<p-table #dt [value]="consultations" [rows]="5" styleClass="pt-3" [paginator]="true"
-    [globalFilterFields]="['Message','CreatedBy']" [rowHover]="true"
+<p-table #dt [value]="consultations" [rows]="5" styleClass="pt-3" [paginator]="true" [rowHover]="true"
     currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
     [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
     <ng-template pTemplate="header">
         <tr>
-            <th style="width: 12rem" pSortableColumn="ConsultationNo">{{ '::HospitalConsultation:Column:ConsultationNo'
-                | abpLocalization }} <p-sortIcon field="ConsultationNo"></p-sortIcon></th>
-            <th style="width: 12rem" pSortableColumn="CreatedBy">{{ '::HospitalConsultation:Column:CreatedBy' |
+            <th style="width: 12rem" pSortableColumn="id">{{ '::HospitalConsultation:Column:ConsultationNo'
+                | abpLocalization }} <p-sortIcon field="id"></p-sortIcon></th>
+            <th style="width: 12rem" pSortableColumn="creator.name">{{ '::HospitalConsultation:Column:CreatedBy' |
                 abpLocalization }}
-                <p-sortIcon field="CreatedBy"></p-sortIcon>
+                <p-sortIcon field="creator.name"></p-sortIcon>
             </th>
-            <th style="width: 12rem" pSortableColumn="Created">{{ '::HospitalConsultation:Column:Created' |
+            <th style="width: 12rem" pSortableColumn="creationTime">{{ '::HospitalConsultation:Column:Created' |
                 abpLocalization }}
                 <p-sortIcon field="Created"></p-sortIcon>
             </th>
-            <th pSortableColumn="Hospital">{{ '::HospitalConsultation:Column:Hospital' | abpLocalization }}
+            <th pSortableColumn="creationTime">{{ '::HospitalConsultation:Column:Hospital' | abpLocalization }}
                 <p-sortIcon field="Hospital"></p-sortIcon>
             </th>
-            <th style="width: 12rem" pSortableColumn="State">{{ '::HospitalConsultation:Column:State' | abpLocalization
+            <th style="width: 12rem" pSortableColumn="hospitalConsultationStatus.name">{{
+                '::HospitalConsultation:Column:State' | abpLocalization
                 }}
-                <p-sortIcon field="State"></p-sortIcon>
+                <p-sortIcon field="hospitalConsultationStatus.name"></p-sortIcon>
             </th>
             <th class="text-center" style="width: 22rem">{{ '::HospitalConsultation:Column:DetailsAndActions' |
                 abpLocalization }}</th>
@@ -36,18 +36,22 @@
     </ng-template>
     <ng-template pTemplate="body" let-consultation>
         <tr>
-            <td>{{consultation.ConsultationNo}}</td>
-            <td>{{consultation.CreatedBy}}</td>
-            <td>{{consultation.Created | date: 'dd.MM.yyyy'}}</td>
-            <td>{{consultation.Hospital}}</td>
-            <td>{{consultation.State}}</td>
+            <td>{{consultation.id}}</td>
+            <td>{{consultation.creator?.name + (consultation.creator?.surname ? (" " + consultation.creator?.surname) :
+                "")}}</td>
+            <td>{{consultation.creationTime | date: 'dd.MM.yyyy HH:mm'}}</td>
+            <td>{{getHospitalName(consultation.hospitalId)}}</td>
+            <td>{{consultation.hospitalConsultationStatus?.name}}</td>
             <td class="text-right">
                 <button pButton pRipple label="{{ '::HospitalConsultation:Button:Consultation' | abpLocalization }}"
-                    class="p-button-info ml-2" (click)="openConsultation()"></button>
+                    class="p-button-info ml-2" (click)="openConsultation(consultation)"></button>
                 <button pButton pRipple label="{{ '::HospitalConsultation:Button:Answer' | abpLocalization }}"
-                    class="p-button-warning ml-2" (click)="openHospitalResponse()"></button>
-                <button pButton pRipple class="p-button-success ml-2" icon="pi pi-check" (click)="approve()"></button>
-                <button pButton pRipple class="p-button-danger ml-2" icon="pi pi-times" (click)="reject()"></button>
+                    class="p-button-warning ml-2" (click)="openHospitalResponse()"
+                    [disabled]="consultation.hospitalConsultationStatusId == consultationStatusEnum.HospitalResponseWaiting"></button>
+                <button pButton pRipple class="p-button-success ml-2" icon="pi pi-check" (click)="approve()"
+                    [disabled]="consultation.hospitalConsultationStatusId == consultationStatusEnum.HospitalResponseWaiting"></button>
+                <button pButton pRipple class="p-button-danger ml-2" icon="pi pi-times" (click)="reject()"
+                    [disabled]="consultation.hospitalConsultationStatusId == consultationStatusEnum.HospitalResponseWaiting"></button>
             </td>
         </tr>
     </ng-template>
@@ -66,69 +70,119 @@
 <p-dialog [(visible)]="consultationDialog" [style]="{width: '85vw'}"
     header="{{ '::HospitalConsultation:Title' | abpLocalization }}" [modal]="true" styleClass="p-fluid"
     (onHide)="hideConsultationDialog()">
-    <ng-template pTemplate="content">
-        <div class="grid">
-            <div class="col">
+    <form #consultationForm="ngForm">
+        <div class="grid" *ngIf="hospitalConsultation">
+            <div class="col-4">
                 <fieldset class="border pl-3 pr-3 pt-2 pb-3 m-2 patientFieldSet consultationFieldHeight">
                     <legend class="float-none w-auto pl-3 pr-3 text-sm patientFieldSetlegend">
                         {{'::HospitalConsultation:FieldLegend:HospitalChoice' |
                         abpLocalization}}
                     </legend>
-                    <p-listbox [options]="hospitalList" [(ngModel)]="selectedHospitals" optionLabel="name"
-                        [checkbox]="true" [filter]="true" [multiple]="true" [metaKeySelection]="false"
+                    <p-listbox id="lstHospital" name="lstHospital" #lstHospital="ngModel" [options]="hospitalList"
+                        [(ngModel)]="selectedHospitals" optionLabel="name" [checkbox]="true" [filter]="true"
+                        [multiple]="true" [metaKeySelection]="false" [disabled]="isConsultationReadOnly"
                         emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" styleClass="hospitalListStyle"
-                        emptyFilterMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-listbox>
+                        emptyFilterMessage="{{ '::EmptyMessage' | abpLocalization }}" required></p-listbox>
                 </fieldset>
             </div>
-            <div class="col">
+            <div class="col-4">
                 <fieldset class="border pl-3 pr-3 pt-2 pb-3 m-2 patientFieldSet consultationFieldHeight">
                     <legend class="float-none w-auto pl-3 pr-3 text-sm patientFieldSetlegend">
                         {{'::HospitalConsultation:FieldLegend:PatientComplaintAndDescription' |
                         abpLocalization}}
                     </legend>
-                    <textarea pInputText id="description" name="description" #description="ngModel" [(ngModel)]="consolidatedDescription" required style="height:100%"></textarea>
+                    <textarea pInputText id="description" name="description" #description="ngModel"
+                        [(ngModel)]="hospitalConsultation.note" required style="height:100%"
+                        [disabled]="isConsultationReadOnly"></textarea>
                 </fieldset>
             </div>
-            <div class="col">
+            <div class="col-4">
                 <fieldset class="border pl-3 pr-3 pt-2 pb-3 m-2 patientFieldSet consultationFieldHeight">
                     <legend class="float-none w-auto pl-3 pr-3 text-sm patientFieldSetlegend">
                         {{'::HospitalConsultation:FieldLegend:Documents' |
                         abpLocalization}}
                     </legend>
                     <div>
-                        <p-toolbar styleClass="customToolbar">
+                        <p-toolbar styleClass="customToolbar" *ngIf="!isConsultationReadOnly">
                             <div class="p-toolbar-group-start">
                             </div>
                             <div class="p-toolbar-group-end p-0">
                                 <div>
                                     <button pButton pRipple label="{{ '::Import' | abpLocalization }}"
-                                        icon="pi pi-file-import" class="p-button-info"></button>
+                                        icon="pi pi-file-import" class="p-button-info"
+                                        (click)="importDocuments()"></button>
                                 </div>
                                 <div>
                                     <button pButton pRipple label="{{ '::New' | abpLocalization }}" icon="pi pi-plus"
-                                        class="p-button-success ml-2" (click)="openNewDocument()"></button>
+                                        class="p-button-success ml-2"
+                                        (click)="openNewHospitalConsultationDocument()"></button>
                                 </div>
                             </div>
                         </p-toolbar>
+                        <p-table #dt [value]="hospitalConsultationDocuments" [rows]="5" styleClass="pt-3"
+                            [paginator]="true" [rowHover]="true" [loading]="loading"
+                            currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
+                            [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th pSortableColumn="fileName">{{ '::Documents:Column:FileName' | abpLocalization }}
+                                        <p-sortIcon field="fileName"></p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="description">{{ '::Documents:Column:Description' |
+                                        abpLocalization }} <p-sortIcon field="description"></p-sortIcon></th>
+                                    <th></th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-hospitalDocument>
+                                <tr>
+                                    <td>{{hospitalDocument.fileName}}
+                                        <p-tag severity="warning" value="{{ '::Revoked' | abpLocalization }}"
+                                            [rounded]="true" styleClass="revokeTag" class="ml-3"
+                                            *ngIf="hospitalDocument.patientDocumentStatusId === patientDocumentStatusEnum.Revoked"></p-tag>
+                                    </td>
+                                    <td>{{hospitalDocument.description}}
+                                        <div class="overflow cursor-pointer" [pTooltip]="hospitalDocument.description"
+                                            tooltipStyleClass="wideTooltip" tooltipPosition="bottom">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button pButton pRipple icon="pi pi-trash"
+                                            class="p-button-rounded p-button-danger"
+                                            (click)="revokeDocument(hospitalDocument)"
+                                            [disabled]="hospitalDocument.patientDocumentStatusId === patientDocumentStatusEnum.Revoked"></button>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="emptymessage">
+                                <div class="m-3">
+                                    {{ '::Table:EmptyMessage' | abpLocalization }}
+                                </div>
+                            </ng-template>
+                            <ng-template pTemplate="summary">
+                                <div class="flex align-items-center justify-content-between" *ngIf="totalRecords > 0">
+                                    {{ '::Table:Summary' | abpLocalization: totalRecords }}
+                                </div>
+                            </ng-template>
+                        </p-table>
                     </div>
                 </fieldset>
             </div>
         </div>
-    </ng-template>
+    </form>
 
-    <ng-template pTemplate="footer">
+    <p-footer>
         <button pButton pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" class="p-button-text"
             (click)="hideConsultationDialog()"></button>
         <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" class="p-button-text"
-            (click)="saveConsultation()"></button>
-    </ng-template>
+            (click)="saveConsultation()" [disabled]="!consultationForm.valid" *ngIf="!isConsultationReadOnly"></button>
+    </p-footer>
 </p-dialog>
 
-<p-dialog [(visible)]="documentDialog" [style]="{width: '450px'}"
+<p-dialog [(visible)]="hospitalConsultationDocumentDialog" [style]="{width: '30vw'}"
     header="{{ '::Documents:DocumentDetails' | abpLocalization }}" [modal]="true" styleClass="p-fluid"
-    (onHide)="hideDocumentDialog()">
+    (onHide)="hideHospitalConsultationDocumentDialog()">
     <form #consultationDocumentForm="ngForm">
-        <div *ngIf="document">
+        <div *ngIf="hospitalConsultationDocument">
             <div class="field">
                 <label for="description">{{ '::Documents:Column:Document' | abpLocalization }} <font style="color:red">*
                     </font>
@@ -179,9 +233,10 @@
                     </font>
                 </label>
                 <p-dropdown id="documentType" name="documentType" #documentType="ngModel" [options]="documentTypeList"
-                    [(ngModel)]="document.TypeId" placeholder="{{ '::Select' | abpLocalization }}"
-                    [style]="{'width':'100%'}" required="true" styleClass="filterDropDown" optionValue="Id"
-                    optionLabel="Name" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
+                    [(ngModel)]="hospitalConsultationDocument.documentTypeId"
+                    placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}" required="true"
+                    styleClass="filterDropDown" optionValue="id" optionLabel="name"
+                    emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
                 <small class="p-error" *ngIf="!(documentType.valid || documentType.pristine)">{{
                     '::Message:RequiredField' |
                     abpLocalization
@@ -193,7 +248,7 @@
                     </font>
                 </label>
                 <textarea rows="5" pInputText id="description" name="description" #description="ngModel"
-                    [(ngModel)]="document.Description" required autofocus></textarea>
+                    [(ngModel)]="hospitalConsultationDocument.description" required autofocus></textarea>
                 <small class="p-error" *ngIf="!(description.valid || description.pristine)">{{ '::Message:RequiredField'
                     |
                     abpLocalization
@@ -203,7 +258,7 @@
     </form>
     <p-footer>
         <button pButton pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" class="p-button-text"
-            (click)="hideDocumentDialog()"></button>
+            (click)="hideHospitalConsultationDocumentDialog()"></button>
         <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" class="p-button-text"
             (click)="saveDocument()"
             [disabled]="!(consultationDocumentForm.valid) || uploadedDocuments?.length== 0"></button>
@@ -223,7 +278,7 @@
                             style="width:140px">{{'::HospitalResponse:Field:HospitalName' |
                             abpLocalization}}</label>
                         <div class="col">
-                           [hastane adı]
+                            [hastane adı]
                         </div>
                     </div>
                     <div class="field grid">
@@ -247,7 +302,7 @@
                             style="width:140px">{{'::HospitalResponse:Field:HospitalResponse' |
                             abpLocalization}}</label>
                         <div class="col">
-                           [hastane cevabı]
+                            [hastane cevabı]
                         </div>
                     </div>
                     <div class="field grid">
@@ -287,7 +342,8 @@
                         {{'::HospitalResponse:FieldLegend:HospitalDescription' |
                         abpLocalization}}
                     </legend>
-                    <textarea pInputText id="description" name="description" required class="w-full h-full" [disabled]="true"></textarea>
+                    <textarea pInputText id="description" name="description" required class="w-full h-full"
+                        [disabled]="true"></textarea>
                 </fieldset>
             </div>
             <div class="col-4">
@@ -302,14 +358,16 @@
                         [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
                         <ng-template pTemplate="header">
                             <tr>
-                                <th pSortableColumn="code">{{ '::HospitalResponse:Process:Column:Code' | abpLocalization }}
+                                <th pSortableColumn="code">{{ '::HospitalResponse:Process:Column:Code' | abpLocalization
+                                    }}
                                     <p-sortIcon field="code"></p-sortIcon>
                                 </th>
                                 <th pSortableColumn="description">{{ '::HospitalResponse:Process:Column:Description' |
                                     abpLocalization }}
                                     <p-sortIcon field="description"></p-sortIcon>
                                 </th>
-                                <th pSortableColumn="amount">{{ '::HospitalResponse:Process:Column:Amount' | abpLocalization }}
+                                <th pSortableColumn="amount">{{ '::HospitalResponse:Process:Column:Amount' |
+                                    abpLocalization }}
                                     <p-sortIcon field="amount"></p-sortIcon>
                                 </th>
                             </tr>
@@ -340,16 +398,18 @@
                         {{'::HospitalResponse:FieldLegend:AnticipatedSupplies' |
                         abpLocalization}}
                     </legend>
-                    <p-table #dt [value]="anticipatedSupplies" [rows]="5" styleClass="pt-3" [paginator]="true"
+                    <p-table #dt [value]="anticipatedMaterials" [rows]="5" styleClass="pt-3" [paginator]="true"
                         [globalFilterFields]="['name']" [rowHover]="true" [loading]="loading"
                         currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
                         [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
                         <ng-template pTemplate="header">
                             <tr>
-                                <th pSortableColumn="name">{{ '::HospitalResponse:Supply:Column:Name' | abpLocalization }}
+                                <th pSortableColumn="name">{{ '::HospitalResponse:Supply:Column:Name' | abpLocalization
+                                    }}
                                     <p-sortIcon field="name"></p-sortIcon>
                                 </th>
-                                <th pSortableColumn="amount">{{ '::HospitalResponse:Supply:Column:Amount' | abpLocalization }}
+                                <th pSortableColumn="amount">{{ '::HospitalResponse:Supply:Column:Amount' |
+                                    abpLocalization }}
                                     <p-sortIcon field="amount"></p-sortIcon>
                                 </th>
                             </tr>
@@ -371,9 +431,9 @@
                             </div>
                         </ng-template>
                     </p-table>
-        
+
                 </fieldset>
-                
+
             </div>
             <div class="col-12">
                 <div class="flex justify-content-end">
@@ -387,3 +447,6 @@
     </form>
 
 </p-dialog>
+
+<p-confirmDialog key="hospitalConsultationDocumentConfirm" [style]="{width: '450px'}"
+    rejectLabel="{{ '::Reject' | abpLocalization }}" acceptLabel="{{ '::Accept' | abpLocalization }}"></p-confirmDialog>

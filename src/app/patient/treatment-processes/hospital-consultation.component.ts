@@ -1,11 +1,13 @@
 import { Component, Injector, Input, ViewEncapsulation } from '@angular/core';
 import { DocumentTypeDto } from '@proxy/dto/document-type';
 import { HospitalDto } from '@proxy/dto/hospital';
+import { HospitalConsultationDto, SaveHospitalConsultationDto } from '@proxy/dto/hospital-consultation';
+import { HospitalConsultationDocumentDto, SaveHospitalConsultationDocumentDto } from '@proxy/dto/hospital-consultation-document';
 import { HospitalResponseDto } from '@proxy/dto/hospital-response';
-import { PatientDocumentDto } from '@proxy/dto/patient-document';
+import { MaterialDto } from '@proxy/dto/material';
 import { ProcessDto } from '@proxy/dto/process';
-import { EntityEnum_PatientNoteStatusEnum } from '@proxy/enum';
-import { HospitalService, PatientNoteService } from '@proxy/service';
+import { EntityEnum_HospitalConsultationStatusEnum, EntityEnum_PatientDocumentStatusEnum, EntityEnum_PatientNoteStatusEnum } from '@proxy/enum';
+import { DocumentTypeService, HospitalConsultationService, HospitalService, PatientDocumentService, PatientNoteService } from '@proxy/service';
 import { forkJoin } from 'rxjs';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
@@ -18,27 +20,38 @@ import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 export class HospitalConsultationComponent extends AppComponentBase {
 
   @Input() patientId: number;
-  consultations: any[] = [];
-  consultationDialog: boolean = false;
+  @Input() patientTreatmentId: number;
+
+  consultations: HospitalConsultationDto[] = [];
+  hospitalConsultation: SaveHospitalConsultationDto;
   hospitalList: HospitalDto[] = [];
   selectedHospitals: HospitalDto[] = [];
   consolidatedDescription: string;
-  documentDialog: boolean = false;
-  hospitalResponseDialog: boolean = false;
-  document: PatientDocumentDto;
-  documentTypeList: DocumentTypeDto[] = [];
-  uploadedDocuments: any[] = [];
-  documents: PatientDocumentDto[] = [];
   hospitalResponse: HospitalResponseDto;
   anticipatedProcesses: ProcessDto[] = [];
-  anticipatedSupplies: any[] = [];
+  anticipatedMaterials: MaterialDto[] = [];
+  isConsultationReadOnly: boolean = false;
   loading: boolean;
   totalRecords: number = 0;
+  hospitalResponseDialog: boolean = false;
+  consultationDialog: boolean = false;
+  public consultationStatusEnum = EntityEnum_HospitalConsultationStatusEnum;
+  public patientDocumentStatusEnum = EntityEnum_PatientDocumentStatusEnum;
+
+  // Document Related variables
+  documentTypeList: DocumentTypeDto[] = [];
+  uploadedDocuments: any[] = [];
+  hospitalConsultationDocuments: SaveHospitalConsultationDocumentDto[] = [];
+  hospitalConsultationDocument: SaveHospitalConsultationDocumentDto;
+  hospitalConsultationDocumentDialog: boolean = false;
 
   constructor(
     injector: Injector,
+    private patientDocumentService: PatientDocumentService,
+    private documentTypeService: DocumentTypeService,
     private hospitalService: HospitalService,
-    private patientNoteService: PatientNoteService
+    private patientNoteService: PatientNoteService,
+    private hospitalConsultationService: HospitalConsultationService,
   ) {
     super(injector);
 
@@ -51,18 +64,20 @@ export class HospitalConsultationComponent extends AppComponentBase {
   fetchData() {
     this.loading = true;
     forkJoin([
+      this.documentTypeService.getList(),
       this.hospitalService.getList(),
-      this.patientNoteService.getList(this.patientId)
+      this.hospitalConsultationService.getByPatientTreatmenProcess(this.patientTreatmentId)
     ]).subscribe(
       {
         next: ([
+          resDocumentTypeList,
           resHospitalList,
-          resNoteList
+          resConsultationList
         ]) => {
+          this.documentTypeList = resDocumentTypeList.items;
           this.hospitalList = resHospitalList.items;
-
-          this.consolidatedDescription = resNoteList.items.filter(n => n.patientNoteStatusId != EntityEnum_PatientNoteStatusEnum.Revoked).map(n => n.note).join("\n");
-          debugger;
+          this.consultations = resConsultationList.items;
+          this.totalRecords = resConsultationList.totalCount;
         },
         error: () => {
           this.loading = false;
@@ -74,20 +89,50 @@ export class HospitalConsultationComponent extends AppComponentBase {
     );
   }
 
+  getHospitalName(hospitalId: number): string {
+    return this.hospitalList.find(h => h.id == hospitalId)?.name;
+  }
+
   onNewConsultation() {
-    this.consultationDialog = true;
+    this.hospitalConsultation = {} as SaveHospitalConsultationDto;
+    this.hospitalConsultationDocuments = [];
+    this.hospitalConsultation.patientTreatmentProcessId = this.patientTreatmentId;
+    this.patientNoteService.getList(this.patientId).subscribe({
+      next: (resNoteList) => {
+        this.consolidatedDescription = resNoteList.items.filter(n => n.patientNoteStatusId != EntityEnum_PatientNoteStatusEnum.Revoked).map(n => n.note).join("\n");
+        this.hospitalConsultation.note = this.consolidatedDescription;
+      },
+      complete: () => {
+        this.consultationDialog = true;
+      }
+    });
+
   }
 
   hideConsultationDialog() {
+    this.consolidatedDescription = null;
+    this.selectedHospitals = [];
     this.consultationDialog = false;
   }
 
   saveConsultation() {
-
+    this.hospitalConsultation.hospitalIds = this.selectedHospitals.map(h => h.id);
+    this.hospitalConsultation.hospitalConsultationDocuments = this.hospitalConsultationDocuments as unknown as SaveHospitalConsultationDocumentDto[];
+    this.hospitalConsultationService.create(this.hospitalConsultation).subscribe({
+      complete: () => {
+        this.success(this.l('::Message:SuccessfulSave', this.l('::HospitalConsultation:Title')));
+        this.fetchData();
+        this.hideConsultationDialog();
+      }
+    });
   }
 
-  openConsultation() {
-
+  openConsultation(consultation: HospitalConsultationDto) {
+    this.hospitalConsultation = consultation as unknown as SaveHospitalConsultationDto;
+    this.selectedHospitals.push(this.hospitalList.find(h=>h.id == consultation.hospitalId));
+    //TODO: Kerem documents dolacak
+    this.isConsultationReadOnly = true;
+    this.consultationDialog = true;
   }
 
   openHospitalResponse() {
@@ -106,28 +151,69 @@ export class HospitalConsultationComponent extends AppComponentBase {
 
   }
 
-  openNewDocument() {
-    this.documentDialog = true;
-    this.document = {} as PatientDocumentDto;
+  importDocuments() {
+    if (this.hospitalConsultationDocuments.length > 0) {
+      this.confirm({
+        key: 'hospitalConsultationDocumentConfirm',
+        message: this.l('::Message:ImportDocumentConfirmation'),
+        header: this.l('::Confirm'),
+        icon: 'pi pi-exclamation-triangle',
+        accept: () => {
+          this.patientDocumentService.getList(this.patientId).subscribe({
+            next: (res) => {
+              this.hospitalConsultationDocuments = res.items.filter(n => n.patientDocumentStatusId !== EntityEnum_PatientDocumentStatusEnum.Revoked) as unknown as SaveHospitalConsultationDocumentDto[];
+            }
+          });
+        }
+      });
+    }
+    else {
+      this.patientDocumentService.getList(this.patientId).subscribe({
+        next: (res) => {
+          this.hospitalConsultationDocuments = res.items.filter(n => n.patientDocumentStatusId !== EntityEnum_PatientDocumentStatusEnum.Revoked) as unknown as SaveHospitalConsultationDocumentDto[];
+        }
+      });
+    }
+
   }
 
-  hideDocumentDialog() {
-    this.documentDialog = false;
+  openNewHospitalConsultationDocument() {
+    this.hospitalConsultationDocument = {} as SaveHospitalConsultationDocumentDto;
+    this.hospitalConsultationDocumentDialog = true;
+  }
+
+  hideHospitalConsultationDocumentDialog() {
+    this.hospitalConsultationDocument = null;
     this.uploadedDocuments = [];
+    this.hospitalConsultationDocumentDialog = false;
   }
 
   saveDocument() {
     let fileReader = new FileReader();
     fileReader.readAsDataURL(this.uploadedDocuments[0]);
     fileReader.onload = (r) => {
-      if (this.document) {
-        this.document.fileName = this.uploadedDocuments[0].name;
-        // this.document.content = fileReader.result as string;
-        this.documents.push(this.document);
+      if (this.hospitalConsultationDocument) {
+        this.hospitalConsultationDocument.fileName = this.uploadedDocuments[0].name;
+        this.hospitalConsultationDocument.file = (fileReader.result as string).split(',')[1];
+        this.hospitalConsultationDocument.patientDocumentStatusId = EntityEnum_PatientDocumentStatusEnum.NewRecord;
+        this.hospitalConsultationDocuments.push({ ...this.hospitalConsultationDocument });
         this.success(this.l('::Message:SuccessfulSave', this.l('::Documents:NameSingular')));
-        this.hideDocumentDialog();
+        this.hideHospitalConsultationDocumentDialog();
       }
     };
+  }
+
+  revokeDocument(documentToBeRevoked: HospitalConsultationDocumentDto) {
+    this.confirm({
+      key: 'hospitalConsultationDocumentConfirm',
+      message: this.l('::Message:RevokeConfirmation'),
+      header: this.l('::Confirm'),
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.hospitalConsultationDocuments = this.hospitalConsultationDocuments.filter(d => d.fileName != documentToBeRevoked.fileName);
+        this.success(this.l('::Message:SuccessfulRevokation', this.l('::Documents:NameSingular')));
+      }
+    });
   }
 
   onSelect(event: any) {

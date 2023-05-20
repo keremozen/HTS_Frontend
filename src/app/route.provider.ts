@@ -25,6 +25,13 @@ function configureRoutes(routesService: RoutesService) {
         layout: eLayoutType.application
       },
       {
+        path: '/hospital-response/:uid',
+        name: '::Menu:Patients1',
+        order: 3,
+        invisible: true,
+        layout: eLayoutType.empty
+      },
+      {
         path: '/admin/hospital',
         name: '::Menu:Admin:Hospital',
         iconClass: 'fas fa-h-square',
@@ -115,30 +122,21 @@ function configureRoutes(routesService: RoutesService) {
         layout: eLayoutType.application
       },
       {
-        path: '/admin/hospitalizationType',
-        name: '::Menu:Admin:HospitalizationType',
-        iconClass: 'fas fa-bed',
-        parentName: eThemeSharedRouteNames.Administration,
-        order: 110,
-        requiredPolicy: 'HTS.HospitalizationTypeManagement',
-        layout: eLayoutType.application
-      },
-      {
-        path: '/admin/hospitalResponse',
-        name: '::Menu:Admin:HospitalResponse',
-        iconClass: 'fas fa-undo',
-        parentName: eThemeSharedRouteNames.Administration,
-        order: 111,
-        requiredPolicy: 'HTS.HospitalResponseManagement',
-        layout: eLayoutType.application
-      },
-      {
         path: '/admin/process',
         name: '::Menu:Admin:Process',
         iconClass: 'fas fa-procedures',
         parentName: eThemeSharedRouteNames.Administration,
-        order: 112,
+        order: 110,
         requiredPolicy: 'HTS.ProcessManagement',
+        layout: eLayoutType.application
+      },
+      {
+        path: '/admin/material',
+        name: '::Menu:Admin:Material',
+        iconClass: 'fas fa-syringe',
+        parentName: eThemeSharedRouteNames.Administration,
+        order: 111,
+        requiredPolicy: 'HTS.MaterialManagement',
         layout: eLayoutType.application
       },
     ]);

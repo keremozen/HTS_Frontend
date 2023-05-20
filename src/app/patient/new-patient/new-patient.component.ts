@@ -46,8 +46,8 @@ export class NewPatientComponent extends AppComponentBase {
     this.loading = true;
     forkJoin([
       this.genderService.getList(),
-      this.nationalityService.getList(),
-      this.languageService.getList()
+      this.nationalityService.getList(true),
+      this.languageService.getList(true)
     ]).subscribe(
       {
         next: ([

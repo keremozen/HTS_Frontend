@@ -35,10 +35,11 @@ export class DocumentTypeService {
     { apiName: this.apiName });
   
 
-  getList = () =>
+  getList = (isActive?: boolean) =>
     this.restService.request<any, PagedResultDto<DocumentTypeDto>>({
       method: 'GET',
       url: '/api/app/document-type',
+      params: { isActive },
     },
     { apiName: this.apiName });
   

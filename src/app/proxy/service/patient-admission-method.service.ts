@@ -35,10 +35,11 @@ export class PatientAdmissionMethodService {
     { apiName: this.apiName });
   
 
-  getList = () =>
+  getList = (isActive?: boolean) =>
     this.restService.request<any, PagedResultDto<PatientAdmissionMethodDto>>({
       method: 'GET',
       url: '/api/app/patient-admission-method',
+      params: { isActive },
     },
     { apiName: this.apiName });
   

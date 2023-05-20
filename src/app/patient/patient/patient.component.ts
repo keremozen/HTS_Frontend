@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { GenderDto } from '@proxy/dto/gender';
 import { LanguageDto } from '@proxy/dto/language';
 import { NationalityDto } from '@proxy/dto/nationality';
-import { PatientDto, SavePatientDto } from '@proxy/dto/patient';
+import { SavePatientDto } from '@proxy/dto/patient';
 import { GenderService, LanguageService, NationalityService, PatientAdmissionMethodService, PatientService } from '@proxy/service';
 import * as moment from 'moment';
 import { forkJoin } from 'rxjs';

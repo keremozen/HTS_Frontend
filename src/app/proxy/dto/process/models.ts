@@ -1,7 +1,7 @@
 import type { EntityDto } from '@abp/ng.core';
 import type { ProcessTypeDto } from '../process-type/models';
-import type { ProcessCostDto } from '../process-cost/models';
-import type { ProcessRelationDto } from '../process-relation/models';
+import type { ProcessCostDto, SaveProcessCostDto } from '../process-cost/models';
+import type { ProcessRelationDto, SaveProcessRelationDto } from '../process-relation/models';
 
 export interface ProcessDto extends EntityDto<number> {
   name?: string;
@@ -20,6 +20,6 @@ export interface SaveProcessDto {
   description?: string;
   processTypeId: number;
   isActive: boolean;
-  processCosts: ProcessCostDto[];
-  processRelations: ProcessRelationDto[];
+  processCosts: SaveProcessCostDto[];
+  processRelations: SaveProcessRelationDto[];
 }

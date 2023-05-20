@@ -35,10 +35,11 @@ export class ProcessCostService {
     { apiName: this.apiName });
   
 
-  getList = () =>
+  getList = (isActive?: boolean) =>
     this.restService.request<any, PagedResultDto<ProcessCostDto>>({
       method: 'GET',
       url: '/api/app/process-cost',
+      params: { isActive },
     },
     { apiName: this.apiName });
   

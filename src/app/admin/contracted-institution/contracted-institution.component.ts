@@ -57,11 +57,7 @@ export class ContractedInstitutionComponent extends AppComponentBase {
           this.contractedInstitutionList = [];
           resContractedInstitutionList.items.forEach(inst => {
             let instwithstaff = inst as ContractedInstitutionWithStaff;
-            this.contractedInstitutionStaffService.getByInstitutionList(inst.id).subscribe({
-              next: (res) => {
-                instwithstaff.staffList = res.items.map(s=>s.nameSurname).join(", ");
-              }
-            });
+            instwithstaff.staffNames = inst.contractedInstitutionStaffs.filter(s=>s.isActive).map(s=>s.nameSurname).join("<br>");
             this.contractedInstitutionList.push(instwithstaff);
           });
           this.totalRecords = resContractedInstitutionList.totalCount;
@@ -224,6 +220,7 @@ export class ContractedInstitutionComponent extends AppComponentBase {
 }
 
 class ContractedInstitutionWithStaff implements ContractedInstitutionDto {
+  contractedInstitutionStaffs: ContractedInstitutionStaffDto[];
   email?: string;
   phoneNumber?: string;
   phoneCountryCodeId: number;
@@ -236,5 +233,5 @@ class ContractedInstitutionWithStaff implements ContractedInstitutionDto {
   description?: string;
   isActive: boolean;
   id?: number;
-  staffList: string;
+  staffNames: string;
 }

@@ -35,10 +35,11 @@ export class BranchService {
     { apiName: this.apiName });
   
 
-  getList = () =>
+  getList = (isActive?: boolean) =>
     this.restService.request<any, PagedResultDto<BranchDto>>({
       method: 'GET',
       url: '/api/app/branch',
+      params: { isActive },
     },
     { apiName: this.apiName });
   

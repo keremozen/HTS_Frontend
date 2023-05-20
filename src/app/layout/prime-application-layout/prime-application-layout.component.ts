@@ -44,7 +44,6 @@ export class PrimeApplicationLayoutComponent implements OnInit {
 
   ngOnInit() {
     this.primengConfig.ripple = true;
-    console.log(environment.application);
   }
 
   onLayoutClick() {

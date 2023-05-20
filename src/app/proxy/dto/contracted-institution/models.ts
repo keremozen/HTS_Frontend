@@ -1,5 +1,6 @@
 import type { EntityDto } from '@abp/ng.core';
 import type { NationalityDto } from '../nationality/models';
+import type { ContractedInstitutionStaffDto } from '../contracted-institution-staff/models';
 
 export interface ContractedInstitutionDto extends EntityDto<number> {
   name?: string;
@@ -13,6 +14,7 @@ export interface ContractedInstitutionDto extends EntityDto<number> {
   isActive: boolean;
   phoneCountryCode: NationalityDto;
   nationality: NationalityDto;
+  contractedInstitutionStaffs: ContractedInstitutionStaffDto[];
 }
 
 export interface SaveContractedInstitutionDto {

@@ -35,6 +35,7 @@ import {
   CanvasRenderer
 } from 'echarts/renderers';
 import Marcaron from './shared/common/marcaron';
+import dateFormat from "dateformat";
 
 echarts.use(
   [TitleComponent, TooltipComponent, GridComponent, LineChart, CanvasRenderer]
@@ -68,4 +69,5 @@ echarts.registerTheme('macarons', Marcaron);
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule {
+}

@@ -35,10 +35,11 @@ export class ProcessTypeService {
     { apiName: this.apiName });
   
 
-  getList = () =>
+  getList = (isActive?: boolean) =>
     this.restService.request<any, PagedResultDto<ProcessTypeDto>>({
       method: 'GET',
       url: '/api/app/process-type',
+      params: { isActive },
     },
     { apiName: this.apiName });
   

@@ -36,7 +36,7 @@
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-process>
-        <tr (click)="onDisplayTreatmentProcessDetail(process.treatmentCode)">
+        <tr class="cursor-pointer" (click)="onDisplayTreatmentProcessDetail(process.treatmentCode)">
             <td>{{process.treatmentCode}}</td>
             <td>{{process.creator?.name + (process.creator?.surname ? (" " + process.creator?.surname) : "")}}</td>
             <td>{{process.creationTime | date: 'dd.MM.yyyy'}}</td>
@@ -74,7 +74,7 @@
                 <span>{{'::TreatmentProcess:Step:HospitalConsultation'|abpLocalization}}</span>
             </ng-template>
             <ng-template pTemplate="content">
-            <app-hospital-consultation [patientId]="patientId"></app-hospital-consultation>
+            <app-hospital-consultation [patientId]="patientId" [patientTreatmentId]="process?.id"></app-hospital-consultation>
             </ng-template>
         </p-tabPanel>
         <p-tabPanel [disabled]="!doesHaveAnySalesMethodAndCompanionInfo">

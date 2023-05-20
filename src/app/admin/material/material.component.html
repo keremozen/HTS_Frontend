@@ -1,37 +1,38 @@
 <p-toast></p-toast>
 
-<h4>{{ '::Admin:HospitalizationType:HospitalizationTypeManagement' | abpLocalization }}</h4>
+
+<h4>{{ '::Admin:Material:MaterialManagement' | abpLocalization }}</h4>
 
 <div class="card">
     <p-toolbar styleClass="mb-4 gap-2">
         <ng-template pTemplate="left">
-            <button pButton pRipple label="{{ '::Admin:HospitalizationType:NewHospitalizationType' | abpLocalization }}" icon="pi pi-plus"
-                class="p-button-success mr-2" (click)="openNewHospitalizationType()" [loading]="loading"></button>
+            <button pButton pRipple label="{{ '::Admin:Material:NewMaterial' | abpLocalization }}" icon="pi pi-plus"
+                class="p-button-success mr-2" (click)="openNewMaterial()" [loading]="loading"></button>
         </ng-template>
     </p-toolbar>
 
-    <p-table #dt [value]="hospitalizationTypeList" [rows]="10" [paginator]="true"
+    <p-table #dt [value]="materialList" [rows]="10" [paginator]="true"
         [globalFilterFields]="['name','code','description']" [tableStyle]="{'min-width': '75rem'}" [rowHover]="true"
         dataKey="Id" [loading]="loading"
         currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
         [showCurrentPageReport]="true">
         <ng-template pTemplate="header">
             <tr>
-                <th pSortableColumn="name">{{ '::Admin:HospitalizationType:Column:Name' | abpLocalization }} <p-sortIcon
+                <th pSortableColumn="name">{{ '::Admin:Material:Column:Name' | abpLocalization }} <p-sortIcon
                         field="name"></p-sortIcon></th>
-                <th>{{ '::Admin:HospitalizationType:Column:IsActive' | abpLocalization }}</th>
+                <th>{{ '::Admin:Material:Column:IsActive' | abpLocalization }}</th>
                 <th style="width:8rem;"></th>
             </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-hospitalizationType>
+        <ng-template pTemplate="body" let-material>
             <tr>
-                <td>{{hospitalizationType.name}}</td>
-                <td><i class="pi" [ngClass]="{ 'text-green-500 pi-check-circle': hospitalizationType.isActive, 'text-red-500 pi-times-circle': !hospitalizationType.isActive }"></i></td>
+                <td>{{material.name}}</td>
+                <td><i class="pi" [ngClass]="{ 'text-green-500 pi-check-circle': material.isActive, 'text-red-500 pi-times-circle': !material.isActive }"></i></td>
                 <td>
                     <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
-                        (click)="editHospitalizationType(hospitalizationType)"></button>
+                        (click)="editMaterial(material)"></button>
                     <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
-                        (click)="deleteHospitalizationType(hospitalizationType)"></button>
+                        (click)="deleteMaterial(material)"></button>
                 </td>
             </tr>
         </ng-template>
@@ -48,23 +49,23 @@
     </p-table>
 </div>
 
-<p-dialog [(visible)]="hospitalizationTypeDialog" [style]="{width: '450px'}"
-    header="{{ '::Admin:HospitalizationType:HospitalizationTypeDetails' | abpLocalization }}" [modal]="true" styleClass="p-fluid">
-    <form #hospitalizationTypeForm="ngForm">
-        <div *ngIf="hospitalizationType">
+<p-dialog [(visible)]="materialDialog" [style]="{width: '450px'}"
+    header="{{ '::Admin:Material:MaterialDetails' | abpLocalization }}" [modal]="true" styleClass="p-fluid">
+    <form #materialForm="ngForm">
+        <div *ngIf="material">
             <div class="field">
-                <label for="name">{{ '::Admin:HospitalizationType:Column:Name' | abpLocalization }}&nbsp;<font style="color:red">*
+                <label for="name">{{ '::Admin:Material:Column:Name' | abpLocalization }}&nbsp;<font style="color:red">*
                     </font></label>
-                <input type="text" pInputText id="name" name="name" #name="ngModel" [(ngModel)]="hospitalizationType.name" required
+                <input type="text" pInputText id="name" name="name" #name="ngModel" [(ngModel)]="material.name" required
                     autofocus />
                 <small class="p-error" *ngIf="!(name.valid || name.pristine)">{{ '::Message:RequiredField' |
                     abpLocalization
                     }}</small>
             </div>
             <div class="field">
-                <label for="isActive">{{ '::Admin:HospitalizationType:Column:IsActive' | abpLocalization }}</label>
+                <label for="isActive">{{ '::Admin:Material:Column:IsActive' | abpLocalization }}</label>
                 <div class="w-full">
-                    <p-checkbox id="isActive" name="isActive" #isActive="ngModel" [(ngModel)]="hospitalizationType.isActive"
+                    <p-checkbox id="isActive" name="isActive" #isActive="ngModel" [(ngModel)]="material.isActive"
                         [binary]="true"></p-checkbox>
                 </div>
             </div>
@@ -74,7 +75,7 @@
         <button pButton pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" class="p-button-text"
             (click)="hideDialog()"></button>
         <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" class="p-button-text"
-            (click)="saveHospitalizationType()" [disabled]="!(hospitalizationTypeForm.valid)"></button>
+            (click)="saveMaterial()" [disabled]="!(materialForm.valid)"></button>
     </p-footer>
 </p-dialog>
 
