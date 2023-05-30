@@ -1,13 +1,16 @@
 import { Component, Injector, Input, ViewEncapsulation } from '@angular/core';
+import { BranchDto } from '@proxy/dto/branch';
 import { DocumentTypeDto } from '@proxy/dto/document-type';
 import { HospitalDto } from '@proxy/dto/hospital';
 import { HospitalConsultationDto, SaveHospitalConsultationDto } from '@proxy/dto/hospital-consultation';
 import { HospitalConsultationDocumentDto, SaveHospitalConsultationDocumentDto } from '@proxy/dto/hospital-consultation-document';
 import { HospitalResponseDto } from '@proxy/dto/hospital-response';
+import { HospitalResponseTypeDto } from '@proxy/dto/hospital-response-type';
+import { HospitalizationTypeDto } from '@proxy/dto/hospitalization-type';
 import { MaterialDto } from '@proxy/dto/material';
 import { ProcessDto } from '@proxy/dto/process';
 import { EntityEnum_HospitalConsultationStatusEnum, EntityEnum_PatientDocumentStatusEnum, EntityEnum_PatientNoteStatusEnum } from '@proxy/enum';
-import { DocumentTypeService, HospitalConsultationService, HospitalService, PatientDocumentService, PatientNoteService } from '@proxy/service';
+import { BranchService, DocumentTypeService, HospitalConsultationService, HospitalResponseService, HospitalResponseTypeService, HospitalService, HospitalizationTypeService, MaterialService, PatientDocumentService, PatientNoteService, PatientTreatmentProcessService, ProcessService } from '@proxy/service';
 import { forkJoin } from 'rxjs';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
@@ -37,12 +40,19 @@ export class HospitalConsultationComponent extends AppComponentBase {
   consultationDialog: boolean = false;
   public consultationStatusEnum = EntityEnum_HospitalConsultationStatusEnum;
   public patientDocumentStatusEnum = EntityEnum_PatientDocumentStatusEnum;
+  branchList: BranchDto[] = [];
+  processList: ProcessDto[] = [];
+  materialList: MaterialDto[] = [];
+  hospitalizationTypeList: HospitalizationTypeDto[] = [];
+  hospitalResponseTypeList: HospitalResponseTypeDto[] = [];
+  branchListText: string;
+
 
   // Document Related variables
   documentTypeList: DocumentTypeDto[] = [];
   uploadedDocuments: any[] = [];
-  hospitalConsultationDocuments: SaveHospitalConsultationDocumentDto[] = [];
-  hospitalConsultationDocument: SaveHospitalConsultationDocumentDto;
+  hospitalConsultationDocuments: HospitalConsultationDocumentDto[] = [];
+  hospitalConsultationDocument: HospitalConsultationDocumentDto;
   hospitalConsultationDocumentDialog: boolean = false;
 
   constructor(
@@ -52,6 +62,10 @@ export class HospitalConsultationComponent extends AppComponentBase {
     private hospitalService: HospitalService,
     private patientNoteService: PatientNoteService,
     private hospitalConsultationService: HospitalConsultationService,
+    private hospitalResponseService: HospitalResponseService,
+    private branchService: BranchService,
+    private processService: ProcessService,
+    private materialService: MaterialService,
   ) {
     super(injector);
 
@@ -66,16 +80,25 @@ export class HospitalConsultationComponent extends AppComponentBase {
     forkJoin([
       this.documentTypeService.getList(),
       this.hospitalService.getList(),
+      this.branchService.getList(),
+      this.processService.getList(),
+      this.materialService.getList(),
       this.hospitalConsultationService.getByPatientTreatmenProcess(this.patientTreatmentId)
     ]).subscribe(
       {
         next: ([
           resDocumentTypeList,
           resHospitalList,
+          resBranchList,
+          resProcessList,
+          resMaterialList,
           resConsultationList
         ]) => {
           this.documentTypeList = resDocumentTypeList.items;
           this.hospitalList = resHospitalList.items;
+          this.branchList = resBranchList.items;
+          this.processList = resProcessList.items;
+          this.materialList = resMaterialList.items;
           this.consultations = resConsultationList.items;
           this.totalRecords = resConsultationList.totalCount;
         },
@@ -95,6 +118,7 @@ export class HospitalConsultationComponent extends AppComponentBase {
 
   onNewConsultation() {
     this.hospitalConsultation = {} as SaveHospitalConsultationDto;
+    this.isConsultationReadOnly = false;
     this.hospitalConsultationDocuments = [];
     this.hospitalConsultation.patientTreatmentProcessId = this.patientTreatmentId;
     this.patientNoteService.getList(this.patientId).subscribe({
@@ -129,14 +153,23 @@ export class HospitalConsultationComponent extends AppComponentBase {
 
   openConsultation(consultation: HospitalConsultationDto) {
     this.hospitalConsultation = consultation as unknown as SaveHospitalConsultationDto;
-    this.selectedHospitals.push(this.hospitalList.find(h=>h.id == consultation.hospitalId));
-    //TODO: Kerem documents dolacak
+    this.selectedHospitals.push({ ...this.hospitalList.find(h => h.id == consultation.hospitalId) });
+    this.hospitalConsultationDocuments.push(...consultation.hospitalConsultationDocuments);
     this.isConsultationReadOnly = true;
     this.consultationDialog = true;
   }
 
-  openHospitalResponse() {
-    this.hospitalResponseDialog = true;
+  openHospitalResponse(consultation: HospitalConsultationDto) {
+    this.hospitalResponseService.getByHospitalConsultation(+consultation.id).subscribe({
+      next: (res) => {
+        this.hospitalResponse = res;
+        this.branchListText = this.branchList.filter(h => this.hospitalResponse.hospitalResponseBranches.map(b => b.branchId).includes(h.id)).map(b => b.name).join("<br>");
+      },
+      complete: () => {
+        this.hospitalResponseDialog = true;
+      }
+    });
+
   }
 
   hideHospitalResponseDialog() {
@@ -161,7 +194,7 @@ export class HospitalConsultationComponent extends AppComponentBase {
         accept: () => {
           this.patientDocumentService.getList(this.patientId).subscribe({
             next: (res) => {
-              this.hospitalConsultationDocuments = res.items.filter(n => n.patientDocumentStatusId !== EntityEnum_PatientDocumentStatusEnum.Revoked) as unknown as SaveHospitalConsultationDocumentDto[];
+              this.hospitalConsultationDocuments = res.items.filter(n => n.patientDocumentStatusId !== EntityEnum_PatientDocumentStatusEnum.Revoked) as unknown as HospitalConsultationDocumentDto[];
             }
           });
         }
@@ -170,7 +203,7 @@ export class HospitalConsultationComponent extends AppComponentBase {
     else {
       this.patientDocumentService.getList(this.patientId).subscribe({
         next: (res) => {
-          this.hospitalConsultationDocuments = res.items.filter(n => n.patientDocumentStatusId !== EntityEnum_PatientDocumentStatusEnum.Revoked) as unknown as SaveHospitalConsultationDocumentDto[];
+          this.hospitalConsultationDocuments = res.items.filter(n => n.patientDocumentStatusId !== EntityEnum_PatientDocumentStatusEnum.Revoked) as unknown as HospitalConsultationDocumentDto[];
         }
       });
     }
@@ -178,7 +211,7 @@ export class HospitalConsultationComponent extends AppComponentBase {
   }
 
   openNewHospitalConsultationDocument() {
-    this.hospitalConsultationDocument = {} as SaveHospitalConsultationDocumentDto;
+    this.hospitalConsultationDocument = {} as HospitalConsultationDocumentDto;
     this.hospitalConsultationDocumentDialog = true;
   }
 

@@ -21,6 +21,8 @@
                         field="code"></p-sortIcon></th>
                 <th pSortableColumn="name">{{ '::Admin:Process:Column:Name' | abpLocalization }} <p-sortIcon
                         field="name"></p-sortIcon></th>
+                <th pSortableColumn="englishName">{{ '::Admin:Process:Column:EnglishName' | abpLocalization }} <p-sortIcon
+                        field="englishName"></p-sortIcon></th>
                 <th pSortableColumn="description">{{ '::Admin:Process:Column:Description' | abpLocalization }}
                     <p-sortIcon field="description"></p-sortIcon>
                 </th>
@@ -34,6 +36,7 @@
             <tr>
                 <td>{{process.code}}</td>
                 <td>{{process.name}}</td>
+                <td>{{process.englishName}}</td>
                 <td>{{process.description}}</td>
                 <td>{{process.processType?.name}}</td>
                 <td><i class="pi"
@@ -82,6 +85,16 @@
                     <input type="text" pInputText id="name" name="name" #name="ngModel" [(ngModel)]="process.name"
                         required />
                     <small class="p-error" *ngIf="!(name.valid || name.pristine)">{{ '::Message:RequiredField' |
+                        abpLocalization
+                        }}</small>
+                </div>
+                <div class="field">
+                    <label for="englishName">{{ '::Admin:Process:Column:EnglishName' | abpLocalization }}&nbsp;<font
+                            style="color:red">*
+                        </font></label>
+                    <input type="text" pInputText id="englishName" name="englishName" #englishName="ngModel" [(ngModel)]="process.englishName"
+                        required />
+                    <small class="p-error" *ngIf="!(englishName.valid || englishName.pristine)">{{ '::Message:RequiredField' |
                         abpLocalization
                         }}</small>
                 </div>
@@ -327,10 +340,11 @@
                 <label for="ddlProcessList">{{ '::Admin:Process:ProcessRelation:Process' | abpLocalization
                     }}&nbsp;<font style="color:red">*
                     </font></label>
-                <p-dropdown id="ddlProcessList" name="ddlProcessList" #ddlProcessList="ngModel" [filter]="true" filterBy="name" [showClear]="true"
-                    [options]="processListForRelated" [(ngModel)]="selectedProcessForRelation"
-                    placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
-                    styleClass="filterDropDown" appendTo="body" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
+                <p-dropdown id="ddlProcessList" name="ddlProcessList" #ddlProcessList="ngModel" [filter]="true"
+                    filterBy="name" [showClear]="true" [options]="processListForRelated"
+                    [(ngModel)]="selectedProcessForRelation" placeholder="{{ '::Select' | abpLocalization }}"
+                    [style]="{'width':'100%'}" styleClass="filterDropDown" appendTo="body"
+                    emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
                     emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}" required appendTo="body">
                     <ng-template pTemplate="selectedItem">
                         <div class="flex align-items-center gap-2" *ngIf="selectedProcessForRelation">

@@ -1,7 +1,9 @@
+export * from './additional-service.service';
 export * from './branch.service';
 export * from './city.service';
 export * from './contracted-institution-staff.service';
 export * from './contracted-institution.service';
+export * from './currency.service';
 export * from './document-type.service';
 export * from './gender.service';
 export * from './hospital-consultation-document.service';
@@ -23,6 +25,7 @@ export * from './process-cost.service';
 export * from './process-relation.service';
 export * from './process-type.service';
 export * from './process.service';
+export * from './reject-reason.service';
 export * from './sales-method-and-companion-info.service';
 export * from './treatment-type.service';
 export * from './user.service';

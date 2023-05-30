@@ -5,6 +5,7 @@ import type { ProcessRelationDto, SaveProcessRelationDto } from '../process-rela
 
 export interface ProcessDto extends EntityDto<number> {
   name?: string;
+  englishName?: string;
   code?: string;
   description?: string;
   processTypeId: number;
@@ -16,6 +17,7 @@ export interface ProcessDto extends EntityDto<number> {
 
 export interface SaveProcessDto {
   name: string;
+  englishName: string;
   code: string;
   description?: string;
   processTypeId: number;

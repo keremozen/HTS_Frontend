@@ -7,8 +7,8 @@
                 {{'::HospitalResponse:FieldLegend:PatientComplaint' |
                 abpLocalization}}
             </legend>
-            <textarea pInputText id="description" name="description" #description="ngModel" [(ngModel)]="consultation.note"  required class="w-full h-full"
-                disabled="true"></textarea>
+            <textarea pInputText id="description" name="description" #description="ngModel"
+                [(ngModel)]="consultation.note" required class="w-full h-full" disabled="true"></textarea>
         </fieldset>
     </div>
     <div class="col-6">
@@ -17,8 +17,7 @@
                 {{'::HospitalResponse:FieldLegend:PatientDocuments' |
                 abpLocalization}}
             </legend>
-            <p-table #dt [value]="documents" [rows]="5" styleClass="pt-3" [paginator]="true"
-                [globalFilterFields]="['description']" [rowHover]="true" [loading]="loading"
+            <p-table #dt [value]="documents" [rows]="5" styleClass="pt-3" [paginator]="true" [rowHover]="true" [loading]="loading"
                 currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
                 [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
                 <ng-template pTemplate="header">
@@ -31,22 +30,17 @@
                         <th pSortableColumn="description">{{ '::Documents:Column:Description' | abpLocalization }}
                             <p-sortIcon field="description"></p-sortIcon>
                         </th>
-                        <th style="width: 4rem"></th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-document>
                     <tr>
-                        <td>{{document.FileName}}</td>
+                        <td>{{document.fileName}}</td>
                         <td>
-                            <div class="overflow cursor-pointer" [pTooltip]="document.Description"
-                                tooltipStyleClass="wideTooltip" tooltipPosition="bottom">{{document.Description}}</div>
+                            <div class="overflow cursor-pointer" [pTooltip]="document.description"
+                                tooltipStyleClass="wideTooltip" tooltipPosition="bottom">{{document.description}}</div>
                         </td>
-                        <td>{{document.CreatedBy}}</td>
-                        <td>{{document.Created | date: 'dd.MM.yyyy'}}</td>
-                        <td>
-                            <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"
-                                (click)="revokeDocument(document)"></button>
-                        </td>
+                        <td>{{document.creator?.name + (document.creator?.surname ? (" " + document.creator?.surname) :
+                            "")}}</td>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="emptymessage">
@@ -72,33 +66,37 @@
                     <p-dropdown id="hospitalResponseType" name="hospitalResponseType" #hospitalResponseType="ngModel"
                         [options]="hospitalResponseTypeList" [(ngModel)]="selectedHospitalResponseType"
                         placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}" required="true"
-                        styleClass="filterDropDown" optionValue="id" optionLabel="name"
+                        styleClass="filterDropDown" optionLabel="name"
                         emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
                 </div>
             </div>
             <div class="field grid">
                 <label for="hospitalizationType" class="col-fixed"
                     style="width:140px">{{'::HospitalResponse:Field:HospitalizationType' |
-                    abpLocalization}}<font
-                    style="color:red" *ngIf="selectedHospitalResponseType == hospitalResponseTypeEnum.SuitableForTreatment">&nbsp;*</font></label>
+                    abpLocalization}}<font style="color:red"
+                        *ngIf="selectedHospitalResponseType == hospitalResponseTypeEnum.SuitableForTreatment">&nbsp;*
+                    </font></label>
                 <div class="col">
                     <p-dropdown id="hospitalizationType" name="hospitalizationType" #hospitalizationType="ngModel"
                         [options]="hospitalizationTypeList" [(ngModel)]="selectedHospitalizationType"
                         placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}" required="true"
-                        styleClass="filterDropDown" optionValue="id" optionLabel="name" [required]="selectedHospitalResponseType == hospitalResponseTypeEnum.SuitableForTreatment"
+                        styleClass="filterDropDown" optionLabel="name"
+                        [required]="selectedHospitalResponseType == hospitalResponseTypeEnum.SuitableForTreatment"
                         emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
                 </div>
             </div>
             <div class="field grid">
                 <label for="branch" class="col-fixed" style="width:140px">{{'::HospitalResponse:Field:Branch' |
-                    abpLocalization}}<font
-                    style="color:red" *ngIf="selectedHospitalResponseType == hospitalResponseTypeEnum.SuitableForTreatment">&nbsp;*</font></label>
+                    abpLocalization}}<font style="color:red"
+                        *ngIf="selectedHospitalResponseType == hospitalResponseTypeEnum.SuitableForTreatment">&nbsp;*
+                    </font></label>
                 <div class="col">
                     <p-multiSelect id="branch" [options]="branchList" [filter]="true" filterBy="name"
                         [(ngModel)]="selectedBranches" display="chip" [style]="{'width':'100%'}"
-                        styleClass="filterDropDown text-sm" optionValue="id" optionLabel="name"
+                        styleClass="filterDropDown text-sm" optionLabel="name"
                         placeholder="{{ '::Select' | abpLocalization }}"
-                        emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" [required]="selectedHospitalResponseType == hospitalResponseTypeEnum.SuitableForTreatment"
+                        emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
+                        [required]="selectedHospitalResponseType == hospitalResponseTypeEnum.SuitableForTreatment"
                         emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}"></p-multiSelect>
                 </div>
             </div>
@@ -107,17 +105,20 @@
                     style="width:140px">{{'::HospitalResponse:Field:EarliestTreatmentDate' |
                     abpLocalization}}</label>
                 <div class="col">
-                    <p-calendar [(ngModel)]="earliestTreatmentDate" [showIcon]="true" inputStyleClass="text-sm"></p-calendar>
+                    <p-calendar [(ngModel)]="hospitalResponse.possibleTreatmentDate" [showIcon]="true"
+                        inputStyleClass="text-sm"></p-calendar>
                 </div>
             </div>
             <div class="field grid">
                 <label for="numberOfHospitalizationDays" class="col-fixed"
                     style="width:140px">{{'::HospitalResponse:Field:NumberOfHospitalizationDays' |
-                    abpLocalization}}<font
-                    style="color:red" *ngIf="selectedHospitalResponseType == hospitalResponseTypeEnum.SuitableForTreatment">&nbsp;*</font></label>
+                    abpLocalization}}<font style="color:red"
+                        *ngIf="selectedHospitalResponseType == hospitalResponseTypeEnum.SuitableForTreatment">&nbsp;*
+                    </font></label>
                 <div class="col">
-                    <p-inputNumber inputId="numberOfHospitalizationDays" [required]="selectedHospitalResponseType == hospitalResponseTypeEnum.SuitableForTreatment"
-                        [(ngModel)]="numberOfHospitalizationDays"></p-inputNumber>
+                    <p-inputNumber inputId="numberOfHospitalizationDays"
+                        [required]="selectedHospitalResponseType == hospitalResponseTypeEnum.SuitableForTreatment"
+                        [(ngModel)]="hospitalResponse.hospitalizationNumber"></p-inputNumber>
                 </div>
             </div>
         </div>
@@ -126,7 +127,8 @@
                 {{'::HospitalResponse:FieldLegend:HospitalDescription' |
                 abpLocalization}}
             </legend>
-            <textarea pInputText id="description" name="description" required class="w-full h-full"></textarea>
+            <textarea pInputText id="description" name="description" #description="ngModel"
+                [(ngModel)]="hospitalResponse.description" required class="w-full h-full"></textarea>
         </fieldset>
     </div>
     <div class="col-4">
@@ -141,8 +143,10 @@
                     <div class="ml-3"></div>
                 </div>
                 <div class="p-toolbar-group-end p-0">
-                    <button pButton pRipple label="{{ '::HospitalResponse:AnticipatedProcesses:NewProcess' | abpLocalization }}" icon="pi pi-plus"
-                        class="p-button-success mr-2" (click)="openNewProcess()" [loading]="loading"></button>
+                    <button pButton pRipple
+                        label="{{ '::HospitalResponse:AnticipatedProcesses:NewProcess' | abpLocalization }}"
+                        icon="pi pi-plus" class="p-button-success mr-2" (click)="openNewProcess()"
+                        [loading]="loading"></button>
                 </div>
             </p-toolbar>
 
@@ -152,7 +156,8 @@
                 [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
                 <ng-template pTemplate="header">
                     <tr>
-                        <th pSortableColumn="process.code">{{ '::HospitalResponse:Process:Column:Code' | abpLocalization }}
+                        <th pSortableColumn="process.code">{{ '::HospitalResponse:Process:Column:Code' | abpLocalization
+                            }}
                             <p-sortIcon field="process.code"></p-sortIcon>
                         </th>
                         <th pSortableColumn="process.description">{{ '::HospitalResponse:Process:Column:Description' |
@@ -201,8 +206,10 @@
                     <div class="ml-3"></div>
                 </div>
                 <div class="p-toolbar-group-end p-0">
-                    <button pButton pRipple label="{{ '::HospitalResponse:AnticipatedMaterials:NewMaterial' | abpLocalization }}" icon="pi pi-plus"
-                        class="p-button-success mr-2" (click)="openNewMaterial()" [loading]="loading"></button>
+                    <button pButton pRipple
+                        label="{{ '::HospitalResponse:AnticipatedMaterials:NewMaterial' | abpLocalization }}"
+                        icon="pi pi-plus" class="p-button-success mr-2" (click)="openNewMaterial()"
+                        [loading]="loading"></button>
                 </div>
             </p-toolbar>
 
@@ -212,7 +219,8 @@
                 [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
                 <ng-template pTemplate="header">
                     <tr>
-                        <th pSortableColumn="material.name">{{ '::HospitalResponse:Material:Column:Name' | abpLocalization }}
+                        <th pSortableColumn="material.name">{{ '::HospitalResponse:Material:Column:Name' |
+                            abpLocalization }}
                             <p-sortIcon field="material.name"></p-sortIcon>
                         </th>
                         <th pSortableColumn="amount">{{ '::HospitalResponse:Material:Column:Amount' | abpLocalization }}
@@ -246,7 +254,7 @@
         </fieldset>
         <div class="flex justify-content-end">
             <button pButton pRipple label="{{ '::Send' | abpLocalization }}" icon="pi pi-send"
-                class="p-button-success mr-2 mt-4 w-12rem" [loading]="loading"></button>
+                class="p-button-success mr-2 mt-4 w-12rem" [loading]="loading" (click)="onResponseSend()"></button>
         </div>
     </div>
 </div>
@@ -260,8 +268,8 @@
                 <label for="ddlProcessList">{{ '::Admin:Process:Name' | abpLocalization
                     }}&nbsp;<font style="color:red">*
                     </font></label>
-                <p-dropdown id="ddlProcessList" name="ddlProcessList" #ddlProcessList="ngModel" [filter]="true" filterBy="name" [showClear]="true"
-                    [options]="processList" [(ngModel)]="process.process"
+                <p-dropdown id="ddlProcessList" name="ddlProcessList" #ddlProcessList="ngModel" [filter]="true"
+                    filterBy="name" [showClear]="true" [options]="processList" [(ngModel)]="process.process"
                     placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
                     styleClass="filterDropDown" appendTo="body" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
                     emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}" required appendTo="body">
@@ -285,7 +293,8 @@
                 <label for="processAmount">{{ '::Admin:Material:Name' | abpLocalization
                     }}&nbsp;<font style="color:red">*
                     </font></label>
-                <p-inputNumber id="processAmount" name="processAmount" #processAmount="ngModel" [(ngModel)]="process.amount"></p-inputNumber>
+                <p-inputNumber id="processAmount" name="processAmount" #processAmount="ngModel"
+                    [(ngModel)]="process.amount"></p-inputNumber>
                 <small class="p-error" *ngIf="!(processAmount.valid || processAmount.pristine)">{{
                     '::Message:RequiredField' |
                     abpLocalization
@@ -310,11 +319,12 @@
                 <label for="ddlMaterialList">{{ '::Admin:Material:Name' | abpLocalization
                     }}&nbsp;<font style="color:red">*
                     </font></label>
-                <p-dropdown id="ddlMaterialList" name="ddlMaterialList" #ddlMaterialList="ngModel" [filter]="true" filterBy="name" [showClear]="true"
-                    [options]="materialList" [(ngModel)]="material.material"
+                <p-dropdown id="ddlMaterialList" name="ddlMaterialList" #ddlMaterialList="ngModel" [filter]="true"
+                    filterBy="name" [showClear]="true" [options]="materialList" [(ngModel)]="material.material"
                     placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
                     styleClass="filterDropDown" appendTo="body" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
-                    emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}" optionLabel="name"  required appendTo="body">
+                    emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}" optionLabel="name" required
+                    appendTo="body">
                 </p-dropdown>
                 <small class="p-error" *ngIf="!(ddlMaterialList.valid || ddlMaterialList.pristine)">{{
                     '::Message:RequiredField' |
@@ -325,7 +335,8 @@
                 <label for="materialAmount">{{ '::Admin:Material:Name' | abpLocalization
                     }}&nbsp;<font style="color:red">*
                     </font></label>
-                <p-inputNumber id="materialAmount" name="materialAmount" #materialAmount="ngModel" [(ngModel)]="material.amount"></p-inputNumber>
+                <p-inputNumber id="materialAmount" name="materialAmount" #materialAmount="ngModel"
+                    [(ngModel)]="material.amount"></p-inputNumber>
                 <small class="p-error" *ngIf="!(materialAmount.valid || materialAmount.pristine)">{{
                     '::Message:RequiredField' |
                     abpLocalization
@@ -340,7 +351,6 @@
             (click)="saveMaterial()" [disabled]="!(materialForm.valid)"></button>
     </p-footer>
 </p-dialog>
-
 
 <p-confirmDialog key="hospitalResponseConfirm" [style]="{width: '450px'}"
     rejectLabel="{{ '::Reject' | abpLocalization }}" acceptLabel="{{ '::Accept' | abpLocalization }}"></p-confirmDialog>

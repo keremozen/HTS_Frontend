@@ -1,38 +1,37 @@
 <p-toast></p-toast>
 
-
-<h4>{{ '::Admin:Material:MaterialManagement' | abpLocalization }}</h4>
+<h4>{{ '::Admin:RejectReason:RejectReasonManagement' | abpLocalization }}</h4>
 
 <div class="card">
     <p-toolbar styleClass="mb-4 gap-2">
         <ng-template pTemplate="left">
-            <button pButton pRipple label="{{ '::Admin:Material:NewMaterial' | abpLocalization }}" icon="pi pi-plus"
-                class="p-button-success mr-2" (click)="openNewMaterial()" [loading]="loading"></button>
+            <button pButton pRipple label="{{ '::Admin:RejectReason:NewRejectReason' | abpLocalization }}" icon="pi pi-plus"
+                class="p-button-success mr-2" (click)="openNewRejectReason()" [loading]="loading"></button>
         </ng-template>
     </p-toolbar>
 
-    <p-table #dt [value]="materialList" [rows]="10" [paginator]="true"
+    <p-table #dt [value]="rejectReasonList" [rows]="10" [paginator]="true"
         [tableStyle]="{'min-width': '75rem'}" [rowHover]="true"
         dataKey="Id" [loading]="loading"
         currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
         [showCurrentPageReport]="true">
         <ng-template pTemplate="header">
             <tr>
-                <th pSortableColumn="name">{{ '::Admin:Material:Column:Name' | abpLocalization }} <p-sortIcon
-                        field="name"></p-sortIcon></th>
-                <th>{{ '::Admin:Material:Column:IsActive' | abpLocalization }}</th>
+                <th pSortableColumn="reason">{{ '::Admin:RejectReason:Column:Reason' | abpLocalization }} <p-sortIcon
+                        field="reason"></p-sortIcon></th>
+                <th>{{ '::Admin:RejectReason:Column:IsActive' | abpLocalization }}</th>
                 <th style="width:8rem;"></th>
             </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-material>
+        <ng-template pTemplate="body" let-rejectReason>
             <tr>
-                <td>{{material.name}}</td>
-                <td><i class="pi" [ngClass]="{ 'text-green-500 pi-check-circle': material.isActive, 'text-red-500 pi-times-circle': !material.isActive }"></i></td>
+                <td>{{rejectReason.reason}}</td>
+                <td><i class="pi" [ngClass]="{ 'text-green-500 pi-check-circle': rejectReason.isActive, 'text-red-500 pi-times-circle': !rejectReason.isActive }"></i></td>
                 <td>
                     <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
-                        (click)="editMaterial(material)"></button>
+                        (click)="editRejectReason(rejectReason)"></button>
                     <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
-                        (click)="deleteMaterial(material)"></button>
+                        (click)="deleteRejectReason(rejectReason)"></button>
                 </td>
             </tr>
         </ng-template>
@@ -49,23 +48,23 @@
     </p-table>
 </div>
 
-<p-dialog [(visible)]="materialDialog" [style]="{width: '450px'}"
-    header="{{ '::Admin:Material:MaterialDetails' | abpLocalization }}" [modal]="true" styleClass="p-fluid">
-    <form #materialForm="ngForm">
-        <div *ngIf="material">
+<p-dialog [(visible)]="rejectReasonDialog" [style]="{width: '450px'}"
+    header="{{ '::Admin:RejectReason:RejectReasonDetails' | abpLocalization }}" [modal]="true" styleClass="p-fluid">
+    <form #rejectReasonForm="ngForm">
+        <div *ngIf="rejectReason">
             <div class="field">
-                <label for="name">{{ '::Admin:Material:Column:Name' | abpLocalization }}&nbsp;<font style="color:red">*
+                <label for="reason">{{ '::Admin:RejectReason:Column:Reason' | abpLocalization }}&nbsp;<font style="color:red">*
                     </font></label>
-                <input type="text" pInputText id="name" name="name" #name="ngModel" [(ngModel)]="material.name" required
+                <input type="text" pInputText id="reason" name="reason" #reason="ngModel" [(ngModel)]="rejectReason.reason" required
                     autofocus />
-                <small class="p-error" *ngIf="!(name.valid || name.pristine)">{{ '::Message:RequiredField' |
+                <small class="p-error" *ngIf="!(reason.valid || reason.pristine)">{{ '::Message:RequiredField' |
                     abpLocalization
                     }}</small>
             </div>
             <div class="field">
-                <label for="isActive">{{ '::Admin:Material:Column:IsActive' | abpLocalization }}</label>
+                <label for="isActive">{{ '::Admin:RejectReason:Column:IsActive' | abpLocalization }}</label>
                 <div class="w-full">
-                    <p-checkbox id="isActive" name="isActive" #isActive="ngModel" [(ngModel)]="material.isActive"
+                    <p-checkbox id="isActive" name="isActive" #isActive="ngModel" [(ngModel)]="rejectReason.isActive"
                         [binary]="true"></p-checkbox>
                 </div>
             </div>
@@ -75,7 +74,7 @@
         <button pButton pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" class="p-button-text"
             (click)="hideDialog()"></button>
         <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" class="p-button-text"
-            (click)="saveMaterial()" [disabled]="!(materialForm.valid)"></button>
+            (click)="saveRejectReason()" [disabled]="!(rejectReasonForm.valid)"></button>
     </p-footer>
 </p-dialog>
 

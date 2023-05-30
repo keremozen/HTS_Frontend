@@ -139,6 +139,15 @@ function configureRoutes(routesService: RoutesService) {
         requiredPolicy: 'HTS.MaterialManagement',
         layout: eLayoutType.application
       },
+      {
+        path: '/admin/rejectReason',
+        name: '::Menu:Admin:RejectReason',
+        iconClass: 'fas fa-syringe',
+        parentName: eThemeSharedRouteNames.Administration,
+        order: 112,
+        requiredPolicy: 'HTS.RejectReasonManagement',
+        layout: eLayoutType.application
+      },
     ]);
   };
 }

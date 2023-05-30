@@ -2,9 +2,9 @@ import { mapEnumToOptions } from '@abp/ng.core';
 
 export enum EntityEnum_PatientTreatmentStatusEnum {
   NewRecord = 1,
-  HospitalAsked = 2,
-  AssessmentWaiting = 3,
-  QuotationWaiting = 4,
+  HospitalAskedWaitingResponse = 2,
+  HospitalAskedWaitingAssessment = 3,
+  OperationApprovedWaitingPricing = 4,
   Discharged = 5,
 }
 
