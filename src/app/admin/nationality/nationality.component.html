@@ -4,29 +4,29 @@
     <p-toolbar styleClass="mb-4 gap-2">
         <ng-template pTemplate="left">
             <button pButton pRipple label="{{ '::Admin:Nationality:NewNationality' | abpLocalization }}"
-                icon="pi pi-plus" class="p-button-success mr-2" (click)="openNewNationality()" [loading]="loading"></button>
+                icon="pi pi-plus" class="p-button-success mr-2" (click)="openNewNationality()"
+                [loading]="loading"></button>
         </ng-template>
     </p-toolbar>
-    <p-table #dt [value]="nationalityList" [rows]="10" [paginator]="true"
-        [globalFilterFields]="['name','phoneCode','description']" [tableStyle]="{'min-width': '75rem'}" [rowHover]="true"
-        dataKey="Id" [loading]="loading"
+    <p-table #dt [value]="nationalityList" [rows]="10" [paginator]="true" responsiveLayout="stack"
+        [breakpoint]="'960px'" [rowHover]="true" dataKey="Id" [loading]="loading"
         currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
         [showCurrentPageReport]="true">
         <ng-template pTemplate="header">
             <tr>
                 <th pSortableColumn="name">{{ '::Admin:Nationality:Column:Name' | abpLocalization }} <p-sortIcon
                         field="name"></p-sortIcon></th>
-                <th pSortableColumn="phoneCode">{{ '::Admin:Nationality:Column:PhoneCode' | abpLocalization }} <p-sortIcon
-                        field="phoneCode"></p-sortIcon></th>
-                <th>{{ '::Admin:Nationality:Column:IsActive' | abpLocalization }}</th>
-                <th style="width:8rem;"></th>
+                <th pSortableColumn="phoneCode">{{ '::Admin:Nationality:Column:PhoneCode' | abpLocalization }}
+                    <p-sortIcon field="phoneCode"></p-sortIcon></th>
+                <th class="w-8rem text-center">{{ '::Admin:Nationality:Column:IsActive' | abpLocalization }}</th>
+                <th class="w-8rem"></th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-nationality>
             <tr>
                 <td>{{nationality.name}}</td>
                 <td>{{nationality.phoneCode}}</td>
-                <td><i class="pi"
+                <td class="text-center"><i class="pi"
                         [ngClass]="{ 'text-green-500 pi-check-circle': nationality.isActive, 'text-red-500 pi-times-circle': !nationality.isActive }"></i>
                 </td>
                 <td>
@@ -54,7 +54,8 @@
     <form #languageForm="ngForm">
         <div *ngIf="nationality">
             <div class="field">
-                <label for="name">{{ '::Admin:Nationality:Column:Name' | abpLocalization }}&nbsp;<font style="color:red">*</font></label>
+                <label for="name">{{ '::Admin:Nationality:Column:Name' | abpLocalization }}&nbsp;<font
+                        style="color:red">*</font></label>
                 <input type="text" pInputText id="name" name="name" #name="ngModel" [(ngModel)]="nationality.name"
                     required autofocus />
                 <small class="p-error" *ngIf="!(name.valid || name.pristine)">{{ '::Message:RequiredField' |
@@ -62,8 +63,10 @@
                     }}</small>
             </div>
             <div class="field">
-                <label for="phoneCode">{{ '::Admin:Nationality:Column:PhoneCode' | abpLocalization }}&nbsp;<font style="color:red">*</font></label>
-                <input type="text" pInputText id="phoneCode" name="phoneCode" #phoneCode="ngModel" [(ngModel)]="nationality.phoneCode" required />
+                <label for="phoneCode">{{ '::Admin:Nationality:Column:PhoneCode' | abpLocalization }}&nbsp;<font
+                        style="color:red">*</font></label>
+                <input type="text" pInputText id="phoneCode" name="phoneCode" #phoneCode="ngModel"
+                    [(ngModel)]="nationality.phoneCode" required />
                 <small class="p-error" *ngIf="!(phoneCode.valid || phoneCode.pristine)">{{ '::Message:RequiredField' |
                     abpLocalization
                     }}</small>

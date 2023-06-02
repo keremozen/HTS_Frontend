@@ -310,7 +310,7 @@
                         <label for="branch" class="col-fixed" style="width:140px">{{'::HospitalResponse:Field:Branch' |
                             abpLocalization}}</label>
                         <div class="col">
-                            {{branchListText}}
+                            <div [innerHtml]="branchListText"></div>
                         </div>
                     </div>
                     <div class="field grid">

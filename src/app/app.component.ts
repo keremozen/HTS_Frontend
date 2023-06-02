@@ -35,5 +35,30 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.primengConfig.ripple = true;
     this.ripple = true;
+
+    this.primengConfig.setTranslation({
+      startsWith: 'ile başlayan',
+      contains: 'içeren',
+      notContains: 'içermeyen',
+      endsWith: 'ile biten',
+      equals: 'eşit',
+      notEquals: 'eşit değil',
+      lt: 'küçüktür',
+      lte: 'küçük eşittir',
+      gt: 'büyüktür',
+      gte: 'büyük eşittir',
+      apply: 'Uygula',
+      choose: 'Seç',
+      upload: 'Yükle',
+      cancel: 'Vazgeç',
+      dayNames: ['pazartesi', 'salı', 'çarşamba', 'perşembe', 'cuma', 'cumartesi', 'pazar'],
+      dayNamesShort: ['pzt', 'sal', 'çar', 'per', 'cum', 'cmt', 'pz'],
+      dayNamesMin: ['P', 'S', 'C', 'P', 'CU', 'CMT', 'PZ'],
+      monthNames: ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'],
+      monthNamesShort: ['oc', 'şub', 'mar', 'nis', 'may', 'hz', 'tem', 'ağu', 'eyl', 'ek', 'kas', 'ara'],
+      today: 'Bugün',
+      clear: 'Temizle',
+      weekHeader: 'Hafta'
+  });
   }
 }

@@ -9,13 +9,12 @@ import type { HospitalResponseMaterialDto, SaveHospitalResponseMaterialDto } fro
 import type { HospitalConsultationDto } from '../hospital-consultation/models';
 
 export interface HospitalResponseDto extends EntityDto<number> {
-  hospitalConsultationId: number;
+  hospitalConsultationId?: number;
   description?: string;
   hospitalResponseTypeId: EntityEnum_HospitalResponseTypeEnum;
   hospitalizationTypeId?: EntityEnum_HospitalizationTypeEnum;
   possibleTreatmentDate?: Date;
   hospitalizationNumber?: number;
-  isManuallyAdded: boolean;
   hospitalResponseType: HospitalResponseTypeDto;
   hospitalizationType: HospitalizationTypeDto;
   hospitalResponseBranches: HospitalResponseBranchDto[];
@@ -25,13 +24,12 @@ export interface HospitalResponseDto extends EntityDto<number> {
 }
 
 export interface SaveHospitalResponseDto {
-  hospitalConsultationId: number;
+  hospitalConsultationId?: number;
   description?: string;
   hospitalResponseTypeId: number;
   hospitalizationTypeId?: number;
   possibleTreatmentDate?: Date;
   hospitalizationNumber?: number;
-  isManuallyAdded: boolean;
   hospitalResponseBranches: SaveHospitalResponseBranchDto[];
   hospitalResponseProcesses: SaveHospitalResponseProcessDto[];
   hospitalResponseMaterials: SaveHospitalResponseMaterialDto[];

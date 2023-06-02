@@ -7,13 +7,13 @@
         <ng-template pTemplate="left">
             <button pButton pRipple
                 label="{{ '::Admin:PatientAdmissionMethod:NewPatientAdmissionMethod' | abpLocalization }}"
-                icon="pi pi-plus" class="p-button-success mr-2" (click)="openNewPatientAdmissionMethod()" [loading]="loading"></button>
+                icon="pi pi-plus" class="p-button-success mr-2" (click)="openNewPatientAdmissionMethod()"
+                [loading]="loading"></button>
         </ng-template>
     </p-toolbar>
 
-    <p-table #dt [value]="patientAdmissionMethodList" [rows]="10" [paginator]="true"
-        [globalFilterFields]="['name','description']" [tableStyle]="{'min-width': '75rem'}" [rowHover]="true"
-        dataKey="Id" [loading]="loading"
+    <p-table #dt [value]="patientAdmissionMethodList" [rows]="10" [paginator]="true" responsiveLayout="stack"
+        [breakpoint]="'960px'" [rowHover]="true" dataKey="Id" [loading]="loading"
         currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
         [showCurrentPageReport]="true">
         <ng-template pTemplate="header">
@@ -24,15 +24,15 @@
                 <th pSortableColumn="Code">{{ '::Admin:PatientAdmissionMethod:Column:Description' | abpLocalization }}
                     <p-sortIcon field="Description"></p-sortIcon>
                 </th>
-                <th>{{ '::Admin:PatientAdmissionMethod:Column:IsActive' | abpLocalization }}</th>
-                <th style="width:8rem;"></th>
+                <th class="w-8rem text-center">{{ '::Admin:PatientAdmissionMethod:Column:IsActive' | abpLocalization }}</th>
+                <th class="w-8rem"></th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-patientAdmissionMethod>
             <tr>
                 <td>{{patientAdmissionMethod.name}}</td>
                 <td>{{patientAdmissionMethod.description}}</td>
-                <td><i class="pi"
+                <td class="text-center"><i class="pi"
                         [ngClass]="{ 'text-green-500 pi-check-circle': patientAdmissionMethod.isActive, 'text-red-500 pi-times-circle': !patientAdmissionMethod.isActive }"></i>
                 </td>
                 <td>
@@ -63,7 +63,7 @@
         <div *ngIf="patientAdmissionMethod">
             <div class="field">
                 <label for="name">{{ '::Admin:PatientAdmissionMethod:Column:Name' | abpLocalization }}&nbsp;<font
-                    style="color:red">*</font></label>
+                        style="color:red">*</font></label>
                 <input type="text" pInputText id="name" name="name" #name="ngModel"
                     [(ngModel)]="patientAdmissionMethod.name" required autofocus />
                 <small class="p-error" *ngIf="!(name.valid || name.pristine)">{{ '::Message:RequiredField' |
@@ -71,8 +71,8 @@
                     }}</small>
             </div>
             <div class="field">
-                <label for="description">{{ '::Admin:PatientAdmissionMethod:Column:Description' | abpLocalization }}&nbsp;<font
-                    style="color:red">*</font></label>
+                <label for="description">{{ '::Admin:PatientAdmissionMethod:Column:Description' | abpLocalization
+                    }}&nbsp;<font style="color:red">*</font></label>
                 <input type="text" pInputText id="description" name="description" #description="ngModel"
                     [(ngModel)]="patientAdmissionMethod.description" required />
                 <small class="p-error" *ngIf="!(description.valid || description.pristine)">{{ '::Message:RequiredField'
@@ -82,8 +82,8 @@
             <div class="field">
                 <label for="isActive">{{ '::Admin:PatientAdmissionMethod:Column:IsActive' | abpLocalization }}</label>
                 <div class="w-full">
-                    <p-checkbox id="isActive" name="isActive" #isActive="ngModel" [(ngModel)]="patientAdmissionMethod.isActive"
-                        [binary]="true"></p-checkbox>
+                    <p-checkbox id="isActive" name="isActive" #isActive="ngModel"
+                        [(ngModel)]="patientAdmissionMethod.isActive" [binary]="true"></p-checkbox>
                 </div>
             </div>
         </div>

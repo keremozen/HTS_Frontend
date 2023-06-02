@@ -12,9 +12,8 @@
         </ng-template>
     </p-toolbar>
 
-    <p-table #dt [value]="contractedInstitutionList" [rows]="10" [paginator]="true"
-        [globalFilterFields]="['name','description']" [tableStyle]="{'min-width': '75rem'}" [rowHover]="true"
-        dataKey="Id" [loading]="loading"
+    <p-table #dt [value]="contractedInstitutionList" [rows]="10" [paginator]="true" responsiveLayout="stack"
+        [breakpoint]="'960px'" [rowHover]="true" dataKey="Id" [loading]="loading"
         currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
         [showCurrentPageReport]="true">
         <ng-template pTemplate="header">
@@ -36,7 +35,7 @@
                     abpLocalization }} <p-sortIcon field="description"></p-sortIcon></th>
                 <th>{{ '::Admin:ContractedInstitution:Column:Staffs' |
                     abpLocalization }}</th>
-                <th>{{ '::Admin:ContractedInstitution:Column:IsActive' | abpLocalization }}</th>
+                <th class="text-center">{{ '::Admin:ContractedInstitution:Column:IsActive' | abpLocalization }}</th>
                 <th style="width:11rem;"></th>
             </tr>
         </ng-template>
@@ -50,8 +49,10 @@
                 <td>{{contractedInstitution.address}}</td>
                 <td>{{contractedInstitution.nationality?.name}}</td>
                 <td>{{contractedInstitution.description}}</td>
-                <td><div [innerHTML]="!contractedInstitution.staffNames ? '-': contractedInstitution.staffNames"></div></td>
-                <td><i class="pi"
+                <td>
+                    <div [innerHTML]="!contractedInstitution.staffNames ? '-': contractedInstitution.staffNames"></div>
+                </td>
+                <td class="text-center"><i class="pi"
                         [ngClass]="{ 'text-green-500 pi-check-circle': contractedInstitution.isActive, 'text-red-500 pi-times-circle': !contractedInstitution.isActive }"></i>
                 </td>
                 <td class="text-right">
@@ -183,8 +184,7 @@
                     [loading]="loading"></button>
             </ng-template>
         </p-toolbar>
-        <p-table #dt [value]="staffList" [rows]="10" [paginator]="true"
-            [globalFilterFields]="['nameSurname','phoneNumber','email']" [tableStyle]="{'min-width': '100%'}"
+        <p-table #dt [value]="staffList" [rows]="10" [paginator]="true" responsiveLayout="stack" [breakpoint]="'960px'"
             [rowHover]="true" [loading]="loading"
             currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
             [showCurrentPageReport]="true">
@@ -196,8 +196,8 @@
                         abpLocalization }} <p-sortIcon field="phoneNumber"></p-sortIcon></th>
                     <th pSortableColumn="email">{{ '::Admin:ContractedInstitutionStaff:Column:EMail' | abpLocalization
                         }} <p-sortIcon field="email"></p-sortIcon></th>
-                    <th>{{ '::Admin:ContractedInstitutionStaff:Column:IsDefault' | abpLocalization }}</th>
-                    <th>{{ '::Admin:ContractedInstitutionStaff:Column:IsActive' | abpLocalization }}</th>
+                    <th class="text-center">{{ '::Admin:ContractedInstitutionStaff:Column:IsDefault' | abpLocalization }}</th>
+                    <th class="text-center">{{ '::Admin:ContractedInstitutionStaff:Column:IsActive' | abpLocalization }}</th>
                     <th style="width:8rem;"></th>
                 </tr>
             </ng-template>
@@ -207,10 +207,10 @@
                     <td>{{staff.phoneCountryCode?.phoneCode ?? staff.phoneCountryCode?.phoneCode + '
                         '}}{{staff.phoneNumber}}</td>
                     <td>{{staff.email}}</td>
-                    <td><i class="pi"
+                    <td class="text-center"><i class="pi"
                             [ngClass]="{ 'text-green-500 pi-check-circle': staff.isDefault, 'text-red-500 pi-times-circle': !staff.isDefault }"></i>
                     </td>
-                    <td><i class="pi"
+                    <td class="text-center"><i class="pi"
                             [ngClass]="{ 'text-green-500 pi-check-circle': staff.isActive, 'text-red-500 pi-times-circle': !staff.isActive }"></i>
                     </td>
                     <td>

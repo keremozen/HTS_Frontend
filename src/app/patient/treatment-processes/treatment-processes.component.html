@@ -21,16 +21,17 @@
         <tr>
             <th pSortableColumn="treatmentCode">{{ '::TreatmentProcess:Column:Code' | abpLocalization }} <p-sortIcon
                     field="treatmentCode"></p-sortIcon></th>
+            <th pSortableColumn="State">{{ '::TreatmentProcess:Column:State' | abpLocalization }}
+                <p-sortIcon field="state"></p-sortIcon>
+            </th>
             <th style="width: 15rem" pSortableColumn="CreatedBy">{{ '::TreatmentProcess:Column:CreatedBy' |
                 abpLocalization }}
                 <p-sortIcon field="CreatedBy"></p-sortIcon>
             </th>
-            <th style="width: 15rem" pSortableColumn="creationTime">{{ '::TreatmentProcess:Column:Created' | abpLocalization
+            <th style="width: 15rem" pSortableColumn="creationTime">{{ '::TreatmentProcess:Column:Created' |
+                abpLocalization
                 }}
                 <p-sortIcon field="creationTime"></p-sortIcon>
-            </th>
-            <th style="width: 15rem" pSortableColumn="State">{{ '::TreatmentProcess:Column:State' | abpLocalization }}
-                <p-sortIcon field="state"></p-sortIcon>
             </th>
             <th style="width: 4rem"></th>
         </tr>
@@ -38,9 +39,9 @@
     <ng-template pTemplate="body" let-process>
         <tr class="cursor-pointer" (click)="onDisplayTreatmentProcessDetail(process.treatmentCode)">
             <td>{{process.treatmentCode}}</td>
+            <td>{{process.treatmentProcessStatus?.name}}</td>
             <td>{{process.creator?.name + (process.creator?.surname ? (" " + process.creator?.surname) : "")}}</td>
             <td>{{process.creationTime | date: 'dd.MM.yyyy'}}</td>
-            <td>{{process.treatmentProcessStatus?.name}}</td>
             <td>
                 <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"
                     (click)="deleteProcess(process)"></button>
@@ -66,7 +67,8 @@
                 <i class="fas fa-hospital-user text-sm mr-2"></i>
                 <span>{{'::TreatmentProcess:Step:SalesAndAttendantInfo'|abpLocalization}}</span>
             </ng-template>
-            <app-companion-info [treatmentProcessId]="process.id" (save)="onSaveSalesInfoAndCompanionInfo()"></app-companion-info>
+            <app-companion-info [treatmentProcessId]="process.id"
+                (save)="onSaveSalesInfoAndCompanionInfo()"></app-companion-info>
         </p-tabPanel>
         <p-tabPanel [disabled]="!doesHaveAnySalesMethodAndCompanionInfo" [cache]="false">
             <ng-template pTemplate="header">
@@ -74,7 +76,8 @@
                 <span>{{'::TreatmentProcess:Step:HospitalConsultation'|abpLocalization}}</span>
             </ng-template>
             <ng-template pTemplate="content">
-            <app-hospital-consultation [patientId]="patientId" [patientTreatmentId]="process?.id"></app-hospital-consultation>
+                <app-hospital-consultation [patientId]="patientId"
+                    [patientTreatmentId]="process?.id" (onConsultationChange)="consultationChanged($event)"></app-hospital-consultation>
             </ng-template>
         </p-tabPanel>
         <p-tabPanel [disabled]="!doesHaveAnySalesMethodAndCompanionInfo">
@@ -94,5 +97,5 @@
     </p-tabView>
 </div>
 
-<p-confirmDialog key="treatmentProcessConfirm" [style]="{width: '450px'}" rejectLabel="{{ '::Reject' | abpLocalization }}"
-    acceptLabel="{{ '::Accept' | abpLocalization }}"></p-confirmDialog>
+<p-confirmDialog key="treatmentProcessConfirm" [style]="{width: '450px'}"
+    rejectLabel="{{ '::Reject' | abpLocalization }}" acceptLabel="{{ '::Accept' | abpLocalization }}"></p-confirmDialog>

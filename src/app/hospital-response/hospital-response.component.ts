@@ -33,7 +33,7 @@ export class HospitalResponseComponent extends AppComponentBase {
   hospitalResponseTypeList: HospitalResponseTypeDto[] = [];
   hospitalizationTypeList: HospitalizationTypeDto[] = [];
   branchList: BranchDto[] = [];
-  selectedHospitalResponseType: HospitalResponseTypeDto;
+  selectedHospitalResponseType: number;
   selectedHospitalizationType: HospitalizationTypeDto;
   selectedBranches: BranchDto[] = [];
   anticipatedProcesses: SaveHospitalResponseProcessWithDetailDto[] = [];
@@ -69,6 +69,7 @@ export class HospitalResponseComponent extends AppComponentBase {
 
   ngOnInit() {
     if (this.route.snapshot.paramMap.get('uid')) {
+      debugger;
       this.consultationId = +this.route.snapshot.paramMap.get('uid');
       this.hospitalResponse.hospitalConsultationId = this.consultationId;
       this.hospitalResponse.hospitalResponseBranches = [];
@@ -121,7 +122,6 @@ export class HospitalResponseComponent extends AppComponentBase {
   }
 
   saveMaterial() {
-    debugger;
     this.material.materialId = this.material.material.id;
     this.anticipatedMaterials.push(this.material);
     this.material = null;
@@ -129,7 +129,7 @@ export class HospitalResponseComponent extends AppComponentBase {
   }
 
   deleteMaterial(material: SaveHospitalResponseMaterialWithDetailDto) {
-    this.anticipatedMaterials = this.anticipatedMaterials.filter(m=>!(m.materialId == material.materialId && m.amount == material.amount));
+    this.anticipatedMaterials = this.anticipatedMaterials.filter(m => !(m.materialId == material.materialId && m.amount == material.amount));
   }
 
   hideMaterialDialog() {
@@ -151,7 +151,7 @@ export class HospitalResponseComponent extends AppComponentBase {
   }
 
   deleteProcess(process: SaveHospitalResponseProcessWithDetailDto) {
-    this.anticipatedProcesses = this.anticipatedProcesses.filter(m=>!(m.processId == process.processId && m.amount == process.amount));
+    this.anticipatedProcesses = this.anticipatedProcesses.filter(m => !(m.processId == process.processId && m.amount == process.amount));
   }
 
   hideProcessDialog() {
@@ -160,25 +160,33 @@ export class HospitalResponseComponent extends AppComponentBase {
   }
 
   onResponseSend() {
-    this.hospitalResponse.hospitalResponseTypeId = this.selectedHospitalResponseType.id;
-    this.hospitalResponse.hospitalizationTypeId = this.selectedHospitalizationType.id;
-    this.selectedBranches.forEach(branch => {
-      this.hospitalResponse.hospitalResponseBranches.push({
-        hospitalResponseId: 0,
-        branchId: branch.id
-      });
-    });
-    this.hospitalResponse.hospitalResponseProcesses = this.anticipatedProcesses;
-    this.hospitalResponse.hospitalResponseMaterials = this.anticipatedMaterials;
+    this.confirm({
+      key: 'hospitalResponseConfirm',
+      message: this.l('::HospitalResponse:Message:SaveConfirm'),
+      header: this.l('::Confirm'),
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        debugger;
+        this.hospitalResponse.hospitalResponseTypeId = this.selectedHospitalResponseType;
+        this.hospitalResponse.hospitalizationTypeId = this.selectedHospitalizationType.id;
+        this.hospitalResponse.hospitalResponseBranches = [];
+        this.selectedBranches.forEach(branch => {
+          this.hospitalResponse.hospitalResponseBranches.push({
+            hospitalResponseId: 0,
+            branchId: branch.id
+          });
+        });
+        this.hospitalResponse.hospitalResponseProcesses = this.anticipatedProcesses;
+        this.hospitalResponse.hospitalResponseMaterials = this.anticipatedMaterials;
 
-    this.hospitalResponseService.create(this.hospitalResponse).subscribe({
-      complete: () => {
-        this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:Hospital:Name')));
+        this.hospitalResponseService.create(this.hospitalResponse).subscribe({
+          complete: () => {
+            this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:Hospital:Name')));
+          }
+        });
       }
-    }); 
+    });
   }
-
-
 }
 
 class SaveHospitalResponseProcessWithDetailDto implements SaveHospitalResponseProcessDto {

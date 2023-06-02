@@ -10,9 +10,8 @@
         </ng-template>
     </p-toolbar>
 
-    <p-table #dt [value]="processList" [rows]="10" [paginator]="true"
-        [globalFilterFields]="['name','code','description']" [tableStyle]="{'min-width': '75rem'}" [rowHover]="true"
-        dataKey="Id" [loading]="loading"
+    <p-table #dt [value]="processList" [rows]="10" [paginator]="true" responsiveLayout="stack" [breakpoint]="'960px'"
+        [rowHover]="true" dataKey="Id" [loading]="loading"
         currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
         [showCurrentPageReport]="true">
         <ng-template pTemplate="header">
@@ -21,15 +20,16 @@
                         field="code"></p-sortIcon></th>
                 <th pSortableColumn="name">{{ '::Admin:Process:Column:Name' | abpLocalization }} <p-sortIcon
                         field="name"></p-sortIcon></th>
-                <th pSortableColumn="englishName">{{ '::Admin:Process:Column:EnglishName' | abpLocalization }} <p-sortIcon
-                        field="englishName"></p-sortIcon></th>
+                <th pSortableColumn="englishName">{{ '::Admin:Process:Column:EnglishName' | abpLocalization }}
+                    <p-sortIcon field="englishName"></p-sortIcon>
+                </th>
                 <th pSortableColumn="description">{{ '::Admin:Process:Column:Description' | abpLocalization }}
                     <p-sortIcon field="description"></p-sortIcon>
                 </th>
                 <th pSortableColumn="processType.name">{{ '::Admin:Process:Column:Type' | abpLocalization }} <p-sortIcon
                         field="processType.name"></p-sortIcon></th>
-                <th>{{ '::Admin:Process:Column:IsActive' | abpLocalization }}</th>
-                <th style="width:8rem;"></th>
+                <th class="w-8rem text-center">{{ '::Admin:Process:Column:IsActive' | abpLocalization }}</th>
+                <th class="w-8rem"></th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-process>
@@ -39,7 +39,7 @@
                 <td>{{process.englishName}}</td>
                 <td>{{process.description}}</td>
                 <td>{{process.processType?.name}}</td>
-                <td><i class="pi"
+                <td class="text-center"><i class="pi"
                         [ngClass]="{ 'text-green-500 pi-check-circle': process.isActive, 'text-red-500 pi-times-circle': !process.isActive }"></i>
                 </td>
                 <td>
@@ -92,9 +92,10 @@
                     <label for="englishName">{{ '::Admin:Process:Column:EnglishName' | abpLocalization }}&nbsp;<font
                             style="color:red">*
                         </font></label>
-                    <input type="text" pInputText id="englishName" name="englishName" #englishName="ngModel" [(ngModel)]="process.englishName"
-                        required />
-                    <small class="p-error" *ngIf="!(englishName.valid || englishName.pristine)">{{ '::Message:RequiredField' |
+                    <input type="text" pInputText id="englishName" name="englishName" #englishName="ngModel"
+                        [(ngModel)]="process.englishName" required />
+                    <small class="p-error" *ngIf="!(englishName.valid || englishName.pristine)">{{
+                        '::Message:RequiredField' |
                         abpLocalization
                         }}</small>
                 </div>
@@ -133,8 +134,8 @@
                         {{'::Admin:Process:ProcessCost:Title' |
                         abpLocalization}}
                     </legend>
-                    <p-table [value]="processCostList" [rows]="5" [paginator]="true" [tableStyle]="{'width': '100%'}"
-                        [rowHover]="true" [loading]="loading" [showCurrentPageReport]="false">
+                    <p-table [value]="processCostList" [rows]="5" [paginator]="true" responsiveLayout="stack"
+                        [breakpoint]="'960px'" [rowHover]="true" [loading]="loading" [showCurrentPageReport]="false">
                         <ng-template pTemplate="caption">
                             <div class="flex align-items-center justify-content-end">
                                 <button pButton pRipple
@@ -199,9 +200,9 @@
                         {{'::Admin:Process:ProcessRelation:Title' |
                         abpLocalization}}
                     </legend>
-                    <p-table [value]="includedProcessList" [rows]="10" [paginator]="true"
-                        [globalFilterFields]="['name','code','description']" [tableStyle]="{'min-width': '75rem'}"
-                        [rowHover]="true" dataKey="Id" [loading]="loading" [showCurrentPageReport]="false">
+                    <p-table [value]="includedProcessList" [rows]="10" [paginator]="true" responsiveLayout="stack"
+                        [breakpoint]="'960px'" [rowHover]="true" dataKey="Id" [loading]="loading"
+                        [showCurrentPageReport]="false">
                         <ng-template pTemplate="caption">
                             <div class="flex align-items-center justify-content-end">
                                 <button pButton pRipple
@@ -224,8 +225,9 @@
                                 </th>
                                 <th pSortableColumn="processType.name">{{ '::Admin:Process:Column:Type' |
                                     abpLocalization }} <p-sortIcon field="processType.name"></p-sortIcon></th>
-                                <th>{{ '::Admin:Process:Column:IsActive' | abpLocalization }}</th>
-                                <th style="width:8rem;"></th>
+                                <th class="w-8rem text-center">{{ '::Admin:Process:Column:IsActive' | abpLocalization }}
+                                </th>
+                                <th class="w-8rem"></th>
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="body" let-process>
@@ -234,7 +236,7 @@
                                 <td>{{process.name}}</td>
                                 <td>{{process.description}}</td>
                                 <td>{{process.processType?.name}}</td>
-                                <td><i class="pi"
+                                <td class="text-center"><i class="pi"
                                         [ngClass]="{ 'text-green-500 pi-check-circle': process.isActive, 'text-red-500 pi-times-circle': !process.isActive }"></i>
                                 </td>
                                 <td>
@@ -275,7 +277,7 @@
                     }}&nbsp;<font style="color:red">*
                     </font></label>
                 <p-calendar id="validityStartDate" name="validityStartDate" #validityStartDate="ngModel"
-                    [(ngModel)]="cost.validityStartDate" [showIcon]="true" inputStyleClass="text-sm" appendTo="body"
+                    [(ngModel)]="cost.validityStartDate" dateFormat="dd.mm.yy" [showIcon]="true" inputStyleClass="text-sm" appendTo="body"
                     required></p-calendar>
                 <small class="p-error" *ngIf="!(validityStartDate.valid || validityStartDate.pristine)">{{
                     '::Message:RequiredField' |
@@ -287,7 +289,7 @@
                     }}&nbsp;<font style="color:red">*
                     </font></label>
                 <p-calendar id="validityEndDate" name="validityEndDate" #validityEndDate="ngModel"
-                    [(ngModel)]="cost.validityEndDate" [showIcon]="true" inputStyleClass="text-sm" appendTo="body"
+                    [(ngModel)]="cost.validityEndDate" dateFormat="dd.mm.yy" [showIcon]="true" inputStyleClass="text-sm" appendTo="body"
                     required></p-calendar>
                 <small class="p-error" *ngIf="!(validityEndDate.valid || validityEndDate.pristine)">{{
                     '::Message:RequiredField' |

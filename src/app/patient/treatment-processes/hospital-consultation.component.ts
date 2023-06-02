@@ -1,4 +1,4 @@
-import { Component, Injector, Input, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Injector, Input, Output, ViewEncapsulation } from '@angular/core';
 import { BranchDto } from '@proxy/dto/branch';
 import { DocumentTypeDto } from '@proxy/dto/document-type';
 import { HospitalDto } from '@proxy/dto/hospital';
@@ -54,6 +54,8 @@ export class HospitalConsultationComponent extends AppComponentBase {
   hospitalConsultationDocuments: HospitalConsultationDocumentDto[] = [];
   hospitalConsultationDocument: HospitalConsultationDocumentDto;
   hospitalConsultationDocumentDialog: boolean = false;
+
+  @Output() onConsultationChange: EventEmitter<any> = new EventEmitter();
 
   constructor(
     injector: Injector,
@@ -146,6 +148,7 @@ export class HospitalConsultationComponent extends AppComponentBase {
       complete: () => {
         this.success(this.l('::Message:SuccessfulSave', this.l('::HospitalConsultation:Title')));
         this.fetchData();
+        this.onConsultationChange.emit();
         this.hideConsultationDialog();
       }
     });

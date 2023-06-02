@@ -16,6 +16,7 @@ export * from './hospitalization-type.service';
 export * from './language.service';
 export * from './material.service';
 export * from './nationality.service';
+export * from './operation.service';
 export * from './patient-admission-method.service';
 export * from './patient-document.service';
 export * from './patient-note.service';

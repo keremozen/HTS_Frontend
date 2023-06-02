@@ -12,7 +12,6 @@ import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 export class TreatmentProcessesComponent extends AppComponentBase {
   @Input() patientId: number;
   processes: PatientTreatmentProcessDto[] = [];
-  selectedProcesses: PatientTreatmentProcessDto[];
   processDialog: boolean = false;
   showCompletedRecords: boolean = false;
   completedRecordCount: number = 0;
@@ -61,7 +60,7 @@ export class TreatmentProcessesComponent extends AppComponentBase {
 
   onDisplayTreatmentProcessDetail(code: string) {
     this.process = this.processes.find(p=>p.treatmentCode == code);
-    
+
     this.salesAndCompanionInfoService.getByPatientTreatmentProcessId(this.process.id as unknown as number).subscribe({
       next: (res) => {
         this.doesHaveAnySalesMethodAndCompanionInfo = (res != null || res != undefined);
@@ -78,5 +77,9 @@ export class TreatmentProcessesComponent extends AppComponentBase {
 
   deleteProcess(process: any) {
 
+  }
+
+  consultationChanged(event: any) {
+    this.fetchData();
   }
 }
