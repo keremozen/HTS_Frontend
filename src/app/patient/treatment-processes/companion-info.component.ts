@@ -7,6 +7,7 @@ import { PatientAdmissionMethodDto } from '@proxy/dto/patient-admission-method';
 import { SalesMethodAndCompanionInfoDto } from '@proxy/dto/sales-method-and-companion-info';
 import { ContractedInstitutionService, ContractedInstitutionStaffService, LanguageService, NationalityService, PatientAdmissionMethodService, SalesMethodAndCompanionInfoService } from '@proxy/service';
 import { forkJoin } from 'rxjs';
+import { CommonService } from 'src/app/services/common.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 @Component({
@@ -17,25 +18,22 @@ import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 })
 export class CompanionInfoComponent extends AppComponentBase {
 
-  @Input() treatmentProcessId: number;
+  @Input() patientTreatmentProcessId: number;
+  @Input() salesInfoAndCompanionInfo: SalesMethodAndCompanionInfoDto;
   patientAdmissionMethodList: PatientAdmissionMethodDto[] = [];
   contractedInstitutionList: ContractedInstitutionDto[] = [];
   institutionStaffList: ContractedInstitutionStaffDto[] = [];
   nationalityList: NationalityDto[] = [];
   languageList: LanguageDto[] = [];
   loading: boolean;
-  salesAndCompanionInfo: SalesMethodAndCompanionInfoDto;
   selectedStaffEmail: string;
   selectedStaffPhone: string;
   @Output() save: EventEmitter<any> = new EventEmitter();
 
   constructor(
     injector: Injector,
-    private nationalityService: NationalityService,
-    private languageService: LanguageService,
-    private contractedInstitutionService: ContractedInstitutionService,
+    private commonService: CommonService,
     private contractedInstitutionStaffService: ContractedInstitutionStaffService,
-    private admissionMethodService: PatientAdmissionMethodService,
     private salesAndCompanionInfoService: SalesMethodAndCompanionInfoService
   ) {
     super(injector);
@@ -47,52 +45,29 @@ export class CompanionInfoComponent extends AppComponentBase {
 
   fetchData() {
     this.loading = true;
-    forkJoin([
-      this.nationalityService.getList(),
-      this.languageService.getList(),
-      this.contractedInstitutionService.getList(),
-      this.admissionMethodService.getList(),
-      this.salesAndCompanionInfoService.getByPatientTreatmentProcessId(this.treatmentProcessId)
-    ]).subscribe(
-      {
-        next: ([
-          resNationalityList,
-          resLanguageList,
-          resContractedInstitutionList,
-          resAdmissionMethodList,
-          resSalesAndCompanionInfo
-        ]) => {
-          this.nationalityList = resNationalityList.items;
-          this.languageList = resLanguageList.items;
-          this.contractedInstitutionList = resContractedInstitutionList.items;
-          this.patientAdmissionMethodList = resAdmissionMethodList.items;
-          if (resSalesAndCompanionInfo) {
-            this.salesAndCompanionInfo = resSalesAndCompanionInfo;
-            if (this.salesAndCompanionInfo.contractedInstitutionId) {
-              this.onInstitutionSelect();
-            }
-          }
-          else {
-            this.salesAndCompanionInfo = {} as SalesMethodAndCompanionInfoDto;
-          }
-        },
-        error: () => {
-          this.loading = false;
-        },
-        complete: () => {
-          this.loading = false;
-        }
+    
+    this.nationalityList = this.commonService.nationalityList;
+    this.languageList = this.commonService.languageList;
+    this.patientAdmissionMethodList = this.commonService.patientAdmissionMethodList;
+    this.contractedInstitutionList = this.commonService.contractedInstitutionList;
+    
+    if (this.salesInfoAndCompanionInfo) {
+      if (this.salesInfoAndCompanionInfo.contractedInstitutionId) {
+        this.onInstitutionSelect();
       }
-    );
+    }
+    else {
+      this.salesInfoAndCompanionInfo = {} as SalesMethodAndCompanionInfoDto;
+    }
   }
 
   onInstitutionSelect() {
-    if (this.salesAndCompanionInfo.contractedInstitutionId) {
-      this.contractedInstitutionStaffService.getByInstitutionList(this.salesAndCompanionInfo.contractedInstitutionId).subscribe({
+    if (this.salesInfoAndCompanionInfo.contractedInstitutionId) {
+      this.contractedInstitutionStaffService.getByInstitutionList(this.salesInfoAndCompanionInfo.contractedInstitutionId).subscribe({
         next: (staffList) => {
           this.institutionStaffList = staffList.items;
-          this.salesAndCompanionInfo.contractedInstitutionStaffId = this.institutionStaffList.find(s=>s.isActive && s.isDefault).id;
-          if (this.salesAndCompanionInfo.contractedInstitutionStaffId) {
+          this.salesInfoAndCompanionInfo.contractedInstitutionStaffId = this.institutionStaffList.find(s=>s.isActive && s.isDefault).id;
+          if (this.salesInfoAndCompanionInfo.contractedInstitutionStaffId) {
             this.onInstitutionStaffSelect();
           }
         }
@@ -101,16 +76,16 @@ export class CompanionInfoComponent extends AppComponentBase {
   }
 
   onInstitutionStaffSelect() {
-    if (this.salesAndCompanionInfo.contractedInstitutionStaffId) {
-      let staff = this.institutionStaffList.find(s => s.id == this.salesAndCompanionInfo.contractedInstitutionStaffId);
+    if (this.salesInfoAndCompanionInfo.contractedInstitutionStaffId) {
+      let staff = this.institutionStaffList.find(s => s.id == this.salesInfoAndCompanionInfo.contractedInstitutionStaffId);
       this.selectedStaffEmail = staff.email;
       this.selectedStaffPhone = this.nationalityList.find(n => n.id == staff.phoneCountryCodeId)?.phoneCode + " " + staff.phoneNumber;
     }
   }
 
   saveSalesAndCompanionInfo() {
-    this.salesAndCompanionInfo.patientTreatmentProcessId = this.treatmentProcessId;
-    this.salesAndCompanionInfoService.save(this.salesAndCompanionInfo).subscribe({
+    this.salesInfoAndCompanionInfo.patientTreatmentProcessId = this.patientTreatmentProcessId;
+    this.salesAndCompanionInfoService.save(this.salesInfoAndCompanionInfo).subscribe({
       complete: () => {
         this.success(this.l('::Message:SuccessfulSave', this.l('::SalesAndCompanionInfo:Name')));
         this.save.emit();

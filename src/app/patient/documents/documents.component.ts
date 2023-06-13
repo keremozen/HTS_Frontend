@@ -6,6 +6,7 @@ import { EntityEnum_PatientDocumentStatusEnum } from '@proxy/enum';
 import { DocumentTypeService, PatientDocumentService } from '@proxy/service';
 import { FileUpload } from 'primeng/fileupload';
 import { forkJoin } from 'rxjs';
+import { CommonService } from 'src/app/services/common.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 @Component({
@@ -32,7 +33,7 @@ export class DocumentsComponent extends AppComponentBase {
 
   constructor(
     injector: Injector,
-    private documentTypeService: DocumentTypeService,
+    private commonService: CommonService,
     private documentService: PatientDocumentService
   ) {
     super(injector);
@@ -44,28 +45,21 @@ export class DocumentsComponent extends AppComponentBase {
 
   fetchData() {
     this.loading = true;
-    forkJoin([
-      this.documentTypeService.getList(),
-      this.documentService.getList(this.patientId)
-    ]).subscribe(
-      {
-        next: ([
-          resDocumentTypeList,
-          resDocumentList
-        ]) => {
-          this.documentTypeList = resDocumentTypeList.items;
-          this.allDocuments = resDocumentList.items;
-          this.revokedRecordCount = resDocumentList.items.filter(d => d.patientDocumentStatusId === this.patientDocumentStatusEnum.Revoked).length;
-          this.manageDocumentsToBeDisplayed();
-        },
-        error: () => {
-          this.loading = false;
-        },
-        complete: () => {
-          this.loading = false;
-        }
+    this.documentTypeList = this.commonService.documentTypeList;
+    this.documentService.getList(this.patientId).subscribe({
+      next: (resDocumentList) => {
+        this.allDocuments = resDocumentList.items;
+        this.revokedRecordCount = resDocumentList.items.filter(d => d.patientDocumentStatusId === this.patientDocumentStatusEnum.Revoked).length;
+        this.manageDocumentsToBeDisplayed();
+      },
+      error: () => {
+        this.loading = false;
+      },
+      complete: () => {
+        this.loading = false;
       }
-    );
+    });
+    
   }
 
   manageDocumentsToBeDisplayed() {

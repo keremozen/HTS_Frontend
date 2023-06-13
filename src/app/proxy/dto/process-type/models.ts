@@ -4,8 +4,3 @@ export interface ProcessTypeDto extends EntityDto<number> {
   name?: string;
   isActive: boolean;
 }
-
-export interface SaveProcessTypeDto {
-  name: string;
-  isActive: boolean;
-}

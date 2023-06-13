@@ -1,11 +1,11 @@
 import type { EntityDto } from '@abp/ng.core';
 
-export interface SaveTreatmentTypeDto {
-  name: string;
+export interface TreatmentTypeDto extends EntityDto<number> {
+  name?: string;
   isActive: boolean;
 }
 
-export interface TreatmentTypeDto extends EntityDto<number> {
-  name?: string;
+export interface SaveTreatmentTypeDto {
+  name: string;
   isActive: boolean;
 }

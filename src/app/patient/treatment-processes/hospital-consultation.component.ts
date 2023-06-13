@@ -5,13 +5,13 @@ import { HospitalDto } from '@proxy/dto/hospital';
 import { HospitalConsultationDto, SaveHospitalConsultationDto } from '@proxy/dto/hospital-consultation';
 import { HospitalConsultationDocumentDto, SaveHospitalConsultationDocumentDto } from '@proxy/dto/hospital-consultation-document';
 import { HospitalResponseDto } from '@proxy/dto/hospital-response';
+import { HospitalResponseProcessDto } from '@proxy/dto/hospital-response-process';
 import { HospitalResponseTypeDto } from '@proxy/dto/hospital-response-type';
 import { HospitalizationTypeDto } from '@proxy/dto/hospitalization-type';
-import { MaterialDto } from '@proxy/dto/material';
-import { ProcessDto } from '@proxy/dto/process';
-import { EntityEnum_HospitalConsultationStatusEnum, EntityEnum_PatientDocumentStatusEnum, EntityEnum_PatientNoteStatusEnum } from '@proxy/enum';
-import { BranchService, DocumentTypeService, HospitalConsultationService, HospitalResponseService, HospitalResponseTypeService, HospitalService, HospitalizationTypeService, MaterialService, PatientDocumentService, PatientNoteService, PatientTreatmentProcessService, ProcessService } from '@proxy/service';
+import { EntityEnum_HospitalConsultationStatusEnum, EntityEnum_PatientDocumentStatusEnum, EntityEnum_PatientNoteStatusEnum, EntityEnum_ProcessTypeEnum } from '@proxy/enum';
+import { HospitalConsultationService, HospitalResponseService, PatientDocumentService, PatientNoteService } from '@proxy/service';
 import { forkJoin } from 'rxjs';
+import { CommonService } from 'src/app/services/common.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 @Component({
@@ -28,11 +28,11 @@ export class HospitalConsultationComponent extends AppComponentBase {
   consultations: HospitalConsultationDto[] = [];
   hospitalConsultation: SaveHospitalConsultationDto;
   hospitalList: HospitalDto[] = [];
-  selectedHospitals: HospitalDto[] = [];
+  selectedHospitals: number[] = [];
   consolidatedDescription: string;
   hospitalResponse: HospitalResponseDto;
-  anticipatedProcesses: ProcessDto[] = [];
-  anticipatedMaterials: MaterialDto[] = [];
+  anticipatedProcesses: HospitalResponseProcessDto[] = [];
+  anticipatedMaterials: HospitalResponseProcessDto[] = [];
   isConsultationReadOnly: boolean = false;
   loading: boolean;
   totalRecords: number = 0;
@@ -40,13 +40,12 @@ export class HospitalConsultationComponent extends AppComponentBase {
   consultationDialog: boolean = false;
   public consultationStatusEnum = EntityEnum_HospitalConsultationStatusEnum;
   public patientDocumentStatusEnum = EntityEnum_PatientDocumentStatusEnum;
+  public processTypeEnum = EntityEnum_ProcessTypeEnum;
   branchList: BranchDto[] = [];
-  processList: ProcessDto[] = [];
-  materialList: MaterialDto[] = [];
   hospitalizationTypeList: HospitalizationTypeDto[] = [];
   hospitalResponseTypeList: HospitalResponseTypeDto[] = [];
   branchListText: string;
-
+  doesHaveAnyApproved: boolean;
 
   // Document Related variables
   documentTypeList: DocumentTypeDto[] = [];
@@ -60,14 +59,10 @@ export class HospitalConsultationComponent extends AppComponentBase {
   constructor(
     injector: Injector,
     private patientDocumentService: PatientDocumentService,
-    private documentTypeService: DocumentTypeService,
-    private hospitalService: HospitalService,
+    private commonService: CommonService,
     private patientNoteService: PatientNoteService,
     private hospitalConsultationService: HospitalConsultationService,
-    private hospitalResponseService: HospitalResponseService,
-    private branchService: BranchService,
-    private processService: ProcessService,
-    private materialService: MaterialService,
+    private hospitalResponseService: HospitalResponseService
   ) {
     super(injector);
 
@@ -79,30 +74,21 @@ export class HospitalConsultationComponent extends AppComponentBase {
 
   fetchData() {
     this.loading = true;
+
+    this.documentTypeList = this.commonService.documentTypeList;
+    this.hospitalList = this.commonService.hospitalList;
+    this.branchList = this.commonService.branchList;
+
     forkJoin([
-      this.documentTypeService.getList(),
-      this.hospitalService.getList(),
-      this.branchService.getList(),
-      this.processService.getList(),
-      this.materialService.getList(),
       this.hospitalConsultationService.getByPatientTreatmenProcess(this.patientTreatmentId)
     ]).subscribe(
       {
         next: ([
-          resDocumentTypeList,
-          resHospitalList,
-          resBranchList,
-          resProcessList,
-          resMaterialList,
           resConsultationList
         ]) => {
-          this.documentTypeList = resDocumentTypeList.items;
-          this.hospitalList = resHospitalList.items;
-          this.branchList = resBranchList.items;
-          this.processList = resProcessList.items;
-          this.materialList = resMaterialList.items;
           this.consultations = resConsultationList.items;
           this.totalRecords = resConsultationList.totalCount;
+          this.doesHaveAnyApproved = this.consultations.some(c=>c.hospitalConsultationStatusId == this.consultationStatusEnum.OperationApproved);
         },
         error: () => {
           this.loading = false;
@@ -142,7 +128,7 @@ export class HospitalConsultationComponent extends AppComponentBase {
   }
 
   saveConsultation() {
-    this.hospitalConsultation.hospitalIds = this.selectedHospitals.map(h => h.id);
+    this.hospitalConsultation.hospitalIds = this.selectedHospitals;
     this.hospitalConsultation.hospitalConsultationDocuments = this.hospitalConsultationDocuments as unknown as SaveHospitalConsultationDocumentDto[];
     this.hospitalConsultationService.create(this.hospitalConsultation).subscribe({
       complete: () => {
@@ -156,7 +142,8 @@ export class HospitalConsultationComponent extends AppComponentBase {
 
   openConsultation(consultation: HospitalConsultationDto) {
     this.hospitalConsultation = consultation as unknown as SaveHospitalConsultationDto;
-    this.selectedHospitals.push({ ...this.hospitalList.find(h => h.id == consultation.hospitalId) });
+    this.selectedHospitals = [ consultation.hospitalId ];
+    this.hospitalConsultationDocuments = [];
     this.hospitalConsultationDocuments.push(...consultation.hospitalConsultationDocuments);
     this.isConsultationReadOnly = true;
     this.consultationDialog = true;
@@ -167,24 +154,123 @@ export class HospitalConsultationComponent extends AppComponentBase {
       next: (res) => {
         this.hospitalResponse = res;
         this.branchListText = this.branchList.filter(h => this.hospitalResponse.hospitalResponseBranches.map(b => b.branchId).includes(h.id)).map(b => b.name).join("<br>");
+        this.anticipatedProcesses = this.hospitalResponse.hospitalResponseProcesses.filter(r=>r.process.processTypeId == this.processTypeEnum.SutCode);
+        this.anticipatedMaterials = this.hospitalResponse.hospitalResponseProcesses.filter(r=>r.process.processTypeId == this.processTypeEnum.Material);
       },
       complete: () => {
         this.hospitalResponseDialog = true;
       }
     });
-
   }
 
   hideHospitalResponseDialog() {
     this.hospitalResponseDialog = false;
   }
 
-  approve() {
+  onApprove(consultationId: number | null) {
+    this.loading = true;
+    this.confirm({
+      key: 'hospitalConsultationDocumentConfirm',
+      message: this.l('::HospitalConsultation:Message:ConfirmApprove'),
+      header: this.l('::Confirm'),
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        if (!consultationId && this.hospitalResponse) {
+          this.hospitalResponseService.approve(this.hospitalResponse.id).subscribe({
+            next: (res) => {
+              this.success(this.l('::HospitalResponse:Message:SuccessfulApprove'));
+              this.fetchData();
+              this.onConsultationChange.emit();
+              this.hospitalResponse = null;
+              this.hospitalResponseDialog = false;
+            },
+            error: () => {
+              this.loading = false;
 
+            },
+            complete: () => {
+              this.loading = false;
+            }
+          });
+        }
+        else {
+          this.hospitalResponseService.getByHospitalConsultation(consultationId).subscribe({
+            next: (res) => {
+              this.hospitalResponse = res;
+              this.hospitalResponseService.approve(this.hospitalResponse.id).subscribe({
+                next: (res) => {
+                  this.success(this.l('::HospitalResponse:Message:SuccessfulApprove'));
+                  this.fetchData();
+                  this.onConsultationChange.emit();
+                  this.hospitalResponse = null;
+                  this.hospitalResponseDialog = false;
+                },
+                error: () => {
+                  this.loading = false;
+
+                },
+                complete: () => {
+                  this.loading = false;
+                }
+              });
+            }
+          });
+        }
+      }
+    });
   }
 
-  reject() {
+  onReject(consultationId: number | null) {
+    this.confirm({
+      key: 'hospitalConsultationDocumentConfirm',
+      message: this.l('::HospitalConsultation:Message:ConfirmReject'),
+      header: this.l('::Confirm'),
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        if (!consultationId && this.hospitalResponse) {
+          this.hospitalResponseService.reject(this.hospitalResponse.id).subscribe({
+            next: (res) => {
+              this.success(this.l('::HospitalResponse:Message:SuccessfulReject'));
+              this.fetchData();
+              this.hospitalResponse = null;
+              this.hospitalResponseDialog = false;
+            },
+            error: () => {
+              this.loading = false;
 
+            },
+            complete: () => {
+              this.loading = false;
+            }
+          });
+        }
+        else {
+          this.hospitalResponseService.getByHospitalConsultation(consultationId).subscribe({
+            next: (res) => {
+              this.hospitalResponse = res;
+              this.hospitalResponseService.reject(this.hospitalResponse.id).subscribe({
+                next: (res) => {
+                  this.success(this.l('::HospitalResponse:Message:SuccessfulReject'));
+                  this.fetchData();
+                  this.hospitalResponse = null;
+                  this.hospitalResponseDialog = false;
+                },
+                error: () => {
+                  this.loading = false;
+
+                },
+                complete: () => {
+                  this.loading = false;
+                }
+              });
+            },
+            complete: () => {
+              this.hospitalResponseDialog = true;
+            }
+          });
+        }
+      }
+    });
   }
 
   importDocuments() {

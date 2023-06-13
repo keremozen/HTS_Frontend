@@ -4,6 +4,7 @@ import { ContractedInstitutionStaffDto, SaveContractedInstitutionStaffDto } from
 import { NationalityDto } from '@proxy/dto/nationality';
 import { ContractedInstitutionService, ContractedInstitutionStaffService, NationalityService } from '@proxy/service';
 import { forkJoin } from 'rxjs';
+import { CommonService } from 'src/app/services/common.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 @Component({
@@ -31,7 +32,7 @@ export class ContractedInstitutionComponent extends AppComponentBase {
     injector: Injector,
     private contractedInstitutionService: ContractedInstitutionService,
     private contractedInstitutionStaffService: ContractedInstitutionStaffService,
-    private nationalityService: NationalityService
+    private commonService: CommonService
   ) {
     super(injector);
   }
@@ -40,36 +41,27 @@ export class ContractedInstitutionComponent extends AppComponentBase {
     this.fetchData();
   }
 
-
   fetchData() {
     this.loading = true;
-
-    forkJoin([
-      this.nationalityService.getList(),
-      this.contractedInstitutionService.getList()
-    ]).subscribe(
-      {
-        next: ([
-          resNationalityList,
-          resContractedInstitutionList
-        ]) => {
-          this.nationalityList = resNationalityList.items;
-          this.contractedInstitutionList = [];
-          resContractedInstitutionList.items.forEach(inst => {
-            let instwithstaff = inst as ContractedInstitutionWithStaff;
-            instwithstaff.staffNames = inst.contractedInstitutionStaffs.filter(s=>s.isActive).map(s=>s.nameSurname).join("<br>");
-            this.contractedInstitutionList.push(instwithstaff);
-          });
-          this.totalRecords = resContractedInstitutionList.totalCount;
-        },
-        error: () => {
-          this.loading = false;
-        },
-        complete: () => {
-          this.loading = false;
-        }
+    this.nationalityList = this.commonService.nationalityList;
+    this.contractedInstitutionService.getList().subscribe({
+      next: (resContractedInstitutionList) => {
+        this.contractedInstitutionList = [];
+        resContractedInstitutionList.items.forEach(inst => {
+          let instwithstaff = inst as ContractedInstitutionWithStaff;
+          instwithstaff.staffNames = inst.contractedInstitutionStaffs.filter(s => s.isActive).map(s => s.nameSurname).join("<br>");
+          this.contractedInstitutionList.push(instwithstaff);
+        });
+        this.totalRecords = resContractedInstitutionList.totalCount;
+        this.commonService.contractedInstitutionList = resContractedInstitutionList.items.filter(c=>c.isActive == true);
+      },
+      error: () => {
+        this.loading = false;
+      },
+      complete: () => {
+        this.loading = false;
       }
-    );
+    });
   }
 
   openNewContractedInstitution() {

@@ -1,5 +1,7 @@
 import { Component, Injector, Input, ViewEncapsulation } from '@angular/core';
+import { PatientDto } from '@proxy/dto/patient';
 import { PatientTreatmentProcessDto } from '@proxy/dto/patient-treatment-process';
+import { SalesMethodAndCompanionInfoDto } from '@proxy/dto/sales-method-and-companion-info';
 import { PatientTreatmentProcessService, SalesMethodAndCompanionInfoService } from '@proxy/service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
@@ -10,7 +12,7 @@ import { AppComponentBase } from 'src/app/shared/common/app-component-base';
   encapsulation: ViewEncapsulation.None
 })
 export class TreatmentProcessesComponent extends AppComponentBase {
-  @Input() patientId: number;
+  @Input() patient: PatientDto;
   processes: PatientTreatmentProcessDto[] = [];
   processDialog: boolean = false;
   showCompletedRecords: boolean = false;
@@ -19,6 +21,8 @@ export class TreatmentProcessesComponent extends AppComponentBase {
   process: PatientTreatmentProcessDto;
   totalRecords: number = 0;
   doesHaveAnySalesMethodAndCompanionInfo: boolean = false;
+  activeIndex = 0;
+  salesAndCompanionInfo: SalesMethodAndCompanionInfoDto;
 
 
   constructor(
@@ -33,7 +37,7 @@ export class TreatmentProcessesComponent extends AppComponentBase {
   }
 
   fetchData() {
-    this.patientTreatmentProcessService.getListByPatientId(this.patientId).subscribe({
+    this.patientTreatmentProcessService.getListByPatientId(+this.patient.id).subscribe({
       next: (res) => {
         this.processes = res.items;
         this.totalRecords = res.totalCount;
@@ -48,7 +52,7 @@ export class TreatmentProcessesComponent extends AppComponentBase {
       header: this.l('::Confirm'),
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.patientTreatmentProcessService.start(this.patientId).subscribe({
+        this.patientTreatmentProcessService.start(+this.patient.id).subscribe({
           complete: () => {
             this.fetchData();
             this.success(this.l('::TreatmentProcess:Message:SuccessfulStart'));
@@ -59,10 +63,12 @@ export class TreatmentProcessesComponent extends AppComponentBase {
   }
 
   onDisplayTreatmentProcessDetail(code: string) {
+    this.activeIndex = 0;
+    this.displayProcessDetail = false;
     this.process = this.processes.find(p=>p.treatmentCode == code);
-
     this.salesAndCompanionInfoService.getByPatientTreatmentProcessId(this.process.id as unknown as number).subscribe({
       next: (res) => {
+        this.salesAndCompanionInfo = res as SalesMethodAndCompanionInfoDto;
         this.doesHaveAnySalesMethodAndCompanionInfo = (res != null || res != undefined);
       },
       complete: ()=> {

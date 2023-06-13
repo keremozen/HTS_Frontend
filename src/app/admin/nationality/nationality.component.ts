@@ -1,6 +1,7 @@
 import { Component, Injector } from '@angular/core';
 import { NationalityDto, SaveNationalityDto } from '@proxy/dto/nationality';
 import { NationalityService } from '@proxy/service';
+import { CommonService } from 'src/app/services/common.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 
@@ -21,6 +22,7 @@ export class NationalityComponent extends AppComponentBase {
 
     constructor(
         injector: Injector,
+        private commonService: CommonService,
         private nationalityService: NationalityService
     ) {
         super(injector);
@@ -33,16 +35,17 @@ export class NationalityComponent extends AppComponentBase {
     fetchData() {
         this.loading = true;
         this.nationalityService.getList().subscribe({
-          next: data => {
-            this.nationalityList = data.items;
-            this.totalRecords = data.totalCount;
-          },
-          error: () => {
-            this.loading = false;
-          },
-          complete: () => {
-            this.loading = false;
-          }
+            next: data => {
+                this.nationalityList = data.items;
+                this.totalRecords = data.totalCount;
+                this.commonService.nationalityList = this.nationalityList.filter(n => n.isActive == true);
+            },
+            error: () => {
+                this.loading = false;
+            },
+            complete: () => {
+                this.loading = false;
+            }
         });
     }
 
@@ -52,7 +55,7 @@ export class NationalityComponent extends AppComponentBase {
         this.nationality.isActive = true;
         this.nationalityDialog = true;
     }
-    
+
     editNationality(nationality: NationalityDto) {
         this.isEdit = true;
         this.nationalityToBeEdited = nationality;

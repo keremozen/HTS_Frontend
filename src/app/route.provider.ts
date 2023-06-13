@@ -131,15 +131,6 @@ function configureRoutes(routesService: RoutesService) {
         layout: eLayoutType.application
       },
       {
-        path: '/admin/material',
-        name: '::Menu:Admin:Material',
-        iconClass: 'fas fa-syringe',
-        parentName: eThemeSharedRouteNames.Administration,
-        order: 111,
-        requiredPolicy: 'HTS.MaterialManagement',
-        layout: eLayoutType.application
-      },
-      {
         path: '/admin/rejectReason',
         name: '::Menu:Admin:RejectReason',
         iconClass: 'fas fa-syringe',

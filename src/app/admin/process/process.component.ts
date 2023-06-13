@@ -131,6 +131,7 @@ export class ProcessComponent extends AppComponentBase {
         this.process.processCosts = this.processCostList;
         this.process.processRelations = this.processRelationList;
         if (!this.isEdit) {
+           
             this.processService.create(this.process).subscribe({
                 complete: () => {
                     this.fetchData();
@@ -140,6 +141,7 @@ export class ProcessComponent extends AppComponentBase {
             });
         }
         else {
+             debugger;
             this.processService.update(this.processToBeEdited.id, this.process).subscribe({
                 complete: () => {
                     this.fetchData();

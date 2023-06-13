@@ -38,6 +38,7 @@ import { ListboxModule } from 'primeng/listbox';
 import { MessagesModule } from 'primeng/messages';
 import { TagModule } from 'primeng/tag';
 import { ChartModule } from 'primeng/chart';
+import { DynamicDialogModule } from 'primeng/dynamicdialog'
 
 /**************/
 
@@ -53,6 +54,7 @@ import { ChartModule } from 'primeng/chart';
     CalendarModule,
     SliderModule,
     DialogModule,
+    DynamicDialogModule,
     MultiSelectModule,
     ContextMenuModule,
     DropdownModule,
@@ -90,6 +92,7 @@ import { ChartModule } from 'primeng/chart';
     CalendarModule,
     SliderModule,
     DialogModule,
+    DynamicDialogModule,
     MultiSelectModule,
     ContextMenuModule,
     DropdownModule,

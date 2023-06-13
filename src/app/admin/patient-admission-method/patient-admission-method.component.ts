@@ -1,6 +1,7 @@
 import { Component, Injector } from '@angular/core';
 import { PatientAdmissionMethodDto, SavePatientAdmissionMethodDto } from '@proxy/dto/patient-admission-method';
 import { PatientAdmissionMethodService } from '@proxy/service';
+import { CommonService } from 'src/app/services/common.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 @Component({
@@ -19,7 +20,8 @@ export class PatientAdmissionMethodComponent extends AppComponentBase {
 
   constructor(
     injector: Injector,
-    private patientAdmissionMethodService: PatientAdmissionMethodService
+    private patientAdmissionMethodService: PatientAdmissionMethodService,
+    private commonService: CommonService
   ) {
     super(injector);
   }
@@ -34,6 +36,7 @@ export class PatientAdmissionMethodComponent extends AppComponentBase {
       next: data => {
         this.patientAdmissionMethodList = data.items;
         this.totalRecords = data.totalCount;
+        this.commonService.patientAdmissionMethodList = this.patientAdmissionMethodList.filter(p=>p.isActive == true);
       },
       error: () => {
         this.loading = false;

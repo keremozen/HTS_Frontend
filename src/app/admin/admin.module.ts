@@ -14,7 +14,6 @@ import { BranchComponent } from './branch/branch.component';
 import { TreatmentTypeComponent } from './treatment-type/treatment-type.component';
 import { ProcessTypeComponent } from './process-type/process-type.component';
 import { ProcessComponent } from './process/process.component';
-import { MaterialComponent } from './material/material.component';
 import { RejectReasonComponent } from './rejectReason/rejectReason.component';
 
 @NgModule({
@@ -30,7 +29,6 @@ import { RejectReasonComponent } from './rejectReason/rejectReason.component';
     TreatmentTypeComponent,
     ProcessTypeComponent,
     ProcessComponent,
-    MaterialComponent,
     RejectReasonComponent
   ],
   imports: [

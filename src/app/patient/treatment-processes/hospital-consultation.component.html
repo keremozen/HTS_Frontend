@@ -1,71 +1,85 @@
-<p-toolbar styleClass="customToolbar">
-    <div class="p-toolbar-group-start">
-    </div>
-    <div class="p-toolbar-group-end p-0">
-        <button pButton pRipple label="{{ '::HospitalConsultation:NewConsultation' | abpLocalization }}"
-            icon="pi pi-plus" class="p-button-success ml-2" (click)="onNewConsultation()"></button>
-    </div>
-</p-toolbar>
+<div *ngIf="!loading">
+    <p-toolbar styleClass="customToolbar">
+        <div class="p-toolbar-group-start">
+        </div>
+        <div class="p-toolbar-group-end p-0">
+            <button pButton pRipple label="{{ '::HospitalConsultation:NewConsultation' | abpLocalization }}"
+                icon="pi pi-plus" class="p-button-success ml-2" (click)="onNewConsultation()"
+                [disabled]="doesHaveAnyApproved"></button>
+        </div>
+    </p-toolbar>
 
-<p-table #dt [value]="consultations" [rows]="5" styleClass="pt-3" [paginator]="true" [rowHover]="true"
-    currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
-    [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
-    <ng-template pTemplate="header">
-        <tr>
-            <th style="width: 12rem" pSortableColumn="id">{{ '::HospitalConsultation:Column:ConsultationNo'
-                | abpLocalization }} <p-sortIcon field="id"></p-sortIcon></th>
-            <th style="width: 12rem" pSortableColumn="creator.name">{{ '::HospitalConsultation:Column:CreatedBy' |
-                abpLocalization }}
-                <p-sortIcon field="creator.name"></p-sortIcon>
-            </th>
-            <th style="width: 12rem" pSortableColumn="creationTime">{{ '::HospitalConsultation:Column:Created' |
-                abpLocalization }}
-                <p-sortIcon field="Created"></p-sortIcon>
-            </th>
-            <th pSortableColumn="creationTime">{{ '::HospitalConsultation:Column:Hospital' | abpLocalization }}
-                <p-sortIcon field="Hospital"></p-sortIcon>
-            </th>
-            <th style="width: 12rem" pSortableColumn="hospitalConsultationStatus.name">{{
-                '::HospitalConsultation:Column:State' | abpLocalization
-                }}
-                <p-sortIcon field="hospitalConsultationStatus.name"></p-sortIcon>
-            </th>
-            <th class="text-center" style="width: 22rem">{{ '::HospitalConsultation:Column:DetailsAndActions' |
-                abpLocalization }}</th>
-        </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-consultation>
-        <tr>
-            <td>{{consultation.id}}</td>
-            <td>{{consultation.creator?.name + (consultation.creator?.surname ? (" " + consultation.creator?.surname) :
-                "")}}</td>
-            <td>{{consultation.creationTime | date: 'dd.MM.yyyy HH:mm'}}</td>
-            <td>{{getHospitalName(consultation.hospitalId)}}</td>
-            <td>{{consultation.hospitalConsultationStatus?.name}}</td>
-            <td class="text-right">
-                <button pButton pRipple label="{{ '::HospitalConsultation:Button:Consultation' | abpLocalization }}"
-                    class="p-button-info ml-2" (click)="openConsultation(consultation)"></button>
-                <button pButton pRipple label="{{ '::HospitalConsultation:Button:Answer' | abpLocalization }}"
-                    class="p-button-warning ml-2" (click)="openHospitalResponse(consultation)"
-                    [disabled]="consultation.hospitalConsultationStatusId == consultationStatusEnum.HospitalResponseWaiting"></button>
-                <button pButton pRipple class="p-button-success ml-2" icon="pi pi-check" (click)="approve()"
-                    [disabled]="consultation.hospitalConsultationStatusId == consultationStatusEnum.HospitalResponseWaiting"></button>
-                <button pButton pRipple class="p-button-danger ml-2" icon="pi pi-times" (click)="reject()"
-                    [disabled]="consultation.hospitalConsultationStatusId == consultationStatusEnum.HospitalResponseWaiting"></button>
-            </td>
-        </tr>
-    </ng-template>
-    <ng-template pTemplate="emptymessage">
-        <div class="m-3">
-            {{ '::Table:EmptyMessage' | abpLocalization }}
-        </div>
-    </ng-template>
-    <ng-template pTemplate="summary">
-        <div class="flex align-items-center justify-content-between" *ngIf="totalRecords > 0">
-            {{ '::Table:Summary' | abpLocalization:(totalRecords) }}
-        </div>
-    </ng-template>
-</p-table>
+    <p-table #dt [value]="consultations" [rows]="5" styleClass="pt-3" [paginator]="true" [rowHover]="true"
+        currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
+        [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 12rem" pSortableColumn="rowNumber">{{ '::HospitalConsultation:Column:RowNumber'
+                    | abpLocalization }} <p-sortIcon field="rowNumber"></p-sortIcon></th>
+                <th style="width: 12rem" pSortableColumn="id">{{ '::HospitalConsultation:Column:ConsultationNo'
+                    | abpLocalization }} <p-sortIcon field="id"></p-sortIcon></th>
+                <th style="width: 12rem" pSortableColumn="creator.name">{{ '::HospitalConsultation:Column:CreatedBy' |
+                    abpLocalization }}
+                    <p-sortIcon field="creator.name"></p-sortIcon>
+                </th>
+                <th style="width: 12rem" pSortableColumn="creationTime">{{ '::HospitalConsultation:Column:Created' |
+                    abpLocalization }}
+                    <p-sortIcon field="Created"></p-sortIcon>
+                </th>
+                <th pSortableColumn="creationTime">{{ '::HospitalConsultation:Column:Hospital' | abpLocalization }}
+                    <p-sortIcon field="Hospital"></p-sortIcon>
+                </th>
+                <th style="width: 12rem" pSortableColumn="hospitalConsultationStatus.name">{{
+                    '::HospitalConsultation:Column:State' | abpLocalization
+                    }}
+                    <p-sortIcon field="hospitalConsultationStatus.name"></p-sortIcon>
+                </th>
+                <th class="text-center" style="width: 22rem">{{ '::HospitalConsultation:Column:DetailsAndActions' |
+                    abpLocalization }}</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-consultation>
+            <tr>
+                <td>{{consultation.rowNumber}}</td>
+                <td>{{consultation.id}}</td>
+                <td>{{consultation.creator?.name + (consultation.creator?.surname ? (" " +
+                    consultation.creator?.surname) :
+                    "")}}</td>
+                <td>{{consultation.creationTime | date: 'dd.MM.yyyy HH:mm'}}</td>
+                <td>{{getHospitalName(consultation.hospitalId)}}</td>
+                <td>{{consultation.hospitalConsultationStatus?.name}}</td>
+                <td class="text-right">
+                    <button pButton pRipple label="{{ '::HospitalConsultation:Button:Consultation' | abpLocalization }}"
+                        class="p-button-info ml-2" (click)="openConsultation(consultation)"></button>
+                    <button pButton pRipple label="{{ '::HospitalConsultation:Button:Answer' | abpLocalization }}"
+                        class="p-button-warning ml-2" (click)="openHospitalResponse(consultation)"
+                        [disabled]="consultation.hospitalConsultationStatusId == consultationStatusEnum.HospitalResponseWaiting"></button>
+                    <button pButton pRipple class="p-button-success ml-2" icon="pi pi-check"
+                        (click)="onApprove(consultation.id)"
+                        [disabled]="doesHaveAnyApproved || !(consultation.hospitalConsultationStatusId == consultationStatusEnum.SuitableForTreatment || 
+                    consultation.hospitalConsultationStatusId == consultationStatusEnum.NotSuitableForTreatment ||
+                    consultation.hospitalConsultationStatusId == consultationStatusEnum.ExaminationsIsRequiredForDiagnosis)"></button>
+                    <button pButton pRipple class="p-button-danger ml-2" icon="pi pi-times"
+                        (click)="onReject(consultation.id)"
+                        [disabled]="doesHaveAnyApproved || !(consultation.hospitalConsultationStatusId == consultationStatusEnum.SuitableForTreatment || 
+                    consultation.hospitalConsultationStatusId == consultationStatusEnum.NotSuitableForTreatment ||
+                    consultation.hospitalConsultationStatusId == consultationStatusEnum.ExaminationsIsRequiredForDiagnosis)"></button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <div class="m-3">
+                {{ '::Table:EmptyMessage' | abpLocalization }}
+            </div>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="flex align-items-center justify-content-between" *ngIf="totalRecords > 0">
+                {{ '::Table:Summary' | abpLocalization:(totalRecords) }}
+            </div>
+        </ng-template>
+    </p-table>
+
+</div>
 
 <p-dialog [(visible)]="consultationDialog" [style]="{width: '85vw'}"
     header="{{ '::HospitalConsultation:Title' | abpLocalization }}" [modal]="true" styleClass="p-fluid"
@@ -79,7 +93,7 @@
                         abpLocalization}}
                     </legend>
                     <p-listbox id="lstHospital" name="lstHospital" #lstHospital="ngModel" [options]="hospitalList"
-                        [(ngModel)]="selectedHospitals" optionLabel="name" [checkbox]="true" [filter]="true"
+                        [(ngModel)]="selectedHospitals" optionLabel="name" optionValue="id" [checkbox]="true" [filter]="true"
                         [multiple]="true" [metaKeySelection]="false" [disabled]="isConsultationReadOnly"
                         emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" styleClass="hospitalListStyle"
                         emptyFilterMessage="{{ '::EmptyMessage' | abpLocalization }}" required></p-listbox>
@@ -344,8 +358,8 @@
                         {{'::HospitalResponse:FieldLegend:AnticipatedProcesses' |
                         abpLocalization}}
                     </legend>
-                    <p-table #dt [value]="hospitalResponse.hospitalResponseProcesses" [rows]="5" styleClass="pt-3"
-                        [paginator]="true" [globalFilterFields]="['description']" [rowHover]="true" [loading]="loading"
+                    <p-table #dt [value]="anticipatedProcesses" [rows]="5" styleClass="pt-3"
+                        [paginator]="true" [rowHover]="true" [loading]="loading"
                         currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
                         [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
                         <ng-template pTemplate="header">
@@ -372,9 +386,9 @@
                         </ng-template>
                         <ng-template pTemplate="summary">
                             <div class="flex align-items-center justify-content-between"
-                                *ngIf="hospitalResponse.hospitalResponseProcesses.length > 0">
+                                *ngIf="anticipatedProcesses.length > 0">
                                 {{ '::Table:Summary' | abpLocalization:
-                                hospitalResponse.hospitalResponseProcesses.length }}
+                                anticipatedProcesses.length }}
                             </div>
                         </ng-template>
                     </p-table>
@@ -386,25 +400,24 @@
                         {{'::HospitalResponse:FieldLegend:AnticipatedMaterials' |
                         abpLocalization}}
                     </legend>
-                    <p-table #dt [value]="hospitalResponse.hospitalResponseMaterials" [rows]="5" styleClass="pt-3" [paginator]="true"
-                        [globalFilterFields]="['name']" [rowHover]="true" [loading]="loading"
+                    <p-table #dt [value]="anticipatedMaterials" [rows]="5" styleClass="pt-3"
+                        [paginator]="true" [rowHover]="true" [loading]="loading"
                         currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
                         [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
                         <ng-template pTemplate="header">
                             <tr>
-                                <th pSortableColumn="material.name">{{ '::HospitalResponse:Material:Column:Name' | abpLocalization
+                                <th>{{ '::HospitalResponse:Material:Column:Name' |
+                                    abpLocalization
                                     }}
-                                    <p-sortIcon field="material.name"></p-sortIcon>
                                 </th>
-                                <th pSortableColumn="amount">{{ '::HospitalResponse:Material:Column:Amount' |
+                                <th>{{ '::HospitalResponse:Material:Column:Amount' |
                                     abpLocalization }}
-                                    <p-sortIcon field="amount"></p-sortIcon>
                                 </th>
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="body" let-material>
                             <tr>
-                                <td>{{material.material.name}}</td>
+                                <td>{{material.process.name}}</td>
                                 <td>{{material.amount}}</td>
                             </tr>
                         </ng-template>
@@ -414,8 +427,10 @@
                             </div>
                         </ng-template>
                         <ng-template pTemplate="summary">
-                            <div class="flex align-items-center justify-content-between" *ngIf="hospitalResponse.hospitalResponseMaterials.length > 0">
-                                {{ '::Table:Summary' | abpLocalization: hospitalResponse.hospitalResponseMaterials.length }}
+                            <div class="flex align-items-center justify-content-between"
+                                *ngIf="anticipatedMaterials.length > 0">
+                                {{ '::Table:Summary' | abpLocalization:
+                                anticipatedMaterials.length }}
                             </div>
                         </ng-template>
                     </p-table>
@@ -423,12 +438,16 @@
                 </fieldset>
 
             </div>
-            <div class="col-12">
+            <div class="col-12"
+                *ngIf="!doesHaveAnyApproved && (hospitalResponse.hospitalConsultation?.hospitalConsultationStatusId == consultationStatusEnum.SuitableForTreatment ||
+            hospitalResponse.hospitalConsultation?.hospitalConsultationStatusId == consultationStatusEnum.NotSuitableForTreatment ||
+            hospitalResponse.hospitalConsultation?.hospitalConsultationStatusId == consultationStatusEnum.ExaminationsIsRequiredForDiagnosis)">
                 <div class="flex justify-content-end">
                     <button pButton pRipple label="{{ '::RejectResponse' | abpLocalization }}" icon="pi pi-times"
-                        class="p-button-danger mr-2 mt-4 w-10rem" [loading]="loading"></button>
+                        class="p-button-danger mr-2 mt-4 w-10rem" [loading]="loading" (click)="onReject(null)"></button>
                     <button pButton pRipple label="{{ '::ApproveResponse' | abpLocalization }}" icon="pi pi-check"
-                        class="p-button-success mr-2 mt-4 w-10rem" [loading]="loading"></button>
+                        class="p-button-success mr-2 mt-4 w-10rem" [loading]="loading"
+                        (click)="onApprove(null)"></button>
                 </div>
             </div>
         </div>

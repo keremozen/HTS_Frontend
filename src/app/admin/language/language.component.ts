@@ -1,6 +1,7 @@
 import { Component, Injector } from '@angular/core';
 import { LanguageDto, SaveLanguageDto } from '@proxy/dto/language';
 import { LanguageService } from '@proxy/service/language.service';
+import { CommonService } from 'src/app/services/common.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 
@@ -28,7 +29,8 @@ export class LanguageComponent extends AppComponentBase {
 
     constructor(
         injector: Injector,
-        private languageService: LanguageService
+        private languageService: LanguageService,
+        private commonService: CommonService
     ) {
         super(injector);
     }
@@ -43,6 +45,7 @@ export class LanguageComponent extends AppComponentBase {
           next: data => {
             this.languageList = data.items;
             this.totalRecords = data.totalCount;
+            this.commonService.languageList = this.languageList.filter(l=>l.isActive == true);
           },
           error: () => {
             this.loading = false;

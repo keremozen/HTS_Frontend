@@ -4,8 +4,8 @@ import { LanguageDto } from '@proxy/dto/language';
 import { NationalityDto } from '@proxy/dto/nationality';
 import { FilterPatientDto, PatientDto } from '@proxy/dto/patient';
 import { PatientTreatmentProcessDto } from '@proxy/dto/patient-treatment-process';
-import { GenderService, LanguageService, NationalityService, PatientService, PatientTreatmentProcessService } from '@proxy/service';
-import { forkJoin } from 'rxjs';
+import { PatientService } from '@proxy/service';
+import { CommonService } from 'src/app/services/common.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 @Component({
@@ -31,9 +31,7 @@ export class PatientListComponent extends AppComponentBase {
 
   constructor(
     injector: Injector,
-    private genderService: GenderService,
-    private nationalityService: NationalityService,
-    private languageService: LanguageService,
+    private commonService: CommonService,
     private patientService: PatientService
   ) {
     super(injector);
@@ -45,33 +43,22 @@ export class PatientListComponent extends AppComponentBase {
   }
   fetchData() {
     this.loading = true;
-    forkJoin([
-      this.genderService.getList(),
-      this.nationalityService.getList(),
-      this.languageService.getList(),
-      this.patientService.getList()
-    ]).subscribe(
-      {
-        next: ([
-          resGenderList,
-          resNationalityList,
-          resLanguageList,
-          resPatientList
-        ]) => {
-          this.genderList = resGenderList.items;
-          this.nationalityList = resNationalityList.items;
-          this.languageList = resLanguageList.items;
-          this.patientList = resPatientList.items;
-          this.totalRecords = resPatientList.totalCount;
-        },
-        error: ()=> {
-          this.loading = false;
-        },
-        complete: ()=> {
-          this.loading = false;
-        }
+    this.nationalityList = this.commonService.nationalityList;
+    this.languageList = this.commonService.languageList;
+    this.genderList = this.commonService.genderList;
+
+    this.patientService.getList().subscribe({
+      next: (resPatientList) => {
+        this.patientList = resPatientList.items;
+        this.totalRecords = resPatientList.totalCount;
+      },
+      error: ()=> {
+        this.loading = false;
+      },
+      complete: ()=> {
+        this.loading = false;
       }
-    );
+    });
   }
 
   onClearFilters() {

@@ -1,21 +1,20 @@
 import { Component, Injector, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Process } from '@proxy/dto';
 import { BranchDto } from '@proxy/dto/branch';
 import { HospitalConsultationDto } from '@proxy/dto/hospital-consultation';
-import { HospitalConsultationDocumentDto, SaveHospitalConsultationDocumentDto } from '@proxy/dto/hospital-consultation-document';
+import { HospitalConsultationDocumentDto } from '@proxy/dto/hospital-consultation-document';
 import { SaveHospitalResponseDto } from '@proxy/dto/hospital-response';
-import { HospitalResponseMaterialDto, SaveHospitalResponseMaterialDto } from '@proxy/dto/hospital-response-material';
-import { HospitalResponseProcessDto, SaveHospitalResponseProcessDto } from '@proxy/dto/hospital-response-process';
+import { SaveHospitalResponseProcessDto } from '@proxy/dto/hospital-response-process';
 import { HospitalResponseTypeDto } from '@proxy/dto/hospital-response-type';
 import { HospitalizationTypeDto } from '@proxy/dto/hospitalization-type';
-import { MaterialDto } from '@proxy/dto/material';
 import { PatientDto } from '@proxy/dto/patient';
 import { ProcessDto } from '@proxy/dto/process';
-import { EntityEnum_HospitalResponseTypeEnum } from '@proxy/enum';
-import { BranchService, HospitalConsultationService, HospitalResponseService, HospitalResponseTypeService, HospitalizationTypeService, MaterialService, ProcessService } from '@proxy/service';
+import { EntityEnum_HospitalResponseTypeEnum, EntityEnum_ProcessTypeEnum } from '@proxy/enum';
+import { HospitalConsultationService, HospitalResponseService, HospitalResponseTypeService, HospitalizationTypeService, ProcessService } from '@proxy/service';
 import { forkJoin } from 'rxjs';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
+import { CommonService } from '../services/common.service';
+import { DialogService, DynamicDialogConfig } from 'primeng/dynamicdialog';
 
 @Component({
   selector: 'app-hospital-response',
@@ -37,21 +36,23 @@ export class HospitalResponseComponent extends AppComponentBase {
   selectedHospitalizationType: HospitalizationTypeDto;
   selectedBranches: BranchDto[] = [];
   anticipatedProcesses: SaveHospitalResponseProcessWithDetailDto[] = [];
-  anticipatedMaterials: SaveHospitalResponseMaterialWithDetailDto[] = [];
+  anticipatedMaterials: SaveHospitalResponseProcessWithDetailDto[] = [];
   loading: boolean;
   totalRecords: number;
   isAllowedToManage: boolean = false;
   hospitalResponse = {} as SaveHospitalResponseDto;
 
-  material: SaveHospitalResponseMaterialWithDetailDto;
-  materialDialog: boolean = false;
-  materialList: MaterialDto[] = [];
-
   process: SaveHospitalResponseProcessWithDetailDto;
   processDialog: boolean = false;
   processList: ProcessDto[] = [];
+  sutProcessList: ProcessDto[] = [];
+  materialProcessList: ProcessDto[] = [];
+
+  material: SaveHospitalResponseProcessWithDetailDto;
+  materialDialog: boolean = false;
 
   public hospitalResponseTypeEnum = EntityEnum_HospitalResponseTypeEnum;
+  public processTypeEnum = EntityEnum_ProcessTypeEnum;
 
   constructor(
     injector: Injector,
@@ -59,21 +60,18 @@ export class HospitalResponseComponent extends AppComponentBase {
     private hospitalizationTypeService: HospitalizationTypeService,
     private hospitalConsultationService: HospitalConsultationService,
     private hospitalResponseService: HospitalResponseService,
-    private branchService: BranchService,
+    private commonService: CommonService,
     private processService: ProcessService,
-    private materialService: MaterialService,
-    private route: ActivatedRoute,
+    private route: ActivatedRoute
   ) {
     super(injector);
   }
 
   ngOnInit() {
     if (this.route.snapshot.paramMap.get('uid')) {
-      debugger;
       this.consultationId = +this.route.snapshot.paramMap.get('uid');
       this.hospitalResponse.hospitalConsultationId = this.consultationId;
       this.hospitalResponse.hospitalResponseBranches = [];
-      this.hospitalResponse.hospitalResponseMaterials = [];
       this.hospitalResponse.hospitalResponseProcesses = [];
       this.fetchData();
     }
@@ -81,30 +79,27 @@ export class HospitalResponseComponent extends AppComponentBase {
 
   fetchData() {
     this.loading = true;
+    this.branchList = this.commonService.branchList;
     forkJoin([
       this.hospitalConsultationService.get(this.consultationId),
       this.hostipalResponseTypeService.getList(),
       this.hospitalizationTypeService.getList(),
-      this.branchService.getList(),
-      this.processService.getList(),
-      this.materialService.getList()
+      this.processService.getList()
     ]).subscribe(
       {
         next: ([
           resConsultation,
           resHospitalResponseTypeList,
           resHospitalizationTypeList,
-          resBranchList,
-          resProcessList,
-          resMaterialList
+          resProcessList
         ]) => {
           this.consultation = resConsultation;
           this.documents.push(...this.consultation.hospitalConsultationDocuments);
           this.hospitalResponseTypeList = resHospitalResponseTypeList.items;
           this.hospitalizationTypeList = resHospitalizationTypeList.items;
-          this.branchList = resBranchList.items;
           this.processList = resProcessList.items;
-          this.materialList = resMaterialList.items;
+          this.sutProcessList = [...this.processList.filter(p => p.processTypeId == this.processTypeEnum.SutCode)];
+          this.materialProcessList = [...this.processList.filter(p => p.processTypeId == this.processTypeEnum.Material)];
         },
         error: () => {
           this.loading = false;
@@ -117,19 +112,19 @@ export class HospitalResponseComponent extends AppComponentBase {
   }
 
   openNewMaterial() {
-    this.material = new SaveHospitalResponseMaterialWithDetailDto();
+    this.material = new SaveHospitalResponseProcessWithDetailDto();
     this.materialDialog = true;
   }
 
   saveMaterial() {
-    this.material.materialId = this.material.material.id;
+    this.material.processId = this.material.process.id;
     this.anticipatedMaterials.push(this.material);
     this.material = null;
     this.materialDialog = false;
   }
 
-  deleteMaterial(material: SaveHospitalResponseMaterialWithDetailDto) {
-    this.anticipatedMaterials = this.anticipatedMaterials.filter(m => !(m.materialId == material.materialId && m.amount == material.amount));
+  deleteMaterial(material: SaveHospitalResponseProcessWithDetailDto) {
+    this.anticipatedMaterials = this.anticipatedMaterials.filter(m => !(m.processId == material.processId && m.amount == material.amount));
   }
 
   hideMaterialDialog() {
@@ -176,8 +171,9 @@ export class HospitalResponseComponent extends AppComponentBase {
             branchId: branch.id
           });
         });
-        this.hospitalResponse.hospitalResponseProcesses = this.anticipatedProcesses;
-        this.hospitalResponse.hospitalResponseMaterials = this.anticipatedMaterials;
+        this.hospitalResponse.hospitalResponseProcesses = [];
+        this.hospitalResponse.hospitalResponseProcesses.push(...this.anticipatedProcesses);
+        this.hospitalResponse.hospitalResponseProcesses.push(...this.anticipatedMaterials);
 
         this.hospitalResponseService.create(this.hospitalResponse).subscribe({
           complete: () => {
@@ -195,11 +191,3 @@ class SaveHospitalResponseProcessWithDetailDto implements SaveHospitalResponsePr
   amount: number;
   process: ProcessDto;
 }
-
-class SaveHospitalResponseMaterialWithDetailDto implements SaveHospitalResponseMaterialDto {
-  hospitalResponseId: number;
-  materialId: number;
-  amount: number;
-  material: MaterialDto;
-}
-

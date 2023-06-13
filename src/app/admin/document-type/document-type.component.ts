@@ -1,6 +1,7 @@
 import { Component, Injector } from '@angular/core';
 import { DocumentTypeDto, SaveDocumentTypeDto } from '@proxy/dto/document-type';
 import { DocumentTypeService } from '@proxy/service';
+import { CommonService } from 'src/app/services/common.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 @Component({
@@ -19,7 +20,8 @@ export class DocumentTypeComponent extends AppComponentBase {
 
   constructor(
     injector: Injector,
-    private documentTypeService: DocumentTypeService
+    private documentTypeService: DocumentTypeService,
+    private commonService: CommonService
   ) {
     super(injector);
   }
@@ -34,6 +36,7 @@ export class DocumentTypeComponent extends AppComponentBase {
       next: data => {
         this.documentTypeList = data.items;
         this.totalRecords = data.totalCount;
+        this.commonService.documentTypeList = this.documentTypeList.filter(d => d.isActive == true);
       },
       error: () => {
         this.loading = false;

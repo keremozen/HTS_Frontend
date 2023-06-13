@@ -1,12 +1,11 @@
 import { Component, Injector, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { GenderDto } from '@proxy/dto/gender';
 import { LanguageDto } from '@proxy/dto/language';
 import { NationalityDto } from '@proxy/dto/nationality';
 import { SavePatientDto } from '@proxy/dto/patient';
-import { GenderService, LanguageService, NationalityService, PatientService } from '@proxy/service';
+import { PatientService } from '@proxy/service';
 import * as moment from 'moment';
-import { forkJoin } from 'rxjs';
+import { CommonService } from 'src/app/services/common.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 @Component({
@@ -28,9 +27,7 @@ export class NewPatientComponent extends AppComponentBase {
 
   constructor(
     injector: Injector,
-    private nationalityService: NationalityService,
-    private genderService: GenderService,
-    private languageService: LanguageService,
+    private commonService: CommonService,
     private patientService: PatientService
   ) {
     super(injector);
@@ -39,34 +36,9 @@ export class NewPatientComponent extends AppComponentBase {
 
   ngOnInit() {
     this.title = this.l("::PatientDetail:NewTitle")
-    this.fetchData();
-  }
-
-  fetchData() {
-    this.loading = true;
-    forkJoin([
-      this.genderService.getList(),
-      this.nationalityService.getList(true),
-      this.languageService.getList(true)
-    ]).subscribe(
-      {
-        next: ([
-          resGenderList,
-          resNationalityList,
-          resLanguageList
-        ]) => {
-          this.genderList = resGenderList.items;
-          this.nationalityList = resNationalityList.items;
-          this.languageList = resLanguageList.items;
-        },
-        error: () => {
-          this.loading = false;
-        },
-        complete: () => {
-          this.loading = false;
-        }
-      }
-    );
+    this.languageList = this.commonService.languageList;
+    this.nationalityList = this.commonService.nationalityList;
+    this.genderList = this.commonService.genderList;
   }
 
   onSaveProfile() {

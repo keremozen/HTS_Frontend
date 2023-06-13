@@ -4,10 +4,10 @@ import { ActivatedRoute } from '@angular/router';
 import { GenderDto } from '@proxy/dto/gender';
 import { LanguageDto } from '@proxy/dto/language';
 import { NationalityDto } from '@proxy/dto/nationality';
-import { SavePatientDto } from '@proxy/dto/patient';
-import { GenderService, LanguageService, NationalityService, PatientAdmissionMethodService, PatientService } from '@proxy/service';
+import { PatientDto, SavePatientDto } from '@proxy/dto/patient';
+import { PatientService } from '@proxy/service';
 import * as moment from 'moment';
-import { forkJoin } from 'rxjs';
+import { CommonService } from 'src/app/services/common.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 @Component({
@@ -21,6 +21,7 @@ export class PatientComponent extends AppComponentBase {
   title: string;
   patientId: number;
   patient: SavePatientDto = {} as SavePatientDto;
+  patientView: PatientDto;
   nationalityList: NationalityDto[] = [];
   languageList: LanguageDto[] = [];
   genderList: GenderDto[] = [];
@@ -32,9 +33,7 @@ export class PatientComponent extends AppComponentBase {
 
   constructor(
     injector: Injector,
-    private nationalityService: NationalityService,
-    private genderService: GenderService,
-    private languageService: LanguageService,
+    private commonService: CommonService,
     private patientService: PatientService,
     private route: ActivatedRoute,
   ) {
@@ -46,8 +45,12 @@ export class PatientComponent extends AppComponentBase {
     if (this.route.snapshot.paramMap.get('id')) {
       this.patientId = +this.route.snapshot.paramMap.get('id');
       if (this.patient) {
+        this.languageList = this.commonService.languageList;
+        this.nationalityList = this.commonService.nationalityList;
+        this.genderList = this.commonService.genderList;
         this.patientService.get(this.patientId).subscribe({
           next: (patient) => {
+            this.patientView = {...patient};
             this.creatorName = (patient.creator as unknown as IdentityUserDto).name;
             this.creationTime = new Date(patient.creationTime);
             this.patient = patient as SavePatientDto;
@@ -56,39 +59,11 @@ export class PatientComponent extends AppComponentBase {
             if (this.patient) {
               this.patient.birthDate = new Date(this.patient.birthDate);
               this.title = this.l("::PatientDetail:EditTitle");
-              this.fetchData();
             }
           }
         });
       }
     }
-  }
-
-  fetchData() {
-    this.loading = true;
-    forkJoin([
-      this.genderService.getList(),
-      this.nationalityService.getList(),
-      this.languageService.getList()
-    ]).subscribe(
-      {
-        next: ([
-          resGenderList,
-          resNationalityList,
-          resLanguageList
-        ]) => {
-          this.genderList = resGenderList.items;
-          this.nationalityList = resNationalityList.items;
-          this.languageList = resLanguageList.items;
-        },
-        error: () => {
-          this.loading = false;
-        },
-        complete: () => {
-          this.loading = false;
-        }
-      }
-    );
   }
 
   onSaveProfile() {

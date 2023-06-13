@@ -1,6 +1,7 @@
 import { Component, Injector } from '@angular/core';
 import { CityDto, SaveCityDto } from '@proxy/dto/city';
 import { CityService } from '@proxy/service';
+import { CommonService } from 'src/app/services/common.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 
@@ -28,7 +29,8 @@ export class CityComponent extends AppComponentBase {
 
     constructor(
         injector: Injector,
-        private cityService: CityService
+        private cityService: CityService,
+        private commonService: CommonService
     ) {
         super(injector);
     }
@@ -43,6 +45,7 @@ export class CityComponent extends AppComponentBase {
           next: data => {
             this.cityList = data.items;
             this.totalRecords = data.totalCount;
+            this.commonService.cityList = this.cityList;
           },
           error: () => {
             this.loading = false;

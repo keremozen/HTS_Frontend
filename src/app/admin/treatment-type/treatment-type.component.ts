@@ -1,6 +1,7 @@
 import { Component, Injector } from '@angular/core';
 import { SaveTreatmentTypeDto, TreatmentTypeDto } from '@proxy/dto/treatment-type';
 import { TreatmentTypeService } from '@proxy/service';
+import { CommonService } from 'src/app/services/common.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 
@@ -28,7 +29,8 @@ export class TreatmentTypeComponent extends AppComponentBase {
 
     constructor(
         injector: Injector,
-        private treatmentTypeService: TreatmentTypeService
+        private treatmentTypeService: TreatmentTypeService,
+        private commonService: CommonService
     ) {
         super(injector);
     }
@@ -43,6 +45,7 @@ export class TreatmentTypeComponent extends AppComponentBase {
           next: data => {
             this.treatmentTypeList = data.items;
             this.totalRecords = data.totalCount;
+            this.commonService.treatmentTypeList = this.treatmentTypeList.filter(t=>t.isActive == true);
           },
           error: () => {
             this.loading = false;

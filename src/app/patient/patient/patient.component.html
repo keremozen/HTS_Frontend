@@ -180,14 +180,14 @@
         </div>
     </div>
 
-    <div class="grid">
+    <div class="grid" *ngIf="patientView">
         <div class="col">
             <fieldset class="border pl-3 pr-3 pt-2 pb-3 m-2 patientFieldSet">
                 <legend class="float-none w-auto pl-3 pr-3 text-sm patientFieldSetlegend">
                     {{'::PatientDetail:TreatmentProcesses' |
                     abpLocalization}}
                 </legend>
-                <app-treatment-processes [patientId]="patientId"></app-treatment-processes>
+                <app-treatment-processes [patient]="patientView"></app-treatment-processes>
             </fieldset>
         </div>
     </div>

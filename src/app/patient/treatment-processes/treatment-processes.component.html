@@ -13,7 +13,7 @@
     </div>
 </p-toolbar>
 
-<p-table #dt [value]="processes" [rows]="5" styleClass="pt-3" [paginator]="true" [globalFilterFields]="['CreatedBy']"
+<p-table #dt [value]="processes" [rows]="5" styleClass="pt-3" [paginator]="true"
     *ngIf="processes && processes.length > 0" [rowHover]="true"
     currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
     [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
@@ -67,8 +67,11 @@
                 <i class="fas fa-hospital-user text-sm mr-2"></i>
                 <span>{{'::TreatmentProcess:Step:SalesAndAttendantInfo'|abpLocalization}}</span>
             </ng-template>
-            <app-companion-info [treatmentProcessId]="process.id"
-                (save)="onSaveSalesInfoAndCompanionInfo()"></app-companion-info>
+            <ng-template pTemplate="content">
+                <app-companion-info [patientTreatmentProcessId]="process?.id"
+                    [salesInfoAndCompanionInfo]="salesAndCompanionInfo"
+                    (save)="onSaveSalesInfoAndCompanionInfo()"></app-companion-info>
+            </ng-template>
         </p-tabPanel>
         <p-tabPanel [disabled]="!doesHaveAnySalesMethodAndCompanionInfo" [cache]="false">
             <ng-template pTemplate="header">
@@ -76,23 +79,27 @@
                 <span>{{'::TreatmentProcess:Step:HospitalConsultation'|abpLocalization}}</span>
             </ng-template>
             <ng-template pTemplate="content">
-                <app-hospital-consultation [patientId]="patientId"
-                    [patientTreatmentId]="process?.id" (onConsultationChange)="consultationChanged($event)"></app-hospital-consultation>
+                <app-hospital-consultation [patientId]="patient.id" [patientTreatmentId]="process?.id"
+                    (onConsultationChange)="consultationChanged($event)"></app-hospital-consultation>
             </ng-template>
         </p-tabPanel>
-        <p-tabPanel [disabled]="!doesHaveAnySalesMethodAndCompanionInfo">
+        <p-tabPanel [disabled]="!doesHaveAnySalesMethodAndCompanionInfo" [cache]="false">
             <ng-template pTemplate="header">
                 <i class="fas fa-project-diagram text-sm mr-2"></i>
                 <span>{{'::TreatmentProcess:Step:OperationalInformation'|abpLocalization}}</span>
             </ng-template>
-            <app-operational-info></app-operational-info>
+            <ng-template pTemplate="content">
+                <app-operational-info [patientTreatmentId]="process?.id" [patient]="patient"></app-operational-info>
+            </ng-template>
         </p-tabPanel>
-        <p-tabPanel [disabled]="!doesHaveAnySalesMethodAndCompanionInfo">
+        <p-tabPanel [disabled]="!doesHaveAnySalesMethodAndCompanionInfo" [cache]="false">
             <ng-template pTemplate="header">
                 <i class="fas fa-file-invoice-dollar text-sm mr-2"></i>
                 <span>{{'::TreatmentProcess:Step:ProcessQuotationRevenue'|abpLocalization}}</span>
             </ng-template>
-            <app-quotation></app-quotation>
+            <ng-template pTemplate="content">
+                <app-quotation></app-quotation>
+            </ng-template>
         </p-tabPanel>
     </p-tabView>
 </div>

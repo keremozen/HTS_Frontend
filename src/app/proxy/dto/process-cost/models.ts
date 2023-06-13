@@ -10,6 +10,7 @@ export interface ProcessCostDto extends EntityDto<number> {
 }
 
 export interface SaveProcessCostDto {
+  id?: number;
   processId: number;
   validityStartDate: Date;
   validityEndDate: Date;

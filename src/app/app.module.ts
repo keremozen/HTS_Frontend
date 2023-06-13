@@ -7,7 +7,7 @@ import { SettingManagementConfigModule } from '@abp/ng.setting-management/config
 import { ThemeLeptonXModule } from '@abp/ng.theme.lepton-x';
 import { SideMenuLayoutModule } from '@abp/ng.theme.lepton-x/layouts';
 import { ThemeSharedModule } from '@abp/ng.theme.shared';
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { environment } from '../environments/environment';
@@ -36,6 +36,7 @@ import {
 } from 'echarts/renderers';
 import Marcaron from './shared/common/marcaron';
 import dateFormat from "dateformat";
+import { CommonService } from './services/common.service';
 
 echarts.use(
   [TitleComponent, TooltipComponent, GridComponent, LineChart, CanvasRenderer]
@@ -65,7 +66,11 @@ echarts.registerTheme('macarons', Marcaron);
   ],
   declarations: [AppComponent, PrimeApplicationLayoutComponent, AppMenuComponent, TopbarComponent, LanguageComponent, CurrentUserComponent],
   providers: [
-    APP_ROUTE_PROVIDER
+    APP_ROUTE_PROVIDER,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (global: CommonService) => () => global.setInitialData(), deps: [CommonService], multi: true
+    }
   ],
   bootstrap: [AppComponent],
 })

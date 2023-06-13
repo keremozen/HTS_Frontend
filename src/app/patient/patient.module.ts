@@ -14,7 +14,8 @@ import { OperationalInfoComponent } from './treatment-processes/operational-info
 import { QuotationComponent } from './treatment-processes/quotation.component';
 import { HospitalConsultationComponent } from './treatment-processes/hospital-consultation.component';
 import { NewPatientComponent } from './new-patient/new-patient.component';
-import { EntityEnum_HospitalConsultationStatusEnum } from '@proxy/enum';
+import { DialogService } from 'primeng/dynamicdialog';
+import { OperationComponent } from './treatment-processes/operation.component';
 
 
 @NgModule({
@@ -28,7 +29,8 @@ import { EntityEnum_HospitalConsultationStatusEnum } from '@proxy/enum';
     CompanionInfoComponent,
     HospitalConsultationComponent,
     OperationalInfoComponent,
-    QuotationComponent
+    QuotationComponent,
+    OperationComponent
   ],
   imports: [
     SharedModule,
@@ -38,7 +40,7 @@ import { EntityEnum_HospitalConsultationStatusEnum } from '@proxy/enum';
     
   ],
   providers: [
-    
+    DialogService
   ]
 })
 export class PatientModule { }

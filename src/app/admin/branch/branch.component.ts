@@ -1,6 +1,7 @@
 import { Component, Injector } from '@angular/core';
 import { BranchDto, SaveBranchDto } from '@proxy/dto/branch';
 import { BranchService } from '@proxy/service/branch.service';
+import { CommonService } from 'src/app/services/common.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 
@@ -28,7 +29,8 @@ export class BranchComponent extends AppComponentBase {
 
     constructor(
         injector: Injector,
-        private branchService: BranchService
+        private branchService: BranchService,
+        private commonService: CommonService
     ) {
         super(injector);
     }
@@ -43,6 +45,7 @@ export class BranchComponent extends AppComponentBase {
           next: data => {
             this.branchList = data.items;
             this.totalRecords = data.totalCount;
+            this.commonService.branchList = this.branchList.filter(b=>b.isActive == true);
           },
           error: () => {
             this.loading = false;

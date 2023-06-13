@@ -6,6 +6,7 @@ import { NationalityDto } from '@proxy/dto/nationality';
 import { CityService, HospitalService, HospitalStaffService, NationalityService, UserService } from '@proxy/service';
 import { IdentityUserDto } from '@proxy/volo/abp/identity';
 import { forkJoin } from 'rxjs';
+import { CommonService } from 'src/app/services/common.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 
@@ -45,9 +46,8 @@ export class HospitalComponent extends AppComponentBase {
     injector: Injector,
     private hospitalService: HospitalService,
     private hospitalStaffService: HospitalStaffService,
-    private nationalityService: NationalityService,
-    private userService: UserService,
-    private cityService: CityService
+    private commonService: CommonService,
+    private userService: UserService
   ) {
     super(injector);
   }
@@ -58,21 +58,19 @@ export class HospitalComponent extends AppComponentBase {
 
   fetchData() {
     this.loading = true;
+    this.nationalityList = this.commonService.nationalityList;
+    this.cityList = this.commonService.cityList;
 
     forkJoin([
-      this.nationalityService.getList(),
       this.hospitalService.getList(),
-      this.cityService.getList(),
       this.userService.getByRole("UHB Yetkilisi")
     ]).subscribe(
       {
         next: ([
-          resNationalityList,
           resHospitalList,
-          resCityList,
           resUserList
         ]) => {
-          this.nationalityList = resNationalityList.items;
+          this.commonService.hospitalList = resHospitalList.items.filter(h=>h.isActive==true);
           this.totalRecords = resHospitalList.totalCount;
           this.hospitalList = [];
           resHospitalList.items.forEach(hospital => {
@@ -81,7 +79,6 @@ export class HospitalComponent extends AppComponentBase {
             this.hospitalList.push(hospitalwithstaff);
           });
           this.uhbUserList = resUserList;
-          this.cityList = resCityList.items;
           if (this.hospitalToBeEdited) {
             this.hospitalToBeEdited = this.hospitalList.find(h=>h.id == this.hospitalToBeEdited.id);
             this.fetchHospitalStaff();
