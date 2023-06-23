@@ -63,7 +63,7 @@ export class HospitalComponent extends AppComponentBase {
 
     forkJoin([
       this.hospitalService.getList(),
-      this.userService.getByRole("UHB Yetkilisi")
+      this.userService.getUhbStaffList()
     ]).subscribe(
       {
         next: ([

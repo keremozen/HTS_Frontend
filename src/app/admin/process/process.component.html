@@ -277,8 +277,8 @@
                     }}&nbsp;<font style="color:red">*
                     </font></label>
                 <p-calendar id="validityStartDate" name="validityStartDate" #validityStartDate="ngModel"
-                    [(ngModel)]="cost.validityStartDate" dateFormat="dd.mm.yy" [showIcon]="true" inputStyleClass="text-sm" appendTo="body"
-                    required></p-calendar>
+                    [(ngModel)]="cost.validityStartDate" dateFormat="dd.mm.yy" [showIcon]="true"
+                    inputStyleClass="text-sm" appendTo="body" required></p-calendar>
                 <small class="p-error" *ngIf="!(validityStartDate.valid || validityStartDate.pristine)">{{
                     '::Message:RequiredField' |
                     abpLocalization
@@ -289,8 +289,8 @@
                     }}&nbsp;<font style="color:red">*
                     </font></label>
                 <p-calendar id="validityEndDate" name="validityEndDate" #validityEndDate="ngModel"
-                    [(ngModel)]="cost.validityEndDate" dateFormat="dd.mm.yy" [showIcon]="true" inputStyleClass="text-sm" appendTo="body"
-                    required></p-calendar>
+                    [(ngModel)]="cost.validityEndDate" dateFormat="dd.mm.yy" [showIcon]="true" inputStyleClass="text-sm"
+                    appendTo="body" required></p-calendar>
                 <small class="p-error" *ngIf="!(validityEndDate.valid || validityEndDate.pristine)">{{
                     '::Message:RequiredField' |
                     abpLocalization
@@ -375,4 +375,5 @@
 </p-dialog>
 
 <p-confirmDialog [style]="{width: '450px'}" rejectLabel="{{ '::Reject' | abpLocalization }}"
-    acceptLabel="{{ '::Accept' | abpLocalization }}"></p-confirmDialog>
+    acceptLabel="{{ '::Accept' | abpLocalization }}" rejectButtonStyleClass="p-button-text p-button-danger"
+    acceptButtonStyleClass="p-button-text p-button-success"></p-confirmDialog>

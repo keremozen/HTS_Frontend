@@ -59,7 +59,7 @@
                 <button pButton pRipple label="{{ '::HospitalConsultation:Button:Answer' | abpLocalization }}"
                     class="p-button-warning ml-2" (click)="openHospitalResponse(operation)"></button>
                 <button pButton pRipple class="p-button-success ml-2" label="{{ '::OperationalInfo:Button:CreateProforma' | abpLocalization }}"
-                    (click)="onCreateProforma(operation.id)"></button>
+                    (click)="onCreateProforma(operation)" [disabled]="operation.operationStatusId != operationStatusEnum?.PriceExpecting && operation.operationStatusId != operationStatusEnum?.MFBRejectedPriceExpecting"></button>
             </td>
         </tr>
     </ng-template>
@@ -69,8 +69,8 @@
         </div>
     </ng-template>
     <ng-template pTemplate="summary">
-        <div class="flex align-items-center justify-content-between" *ngIf="totalRecords > 0">
-            {{ '::Table:Summary' | abpLocalization:(totalRecords) }}
+        <div class="flex align-items-center justify-content-between" *ngIf="operations.length > 0">
+            {{ '::Table:Summary' | abpLocalization:(operations.length) }}
         </div>
     </ng-template>
 </p-table>
@@ -122,7 +122,6 @@
                                     </th>
                                     <th pSortableColumn="description">{{ '::Documents:Column:Description' |
                                         abpLocalization }} <p-sortIcon field="description"></p-sortIcon></th>
-                                    <th *ngIf="!isConsultationReadOnly"></th>
                                 </tr>
                             </ng-template>
                             <ng-template pTemplate="body" let-hospitalDocument>
@@ -136,12 +135,6 @@
                                         <div class="overflow cursor-pointer" [pTooltip]="hospitalDocument.description"
                                             tooltipStyleClass="wideTooltip" tooltipPosition="bottom">
                                         </div>
-                                    </td>
-                                    <td *ngIf="!isConsultationReadOnly">
-                                        <button pButton pRipple icon="pi pi-trash"
-                                            class="p-button-rounded p-button-danger"
-                                            (click)="revokeDocument(hospitalDocument)"
-                                            [disabled]="hospitalDocument.patientDocumentStatusId === patientDocumentStatusEnum.Revoked"></button>
                                     </td>
                                 </tr>
                             </ng-template>

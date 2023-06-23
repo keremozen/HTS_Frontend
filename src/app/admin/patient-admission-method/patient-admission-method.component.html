@@ -24,7 +24,8 @@
                 <th pSortableColumn="Code">{{ '::Admin:PatientAdmissionMethod:Column:Description' | abpLocalization }}
                     <p-sortIcon field="Description"></p-sortIcon>
                 </th>
-                <th class="w-8rem text-center">{{ '::Admin:PatientAdmissionMethod:Column:IsActive' | abpLocalization }}</th>
+                <th class="w-8rem text-center">{{ '::Admin:PatientAdmissionMethod:Column:IsActive' | abpLocalization }}
+                </th>
                 <th class="w-8rem"></th>
             </tr>
         </ng-template>
@@ -97,4 +98,5 @@
 </p-dialog>
 
 <p-confirmDialog [style]="{width: '450px'}" rejectLabel="{{ '::Reject' | abpLocalization }}"
-    acceptLabel="{{ '::Accept' | abpLocalization }}"></p-confirmDialog>
+    acceptLabel="{{ '::Accept' | abpLocalization }}" rejectButtonStyleClass="p-button-text p-button-danger"
+    acceptButtonStyleClass="p-button-text p-button-success"></p-confirmDialog>

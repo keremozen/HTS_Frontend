@@ -9,13 +9,14 @@ import { PatientComponent } from './patient/patient.component';
 import { NotesComponent } from './notes/notes.component';
 import { DocumentsComponent } from './documents/documents.component';
 import { TreatmentProcessesComponent } from './treatment-processes/treatment-processes.component';
-import { CompanionInfoComponent } from './treatment-processes/companion-info.component';
-import { OperationalInfoComponent } from './treatment-processes/operational-info.component';
-import { QuotationComponent } from './treatment-processes/quotation.component';
-import { HospitalConsultationComponent } from './treatment-processes/hospital-consultation.component';
 import { NewPatientComponent } from './new-patient/new-patient.component';
 import { DialogService } from 'primeng/dynamicdialog';
-import { OperationComponent } from './treatment-processes/operation.component';
+import { CompanionInfoComponent } from './treatment-processes/companion-info/companion-info.component';
+import { HospitalConsultationComponent } from './treatment-processes/hospital-consultation/hospital-consultation.component';
+import { OperationalInfoComponent } from './treatment-processes/operational-info/operational-info.component';
+import { QuotationComponent } from './treatment-processes/quotation/quotation.component';
+import { OperationComponent } from './treatment-processes/operation/operation.component';
+import { ProformaComponent } from './treatment-processes/proforma/proforma.component';
 
 
 @NgModule({
@@ -30,7 +31,8 @@ import { OperationComponent } from './treatment-processes/operation.component';
     HospitalConsultationComponent,
     OperationalInfoComponent,
     QuotationComponent,
-    OperationComponent
+    OperationComponent,
+    ProformaComponent
   ],
   imports: [
     SharedModule,

@@ -168,13 +168,13 @@ export class HospitalConsultationComponent extends AppComponentBase {
   }
 
   onApprove(consultationId: number | null) {
-    this.loading = true;
     this.confirm({
       key: 'hospitalConsultationDocumentConfirm',
       message: this.l('::HospitalConsultation:Message:ConfirmApprove'),
       header: this.l('::Confirm'),
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
+        this.loading = true;
         if (!consultationId && this.hospitalResponse) {
           this.hospitalResponseService.approve(this.hospitalResponse.id).subscribe({
             next: (res) => {

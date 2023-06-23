@@ -8,8 +8,8 @@ import { HospitalResponseTypeDto } from '@proxy/dto/hospital-response-type';
 import { HospitalizationTypeDto } from '@proxy/dto/hospitalization-type';
 import { PatientDto } from '@proxy/dto/patient';
 import { ProcessDto } from '@proxy/dto/process';
-import { EntityEnum_HospitalResponseTypeEnum, EntityEnum_ProcessTypeEnum } from '@proxy/enum';
-import { HospitalResponseTypeService, HospitalizationTypeService, OperationService, ProcessService, TreatmentTypeService } from '@proxy/service';
+import { EntityEnum_HospitalResponseTypeEnum, EntityEnum_OperationStatusEnum, EntityEnum_ProcessTypeEnum } from '@proxy/enum';
+import { HospitalResponseTypeService, HospitalizationTypeService, OperationService, ProcessService, TreatmentTypeService, UserService } from '@proxy/service';
 import { Observable, forkJoin, map, of } from 'rxjs';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -17,6 +17,7 @@ import { CommonService } from 'src/app/services/common.service';
 import { HospitalDto } from '@proxy/dto/hospital';
 import { OperationDto, SaveOperationDto } from '@proxy/dto/operation';
 import { TreatmentTypeDto } from '@proxy/dto/treatment-type';
+import { IdentityUserDto } from '@abp/ng.identity/proxy';
 
 @Component({
   selector: 'app-operation',
@@ -59,6 +60,9 @@ export class OperationComponent extends AppComponentBase {
   material: SaveHospitalResponseProcessWithDetailDto;
   materialDialog: boolean = false;
 
+  interpreterList: IdentityUserDto[] = [];
+  selectedInterpreter: IdentityUserDto;
+
   constructor(
     injector: Injector,
     private dialogConfig: DynamicDialogConfig,
@@ -68,7 +72,8 @@ export class OperationComponent extends AppComponentBase {
     private treatmentTypeService: TreatmentTypeService,
     private commonService: CommonService,
     private processService: ProcessService,
-    private operationService: OperationService
+    private operationService: OperationService,
+    private userService: UserService
   ) {
     super(injector);
   }
@@ -108,6 +113,9 @@ export class OperationComponent extends AppComponentBase {
           if (this.operation.treatmentDate) {
             this.operation.treatmentDate = new Date(this.operation.treatmentDate);
           }
+          if (this.operation.appointedInterpreterId) {
+            this.selectedInterpreter = (this.dialogConfig.data?.operation as OperationDto).appointedInterpreter;
+          }
           this.hospitalResponse = this.dialogConfig.data?.hospitalResponse as SaveHospitalResponseDto;
           this.hospitalResponse.possibleTreatmentDate = new Date(this.hospitalResponse.possibleTreatmentDate);
           this.selectedBranches = this.hospitalResponse.hospitalResponseBranches.map(b => b.branchId);
@@ -140,13 +148,15 @@ export class OperationComponent extends AppComponentBase {
       this.hostipalResponseTypeService.getList(),
       this.hospitalizationTypeService.getList(),
       this.treatmentTypeService.getList(),
-      this.processService.getList()
+      this.processService.getList(),
+      this.userService.getInterpreterList()
     ]).pipe(
       map(([
         resHospitalResponseTypeList,
         resHospitalizationTypeList,
         resTreatmentTypeList,
-        resProcessList
+        resProcessList,
+        resInterpreterList
       ]) => {
         this.hospitalResponseTypeList = resHospitalResponseTypeList.items;
         this.hospitalizationTypeList = resHospitalizationTypeList.items;
@@ -154,6 +164,7 @@ export class OperationComponent extends AppComponentBase {
         this.processList = resProcessList.items;
         this.sutProcessList = [...this.processList.filter(p => p.processTypeId == this.processTypeEnum.SutCode)];
         this.materialProcessList = [...this.processList.filter(p => p.processTypeId == this.processTypeEnum.Material)];
+        this.interpreterList = resInterpreterList;
       })
     );
   }
@@ -185,7 +196,6 @@ export class OperationComponent extends AppComponentBase {
   }
 
   saveProcess() {
-    debugger;
     this.process.processId = this.process.process.id;
     this.anticipatedProcesses.push(this.process);
     this.process = null;
@@ -217,6 +227,7 @@ export class OperationComponent extends AppComponentBase {
               branchId: branch
             });
           });
+          this.operation.appointedInterpreterId = this.selectedInterpreter.id;
           this.hospitalResponse.hospitalResponseProcesses = [];
           this.hospitalResponse.hospitalResponseProcesses.push(...this.anticipatedProcesses);
           this.hospitalResponse.hospitalResponseProcesses.push(...this.anticipatedMaterials);
@@ -229,7 +240,7 @@ export class OperationComponent extends AppComponentBase {
           });
         }
         else {
-          debugger;
+          this.operation.appointedInterpreterId = this.selectedInterpreter.id;
           this.operationService.update(this.operationId, this.operation).subscribe({
             complete: () => {
               this.success(this.l('::Message:SuccessfulSave', this.l('::OperationalInfo:Title')));

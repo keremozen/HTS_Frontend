@@ -196,8 +196,10 @@
                         abpLocalization }} <p-sortIcon field="phoneNumber"></p-sortIcon></th>
                     <th pSortableColumn="email">{{ '::Admin:ContractedInstitutionStaff:Column:EMail' | abpLocalization
                         }} <p-sortIcon field="email"></p-sortIcon></th>
-                    <th class="text-center">{{ '::Admin:ContractedInstitutionStaff:Column:IsDefault' | abpLocalization }}</th>
-                    <th class="text-center">{{ '::Admin:ContractedInstitutionStaff:Column:IsActive' | abpLocalization }}</th>
+                    <th class="text-center">{{ '::Admin:ContractedInstitutionStaff:Column:IsDefault' | abpLocalization
+                        }}</th>
+                    <th class="text-center">{{ '::Admin:ContractedInstitutionStaff:Column:IsActive' | abpLocalization }}
+                    </th>
                     <th style="width:8rem;"></th>
                 </tr>
             </ng-template>
@@ -306,4 +308,5 @@
 </p-dialog>
 
 <p-confirmDialog [style]="{width: '450px'}" rejectLabel="{{ '::Reject' | abpLocalization }}"
-    acceptLabel="{{ '::Accept' | abpLocalization }}"></p-confirmDialog>
+    acceptLabel="{{ '::Accept' | abpLocalization }}" rejectButtonStyleClass="p-button-text p-button-danger"
+    acceptButtonStyleClass="p-button-text p-button-success"></p-confirmDialog>

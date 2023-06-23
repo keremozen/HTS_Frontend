@@ -25,7 +25,8 @@
                                 [(ngModel)]="hospitalResponse.hospitalResponseTypeId"
                                 placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
                                 required="true" styleClass="filterDropDown" optionLabel="name" optionValue="id"
-                                emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" [disabled]="!isManual"></p-dropdown>
+                                emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
+                                [disabled]="!isManual"></p-dropdown>
                         </div>
                     </div>
                     <div class="field grid">
@@ -42,7 +43,8 @@
                                 placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
                                 required="true" styleClass="filterDropDown" optionLabel="name" optionValue="id"
                                 [required]="hospitalResponse.hospitalResponseTypeId == hospitalResponseTypeEnum.SuitableForTreatment"
-                                emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" [disabled]="!isManual"></p-dropdown>
+                                emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
+                                [disabled]="!isManual"></p-dropdown>
                         </div>
                     </div>
                     <div class="field grid">
@@ -54,11 +56,12 @@
                         <div class="col">
                             <p-multiSelect id="branch" name="branch" #branch="ngModel" [options]="branchList"
                                 [filter]="true" filterBy="name" [(ngModel)]="selectedBranches" display="chip"
-                                [style]="{'width':'100%'}" styleClass="filterDropDown text-sm" optionLabel="name" optionValue="id"
-                                placeholder="{{ '::Select' | abpLocalization }}"
+                                [style]="{'width':'100%'}" styleClass="filterDropDown text-sm" optionLabel="name"
+                                optionValue="id" placeholder="{{ '::Select' | abpLocalization }}"
                                 emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
                                 [required]="hospitalResponse.hospitalResponseTypeId == hospitalResponseTypeEnum.SuitableForTreatment"
-                                emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}" [disabled]="!isManual"></p-multiSelect>
+                                emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}"
+                                [disabled]="!isManual"></p-multiSelect>
                         </div>
                     </div>
                     <div class="field grid">
@@ -82,7 +85,8 @@
                             <p-inputNumber id="numberOfHospitalizationDays" name="numberOfHospitalizationDays"
                                 #numberOfHospitalizationDays="ngModel"
                                 [required]="hospitalResponse.hospitalResponseTypeId == hospitalResponseTypeEnum.SuitableForTreatment"
-                                [(ngModel)]="hospitalResponse.hospitalizationNumber" [disabled]="!isManual"></p-inputNumber>
+                                [(ngModel)]="hospitalResponse.hospitalizationNumber"
+                                [disabled]="!isManual"></p-inputNumber>
                         </div>
                     </div>
                 </div>
@@ -148,7 +152,8 @@
                             </div>
                         </ng-template>
                         <ng-template pTemplate="summary">
-                            <div class="flex align-items-center justify-content-between" *ngIf="anticipatedProcesses.length > 0">
+                            <div class="flex align-items-center justify-content-between"
+                                *ngIf="anticipatedProcesses.length > 0">
                                 {{ '::Table:Summary' | abpLocalization: anticipatedProcesses.length }}
                             </div>
                         </ng-template>
@@ -207,7 +212,8 @@
                             </div>
                         </ng-template>
                         <ng-template pTemplate="summary">
-                            <div class="flex align-items-center justify-content-between" *ngIf="anticipatedMaterials.length > 0">
+                            <div class="flex align-items-center justify-content-between"
+                                *ngIf="anticipatedMaterials.length > 0">
                                 {{ '::Table:Summary' | abpLocalization: anticipatedMaterials.length }}
                             </div>
                         </ng-template>
@@ -222,7 +228,8 @@
                         abpLocalization}}
                     </legend>
                     <textarea pInputText id="description" name="description" #description="ngModel"
-                        [(ngModel)]="hospitalResponse.description" required class="w-full h-full" [disabled]="!isManual"></textarea>
+                        [(ngModel)]="hospitalResponse.description" required class="w-full h-full"
+                        [disabled]="!isManual"></textarea>
                 </fieldset>
             </div>
             <div class="col-4">
@@ -253,10 +260,21 @@
                             abpLocalization}}</label>
                         <div class="col">
                             <p-dropdown id="interpreter" name="interpreter" #interpreter="ngModel"
-                                [options]="interpreterList" [(ngModel)]="operation.appointedInterpreterId"
+                                [options]="interpreterList" [(ngModel)]="selectedInterpreter"
                                 placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
-                                styleClass="filterDropDown" optionLabel="name" optionValue="id" appendTo="body"
-                                emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
+                                styleClass="filterDropDown" optionLabel="name" appendTo="body"
+                                emptyMessage="{{ '::EmptyMessage' | abpLocalization }}">
+                                <ng-template pTemplate="selectedItem">
+                                    <div class="flex align-items-center gap-2" *ngIf="selectedInterpreter">
+                                        <div>{{ selectedInterpreter.name }} {{ selectedInterpreter.surname }}</div>
+                                    </div>
+                                </ng-template>
+                                <ng-template let-staff pTemplate="item">
+                                    <div class="flex align-items-center gap-2">
+                                        <div>{{ staff.name }} {{ staff.surname }}</div>
+                                    </div>
+                                </ng-template>
+                            </p-dropdown>
                         </div>
                     </div>
                     <div class="field grid">
@@ -274,7 +292,8 @@
                     <div class="field grid">
                         <p-checkbox id="anyInvitationLetter" name="anyInvitationLetter" #anyInvitationLetter="ngModel"
                             [binary]="true" [(ngModel)]="operation.anyInvitationLetter"></p-checkbox>
-                        <label for="anyInvitationLetter" class="pl-3 mt-2">{{ '::OperationalInfo:Field:AnyInvitationLetter' | abpLocalization }}</label>
+                        <label for="anyInvitationLetter" class="pl-3 mt-2">{{
+                            '::OperationalInfo:Field:AnyInvitationLetter' | abpLocalization }}</label>
                     </div>
                 </div>
             </div>
@@ -394,4 +413,6 @@
 </p-dialog>
 
 <p-confirmDialog key="operationConfirm" [style]="{width: '450px'}" rejectLabel="{{ '::Reject' | abpLocalization }}"
-    acceptLabel="{{ '::Accept' | abpLocalization }}"></p-confirmDialog>
+    acceptLabel="{{ '::Accept' | abpLocalization }}" rejectButtonStyleClass="p-button-text p-button-danger"
+    acceptButtonStyleClass="p-button-text p-button-success"></p-confirmDialog>
+    

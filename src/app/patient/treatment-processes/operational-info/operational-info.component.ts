@@ -1,18 +1,19 @@
-import { Component, Injector, Input, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Injector, Input, Output, ViewEncapsulation } from '@angular/core';
 import { HospitalDto } from '@proxy/dto/hospital';
 import { HospitalConsultationDto } from '@proxy/dto/hospital-consultation';
 import { HospitalConsultationDocumentDto } from '@proxy/dto/hospital-consultation-document';
 import { HospitalResponseDto } from '@proxy/dto/hospital-response';
 import { HospitalResponseProcessDto } from '@proxy/dto/hospital-response-process';
-import { EntityEnum_OperationTypeEnum, EntityEnum_ProcessTypeEnum } from '@proxy/enum';
+import { EntityEnum_OperationStatusEnum, EntityEnum_OperationTypeEnum, EntityEnum_PatientDocumentStatusEnum, EntityEnum_ProcessTypeEnum } from '@proxy/enum';
 import { HospitalResponseService, OperationService } from '@proxy/service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { CommonService } from 'src/app/services/common.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
-import { OperationComponent } from './operation.component';
 import { PatientDto } from '@proxy/dto/patient';
 import { OperationDto } from '@proxy/dto/operation';
 import { BranchDto } from '@proxy/dto/branch';
+import { OperationComponent } from '../operation/operation.component';
+import { ProformaComponent } from '../proforma/proforma.component';
 
 @Component({
   selector: 'app-operational-info',
@@ -27,7 +28,6 @@ export class OperationalInfoComponent extends AppComponentBase {
 
   operations: OperationDto[] = [];
   selectedOperation: OperationDto;
-  operationDialog: boolean = false;
   operation: OperationDto;
   loading: boolean;
   totalRecords: number = 0;
@@ -48,8 +48,12 @@ export class OperationalInfoComponent extends AppComponentBase {
 
   public processTypeEnum = EntityEnum_ProcessTypeEnum;
   public operationTypeEnum = EntityEnum_OperationTypeEnum;
+  public patientDocumentStatusEnum = EntityEnum_PatientDocumentStatusEnum;
+  public operationStatusEnum = EntityEnum_OperationStatusEnum;
 
   ref: DynamicDialogRef;
+
+  @Output() onOperationChange: EventEmitter<any> = new EventEmitter();
 
   constructor(
     injector: Injector,
@@ -96,10 +100,9 @@ export class OperationalInfoComponent extends AppComponentBase {
       },
     });
 
-  }
-
-  hideOperationDialog() {
-    this.operationDialog = false;
+    this.ref.onClose.subscribe(() => {
+      this.fetchData();
+    });
   }
 
   onDisplayOperation(operation: OperationDto) {
@@ -133,6 +136,7 @@ export class OperationalInfoComponent extends AppComponentBase {
   openConsultation(consultation: HospitalConsultationDto) {
     this.hospitalConsultation = consultation;
     this.selectedHospitals = [consultation.hospitalId];
+    debugger;
     this.hospitalConsultationDocuments = this.hospitalConsultation.hospitalConsultationDocuments;
     this.displayConsultationDialog = true;
   }
@@ -166,6 +170,25 @@ export class OperationalInfoComponent extends AppComponentBase {
     this.anticipatedProcesses = [];
     this.anticipatedMaterials = [];
     this.displayHospitalResponseDialog = false;
+  }
+
+  onCreateProforma(operation: OperationDto) {
+    this.ref = this.dialogService.open(ProformaComponent, {
+      header: this.l('::Proforma:Title'),
+      width: '85vw',
+      contentStyle: { overflow: 'auto' },
+      baseZIndex: 10000,
+      maximizable: true,
+      data: {
+        operation: operation
+      },
+    });
+
+    this.ref.onClose.subscribe(() => {
+      this.fetchData();
+      this.selectedOperation = null;
+      this.onOperationChange.emit();
+    });
   }
 
 }

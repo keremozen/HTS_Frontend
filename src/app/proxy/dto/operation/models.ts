@@ -1,4 +1,4 @@
-import type { AuditedEntityWithUserDto } from '@abp/ng.core';
+import type { FullAuditedEntityWithUserDto } from '@abp/ng.core';
 import type { EntityEnum_OperationTypeEnum } from '../../enum/entity-enum-operation-type-enum.enum';
 import type { EntityEnum_OperationStatusEnum } from '../../enum/entity-enum-operation-status-enum.enum';
 import type { TreatmentTypeDto } from '../treatment-type/models';
@@ -9,7 +9,7 @@ import type { HospitalDto } from '../hospital/models';
 import type { PatientTreatmentProcessDto } from '../patient-treatment-process/models';
 import type { HospitalResponseDto, SaveHospitalResponseDto } from '../hospital-response/models';
 
-export interface OperationDto extends AuditedEntityWithUserDto<number, IdentityUserDto> {
+export interface OperationDto extends FullAuditedEntityWithUserDto<number, IdentityUserDto> {
   hospitalResponseId: number;
   travelDateToTurkey?: Date;
   treatmentDate?: Date;

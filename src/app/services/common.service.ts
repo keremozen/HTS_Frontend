@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { BranchDto } from "@proxy/dto/branch";
 import { CityDto } from "@proxy/dto/city";
 import { ContractedInstitutionDto } from "@proxy/dto/contracted-institution";
+import { CurrencyDto } from "@proxy/dto/currency";
 import { DocumentTypeDto } from "@proxy/dto/document-type";
 import { GenderDto } from "@proxy/dto/gender";
 import { HospitalDto } from "@proxy/dto/hospital";
@@ -9,7 +10,7 @@ import { NationalityDto } from "@proxy/dto/nationality";
 import { PatientAdmissionMethodDto } from "@proxy/dto/patient-admission-method";
 import { ProcessTypeDto } from "@proxy/dto/process-type";
 import { TreatmentTypeDto } from "@proxy/dto/treatment-type";
-import { BranchService, CityService, ContractedInstitutionService, DocumentTypeService, GenderService, HospitalService, LanguageService, NationalityService, PatientAdmissionMethodService, ProcessTypeService, TreatmentTypeService } from "@proxy/service";
+import { BranchService, CityService, ContractedInstitutionService, CurrencyService, DocumentTypeService, GenderService, HospitalService, LanguageService, NationalityService, PatientAdmissionMethodService, ProcessTypeService, TreatmentTypeService } from "@proxy/service";
 import { forkJoin } from "rxjs";
 
 @Injectable({
@@ -22,6 +23,7 @@ export class CommonService {
     public hospitalList: HospitalDto[] = [];
     public genderList: GenderDto[] = [];
     public cityList: CityDto[] = [];
+    public currencyList: CurrencyDto[] = [];
     public documentTypeList: DocumentTypeDto[] = [];
     public patientAdmissionMethodList: PatientAdmissionMethodDto[] = [];
     public branchList: BranchDto[] = [];
@@ -35,6 +37,7 @@ export class CommonService {
         private hospitalService: HospitalService,
         private genderService: GenderService,
         private cityService: CityService,
+        private currencyService: CurrencyService,
         private documentTypeService: DocumentTypeService,
         private patientAdmissionMethodService: PatientAdmissionMethodService,
         private branchService: BranchService,
@@ -52,6 +55,7 @@ export class CommonService {
                 this.hospitalService.getList(true),
                 this.genderService.getList(),
                 this.cityService.getList(),
+                this.currencyService.getList(),
                 this.documentTypeService.getList(true),
                 this.patientAdmissionMethodService.getList(true),
                 this.branchService.getList(true),
@@ -66,6 +70,7 @@ export class CommonService {
                         resHospitalList,
                         resGenderList,
                         resCityList,
+                        resCurrencyList,
                         resDocumentTypeList,
                         resPatientAdmissionMethodList,
                         resBranchList,
@@ -78,6 +83,7 @@ export class CommonService {
                         this.hospitalList = resHospitalList.items;
                         this.genderList = resGenderList.items;
                         this.cityList = resCityList.items;
+                        this.currencyList = resCurrencyList.items;
                         this.documentTypeList = resDocumentTypeList.items;
                         this.patientAdmissionMethodList = resPatientAdmissionMethodList.items;
                         this.branchList = resBranchList.items;

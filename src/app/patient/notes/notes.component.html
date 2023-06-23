@@ -34,15 +34,18 @@
             <td>
                 <div class="overflow cursor-pointer" [pTooltip]="note.note" tooltipStyleClass="wideTooltip"
                     tooltipPosition="bottom">{{note.note}}
-                    <p-tag severity="warning" value="{{ '::Revoked' | abpLocalization }}" [rounded]="true" styleClass="revokeTag" class="ml-3" *ngIf="note.patientNoteStatusId === patientNoteStatusEnum.Revoked"></p-tag>
+                    <p-tag severity="warning" value="{{ '::Revoked' | abpLocalization }}" [rounded]="true"
+                        styleClass="revokeTag" class="ml-3"
+                        *ngIf="note.patientNoteStatusId === patientNoteStatusEnum.Revoked"></p-tag>
                 </div>
-                    
+
             </td>
             <td>{{note.creator?.name + (note.creator?.surname ? (" " + note.creator?.surname) : "")}}</td>
             <td>{{note.creationTime | date: 'dd.MM.yyyy'}}</td>
             <td>
                 <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"
-                    (click)="revokeNote(note)" [disabled]="note.patientNoteStatusId === patientNoteStatusEnum.Revoked"></button>
+                    (click)="revokeNote(note)"
+                    [disabled]="note.patientNoteStatusId === patientNoteStatusEnum.Revoked"></button>
             </td>
         </tr>
     </ng-template>
@@ -82,4 +85,5 @@
 </p-dialog>
 
 <p-confirmDialog key="noteConfirm" [style]="{width: '450px'}" rejectLabel="{{ '::Reject' | abpLocalization }}"
-    acceptLabel="{{ '::Accept' | abpLocalization }}"></p-confirmDialog>
+    acceptLabel="{{ '::Accept' | abpLocalization }}" rejectButtonStyleClass="p-button-text p-button-danger"
+    acceptButtonStyleClass="p-button-text p-button-success"></p-confirmDialog>

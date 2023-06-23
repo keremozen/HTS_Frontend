@@ -17,7 +17,8 @@
                 <th pSortableColumn="name">{{ '::Admin:Nationality:Column:Name' | abpLocalization }} <p-sortIcon
                         field="name"></p-sortIcon></th>
                 <th pSortableColumn="phoneCode">{{ '::Admin:Nationality:Column:PhoneCode' | abpLocalization }}
-                    <p-sortIcon field="phoneCode"></p-sortIcon></th>
+                    <p-sortIcon field="phoneCode"></p-sortIcon>
+                </th>
                 <th class="w-8rem text-center">{{ '::Admin:Nationality:Column:IsActive' | abpLocalization }}</th>
                 <th class="w-8rem"></th>
             </tr>
@@ -88,4 +89,5 @@
     </p-footer>
 </p-dialog>
 <p-confirmDialog [style]="{width: '450px'}" rejectLabel="{{ '::Reject' | abpLocalization }}"
-    acceptLabel="{{ '::Accept' | abpLocalization }}"></p-confirmDialog>
+    acceptLabel="{{ '::Accept' | abpLocalization }}" rejectButtonStyleClass="p-button-text p-button-danger"
+    acceptButtonStyleClass="p-button-text p-button-success"></p-confirmDialog>

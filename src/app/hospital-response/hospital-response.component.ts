@@ -51,6 +51,8 @@ export class HospitalResponseComponent extends AppComponentBase {
   material: SaveHospitalResponseProcessWithDetailDto;
   materialDialog: boolean = false;
 
+  today = new Date();
+
   public hospitalResponseTypeEnum = EntityEnum_HospitalResponseTypeEnum;
   public processTypeEnum = EntityEnum_ProcessTypeEnum;
 

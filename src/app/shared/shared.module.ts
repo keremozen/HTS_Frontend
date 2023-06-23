@@ -36,9 +36,11 @@ import { TabMenuModule } from 'primeng/tabmenu';
 import { TabViewModule } from 'primeng/tabview';
 import { ListboxModule } from 'primeng/listbox';
 import { MessagesModule } from 'primeng/messages';
+import { MessageModule } from 'primeng/message';
 import { TagModule } from 'primeng/tag';
 import { ChartModule } from 'primeng/chart';
-import { DynamicDialogModule } from 'primeng/dynamicdialog'
+import { DynamicDialogModule } from 'primeng/dynamicdialog';
+import { ChipModule} from 'primeng/chip';
 
 /**************/
 
@@ -79,8 +81,10 @@ import { DynamicDialogModule } from 'primeng/dynamicdialog'
     TabViewModule,
     ListboxModule,
     MessagesModule,
+    MessageModule,
     TagModule,
-    ChartModule
+    ChartModule,
+    ChipModule
   ],
   exports: [
     CoreModule,
@@ -118,8 +122,10 @@ import { DynamicDialogModule } from 'primeng/dynamicdialog'
     TabViewModule,
     ListboxModule,
     MessagesModule,
+    MessageModule,
     TagModule,
-    ChartModule
+    ChartModule,
+    ChipModule
   ],
   providers: [ConfirmationService, MessageService]
 })

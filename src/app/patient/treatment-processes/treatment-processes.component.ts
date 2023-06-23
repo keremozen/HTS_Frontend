@@ -14,16 +14,15 @@ import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 export class TreatmentProcessesComponent extends AppComponentBase {
   @Input() patient: PatientDto;
   processes: PatientTreatmentProcessDto[] = [];
+  selectedProcess: PatientTreatmentProcessDto;
   processDialog: boolean = false;
   showCompletedRecords: boolean = false;
   completedRecordCount: number = 0;
   displayProcessDetail: boolean = false;
-  process: PatientTreatmentProcessDto;
   totalRecords: number = 0;
   doesHaveAnySalesMethodAndCompanionInfo: boolean = false;
   activeIndex = 0;
   salesAndCompanionInfo: SalesMethodAndCompanionInfoDto;
-
 
   constructor(
     injector: Injector,
@@ -62,30 +61,34 @@ export class TreatmentProcessesComponent extends AppComponentBase {
     });
   }
 
-  onDisplayTreatmentProcessDetail(code: string) {
-    this.activeIndex = 0;
-    this.displayProcessDetail = false;
-    this.process = this.processes.find(p=>p.treatmentCode == code);
-    this.salesAndCompanionInfoService.getByPatientTreatmentProcessId(this.process.id as unknown as number).subscribe({
-      next: (res) => {
-        this.salesAndCompanionInfo = res as SalesMethodAndCompanionInfoDto;
-        this.doesHaveAnySalesMethodAndCompanionInfo = (res != null || res != undefined);
-      },
-      complete: ()=> {
-        this.displayProcessDetail = true;
-      }
-    });
+  onDisplayTreatmentProcessDetail() {
+    if (this.selectedProcess) {
+      this.activeIndex = 0;
+      this.displayProcessDetail = false;
+      this.salesAndCompanionInfoService.getByPatientTreatmentProcessId(this.selectedProcess.id as unknown as number).subscribe({
+        next: (res) => {
+          this.salesAndCompanionInfo = res as SalesMethodAndCompanionInfoDto;
+          this.doesHaveAnySalesMethodAndCompanionInfo = (res != null || res != undefined);
+        },
+        complete: () => {
+          this.displayProcessDetail = true;
+        }
+      });
+    }
+    else {
+      this.displayProcessDetail = false;
+    }
   }
 
   onSaveSalesInfoAndCompanionInfo() {
     this.doesHaveAnySalesMethodAndCompanionInfo = true;
   }
 
-  deleteProcess(process: any) {
-
+  consultationChanged(event: any) {
+    this.fetchData();
   }
 
-  consultationChanged(event: any) {
+  operationChanged(event: any) {
     this.fetchData();
   }
 }

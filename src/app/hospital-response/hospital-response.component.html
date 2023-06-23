@@ -120,7 +120,7 @@
                         <div class="col">
                             <p-calendar id="calTreatmentDate" name="calTreatmentDate" #calTreatmentDate="ngModel"
                                 [(ngModel)]="hospitalResponse.possibleTreatmentDate" [showIcon]="true"
-                                inputStyleClass="text-sm" dateFormat="dd.mm.yy"></p-calendar>
+                                inputStyleClass="text-sm" dateFormat="dd.mm.yy" [minDate]="today"></p-calendar>
                         </div>
                     </div>
                     <div class="field grid">
@@ -132,7 +132,7 @@
                             </font></label>
                         <div class="col">
                             <p-inputNumber id="numberOfHospitalizationDays" name="numberOfHospitalizationDays"
-                                #numberOfHospitalizationDays="ngModel"
+                                #numberOfHospitalizationDays="ngModel" [min]="0"
                                 [required]="selectedHospitalResponseType == hospitalResponseTypeEnum.SuitableForTreatment"
                                 [(ngModel)]="hospitalResponse.hospitalizationNumber"></p-inputNumber>
                         </div>
@@ -167,7 +167,8 @@
                     </p-toolbar>
 
                     <p-table #dt [value]="anticipatedProcesses" [rows]="5" styleClass="pt-3" [paginator]="true"
-                        [rowHover]="true" [loading]="loading" currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
+                        [rowHover]="true" [loading]="loading"
+                        currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
                         [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
                         <ng-template pTemplate="header">
                             <tr>
@@ -341,7 +342,7 @@
     (onHide)="hideMaterialDialog()">
     <form #materialForm="ngForm">
         <div *ngIf="material">
-           <div class="field">
+            <div class="field">
                 <label for="ddlProcessList">{{ '::HospitalResponse:Material:Column:Name' | abpLocalization
                     }}&nbsp;<font style="color:red">*
                     </font></label>
@@ -388,4 +389,6 @@
 </p-dialog>
 
 <p-confirmDialog key="hospitalResponseConfirm" [style]="{width: '450px'}"
-    rejectLabel="{{ '::Reject' | abpLocalization }}" acceptLabel="{{ '::Accept' | abpLocalization }}"></p-confirmDialog>
+    rejectLabel="{{ '::Reject' | abpLocalization }}" acceptLabel="{{ '::Accept' | abpLocalization }}"
+    rejectButtonStyleClass="p-button-text p-button-danger"
+    acceptButtonStyleClass="p-button-text p-button-success"></p-confirmDialog>

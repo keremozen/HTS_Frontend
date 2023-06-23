@@ -35,7 +35,6 @@ import {
   CanvasRenderer
 } from 'echarts/renderers';
 import Marcaron from './shared/common/marcaron';
-import dateFormat from "dateformat";
 import { CommonService } from './services/common.service';
 
 echarts.use(
@@ -75,4 +74,15 @@ echarts.registerTheme('macarons', Marcaron);
   bootstrap: [AppComponent],
 })
 export class AppModule {
+  constructor() {
+    this.overrideDate();
+  }
+
+  overrideDate() {
+    Date.prototype.toJSON = function(){
+      const hoursDiff = this.getHours() - this.getTimezoneOffset() / 60;
+      this.setHours(hoursDiff);
+      return this.toISOString();
+  };
+  }
 }

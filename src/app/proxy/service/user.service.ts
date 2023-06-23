@@ -24,6 +24,22 @@ export class UserService {
       params: { roleName },
     },
     { apiName: this.apiName });
+  
+
+  getInterpreterList = () =>
+    this.restService.request<any, IdentityUserDto[]>({
+      method: 'GET',
+      url: '/api/app/user/interpreter-list',
+    },
+    { apiName: this.apiName });
+  
+
+  getUhbStaffList = () =>
+    this.restService.request<any, IdentityUserDto[]>({
+      method: 'GET',
+      url: '/api/app/user/uhb-staff-list',
+    },
+    { apiName: this.apiName });
 
   constructor(private restService: RestService) {}
 }
