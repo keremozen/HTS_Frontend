@@ -59,7 +59,7 @@
                 <button pButton pRipple label="{{ '::HospitalConsultation:Button:Answer' | abpLocalization }}"
                     class="p-button-warning ml-2" (click)="openHospitalResponse(operation)"></button>
                 <button pButton pRipple class="p-button-success ml-2" label="{{ '::OperationalInfo:Button:CreateProforma' | abpLocalization }}"
-                    (click)="onCreateProforma(operation)" [disabled]="operation.operationStatusId != operationStatusEnum?.PriceExpecting && operation.operationStatusId != operationStatusEnum?.MFBRejectedPriceExpecting"></button>
+                    (click)="onCreateProforma(operation)" [disabled]="!hasPriceExceptingOperation"></button>
             </td>
         </tr>
     </ng-template>

@@ -34,6 +34,7 @@ export class OperationalInfoComponent extends AppComponentBase {
   hospitalList: HospitalDto[] = [];
   branchList: BranchDto[] = [];
   branchListText: string;
+  hasPriceExceptingOperation: boolean = false;
 
   displayConsultationDialog: boolean;
   hospitalConsultation: HospitalConsultationDto;
@@ -77,6 +78,7 @@ export class OperationalInfoComponent extends AppComponentBase {
       next: (resOperationList) => {
         this.operations = resOperationList.items;
         this.totalRecords = resOperationList.totalCount;
+        this.hasPriceExceptingOperation = this.operations.some(o=>o.operationStatusId == this.operationStatusEnum.PriceExpecting ||o.operationStatusId == this.operationStatusEnum.MFBRejectedPriceExpecting)
       },
       error: () => {
         this.loading = false;

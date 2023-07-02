@@ -14,7 +14,8 @@ import { BranchComponent } from './branch/branch.component';
 import { TreatmentTypeComponent } from './treatment-type/treatment-type.component';
 import { ProcessTypeComponent } from './process-type/process-type.component';
 import { ProcessComponent } from './process/process.component';
-import { RejectReasonComponent } from './rejectReason/rejectReason.component';
+import { RejectReasonComponent } from './reject-reason/reject-reason.component';
+import { PaymentReasonComponent } from './payment-reason/payment-reason.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { RejectReasonComponent } from './rejectReason/rejectReason.component';
     TreatmentTypeComponent,
     ProcessTypeComponent,
     ProcessComponent,
-    RejectReasonComponent
+    RejectReasonComponent,
+    PaymentReasonComponent
   ],
   imports: [
     SharedModule,

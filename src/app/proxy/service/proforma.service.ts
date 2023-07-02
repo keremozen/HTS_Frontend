@@ -1,6 +1,6 @@
 import { RestService } from '@abp/ng.core';
 import { Injectable } from '@angular/core';
-import type { ProformaDto, ProformaListDto, RejectProformaDto, SaveProformaDto } from '../dto/proforma/models';
+import type { ProformaDto, ProformaListDto, ProformaPricingListDto, RejectProformaDto, SaveProformaDto } from '../dto/proforma/models';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +13,14 @@ export class ProformaService {
     this.restService.request<any, void>({
       method: 'POST',
       url: `/api/app/proforma/${id}/approve-mFB`,
+    },
+    { apiName: this.apiName });
+  
+
+  approvePatient = (id: number) =>
+    this.restService.request<any, void>({
+      method: 'POST',
+      url: `/api/app/proforma/${id}/approve-patient`,
     },
     { apiName: this.apiName });
   
@@ -33,10 +41,27 @@ export class ProformaService {
     { apiName: this.apiName });
   
 
+  getPricingListByPTPId = (ptpId: number) =>
+    this.restService.request<any, ProformaPricingListDto[]>({
+      method: 'GET',
+      url: `/api/app/proforma/pricing-list-by-pTPId/${ptpId}`,
+    },
+    { apiName: this.apiName });
+  
+
   rejectMFB = (rejectProforma: RejectProformaDto) =>
     this.restService.request<any, void>({
       method: 'POST',
       url: '/api/app/proforma/reject-mFB',
+      body: rejectProforma,
+    },
+    { apiName: this.apiName });
+  
+
+  rejectPatient = (rejectProforma: RejectProformaDto) =>
+    this.restService.request<any, void>({
+      method: 'POST',
+      url: '/api/app/proforma/reject-patient',
       body: rejectProforma,
     },
     { apiName: this.apiName });
@@ -55,6 +80,14 @@ export class ProformaService {
     this.restService.request<any, void>({
       method: 'POST',
       url: `/api/app/proforma/${id}/send`,
+    },
+    { apiName: this.apiName });
+  
+
+  sendToPatientById = (id: number) =>
+    this.restService.request<any, void>({
+      method: 'POST',
+      url: `/api/app/proforma/${id}/send-to-patient`,
     },
     { apiName: this.apiName });
 

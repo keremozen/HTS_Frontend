@@ -104,7 +104,6 @@ export class ProformaComponent extends AppComponentBase {
               this.saveProforma.operationId = this.selectedProforma.operationId;
               this.saveProforma.proformaCode = this.selectedProforma.proformaCode;
               this.saveProforma.proformaStatusId = this.selectedProforma.proformaStatusId;
-              this.saveProforma.rejectReason = this.selectedProforma.rejectReason;
               this.saveProforma.totalProformaPrice = this.selectedProforma.totalProformaPrice;
               this.saveProforma.tpDescription = this.selectedProforma.tpDescription;
               this.saveProforma.version = this.selectedProforma.version;

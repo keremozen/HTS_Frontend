@@ -13,6 +13,104 @@
                 {{'::Quotation:FieldLegend:Quotation' |
                 abpLocalization}}
             </legend>
+
+            <p-table #dt [value]="proformaList" [rows]="5" styleClass="pt-3" [paginator]="true" [rowHover]="true"
+                [loading]="loading"
+                currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
+                [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="proformaCode">{{ '::Quotation:ProformaTable:Column:ProformaCode' |
+                            abpLocalization }}
+                            <p-sortIcon field="proformaCode"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="creator.name">{{
+                            '::Quotation:ProformaTable:Column:CreatedBy' |
+                            abpLocalization }}
+                            <p-sortIcon field="creator.name"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="creationTime">{{
+                            '::Quotation:ProformaTable:Column:Created' |
+                            abpLocalization }}
+                            <p-sortIcon field="creationTime"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="proformaStatusId">{{ '::Quotation:ProformaTable:Column:ProformaStatus' |
+                            abpLocalization }} <p-sortIcon field="proformaStatusId"></p-sortIcon></th>
+                        <th>
+                            {{ '::Quotation:ProformaTable:Column:MFBApproval' | abpLocalization }}
+                        </th>
+                        <th>
+                            {{ '::Quotation:ProformaTable:Column:PatientApproval' | abpLocalization }}
+                        </th>
+                        <th>
+                            {{ '::Quotation:ProformaTable:Column:Receipt' | abpLocalization }}
+                        </th>
+                        <th>
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-proforma>
+                    <tr>
+                        <td><div (click)="onProformaCodeClick(proforma)">{{proforma.proformaCode}}</div></td>
+                        <td>{{proforma.creator?.name + (proforma.creator?.surname ? (" " +
+                            proforma.creator?.surname) :
+                            "")}}</td>
+                        <td>{{proforma.creationTime | date: 'dd.MM.yyyy HH:mm'}}</td>
+                        <td>{{proforma.proformaStatus.name}}</td>
+                        <td class="text-center">
+                            <i class="pi"
+                                [ngClass]="{ 'text-green-500 pi-check-circle': proforma.proformaStatusId >= proformaStatusEnum.WillBeTransferedToPatient, 'text-red-500 pi-times-circle': proforma.proformaStatusId < proformaStatusEnum.WillBeTransferedToPatient }"></i>
+                        </td>
+                        <td class="text-center">
+                            <i class="pi"
+                                [ngClass]="{ 'text-green-500 pi-check-circle': proforma.proformaStatusId >= proformaStatusEnum.WaitingForPayment, 'text-red-500 pi-times-circle': proforma.proformaStatusId < proformaStatusEnum.WaitingForPayment }"></i>
+                        </td>
+                        <td class="text-center">
+                            <i class="pi"
+                                [ngClass]="{ 'text-green-500 pi-check-circle': proforma.proformaStatusId == proformaStatusEnum.PaymentCompleted, 'text-red-500 pi-times-circle': proforma.proformaStatusId != proformaStatusEnum.PaymentCompleted }"></i>
+                        </td>
+                        <td class="flex">
+                            <p-button pTooltip="{{ '::Quotation:ProformaTable:Button:SendToPatient' | abpLocalization }}"
+                                icon="pi pi-send" styleClass="p-button" (click)="onSendToPatientClick(proforma)"
+                                *ngIf="proforma.proformaStatusId == proformaStatusEnum.WillBeTransferedToPatient"></p-button>
+                            <p-button pTooltip="{{ '::Quotation:ProformaTable:Button:Approve' | abpLocalization }}"
+                                icon="pi pi-check" styleClass="p-button-success" (click)="onApproveClick(proforma)"
+                                *ngIf="proforma.proformaStatusId == proformaStatusEnum.MFBWaitingApproval || proforma.proformaStatusId == proformaStatusEnum.WaitingForPatientApproval"></p-button>
+                            <p-button pTooltip="{{ '::Quotation:ProformaTable:Button:Reject' | abpLocalization }}"
+                                icon="pi pi-times" styleClass="p-button-danger ml-1" (click)="onRejectClick(proforma)"
+                                *ngIf="proforma.proformaStatusId == proformaStatusEnum.MFBWaitingApproval || proforma.proformaStatusId == proformaStatusEnum.WaitingForPatientApproval"></p-button>
+                            <p-button pTooltip="{{ '::Quotation:ProformaTable:Button:Payment' | abpLocalization }}"
+                                styleClass="p-button" (click)="onPaymentClick(proforma)"
+                                *ngIf="proforma.proformaStatusId == proformaStatusEnum.WaitingForPayment"></p-button>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <div class="m-3">
+                        {{ '::Table:EmptyMessage' | abpLocalization }}
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="summary">
+                    <div class="flex align-items-center justify-content-between" *ngIf="proformaList.length > 0">
+                        {{ '::Table:Summary' | abpLocalization: proformaList.length }}
+                    </div>
+                </ng-template>
+            </p-table>
+
+        </fieldset>
+    </div>
+    <div class="col-12">
+        <fieldset class="border pl-3 pr-3 pt-2 pb-3 m-2 quotationFieldSet" style="height:100%;">
+            <legend class="float-none w-auto pl-3 pr-3 text-sm quotationFieldSetlegend">
+                {{'::Quotation:FieldLegend:Receipt' |
+                abpLocalization}}
+
+            </legend>
         </fieldset>
     </div>
 </div>
+
+<p-confirmDialog key="quotationConfirm" [style]="{width: '450px'}"
+    rejectLabel="{{ '::Reject' | abpLocalization }}" acceptLabel="{{ '::Accept' | abpLocalization }}"
+    rejectButtonStyleClass="p-button-text p-button-danger"
+    acceptButtonStyleClass="p-button-text p-button-success"></p-confirmDialog>

@@ -5,9 +5,9 @@ import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 
 @Component({
-    selector: 'app-rejectReason',
-    templateUrl: './rejectReason.component.html',
-    styleUrls: ['./rejectReason.component.scss'],
+    selector: 'app-reject-reason',
+    templateUrl: './reject-reason.component.html',
+    styleUrls: ['./reject-reason.component.scss'],
     styles: [`
         :host ::ng-deep .p-dialog .product-image {
             width: 150px;

@@ -91,4 +91,8 @@ export class TreatmentProcessesComponent extends AppComponentBase {
   operationChanged(event: any) {
     this.fetchData();
   }
+
+  quotationChanged(event: any) {
+    this.fetchData();
+  }
 }

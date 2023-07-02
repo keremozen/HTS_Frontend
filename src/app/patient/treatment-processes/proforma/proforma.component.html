@@ -372,7 +372,7 @@
                 <div class="text-right">
                     <button pButton pRipple label="{{ '::Proforma:Button:Save' | abpLocalization }}"
                         class="p-button-success ml-2 mt-4" (click)="onSaveProforma()"></button>
-                    <button pButton pRipple class="p-button-success ml-2 mt-4"
+                    <button pButton pRipple class="p-button-success ml-2 mt-4" [disabled]="!this.selectedProformaId"
                         label="{{ '::Proforma:Button:Send' | abpLocalization }}" (click)="onSendProforma()"></button>
                 </div>
             </div>
