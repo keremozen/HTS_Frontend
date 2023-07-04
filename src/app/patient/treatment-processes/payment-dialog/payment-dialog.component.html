@@ -1,0 +1,283 @@
+<div *ngIf="payment">
+    <form #paymentForm="ngForm">
+        <div class="grid">
+            <div class="col-4">
+                <div class="field grid">
+                    <label for="hospital" class="col-12 mb-2 md:col-3 md:mb-0">
+                        {{'::PaymentDialog:Field:Hospital' |
+                        abpLocalization}}</label>
+                    <div class="col">
+                        <p-dropdown id="hospital" name="hospital" #hospital="ngModel" [options]="hospitalList"
+                            [(ngModel)]="selectedHospitalId" placeholder="{{ '::Select' | abpLocalization }}"
+                            [style]="{'width':'100%'}" required="true" styleClass="filterDropDown" optionLabel="name"
+                            optionValue="id" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
+                    </div>
+                </div>
+                <div class="field grid">
+                    <label for="txtProformaNo" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                        '::PaymentDialog:Field:ProformaNo' | abpLocalization }}</label>
+                    <div class="col-12 md:col-9">
+                        <input id="txtProformaNo" name="txtProformaNo" pInputText type="text" #txtProformaNo="ngModel"
+                            [(ngModel)]="proformaNo"
+                            class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                    </div>
+                </div>
+                <div class="field grid">
+                    <label for="txtOrderNo" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::PaymentDialog:Field:OrderNo'
+                        | abpLocalization }}</label>
+                    <div class="col-12 md:col-9">
+                        <input id="txtOrderNo" name="txtOrderNo" pInputText type="text" [disabled]="true"
+                            class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                    </div>
+                </div>
+                <div class="field grid">
+                    <label for="txtPatientName" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                        '::PaymentDialog:Field:PatientName' | abpLocalization }}</label>
+                    <div class="col-12 md:col-9">
+                        <input id="txtPatientName" name="txtPatientName" pInputText type="text" [disabled]="true"
+                            #txtPatientName="ngModel" [(ngModel)]="patientName"
+                            class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                    </div>
+                </div>
+                <div class="field grid">
+                    <label for="txtCollectorName" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                        '::PaymentDialog:Field:CollectorName' | abpLocalization }}</label>
+                    <div class="col-12 md:col-9">
+                        <input id="txtCollectorName" name="txtCollectorName" pInputText type="text" [disabled]="true"
+                            #txtCollectorName="ngModel" [(ngModel)]="collectorName"
+                            class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                    </div>
+                </div>
+            </div>
+            <div class="col-4 pl-4">
+                <div class="field grid">
+                    <label for="txtPayerName" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::PaymentDialog:Field:PayerName'
+                        | abpLocalization }}</label>
+                    <div class="col-12 md:col-9">
+                        <input id="txtPayerName" name="txtPayerName" pInputText type="text" #txtPayerName="ngModel"
+                            [(ngModel)]="payment.processingUserNameSurname"
+                            class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                    </div>
+                </div>
+                <div class="field grid">
+                    <label for="ddlPaymentReason"
+                        class="col-12 mb-2 md:col-3 md:mb-0">{{'::PaymentDialog:Field:PaymentReason' |
+                        abpLocalization}}</label>
+                    <div class="col">
+                        <p-dropdown id="ddlPaymentReason" name="ddlPaymentReason" #ddlPaymentReason="ngModel"
+                            [options]="paymentReasonList" [(ngModel)]="payment.paymentReasonId"
+                            placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}" required="true"
+                            styleClass="filterDropDown" optionLabel="name" optionValue="id"
+                            emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
+                    </div>
+                </div>
+                <div class="field grid">
+                    <label for="txtOperationNo" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                        '::PaymentDialog:Field:OperationNo'
+                        | abpLocalization }}</label>
+                    <div class="col-12 md:col-9">
+                        <input id="txtOperationNo" name="txtOperationNo" pInputText type="text"
+                            #txtOperationNo="ngModel" [(ngModel)]="payment.processingNumber"
+                            class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                    </div>
+                </div>
+                <div class="field grid">
+                    <label for="txtFileNo" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::PaymentDialog:Field:FileNo'
+                        | abpLocalization }}</label>
+                    <div class="col-12 md:col-9">
+                        <input id="txtFileNo" name="txtFileNo" pInputText type="text" #txtFileNo="ngModel"
+                            [(ngModel)]="payment.fileNumber"
+                            class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                    </div>
+                </div>
+            </div>
+            <div class="col-4 pl-4">
+                <div class="field grid">
+                    <label for="txtPaymentDate" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                        '::PaymentDialog:Field:PaymentDate'
+                        | abpLocalization }}</label>
+                    <div class="col-12 md:col-9">
+                        <input id="txtPaymentDate" name="txtPaymentDate" pInputText type="text" [disabled]="true"
+                            #txtPaymentDate="ngModel" [(ngModel)]="paymentDate"
+                            class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                    </div>
+                </div>
+                <div class="field grid p-2 pt-0">
+                    <textarea rows="6" pInputText id="description" name="description" #description="ngModel"
+                        [placeholder]="'::PaymentDialog:Field:DescriptionPlaceholder'|abpLocalization"
+                        [(ngModel)]="payment.description" required class="col-12 p-2"></textarea>
+                </div>
+            </div>
+            <div class="col-12">
+                <p-toolbar styleClass="customToolbar">
+                    <div class="p-toolbar-group-end p-0">
+                        <button pButton pRipple
+                            label="{{ '::PaymentDialog:PaymentItemTable:AddItem' | abpLocalization }}" icon="pi pi-plus"
+                            class="p-button-success mr-2" (click)="newPaymentItem()"></button>
+                    </div>
+                </p-toolbar>
+                <p-table #dt [value]="payment.paymentItems" [rows]="5" styleClass="pt-3" [paginator]="true"
+                    [rowHover]="true" [loading]="loading"
+                    currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
+                    [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>{{ '::PaymentDialog:PaymentItemTable:Column:Order' | abpLocalization }}
+                            </th>
+                            <th pSortableColumn="paymentKindId">{{
+                                '::PaymentDialog:PaymentItemTable:Column:PaymentKind'
+                                |
+                                abpLocalization }}
+                                <p-sortIcon field="paymentKindId"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="posApproveCode">{{
+                                '::PaymentDialog:PaymentItemTable:Column:PosApprovalCode'
+                                |
+                                abpLocalization }}
+                                <p-sortIcon field="posApproveCode"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="bank">{{
+                                '::PaymentDialog:PaymentItemTable:Column:Bank'
+                                |
+                                abpLocalization }}
+                                <p-sortIcon field="bank"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="queryNo">{{
+                                '::PaymentDialog:PaymentItemTable:Column:QueryNo'
+                                |
+                                abpLocalization }}
+                                <p-sortIcon field="queryNo"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="currency">{{
+                                '::PaymentDialog:PaymentItemTable:Column:Currency'
+                                |
+                                abpLocalization }}
+                                <p-sortIcon field="currency"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="price">{{
+                                '::PaymentDialog:PaymentItemTable:Column:Amount'
+                                |
+                                abpLocalization }}
+                                <p-sortIcon field="price"></p-sortIcon>
+                            </th>
+                            <th class="w-2rem"></th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-paymentItem>
+                        <tr>
+                            <td>{{paymentItem.rowNumber}}</td>
+                            <td>{{paymentItem.paymentKind?.name}}</td>
+                            <td>{{paymentItem.posApproveCode ?? '-'}}</td>
+                            <td>{{paymentItem.bank ?? '-'}}</td>
+                            <td>{{paymentItem.queryNo ?? '-'}}</td>
+                            <td>{{paymentItem.currency?.name}}</td>
+                            <td>{{paymentItem.price | currency: paymentItem.currencyCode:'symbol':'0.2-2'}}</td>
+                            <td>
+                                <button pButton pRipple icon="pi pi-trash" (click)="deletePaymentItem(paymentItem)"
+                                    class="p-button-rounded p-button-warning"></button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <div class="m-3">
+                            {{ '::Table:EmptyMessage' | abpLocalization }}
+                        </div>
+                    </ng-template>
+                    <ng-template pTemplate="summary">
+                        <div class="flex align-items-center justify-content-between"
+                            *ngIf="payment.paymentItems?.length > 0">
+                            {{ '::Table:Summary' | abpLocalization: payment.paymentItems?.length }}
+                        </div>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </form>
+</div>
+
+<p-dialog [(visible)]="paymentItemDialog" [style]="{width: '30vw'}"
+    header="{{ '::PaymentDialog:PaymentItemDialog:Title' | abpLocalization }}" [modal]="true" styleClass="p-fluid"
+    (onHide)="hidePaymentItemDialog()">
+    <form #paymentItemForm="ngForm">
+        <div *ngIf="paymentItem">
+            <div class="field">
+                <label for="ddlPaymentKind">{{ '::PaymentDialog:PaymentItemTable:Column:PaymentKind' | abpLocalization
+                    }}&nbsp;<font style="color:red">*
+                    </font></label>
+                <p-dropdown id="ddlPaymentKind" name="ddlPaymentKind" #ddlPaymentKind="ngModel"
+                    [options]="paymentKindList" [(ngModel)]="paymentItem.paymentKindId"
+                    placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
+                    styleClass="filterDropDown" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" required
+                    appendTo="body" optionLabel="name" optionValue="id">
+                </p-dropdown>
+                <small class="p-error" *ngIf="!(ddlPaymentKind.valid || ddlPaymentKind.pristine)">{{
+                    '::Message:RequiredField' |
+                    abpLocalization
+                    }}</small>
+            </div>
+            <div class="field">
+                <label for="posApproveCode">{{ '::PaymentDialog:PaymentItemTable:Column:PosApprovalCode' |
+                    abpLocalization
+                    }}</label>
+                <input id="posApproveCode" name="posApproveCode" pInputText type="text" #posApproveCode="ngModel"
+                    [(ngModel)]="paymentItem.posApproveCode"
+                    class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+            </div>
+            <div class="field">
+                <label for="bank">{{ '::PaymentDialog:PaymentItemTable:Column:Bank' |
+                    abpLocalization
+                    }}</label>
+                <input id="bank" name="bank" pInputText type="text" #bank="ngModel" [(ngModel)]="paymentItem.bank"
+                    class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+            </div>
+            <div class="field">
+                <label for="queryNo">{{ '::PaymentDialog:PaymentItemTable:Column:QueryNo' |
+                    abpLocalization
+                    }}</label>
+                <input id="queryNo" name="queryNo" pInputText type="text" #queryNo="ngModel"
+                    [(ngModel)]="paymentItem.queryNo"
+                    class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+
+            </div>
+            <div class="formgrid grid">
+                <div class="field col">
+                    <label for="ddlCurrency">{{ '::PaymentDialog:PaymentItemTable:Column:Currency' | abpLocalization
+                        }}&nbsp;<font style="color:red">*
+                        </font></label>
+                    <p-dropdown id="ddlCurrency" name="ddlCurrency" #ddlCurrency="ngModel" [options]="currencyList"
+                        [(ngModel)]="paymentItem.currencyId" placeholder="{{ '::Select' | abpLocalization }}"
+                        [style]="{'width':'100%'}" styleClass="filterDropDown" appendTo="body"
+                        emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" required optionLabel="name"
+                        optionValue="id">
+                    </p-dropdown>
+                    <small class="p-error" *ngIf="!(ddlCurrency.valid || ddlCurrency.pristine)">{{
+                        '::Message:RequiredField' |
+                        abpLocalization
+                        }}</small>
+                </div>
+                <div class="field col">
+                    <label for="amount">{{ '::PaymentDialog:PaymentItemTable:Column:Amount' |
+                        abpLocalization
+                        }}&nbsp;<font style="color:red">*
+                        </font></label>
+                    <p-inputNumber id="amount" name="amount" #amount="ngModel" [(ngModel)]="paymentItem.price"
+                        required></p-inputNumber>
+                    <small class="p-error" *ngIf="!(amount.valid || amount.pristine)">{{
+                        '::Message:RequiredField' |
+                        abpLocalization
+                        }}</small>
+                </div>
+            </div>
+        </div>
+    </form>
+    <p-footer>
+        <button pButton pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" class="p-button-text"
+            (click)="hidePaymentItemDialog()"></button>
+        <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" class="p-button-text"
+            (click)="savePaymentItem()" [disabled]="!(paymentItemForm.valid)"></button>
+    </p-footer>
+</p-dialog>
+
+<p-confirmDialog key="operationConfirm" [style]="{width: '450px'}" rejectLabel="{{ '::Reject' | abpLocalization }}"
+    acceptLabel="{{ '::Accept' | abpLocalization }}" rejectButtonStyleClass="p-button-text p-button-danger"
+    acceptButtonStyleClass="p-button-text p-button-success"></p-confirmDialog>

@@ -25,6 +25,7 @@ export * from './patient-treatment-process.service';
 export * from './patient.service';
 export * from './payment-kind.service';
 export * from './payment-reason.service';
+export * from './payment.service';
 export * from './process-cost.service';
 export * from './process-relation.service';
 export * from './process-type.service';

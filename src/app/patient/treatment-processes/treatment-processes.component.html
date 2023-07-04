@@ -94,7 +94,7 @@
                 <span>{{'::TreatmentProcess:Step:ProcessQuotationRevenue'|abpLocalization}}</span>
             </ng-template>
             <ng-template pTemplate="content">
-                <app-quotation [patientTreatmentId]="selectedProcess?.id" (onQuotationChange)="quotationChanged($event)"></app-quotation>
+                <app-quotation [patientTreatmentId]="selectedProcess?.id" [patient]="patient" (onQuotationChange)="quotationChanged($event)"></app-quotation>
             </ng-template>
         </p-tabPanel>
     </p-tabView>

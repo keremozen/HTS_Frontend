@@ -8,7 +8,7 @@
                     [(ngModel)]="saveProforma.currencyId" placeholder="{{ '::Select' | abpLocalization }}"
                     [style]="{'width':'100px'}" styleClass="filterDropDown" optionLabel="name" optionValue="id"
                     appendTo="body" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
-                    (onChange)="onCurrencyChange()"></p-dropdown>
+                    (onChange)="onCurrencyChange()" [disabled]="isDisabled"></p-dropdown>
                 <p-chip *ngIf="saveProforma.exchangeRate && saveProforma.exchangeRate != 1" class="ml-3">
                     <div class="p-2">
                         <i class="fas fa-lira-sign mr-1"></i>{{saveProforma.exchangeRate}}
@@ -37,9 +37,9 @@
     </div>
     <div class="col-3 align-self-center">
         <p-message severity="error" text="Proforma Kaydı Oluşmamıştır" *ngIf="proformaList.length == 0"></p-message>
-        <p-dropdown *ngIf="proformaList.length > 0" id="ddlProformaList" name="ddlProformaList" #ddlProformaList="ngModel"
-            [options]="proformaList" [(ngModel)]="selectedProformaId" [style]="{'width':'100%'}" optionValue="id"
-            optionLabel="name" styleClass="filterDropDown" appendTo="body">
+        <p-dropdown *ngIf="proformaList.length > 0" id="ddlProformaList" name="ddlProformaList"
+            #ddlProformaList="ngModel" [options]="proformaList" [(ngModel)]="selectedProformaId"
+            [style]="{'width':'100%'}" optionValue="id" optionLabel="name" styleClass="filterDropDown" appendTo="body">
         </p-dropdown>
     </div>
     <div class="col-12 mt-3">
@@ -48,7 +48,7 @@
                 {{'::Proforma:Field:TreatmentItems' |
                 abpLocalization}}
             </legend>
-            <p-toolbar styleClass="customToolbar">
+            <p-toolbar styleClass="customToolbar" *ngIf="!isDisabled">
                 <div class="p-toolbar-group-start">
                 </div>
                 <div class="p-toolbar-group-end p-0">
@@ -116,7 +116,7 @@
                             <p-cellEditor>
                                 <ng-template pTemplate="input">
                                     <p-inputNumber size="3" suffix="%" [max]="999" [min]="-999"
-                                        [(ngModel)]="item.change"> </p-inputNumber>
+                                        [(ngModel)]="item.change"></p-inputNumber>
                                 </ng-template>
                                 <ng-template pTemplate="output">
                                     {{ item.change }} %
@@ -150,8 +150,8 @@
                     </legend>
                     <div *ngFor="let service of saveAdditionalServiceList" class="field-checkbox">
                         <p-checkbox name="additionalServiceGroup" [value]="service.additionalServiceId"
-                            [(ngModel)]="selectedAdditionalServices"
-                            [inputId]="service.additionalServiceId"></p-checkbox>
+                            [(ngModel)]="selectedAdditionalServices" [inputId]="service.additionalServiceId"
+                            [disabled]="isDisabled"></p-checkbox>
                         <label [for]="service.additionalServiceId">{{ service.additionalService.name }}</label>
 
                         <div class="flex col grid-nogutter ml-6 p-0"
@@ -162,7 +162,8 @@
                                     abpLocalization }}&nbsp;<font style="color:red">*</font></label>
                                 <div class="col-9 p-0">
                                     <p-inputNumber id="dayCount" name="dayCount" #dayCount="ngModel" [size]="2"
-                                        [min]="1" required [(ngModel)]="service.dayCount"></p-inputNumber>
+                                        [min]="1" required [(ngModel)]="service.dayCount"
+                                        [disabled]="isDisabled"></p-inputNumber>
                                 </div>
                             </div>
                             <div class="flex col-6 p-0" *ngIf="service.additionalService.roomType">
@@ -174,8 +175,8 @@
                                         [options]="roomTypeList" [(ngModel)]="service.roomTypeId"
                                         placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
                                         appendTo="body" optionLabel="key" optionValue="value"
-                                        emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" required
-                                        appendTo="body">
+                                        emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" required appendTo="body"
+                                        [disabled]="isDisabled">
                                     </p-dropdown>
                                 </div>
                             </div>
@@ -185,7 +186,8 @@
                                     abpLocalization }}&nbsp;<font style="color:red">*</font></label>
                                 <div class="col-9 p-0">
                                     <p-inputNumber id="piece" name="piece" #piece="ngModel" [size]="2" [min]="1"
-                                        required [(ngModel)]="service.itemCount"></p-inputNumber>
+                                        required [(ngModel)]="service.itemCount"
+                                        [disabled]="isDisabled"></p-inputNumber>
                                 </div>
                             </div>
                             <div class="flex col-6 p-0" *ngIf="service.additionalService.companion">
@@ -194,7 +196,8 @@
                                     abpLocalization }}&nbsp;<font style="color:red">*</font></label>
                                 <div class="col-7 p-0">
                                     <p-inputNumber id="companion" name="companion" #companion="ngModel" [size]="2"
-                                        [min]="0" required [(ngModel)]="service.companionCount"></p-inputNumber>
+                                        [min]="0" required [(ngModel)]="service.companionCount"
+                                        [disabled]="isDisabled"></p-inputNumber>
                                 </div>
                             </div>
                         </div>
@@ -209,8 +212,8 @@
                             abpLocalization}}
                         </legend>
                         <textarea rows="3" pInputText id="treatmentDescription" name="treatmentDescription"
-                            #treatmentDescription="ngModel" [(ngModel)]="saveProforma.tpDescription"
-                            class="w-full"></textarea>
+                            #treatmentDescription="ngModel" [(ngModel)]="saveProforma.tpDescription" class="w-full"
+                            [disabled]="isDisabled"></textarea>
                     </fieldset>
                 </div>
                 <div class="col-12 mt-3">
@@ -220,8 +223,8 @@
                             abpLocalization}}
                         </legend>
                         <textarea rows="3" pInputText id="proformaDescription" name="proformaDescription"
-                            #proformaDescription="ngModel" [(ngModel)]="saveProforma.description"
-                            class="w-full"></textarea>
+                            #proformaDescription="ngModel" [(ngModel)]="saveProforma.description" class="w-full"
+                            [disabled]="isDisabled"></textarea>
                     </fieldset>
                 </div>
                 <div class="col-12 mt-3">
@@ -230,7 +233,7 @@
                             {{'::Proforma:Field:ExcludedServices' |
                             abpLocalization}}
                         </legend>
-                        <p-toolbar styleClass="customToolbar">
+                        <p-toolbar styleClass="customToolbar" *ngIf="!isDisabled">
                             <div class="p-toolbar-group-start">
                             </div>
                             <div class="p-toolbar-group-end p-0">
@@ -252,14 +255,14 @@
                                     <th>{{ '::Proforma:NotIncludingService:Column:Description' |
                                         abpLocalization }}
                                     </th>
-                                    <th class="w-1rem"></th>
+                                    <th class="w-1rem" *ngIf="!isDisabled"></th>
                                 </tr>
                             </ng-template>
                             <ng-template pTemplate="body" let-item>
                                 <tr>
                                     <td>{{item.rowNumber}}</td>
                                     <td>{{item.description}}</td>
-                                    <td>
+                                    <td *ngIf="!isDisabled">
                                         <button pButton pRipple icon="pi pi-trash"
                                             class="p-button-rounded p-button-danger"
                                             (click)="removeNotIncludingService(item)"></button>
@@ -357,12 +360,22 @@
                             {{ hospitalResponse?.hospitalizationNumber }}
                         </div>
                     </div>
+                    <div class="field grid mb-0"
+                        *ngIf="selectedProforma && (selectedProforma?.proformaStatusId == proformaStatusEnum.MFBRejected || selectedProforma?.proformaStatusId == proformaStatusEnum.PatientRejected)">
+                        <label class="col-fixed font-bold" style="width:140px">{{'::Proforma:Field:RejectReason' |
+                            abpLocalization}}</label>
+                        <div class="col">
+                            {{ selectedProforma?.proformaStatusId == proformaStatusEnum.MFBRejected ?
+                            selectedProforma.rejectReasonMFB: (selectedProforma?.proformaStatusId ==
+                            proformaStatusEnum.PatientRejected ? selectedProforma.rejectReason.reason : '') }}
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="col-6 pl-1">
                 <fieldset class="border pl-3 pr-3 pt-2 pb-3 proformaFieldSet proformaFieldHeight">
                     <legend class="float-none w-auto pl-3 pr-3 text-sm proformaFieldSetlegend">
-                        {{'::Proforma:Field:HospitalDescription' |
+                        {{'::Proforma:Field:RejectReason' |
                         abpLocalization}}
                     </legend>
                     <textarea rows="3" pInputText id="hospitalDescription" name="hospitalDescription"
@@ -371,9 +384,10 @@
                 </fieldset>
                 <div class="text-right">
                     <button pButton pRipple label="{{ '::Proforma:Button:Save' | abpLocalization }}"
-                        class="p-button-success ml-2 mt-4" (click)="onSaveProforma()"></button>
+                        class="p-button-success ml-2 mt-4" (click)="onSaveProforma()" *ngIf="!isDisabled"></button>
                     <button pButton pRipple class="p-button-success ml-2 mt-4" [disabled]="!this.selectedProformaId"
-                        label="{{ '::Proforma:Button:Send' | abpLocalization }}" (click)="onSendProforma()"></button>
+                        label="{{ '::Proforma:Button:Send' | abpLocalization }}" (click)="onSendProforma()"
+                        *ngIf="!isDisabled"></button>
                 </div>
             </div>
         </div>

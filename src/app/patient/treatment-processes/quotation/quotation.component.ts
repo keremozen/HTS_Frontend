@@ -1,8 +1,13 @@
 import { Component, EventEmitter, Injector, Input, Output, ViewEncapsulation } from '@angular/core';
-import { ProformaDto, ProformaPricingListDto } from '@proxy/dto/proforma';
+import { ProformaPricingListDto, RejectProformaDto } from '@proxy/dto/proforma';
 import { EntityEnum_ProformaStatusEnum } from '@proxy/enum';
-import { ProformaService } from '@proxy/service';
+import { OperationService, ProformaService, RejectReasonService } from '@proxy/service';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
+import { ProformaComponent } from '../proforma/proforma.component';
+import { PatientDto } from '@proxy/dto/patient';
+import { RejectReasonDto } from '@proxy/dto/reject-reason';
+import { PaymentDialogComponent } from '../payment-dialog/payment-dialog.component';
 
 @Component({
   selector: 'app-quotation',
@@ -13,14 +18,24 @@ import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 export class QuotationComponent extends AppComponentBase {
 
   @Input() patientTreatmentId: number;
+  @Input() patient: PatientDto;
   proformaList: ProformaPricingListDto[] = [];
   loading: boolean = false;
   public proformaStatusEnum = EntityEnum_ProformaStatusEnum;
   @Output() onQuotationChange: EventEmitter<any> = new EventEmitter();
+  ref: DynamicDialogRef;
+
+  displayMFBReject: boolean = false;
+  displayPatientReject: boolean = false;
+  rejectProforma: RejectProformaDto;
+  rejectReasonList: RejectReasonDto[] = [];
 
   constructor(
     injector: Injector,
-    private proformaService: ProformaService
+    private proformaService: ProformaService,
+    private operationService: OperationService,
+    private rejectReasonService: RejectReasonService,
+    public dialogService: DialogService
   ) {
     super(injector);
 
@@ -40,12 +55,7 @@ export class QuotationComponent extends AppComponentBase {
     });
   }
 
-  onSendToPatientClick(proforma: ProformaPricingListDto) {
-
-  }
-
   onApproveClick(proforma: ProformaPricingListDto) {
-
     if (proforma.proformaStatusId == this.proformaStatusEnum.MFBWaitingApproval) {
       this.confirm({
         key: 'quotationConfirm',
@@ -69,29 +79,139 @@ export class QuotationComponent extends AppComponentBase {
         header: this.l('::Confirm'),
         icon: 'pi pi-exclamation-triangle',
         accept: () => {
-          /*this.proformaService.approvePatient(+proforma.id).subscribe({
+          this.proformaService.approvePatient(+proforma.id).subscribe({
             complete: () => {
               this.fetchData();
+              this.onQuotationChange.emit();
             }
-          });*/
+          });
         }
       });
     }
   }
 
   onRejectClick(proforma: ProformaPricingListDto) {
-
+    if (proforma.proformaStatusId == this.proformaStatusEnum.MFBWaitingApproval) {
+      this.rejectProforma = {} as RejectProformaDto;
+      this.rejectProforma.id = +proforma.id;
+      this.rejectProforma.rejectReasonId = null;
+      this.displayMFBReject = true;
+    }
+    if (proforma.proformaStatusId == this.proformaStatusEnum.WaitingForPatientApproval) {
+      this.rejectReasonService.getList(true).subscribe({
+        next: (res) => {
+          this.rejectReasonList = res.items;
+          this.rejectProforma = {} as RejectProformaDto;
+          this.rejectProforma.id = +proforma.id;
+          this.rejectProforma.rejectReason = null;
+          this.displayPatientReject = true;
+        }
+      });
+      
+    }
   }
 
-  onPaymentClick(proforma: ProformaPricingListDto) {
+  hideMFBrejectDialog() {
+    this.rejectProforma = null;
+    this.displayMFBReject = false;
+  }
 
+  hidePatientRejectDialog() {
+    this.rejectProforma = null;
+    this.displayPatientReject = false;
+  }
 
+  onMFBReject() {
+    this.confirm({
+      key: 'quotationConfirm',
+      message: this.l('::Quotation:MFBReject:Message:ConfirmApprove'),
+      header: this.l('::Confirm'),
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.proformaService.rejectMFB(this.rejectProforma).subscribe({
+          complete: () => {
+            this.displayMFBReject = false;
+            this.fetchData();
+            this.onQuotationChange.emit();
+          }
+        });
+      }
+    });
+  }
 
+  onPatientReject() {
+    this.confirm({
+      key: 'quotationConfirm',
+      message: this.l('::Quotation:PatientReject:Message:ConfirmApprove'),
+      header: this.l('::Confirm'),
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.proformaService.rejectPatient(this.rejectProforma).subscribe({
+          complete: () => {
+            this.displayPatientReject = false;
+            this.fetchData();
+            this.onQuotationChange.emit();
+          }
+        });
+      }
+    });
   }
 
   onProformaCodeClick(proforma: ProformaPricingListDto) {
-    
+    this.operationService.get(proforma.operationId).subscribe({
+      next: (op) => {
+        this.ref = this.dialogService.open(ProformaComponent, {
+          header: this.l('::Proforma:Title'),
+          width: '85vw',
+          contentStyle: { overflow: 'auto' },
+          baseZIndex: 10000,
+          maximizable: true,
+          data: {
+            operation: op,
+            isDisabled: proforma.proformaStatusId !== this.proformaStatusEnum.MFBWaitingApproval
+          }
+        });
+      }
+    });
+
+    this.ref.onClose.subscribe(() => {
+      this.fetchData();
+      //this.selectedOperation = null;
+      //this.onOperationChange.emit();
+    });
   }
+
+  onSendToPatientClick(proforma: ProformaPricingListDto) {
+    this.confirm({
+      key: 'quotationConfirm',
+      message: this.patient.email ? this.l('::Quotation:ProformaTable:Message:ConfirmSendToPatient') : this.l('::Quotation:ProformaTable:Message:ConfirmGivePatientManually'),
+      header: this.l('::Confirm'),
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.proformaService.sendToPatientById(+proforma.id).subscribe({
+          complete: () => {
+            this.fetchData();
+            this.onQuotationChange.emit();
+          }
+        });
+      }
+    });
+  }
+
+  onPaymentClick(proforma: ProformaPricingListDto) {
+    this.ref = this.dialogService.open(PaymentDialogComponent, {
+      header: this.l('::PaymentDialog:Title'),
+      width: '85vw',
+      contentStyle: { overflow: 'auto' },
+      baseZIndex: 10000,
+      maximizable: true,
+      data: {
+      
+      },
+    });
+
+  }
+
 
 
 }

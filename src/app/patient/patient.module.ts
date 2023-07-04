@@ -17,6 +17,7 @@ import { OperationalInfoComponent } from './treatment-processes/operational-info
 import { QuotationComponent } from './treatment-processes/quotation/quotation.component';
 import { OperationComponent } from './treatment-processes/operation/operation.component';
 import { ProformaComponent } from './treatment-processes/proforma/proforma.component';
+import { PaymentDialogComponent } from './treatment-processes/payment-dialog/payment-dialog.component';
 
 
 @NgModule({
@@ -32,7 +33,8 @@ import { ProformaComponent } from './treatment-processes/proforma/proforma.compo
     OperationalInfoComponent,
     QuotationComponent,
     OperationComponent,
-    ProformaComponent
+    ProformaComponent,
+    PaymentDialogComponent
   ],
   imports: [
     SharedModule,

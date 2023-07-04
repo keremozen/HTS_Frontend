@@ -36,13 +36,13 @@
                         </th>
                         <th pSortableColumn="proformaStatusId">{{ '::Quotation:ProformaTable:Column:ProformaStatus' |
                             abpLocalization }} <p-sortIcon field="proformaStatusId"></p-sortIcon></th>
-                        <th>
+                        <th class="text-center">
                             {{ '::Quotation:ProformaTable:Column:MFBApproval' | abpLocalization }}
                         </th>
-                        <th>
+                        <th class="text-center">
                             {{ '::Quotation:ProformaTable:Column:PatientApproval' | abpLocalization }}
                         </th>
-                        <th>
+                        <th class="text-center">
                             {{ '::Quotation:ProformaTable:Column:Receipt' | abpLocalization }}
                         </th>
                         <th>
@@ -51,26 +51,38 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-proforma>
                     <tr>
-                        <td><div (click)="onProformaCodeClick(proforma)">{{proforma.proformaCode}}</div></td>
+                        <td>
+                            <div class="cursor-pointer underline" (click)="onProformaCodeClick(proforma)">
+                                {{proforma.proformaCode}}</div>
+                        </td>
                         <td>{{proforma.creator?.name + (proforma.creator?.surname ? (" " +
                             proforma.creator?.surname) :
                             "")}}</td>
                         <td>{{proforma.creationTime | date: 'dd.MM.yyyy HH:mm'}}</td>
                         <td>{{proforma.proformaStatus.name}}</td>
                         <td class="text-center">
-                            <i class="pi"
-                                [ngClass]="{ 'text-green-500 pi-check-circle': proforma.proformaStatusId >= proformaStatusEnum.WillBeTransferedToPatient, 'text-red-500 pi-times-circle': proforma.proformaStatusId < proformaStatusEnum.WillBeTransferedToPatient }"></i>
+                            <i class="pi text-xl" [pTooltip]="proforma.rejectReasonMFB" tooltipPosition="top"
+                                [ngClass]="{ 
+                                    'text-green-500 pi-check-circle': proforma.proformaStatusId >= proformaStatusEnum.WillBeTransferedToPatient, 
+                                    'text-red-500 pi-times-circle': proforma.proformaStatusId == proformaStatusEnum.MFBRejected,
+                                    'text-gray-600 pi-question-circle': proforma.proformaStatusId < proformaStatusEnum.MFBRejected }"></i>
                         </td>
                         <td class="text-center">
-                            <i class="pi"
-                                [ngClass]="{ 'text-green-500 pi-check-circle': proforma.proformaStatusId >= proformaStatusEnum.WaitingForPayment, 'text-red-500 pi-times-circle': proforma.proformaStatusId < proformaStatusEnum.WaitingForPayment }"></i>
+                            <i class="pi text-xl" [pTooltip]="proforma.rejectReason?.reason" tooltipPosition="top"
+                                [ngClass]="{ 
+                                    'text-green-500 pi-check-circle': proforma.proformaStatusId >= proformaStatusEnum.WaitingForPayment, 
+                                    'text-red-500 pi-times-circle': proforma.proformaStatusId == proformaStatusEnum.PatientRejected,
+                                    'text-gray-600 pi-question-circle': proforma.proformaStatusId < proformaStatusEnum.PatientRejected }"></i>
                         </td>
                         <td class="text-center">
-                            <i class="pi"
-                                [ngClass]="{ 'text-green-500 pi-check-circle': proforma.proformaStatusId == proformaStatusEnum.PaymentCompleted, 'text-red-500 pi-times-circle': proforma.proformaStatusId != proformaStatusEnum.PaymentCompleted }"></i>
+                            <i class="pi text-xl"
+                                [ngClass]="{ 
+                                    'text-green-500 pi-check-circle': proforma.proformaStatusId == proformaStatusEnum.PaymentCompleted,
+                                    'text-gray-600 pi-question-circle': proforma.proformaStatusId < proformaStatusEnum.PaymentCompleted }"></i>
                         </td>
-                        <td class="flex">
-                            <p-button pTooltip="{{ '::Quotation:ProformaTable:Button:SendToPatient' | abpLocalization }}"
+                        <td class="white-space-nowrap">
+                            <p-button
+                                pTooltip="{{ '::Quotation:ProformaTable:Button:SendToPatient' | abpLocalization }}"
                                 icon="pi pi-send" styleClass="p-button" (click)="onSendToPatientClick(proforma)"
                                 *ngIf="proforma.proformaStatusId == proformaStatusEnum.WillBeTransferedToPatient"></p-button>
                             <p-button pTooltip="{{ '::Quotation:ProformaTable:Button:Approve' | abpLocalization }}"
@@ -80,7 +92,7 @@
                                 icon="pi pi-times" styleClass="p-button-danger ml-1" (click)="onRejectClick(proforma)"
                                 *ngIf="proforma.proformaStatusId == proformaStatusEnum.MFBWaitingApproval || proforma.proformaStatusId == proformaStatusEnum.WaitingForPatientApproval"></p-button>
                             <p-button pTooltip="{{ '::Quotation:ProformaTable:Button:Payment' | abpLocalization }}"
-                                styleClass="p-button" (click)="onPaymentClick(proforma)"
+                                icon="pi pi-dollar" styleClass="p-button" (click)="onPaymentClick(proforma)"
                                 *ngIf="proforma.proformaStatusId == proformaStatusEnum.WaitingForPayment"></p-button>
                         </td>
                     </tr>
@@ -110,7 +122,61 @@
     </div>
 </div>
 
-<p-confirmDialog key="quotationConfirm" [style]="{width: '450px'}"
-    rejectLabel="{{ '::Reject' | abpLocalization }}" acceptLabel="{{ '::Accept' | abpLocalization }}"
-    rejectButtonStyleClass="p-button-text p-button-danger"
+<p-dialog [(visible)]="displayMFBReject" [style]="{width: '30vw'}"
+    header="{{ '::Quotation:MFBReject:Dialog:Title' | abpLocalization }}" [modal]="true" styleClass="p-fluid"
+    (onHide)="hideMFBrejectDialog()">
+    <form #mfbRejectForm="ngForm">
+        <div *ngIf="rejectProforma">
+            <div class="field">
+                <label for="txtRejectReason">{{ '::Quotation:MFBReject:Dialog:RejectReason' | abpLocalization
+                    }}&nbsp;<font style="color:red">*
+                    </font></label>
+                <textarea rows="3" pInputText id="txtRejectReason" name="txtRejectReason" #txtRejectReason="ngModel"
+                    required [(ngModel)]="rejectProforma.rejectReason" class="w-full"></textarea>
+                <small class="p-error" *ngIf="!(txtRejectReason.valid || txtRejectReason.pristine)">{{
+                    '::Message:RequiredField' |
+                    abpLocalization
+                    }}</small>
+            </div>
+        </div>
+    </form>
+    <p-footer>
+        <button pButton pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" class="p-button-text"
+            (click)="hideMFBrejectDialog()"></button>
+        <button pButton pRipple label="{{ '::RejectResponse' | abpLocalization }}" icon="pi pi-check"
+            class="p-button-text" (click)="onMFBReject()" [disabled]="!(mfbRejectForm.valid)"></button>
+    </p-footer>
+</p-dialog>
+
+<p-dialog [(visible)]="displayPatientReject" [style]="{width: '30vw'}"
+    header="{{ '::Quotation:PatientReject:Dialog:Title' | abpLocalization }}" [modal]="true" styleClass="p-fluid"
+    (onHide)="hidePatientRejectDialog()">
+    <form #patientRejectForm="ngForm">
+        <div *ngIf="rejectProforma">
+            <div class="field">
+                <label for="txtRejectReason">{{ '::Quotation:PatientReject:Dialog:RejectReason' | abpLocalization
+                    }}&nbsp;<font style="color:red">*
+                    </font></label>
+                <p-dropdown id="ddlRejectReason" name="ddlRejectReason" #ddlRejectReason="ngModel"
+                    [options]="rejectReasonList" [(ngModel)]="rejectProforma.rejectReasonId"
+                    placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}" required="true"
+                    styleClass="filterDropDown" optionValue="id" optionLabel="reason" appendTo="body"
+                    emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
+                <small class="p-error" *ngIf="!(ddlRejectReason.valid || ddlRejectReason.pristine)">{{
+                    '::Message:RequiredField' | abpLocalization }}</small>
+            </div>
+        </div>
+    </form>
+    <p-footer>
+        <button pButton pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" class="p-button-text"
+            (click)="hidePatientRejectDialog()"></button>
+        <button pButton pRipple label="{{ '::RejectResponse' | abpLocalization }}" icon="pi pi-check"
+            class="p-button-text" (click)="onPatientReject()" [disabled]="!(patientRejectForm.valid)"></button>
+    </p-footer>
+</p-dialog>
+
+
+
+<p-confirmDialog key="quotationConfirm" [style]="{width: '450px'}" rejectLabel="{{ '::Reject' | abpLocalization }}"
+    acceptLabel="{{ '::Accept' | abpLocalization }}" rejectButtonStyleClass="p-button-text p-button-danger"
     acceptButtonStyleClass="p-button-text p-button-success"></p-confirmDialog>

@@ -36,6 +36,7 @@ export class ProformaComponent extends AppComponentBase {
   selectedProformaId: number;
   selectedProforma: ProformaDto;
   isEdit: boolean = false;
+  isDisabled: boolean = false;
 
   hospitalName: string;
   proformaDate = moment();
@@ -85,6 +86,7 @@ export class ProformaComponent extends AppComponentBase {
   }
 
   ngOnInit() {
+    this.isDisabled = this.dialogConfig.data?.isDisabled;
     this.operation = this.dialogConfig.data?.operation;
     this.proformaService.getNameListByOperationId(+this.operation.id).subscribe({
       next: (res) => {
