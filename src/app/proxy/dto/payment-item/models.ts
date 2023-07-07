@@ -10,6 +10,7 @@ export interface PaymentItemDto extends EntityDto<number> {
   queryNumber?: string;
   currencyId: number;
   price: number;
+  exchangeRate: number;
   currency: CurrencyDto;
   paymentKind: PaymentKindDto;
 }

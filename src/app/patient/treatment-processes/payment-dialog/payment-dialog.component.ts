@@ -1,3 +1,4 @@
+import { ConfigStateService, CurrentUserDto } from '@abp/ng.core';
 import { ThemeSharedTestingModule } from '@abp/ng.theme.shared/testing';
 import { DatePipe } from '@angular/common';
 import { Component, Injector, ViewEncapsulation } from '@angular/core';
@@ -7,7 +8,8 @@ import { SavePaymentDto } from '@proxy/dto/payment';
 import { SavePaymentItemDto } from '@proxy/dto/payment-item';
 import { PaymentKindDto } from '@proxy/dto/payment-kind';
 import { PaymentReasonDto } from '@proxy/dto/payment-reason';
-import { PaymentKindService, PaymentReasonService } from '@proxy/service';
+import { PaymentKindService, PaymentReasonService, PaymentService } from '@proxy/service';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { forkJoin } from 'rxjs';
 import { CommonService } from 'src/app/services/common.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
@@ -24,7 +26,9 @@ export class PaymentDialogComponent extends AppComponentBase {
   hospitalList: HospitalDto[] = [];
   currencyList: CurrencyDto[] = [];
   selectedHospitalId: number;
-  proformaNo: string;
+  proformaCode: string;
+  proformaId: number;
+  ptpId: number;
   patientName: string;
   collectorName: string;
   paymentReasonList: PaymentReasonDto[] = [];
@@ -34,18 +38,34 @@ export class PaymentDialogComponent extends AppComponentBase {
   paymentItem: SavePaymentItemWithDetail;
   paymentKindList: PaymentKindDto[] = [];
   rowNumber: number = 1;
+  isRelatedWithProforma: boolean = false;
+  currentUser: CurrentUserDto;
 
   constructor(
     injector: Injector,
+    private config: ConfigStateService,
     private commonService: CommonService,
     private paymentKindService: PaymentKindService,
-    private paymentReasonService: PaymentReasonService
+    private paymentReasonService: PaymentReasonService,
+    private paymentService: PaymentService,
+    private dialogConfig: DynamicDialogConfig,
+    private dialogRef: DynamicDialogRef,
   ) {
     super(injector);
   }
 
   ngOnInit() {
+    this.currentUser = this.config.getOne("currentUser");
+    this.collectorName = this.currentUser.name + (this.currentUser.surName ? (" " + this.currentUser.surName) : "");
+    this.isRelatedWithProforma = this.dialogConfig.data?.isRelatedWithProforma;
+    this.patientName = this.dialogConfig.data?.patientName;
+    this.selectedHospitalId = this.dialogConfig.data?.hospitalId;
+    this.proformaCode = this.dialogConfig.data?.proformaCode;
+    this.proformaId = this.dialogConfig.data?.proformaId;
+    this.ptpId = this.dialogConfig.data?.ptpId;
     this.payment = {} as SavePaymentDto;
+    this.payment.proformaId = this.proformaId;
+    this.payment.ptpId = this.ptpId;
     this.payment.paymentItems = this.payment.paymentItems as SavePaymentItemWithDetail[];
     this.payment.paymentItems = [];
     this.hospitalList = this.commonService.hospitalList;
@@ -82,7 +102,7 @@ export class PaymentDialogComponent extends AppComponentBase {
   }
 
   deletePaymentItem(paymentItem: SavePaymentItemWithDetail) {
-    this.payment.paymentItems = this.payment.paymentItems.filter((pi: SavePaymentItemWithDetail)=>pi.rowNumber !== paymentItem.rowNumber);
+    this.payment.paymentItems = this.payment.paymentItems.filter((pi: SavePaymentItemWithDetail) => pi.rowNumber !== paymentItem.rowNumber);
     this.reorderItems()
   }
 
@@ -92,6 +112,15 @@ export class PaymentDialogComponent extends AppComponentBase {
       var item = this.payment.paymentItems[index] as SavePaymentItemWithDetail;
       item.rowNumber = this.rowNumber++;
     }
+  }
+
+  onPaymentSave() {
+    this.paymentService.create(this.payment).subscribe({
+      complete: () => {
+        this.success(this.l('::Message:SuccessfulSave', this.l('::PaymentDialog:Title')));
+        this.dialogRef.close();
+      }
+    });
   }
 
 }

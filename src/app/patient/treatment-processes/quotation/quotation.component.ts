@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Injector, Input, Output, ViewEncapsulation } from '@angular/core';
 import { ProformaPricingListDto, RejectProformaDto } from '@proxy/dto/proforma';
-import { EntityEnum_ProformaStatusEnum } from '@proxy/enum';
+import { EntityEnum_OperationTypeEnum, EntityEnum_ProformaStatusEnum } from '@proxy/enum';
 import { OperationService, ProformaService, RejectReasonService } from '@proxy/service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
@@ -22,6 +22,7 @@ export class QuotationComponent extends AppComponentBase {
   proformaList: ProformaPricingListDto[] = [];
   loading: boolean = false;
   public proformaStatusEnum = EntityEnum_ProformaStatusEnum;
+  public operationTypeEnum = EntityEnum_OperationTypeEnum;
   @Output() onQuotationChange: EventEmitter<any> = new EventEmitter();
   ref: DynamicDialogRef;
 
@@ -107,7 +108,7 @@ export class QuotationComponent extends AppComponentBase {
           this.displayPatientReject = true;
         }
       });
-      
+
     }
   }
 
@@ -199,17 +200,27 @@ export class QuotationComponent extends AppComponentBase {
   }
 
   onPaymentClick(proforma: ProformaPricingListDto) {
-    this.ref = this.dialogService.open(PaymentDialogComponent, {
-      header: this.l('::PaymentDialog:Title'),
-      width: '85vw',
-      contentStyle: { overflow: 'auto' },
-      baseZIndex: 10000,
-      maximizable: true,
-      data: {
-      
-      },
+    this.operationService.get(proforma.operationId).subscribe({
+      next: (op) => {
+        console.log(op);
+        this.ref = this.dialogService.open(PaymentDialogComponent, {
+          header: this.l('::PaymentDialog:Title'),
+          width: '85vw',
+          contentStyle: { overflow: 'auto' },
+          baseZIndex: 10000,
+          maximizable: true,
+          data: {
+            isRelatedWithProforma: true,
+            patientName: this.patient.name + (this.patient.surname ? " " + this.patient.surname : ""),
+            hospitalId: op.operationTypeId == this.operationTypeEnum.HospitalConsultation ? op.hospitalResponse.hospitalConsultation.hospital.id : 
+                                                  (op.operationTypeId == this.operationTypeEnum.Manual ? op.hospitalId : null),
+            proformaCode: proforma.proformaCode,
+            proformaId: proforma.id,
+            ptpId: op.patientTreatmentProcessId
+          },
+        });
+      }
     });
-
   }
 
 

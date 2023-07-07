@@ -114,10 +114,10 @@
     <div class="col-12">
         <fieldset class="border pl-3 pr-3 pt-2 pb-3 m-2 quotationFieldSet" style="height:100%;">
             <legend class="float-none w-auto pl-3 pr-3 text-sm quotationFieldSetlegend">
-                {{'::Quotation:FieldLegend:Receipt' |
+                {{'::Quotation:FieldLegend:PaymentList' |
                 abpLocalization}}
-
             </legend>
+            <app-payment-list [ptpId]="patientTreatmentId"></app-payment-list>
         </fieldset>
     </div>
 </div>

@@ -1,0 +1,88 @@
+<p-toolbar styleClass="customToolbar">
+    <div class="p-toolbar-group-start">
+    </div>
+    <div class="p-toolbar-group-end p-0">
+        <button pButton pRipple label="{{ '::Payment:NewPayment' | abpLocalization }}" icon="pi pi-plus"
+            class="p-button-success ml-2" (click)="onNewPayment()"></button>
+    </div>
+</p-toolbar>
+
+<p-table #dt [value]="paymentList" [rows]="5" styleClass="pt-3" [paginator]="true" [rowHover]="true"
+    [loading]="loading"
+    currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
+    [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
+    <ng-template pTemplate="header">
+        <tr>
+            <th pSortableColumn="proformaNumber">{{ '::Payment:Column:ProformaCode' |
+                abpLocalization }}
+                <p-sortIcon field="proformaNumber"></p-sortIcon>
+            </th>
+            <th pSortableColumn="generatedRowNumber">{{ '::Payment:Column:RowNumber' |
+                abpLocalization }}
+                <p-sortIcon field="generatedRowNumber"></p-sortIcon>
+            </th>
+            <th pSortableColumn="paymentDate">{{ '::Payment:Column:PaymentDate' |
+                abpLocalization }}
+                <p-sortIcon field="paymentDate"></p-sortIcon>
+            </th>
+            <th pSortableColumn="fileNumber">{{ '::Payment:Column:FileNumber' |
+                abpLocalization }}
+                <p-sortIcon field="fileNumber"></p-sortIcon>
+            </th>
+            <th pSortableColumn="processingNumber">{{ '::Payment:Column:ProcessingNumber' |
+                abpLocalization }}
+                <p-sortIcon field="processingNumber"></p-sortIcon>
+            </th>
+            <th pSortableColumn="payerNameSurname">{{ '::Payment:Column:PayerNameSurname' |
+                abpLocalization }}
+                <p-sortIcon field="payerNameSurname"></p-sortIcon>
+            </th>
+            <th pSortableColumn="collectorNameSurname">{{ '::Payment:Column:CollectorNameSurname' |
+                abpLocalization }}
+                <p-sortIcon field="collectorNameSurname"></p-sortIcon>
+            </th>
+            <th pSortableColumn="paymentReason.name">{{ '::Payment:Column:PaymentReason' |
+                abpLocalization }}
+                <p-sortIcon field="paymentReason.name"></p-sortIcon>
+            </th>
+            <th pSortableColumn="totalPrice">{{ '::Payment:Column:TotalPrice' |
+                abpLocalization }}
+                <p-sortIcon field="totalPrice"></p-sortIcon>
+            </th>
+            <th pSortableColumn="description">{{ '::Payment:Column:Description' |
+                abpLocalization }}
+                <p-sortIcon field="description"></p-sortIcon>
+            </th>
+            <th></th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-payment>
+        <tr>
+            <td>{{payment.proformaNumber}}</td>
+            <td>{{payment.generatedRowNumber}}</td>
+            <td>{{payment.paymentDate | date: 'dd.MM.yyyy HH:mm'}}</td>
+            <td>{{payment.fileNumber}}</td>
+            <td>{{payment.processingNumber}}</td>
+            <td>{{payment.payerNameSurname}}</td>
+            <td>{{payment.collectorNameSurname}}</td>
+            <td>{{payment.paymentReason?.name}}</td>
+            <td>{{payment.totalPrice | currency:'TRY':'symbol':'0.2-2'}}</td>
+            <td>{{payment.description}}</td>
+            <td></td>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+        <div class="m-3">
+            {{ '::Table:EmptyMessage' | abpLocalization }}
+        </div>
+    </ng-template>
+    <ng-template pTemplate="summary">
+        <div class="flex align-items-center justify-content-between" *ngIf="totalCount > 0">
+            {{ '::Table:Summary' | abpLocalization: totalCount }}
+        </div>
+    </ng-template>
+</p-table>
+
+<p-confirmDialog key="paymentListConfirm" [style]="{width: '450px'}" rejectLabel="{{ '::Reject' | abpLocalization }}"
+    acceptLabel="{{ '::Accept' | abpLocalization }}" rejectButtonStyleClass="p-button-text p-button-danger"
+    acceptButtonStyleClass="p-button-text p-button-success"></p-confirmDialog>

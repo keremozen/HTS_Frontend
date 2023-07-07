@@ -1,7 +1,7 @@
 import { RestService } from '@abp/ng.core';
 import type { PagedResultDto } from '@abp/ng.core';
 import { Injectable } from '@angular/core';
-import type { PaymentDto, SavePaymentDto } from '../dto/payment/models';
+import type { ListPaymentDto, PaymentDto, SavePaymentDto } from '../dto/payment/models';
 
 @Injectable({
   providedIn: 'root',
@@ -19,8 +19,16 @@ export class PaymentService {
     { apiName: this.apiName });
   
 
+  get = (id: number) =>
+    this.restService.request<any, PaymentDto>({
+      method: 'GET',
+      url: `/api/app/payment/${id}`,
+    },
+    { apiName: this.apiName });
+  
+
   getList = (ptpId: number) =>
-    this.restService.request<any, PagedResultDto<PaymentDto>>({
+    this.restService.request<any, PagedResultDto<ListPaymentDto>>({
       method: 'GET',
       url: '/api/app/payment',
       params: { ptpId },

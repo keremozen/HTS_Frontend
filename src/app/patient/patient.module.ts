@@ -18,6 +18,7 @@ import { QuotationComponent } from './treatment-processes/quotation/quotation.co
 import { OperationComponent } from './treatment-processes/operation/operation.component';
 import { ProformaComponent } from './treatment-processes/proforma/proforma.component';
 import { PaymentDialogComponent } from './treatment-processes/payment-dialog/payment-dialog.component';
+import { PaymentListComponent } from './treatment-processes/payment-list/payment-list.component';
 
 
 @NgModule({
@@ -34,7 +35,8 @@ import { PaymentDialogComponent } from './treatment-processes/payment-dialog/pay
     QuotationComponent,
     OperationComponent,
     ProformaComponent,
-    PaymentDialogComponent
+    PaymentDialogComponent,
+    PaymentListComponent
   ],
   imports: [
     SharedModule,

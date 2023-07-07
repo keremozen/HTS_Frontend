@@ -10,7 +10,7 @@
                         <p-dropdown id="hospital" name="hospital" #hospital="ngModel" [options]="hospitalList"
                             [(ngModel)]="selectedHospitalId" placeholder="{{ '::Select' | abpLocalization }}"
                             [style]="{'width':'100%'}" required="true" styleClass="filterDropDown" optionLabel="name"
-                            optionValue="id" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
+                            optionValue="id" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" [disabled]="isRelatedWithProforma"></p-dropdown>
                     </div>
                 </div>
                 <div class="field grid">
@@ -18,7 +18,7 @@
                         '::PaymentDialog:Field:ProformaNo' | abpLocalization }}</label>
                     <div class="col-12 md:col-9">
                         <input id="txtProformaNo" name="txtProformaNo" pInputText type="text" #txtProformaNo="ngModel"
-                            [(ngModel)]="proformaNo"
+                            [(ngModel)]="proformaCode" [disabled]="isRelatedWithProforma"
                             class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
                     </div>
                 </div>
@@ -52,23 +52,33 @@
             <div class="col-4 pl-4">
                 <div class="field grid">
                     <label for="txtPayerName" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::PaymentDialog:Field:PayerName'
-                        | abpLocalization }}</label>
+                        | abpLocalization }}&nbsp;<font style="color:red">*
+                        </font></label>
                     <div class="col-12 md:col-9">
                         <input id="txtPayerName" name="txtPayerName" pInputText type="text" #txtPayerName="ngModel"
-                            [(ngModel)]="payment.processingUserNameSurname"
+                            [(ngModel)]="payment.payerNameSurname" required
                             class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                            <small class="p-error" *ngIf="!(txtPayerName.valid || txtPayerName.pristine)">{{
+                                '::Message:RequiredField' |
+                                abpLocalization
+                                }}</small>
                     </div>
                 </div>
                 <div class="field grid">
                     <label for="ddlPaymentReason"
                         class="col-12 mb-2 md:col-3 md:mb-0">{{'::PaymentDialog:Field:PaymentReason' |
-                        abpLocalization}}</label>
+                        abpLocalization}}&nbsp;<font style="color:red">*
+                        </font></label>
                     <div class="col">
                         <p-dropdown id="ddlPaymentReason" name="ddlPaymentReason" #ddlPaymentReason="ngModel"
                             [options]="paymentReasonList" [(ngModel)]="payment.paymentReasonId"
                             placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}" required="true"
                             styleClass="filterDropDown" optionLabel="name" optionValue="id"
                             emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
+                            <small class="p-error" *ngIf="!(ddlPaymentReason.valid || ddlPaymentReason.pristine)">{{
+                                '::Message:RequiredField' |
+                                abpLocalization
+                                }}</small>
                     </div>
                 </div>
                 <div class="field grid">
@@ -105,7 +115,7 @@
                 <div class="field grid p-2 pt-0">
                     <textarea rows="6" pInputText id="description" name="description" #description="ngModel"
                         [placeholder]="'::PaymentDialog:Field:DescriptionPlaceholder'|abpLocalization"
-                        [(ngModel)]="payment.description" required class="col-12 p-2"></textarea>
+                        [(ngModel)]="payment.description" class="col-12 p-2"></textarea>
                 </div>
             </div>
             <div class="col-12">
@@ -190,6 +200,13 @@
                         </div>
                     </ng-template>
                 </p-table>
+            </div>
+            <div class="col-12">
+                <div class="flex justify-content-end">
+                    <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-save"
+                        [disabled]="!(paymentForm.valid) || payment.paymentItems?.length == 0" class="p-button-success mr-2 mt-4 w-12rem"
+                        [loading]="loading" (click)="onPaymentSave()"></button>
+                </div>
             </div>
         </div>
     </form>
