@@ -177,8 +177,7 @@ export class QuotationComponent extends AppComponentBase {
 
     this.ref.onClose.subscribe(() => {
       this.fetchData();
-      //this.selectedOperation = null;
-      //this.onOperationChange.emit();
+      this.onQuotationChange.emit();
     });
   }
 
@@ -221,8 +220,10 @@ export class QuotationComponent extends AppComponentBase {
         });
       }
     });
+
+    this.ref.onClose.subscribe(() => {
+      this.fetchData();
+      this.onQuotationChange.emit();
+    });
   }
-
-
-
 }
