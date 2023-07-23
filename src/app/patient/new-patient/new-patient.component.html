@@ -45,10 +45,10 @@
                     <div class="field grid mb-2">
                         <label for="patientPassportNo" class="col-12 mb-2 md:col-3 md:mb-0">{{
                             '::Patients:Column:PassportNo' |
-                            abpLocalization }}&nbsp;<font style="color:red">*</font></label>
+                            abpLocalization }}</label>
                         <div class="col-12 md:col-9">
                             <input id="patientPassportNo" name="patientPassportNo" #patientPassportNo="ngModel"
-                                pInputText type="text" required="true" [(ngModel)]="patient.passportNumber"
+                                pInputText type="text" [(ngModel)]="patient.passportNumber"
                                 class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
                         </div>
                     </div>

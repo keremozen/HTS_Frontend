@@ -25,6 +25,14 @@ export class ProformaService {
     { apiName: this.apiName });
   
 
+  createProformaPdfById = (id: number) =>
+    this.restService.request<any, void>({
+      method: 'POST',
+      url: `/api/app/proforma/${id}/proforma-pdf`,
+    },
+    { apiName: this.apiName });
+  
+
   getById = (proformaId: number) =>
     this.restService.request<any, ProformaDto>({
       method: 'GET',

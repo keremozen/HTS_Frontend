@@ -23,6 +23,7 @@ export * from './patient-document.service';
 export * from './patient-note.service';
 export * from './patient-treatment-process.service';
 export * from './patient.service';
+export * from './payment-document.service';
 export * from './payment-kind.service';
 export * from './payment-reason.service';
 export * from './payment.service';
