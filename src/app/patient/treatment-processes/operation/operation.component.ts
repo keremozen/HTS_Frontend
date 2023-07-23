@@ -227,7 +227,9 @@ export class OperationComponent extends AppComponentBase {
               branchId: branch
             });
           });
-          this.operation.appointedInterpreterId = this.selectedInterpreter.id;
+          if (this.selectedInterpreter) {
+            this.operation.appointedInterpreterId = this.selectedInterpreter.id;
+          }
           this.hospitalResponse.hospitalResponseProcesses = [];
           this.hospitalResponse.hospitalResponseProcesses.push(...this.anticipatedProcesses);
           this.hospitalResponse.hospitalResponseProcesses.push(...this.anticipatedMaterials);

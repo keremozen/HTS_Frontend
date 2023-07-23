@@ -1,14 +1,15 @@
 import { mapEnumToOptions } from '@abp/ng.core';
 
 export enum EntityEnum_OperationStatusEnum {
-  PriceExpecting = 1,
-  ProformaCreatedWaitingForMFBApproval = 2,
-  MFBRejectedPriceExpecting = 3,
-  ProformaApprovedWillBeTransferredToPatient = 4,
-  ProformaTransferredWaitingForPatientApproval = 5,
-  PatientRejectedProforma = 6,
-  ProformaApprovedWaitingForPayment = 7,
-  PaymentCompletedTreatmentProcess = 8,
+  NewRecord = 1,
+  PriceExpecting = 2,
+  ProformaCreatedWaitingForMFBApproval = 3,
+  MFBRejectedPriceExpecting = 4,
+  ProformaApprovedWillBeTransferredToPatient = 5,
+  ProformaTransferredWaitingForPatientApproval = 6,
+  PatientRejectedProforma = 7,
+  ProformaApprovedWaitingForPayment = 8,
+  PaymentCompletedTreatmentProcess = 9,
 }
 
 export const entityEnum_OperationStatusEnumOptions = mapEnumToOptions(EntityEnum_OperationStatusEnum);
