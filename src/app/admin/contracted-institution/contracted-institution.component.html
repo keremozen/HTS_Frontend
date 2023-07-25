@@ -21,6 +21,12 @@
                 <th pSortableColumn="name">{{ '::Admin:ContractedInstitution:Column:Name' | abpLocalization }}
                     <p-sortIcon field="name"></p-sortIcon>
                 </th>
+                <th pSortableColumn="type.name">{{ '::Admin:ContractedInstitution:Column:Type' | abpLocalization }}
+                    <p-sortIcon field="type.name"></p-sortIcon>
+                </th>
+                <th pSortableColumn="kind.name">{{ '::Admin:ContractedInstitution:Column:Kind' | abpLocalization }}
+                    <p-sortIcon field="kind.name"></p-sortIcon>
+                </th>
                 <th pSortableColumn="phoneNumber">{{ '::Admin:ContractedInstitution:Column:PhoneNumber' |
                     abpLocalization }} <p-sortIcon field="phoneNumber"></p-sortIcon></th>
                 <th pSortableColumn="email">{{ '::Admin:ContractedInstitution:Column:EMail' |
@@ -42,6 +48,8 @@
         <ng-template pTemplate="body" let-contractedInstitution>
             <tr>
                 <td>{{contractedInstitution.name}}</td>
+                <td>{{contractedInstitution.type?.name}}</td>
+                <td>{{contractedInstitution.kind?.name}}</td>
                 <td>{{contractedInstitution.phoneCountryCode?.phoneCode ??
                     contractedInstitution.phoneCountryCode?.phoneCode + ' '}}{{contractedInstitution.phoneNumber}}</td>
                 <td>{{contractedInstitution.email}}</td>
@@ -91,7 +99,34 @@
                 <small class="p-error" *ngIf="!(name.valid || name.pristine)">{{ '::Message:RequiredField' |
                     abpLocalization }}</small>
             </div>
-
+            <div class="field">
+                <label for="type">{{ '::Admin:ContractedInstitution:Column:Type' | abpLocalization
+                }}</label>
+                <p-dropdown id="type" name="type" [filter]="true" filterBy="name" [showClear]="true"
+                    #type="ngModel" [options]="typeList" [(ngModel)]="contractedInstitution.typeId"
+                    [style]="{'width':'100%'}" styleClass="filterDropDown" optionValue="id"
+                    placeholder="{{ '::Select' | abpLocalization }}" optionLabel="name" appendTo="body"
+                    emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
+                    emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}">
+                    <ng-template let-type pTemplate="item">
+                        <div><b>{{ type.name }}</b></div>
+                    </ng-template>
+                </p-dropdown>
+            </div>
+            <div class="field">
+                <label for="kind">{{ '::Admin:ContractedInstitution:Column:Kind' | abpLocalization
+                }}</label>
+                <p-dropdown id="kind" name="kind" [filter]="true" filterBy="name" [showClear]="true"
+                    #kind="ngModel" [options]="kindList" [(ngModel)]="contractedInstitution.kindId"
+                    [style]="{'width':'100%'}" styleClass="filterDropDown" optionValue="id"
+                    placeholder="{{ '::Select' | abpLocalization }}" optionLabel="name" appendTo="body"
+                    emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
+                    emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}">
+                    <ng-template let-kind pTemplate="item">
+                        <div><b>{{ kind.name }}</b></div>
+                    </ng-template>
+                </p-dropdown>
+            </div>
             <div class="field">
                 <label for="phoneCountryCode">{{ '::Admin:ContractedInstitution:Column:PhoneNumber' | abpLocalization
                     }}</label>

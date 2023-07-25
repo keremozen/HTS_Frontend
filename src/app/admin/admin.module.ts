@@ -16,6 +16,8 @@ import { ProcessTypeComponent } from './process-type/process-type.component';
 import { ProcessComponent } from './process/process.component';
 import { RejectReasonComponent } from './reject-reason/reject-reason.component';
 import { PaymentReasonComponent } from './payment-reason/payment-reason.component';
+import { ContractedInstitutionTypeComponent } from './contracted-institution-type/contracted-institution-type.component';
+import { ContractedInstitutionKindComponent } from './contracted-institution-kind/contracted-institution-kind.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +27,8 @@ import { PaymentReasonComponent } from './payment-reason/payment-reason.componen
     DocumentTypeComponent,
     PatientAdmissionMethodComponent,
     ContractedInstitutionComponent,
+    ContractedInstitutionTypeComponent,
+    ContractedInstitutionKindComponent,
     CityComponent,
     BranchComponent,
     TreatmentTypeComponent,

@@ -1,8 +1,10 @@
 import { Component, Injector } from '@angular/core';
 import { ContractedInstitutionDto, SaveContractedInstitutionDto } from '@proxy/dto/contracted-institution';
+import { ContractedInstitutionKindDto } from '@proxy/dto/contracted-institution-kind';
 import { ContractedInstitutionStaffDto, SaveContractedInstitutionStaffDto } from '@proxy/dto/contracted-institution-staff';
+import { ContractedInstitutionTypeDto } from '@proxy/dto/contracted-institution-type';
 import { NationalityDto } from '@proxy/dto/nationality';
-import { ContractedInstitutionService, ContractedInstitutionStaffService, NationalityService } from '@proxy/service';
+import { ContractedInstitutionKindService, ContractedInstitutionService, ContractedInstitutionStaffService, ContractedInstitutionTypeService, NationalityService } from '@proxy/service';
 import { forkJoin } from 'rxjs';
 import { CommonService } from 'src/app/services/common.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
@@ -27,10 +29,14 @@ export class ContractedInstitutionComponent extends AppComponentBase {
   contractedInstitutionStaff: SaveContractedInstitutionStaffDto;
   contractedInstitutionStaffToBeEdited: ContractedInstitutionStaffDto;
   nationalityList: NationalityDto[] = [];
+  typeList: ContractedInstitutionTypeDto[] = [];
+  kindList: ContractedInstitutionKindDto[] = [];
 
   constructor(
     injector: Injector,
     private contractedInstitutionService: ContractedInstitutionService,
+    private contractedInstitutionTypeService: ContractedInstitutionTypeService,
+    private contractedInstitutionKindService: ContractedInstitutionKindService,
     private contractedInstitutionStaffService: ContractedInstitutionStaffService,
     private commonService: CommonService
   ) {
@@ -44,17 +50,29 @@ export class ContractedInstitutionComponent extends AppComponentBase {
   fetchData() {
     this.loading = true;
     this.nationalityList = this.commonService.nationalityList;
-    this.contractedInstitutionService.getList().subscribe({
-      next: (resContractedInstitutionList) => {
-        this.contractedInstitutionList = [];
-        resContractedInstitutionList.items.forEach(inst => {
-          let instwithstaff = inst as ContractedInstitutionWithStaff;
-          instwithstaff.staffNames = inst.contractedInstitutionStaffs.filter(s => s.isActive).map(s => s.nameSurname).join("<br>");
-          this.contractedInstitutionList.push(instwithstaff);
-        });
-        this.totalRecords = resContractedInstitutionList.totalCount;
-        this.commonService.contractedInstitutionList = resContractedInstitutionList.items.filter(c=>c.isActive == true);
-      },
+
+    forkJoin([
+      this.contractedInstitutionTypeService.getList(),
+      this.contractedInstitutionKindService.getList(),
+      this.contractedInstitutionService.getList()
+    ]).subscribe({
+      next:
+        ([
+          resTypeList,
+          resKindList,
+          resContractedInstitutionList
+        ]) => {
+          this.typeList = resTypeList.items;
+          this.kindList = resKindList.items;
+          this.contractedInstitutionList = [];
+          resContractedInstitutionList.items.forEach(inst => {
+            let instwithstaff = inst as ContractedInstitutionWithStaff;
+            instwithstaff.staffNames = inst.contractedInstitutionStaffs.filter(s => s.isActive).map(s => s.nameSurname).join("<br>");
+            this.contractedInstitutionList.push(instwithstaff);
+          });
+          this.totalRecords = resContractedInstitutionList.totalCount;
+          this.commonService.contractedInstitutionList = resContractedInstitutionList.items.filter(c => c.isActive == true);
+        },
       error: () => {
         this.loading = false;
       },
@@ -212,6 +230,10 @@ export class ContractedInstitutionComponent extends AppComponentBase {
 }
 
 class ContractedInstitutionWithStaff implements ContractedInstitutionDto {
+  typeId: number;
+  kindId: number;
+  kind: ContractedInstitutionKindDto;
+  type: ContractedInstitutionTypeDto;
   contractedInstitutionStaffs: ContractedInstitutionStaffDto[];
   email?: string;
   phoneNumber?: string;

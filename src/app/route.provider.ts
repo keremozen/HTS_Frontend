@@ -86,11 +86,29 @@ function configureRoutes(routesService: RoutesService) {
         layout: eLayoutType.application
       },
       {
+        path: '/admin/contractedInstitutionType',
+        name: '::Menu:Admin:ContractedInstitutionType',
+        iconClass: 'fas fa-clinic-medical',
+        parentName: eThemeSharedRouteNames.Administration,
+        order: 106,
+        requiredPolicy: 'HTS.ContractedInstitutionTypeManagement',
+        layout: eLayoutType.application
+      },
+      {
+        path: '/admin/contractedInstitutionKind',
+        name: '::Menu:Admin:ContractedInstitutionKind',
+        iconClass: 'fas fa-clinic-medical',
+        parentName: eThemeSharedRouteNames.Administration,
+        order: 107,
+        requiredPolicy: 'HTS.ContractedInstitutionKindManagement',
+        layout: eLayoutType.application
+      },
+      {
         path: '/admin/contractedInstitution',
         name: '::Menu:Admin:ContractedInstitution',
         iconClass: 'fas fa-clinic-medical',
         parentName: eThemeSharedRouteNames.Administration,
-        order: 106,
+        order: 108,
         requiredPolicy: 'HTS.ContractedInstitutionManagement',
         layout: eLayoutType.application
       },
@@ -99,7 +117,7 @@ function configureRoutes(routesService: RoutesService) {
         name: '::Menu:Admin:Branch',
         iconClass: 'fas fa-code-branch',
         parentName: eThemeSharedRouteNames.Administration,
-        order: 107,
+        order: 109,
         requiredPolicy: 'HTS.BranchManagement',
         layout: eLayoutType.application
       },
@@ -108,7 +126,7 @@ function configureRoutes(routesService: RoutesService) {
         name: '::Menu:Admin:TreatmentType',
         iconClass: 'fas fa-list',
         parentName: eThemeSharedRouteNames.Administration,
-        order: 108,
+        order: 110,
         requiredPolicy: 'HTS.TreatmentTypeManagement',
         layout: eLayoutType.application
       },
@@ -117,7 +135,7 @@ function configureRoutes(routesService: RoutesService) {
         name: '::Menu:Admin:ProcessType',
         iconClass: 'fas fa-list',
         parentName: eThemeSharedRouteNames.Administration,
-        order: 109,
+        order: 111,
         requiredPolicy: 'HTS.ProcessTypeManagement',
         layout: eLayoutType.application
       },
@@ -126,7 +144,7 @@ function configureRoutes(routesService: RoutesService) {
         name: '::Menu:Admin:Process',
         iconClass: 'fas fa-procedures',
         parentName: eThemeSharedRouteNames.Administration,
-        order: 110,
+        order: 112,
         requiredPolicy: 'HTS.ProcessManagement',
         layout: eLayoutType.application
       },
@@ -135,7 +153,7 @@ function configureRoutes(routesService: RoutesService) {
         name: '::Menu:Admin:RejectReason',
         iconClass: 'fas fa-syringe',
         parentName: eThemeSharedRouteNames.Administration,
-        order: 112,
+        order: 113,
         requiredPolicy: 'HTS.RejectReasonManagement',
         layout: eLayoutType.application
       },
@@ -144,7 +162,7 @@ function configureRoutes(routesService: RoutesService) {
         name: '::Menu:Admin:PaymentReason',
         iconClass: 'fas fa-syringe',
         parentName: eThemeSharedRouteNames.Administration,
-        order: 113,
+        order: 114,
         requiredPolicy: 'HTS.PaymentReasonManagement',
         layout: eLayoutType.application
       },
