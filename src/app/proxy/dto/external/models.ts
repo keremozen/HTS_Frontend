@@ -1,7 +1,8 @@
 
 export interface ExternalApiResult {
-  resultCode: number;
-  result: object;
+  durum: number;
+  sonuc: object;
+  mesaj?: string;
 }
 
 export interface SutCodesRequestDto {

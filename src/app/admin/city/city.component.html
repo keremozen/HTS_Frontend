@@ -6,8 +6,8 @@
 <div class="card">
     <p-toolbar styleClass="mb-4 gap-2">
         <ng-template pTemplate="left">
-            <button pButton pRipple label="{{ '::Admin:City:NewCity' | abpLocalization }}" icon="pi pi-plus"
-                class="p-button-success mr-2" (click)="openNewCity()" [loading]="loading"></button>
+            <p-button pRipple label="{{ '::Admin:City:NewCity' | abpLocalization }}" icon="pi pi-plus"
+                styleClass="p-button-success mr-2" (onClick)="openNewCity()" [loading]="loading"></p-button>
         </ng-template>
     </p-toolbar>
 
@@ -26,10 +26,10 @@
             <tr>
                 <td>{{city.name}}</td>
                 <td>
-                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
-                        (click)="editCity(city)"></button>
-                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
-                        (click)="deleteCity(city)"></button>
+                    <p-button pRipple icon="pi pi-pencil" styleClass="p-button-rounded p-button-success mr-2"
+                        (onClick)="editCity(city)"></p-button>
+                    <p-button pRipple icon="pi pi-trash" styleClass="p-button-rounded p-button-warning"
+                        (onClick)="deleteCity(city)"></p-button>
                 </td>
             </tr>
         </ng-template>
@@ -62,10 +62,10 @@
         </div>
     </form>
     <p-footer>
-        <button pButton pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" class="p-button-text"
-            (click)="hideDialog()"></button>
-        <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" class="p-button-text"
-            (click)="saveCity()" [disabled]="!(cityForm.valid)"></button>
+        <p-button pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" styleClass="p-button-text"
+            (onClick)="hideDialog()"></p-button>
+        <p-button pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" styleClass="p-button-text"
+            (onClick)="saveCity()" [disabled]="!(cityForm.valid)"></p-button>
     </p-footer>
 </p-dialog>
 

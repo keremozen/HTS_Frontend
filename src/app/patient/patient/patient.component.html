@@ -152,9 +152,9 @@
                         </div>
                     </div>
                     <div class="field grid mb-2 mr-0 justify-content-end">
-                        <button pButton pRipple label="{{ '::PatientDetail:SaveProfile' | abpLocalization }}"
-                            icon="pi pi-save" class="p-button-success" [disabled]="!(profileForm.valid)"
-                            (click)="onSaveProfile()" [loading]="loading"></button>
+                        <p-button pRipple label="{{ '::PatientDetail:SaveProfile' | abpLocalization }}"
+                            icon="pi pi-save" styleClass="p-button-success" [disabled]="!(profileForm.valid)"
+                            (onClick)="onSaveProfile()" [loading]="loading"></p-button>
                     </div>
                 </div>
             </div>

@@ -5,10 +5,10 @@
 <div class="card">
     <p-toolbar styleClass="mb-4 gap-2">
         <ng-template pTemplate="left">
-            <button pButton pRipple
+            <p-button pRipple
                 label="{{ '::Admin:ContractedInstitution:NewContractedInstitution' | abpLocalization }}"
-                icon="pi pi-plus" class="p-button-success mr-2" (click)="openNewContractedInstitution()"
-                [loading]="loading"></button>
+                icon="pi pi-plus" styleClass="p-button-success mr-2" (onClick)="openNewContractedInstitution()"
+                [loading]="loading"></p-button>
         </ng-template>
     </p-toolbar>
 
@@ -50,8 +50,9 @@
                 <td>{{contractedInstitution.name}}</td>
                 <td>{{contractedInstitution.type?.name}}</td>
                 <td>{{contractedInstitution.kind?.name}}</td>
-                <td>{{contractedInstitution.phoneCountryCode?.phoneCode ??
-                    contractedInstitution.phoneCountryCode?.phoneCode + ' '}}{{contractedInstitution.phoneNumber}}</td>
+                <td>{{contractedInstitution.phoneCountryCode?.phoneCode ?
+                    contractedInstitution.phoneCountryCode?.phoneCode + ' ': ''}}{{contractedInstitution.phoneNumber ?
+                        contractedInstitution.phoneNumber + ' ': ''}}</td>
                 <td>{{contractedInstitution.email}}</td>
                 <td>{{contractedInstitution.site}}</td>
                 <td>{{contractedInstitution.address}}</td>
@@ -64,12 +65,12 @@
                         [ngClass]="{ 'text-green-500 pi-check-circle': contractedInstitution.isActive, 'text-red-500 pi-times-circle': !contractedInstitution.isActive }"></i>
                 </td>
                 <td class="text-right">
-                    <button pButton pRipple icon="pi pi-users" class="p-button-rounded p-button-info"
-                        (click)="openStaffDialog(contractedInstitution)"></button>
-                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success ml-2"
-                        (click)="editContractedInstitution(contractedInstitution)"></button>
-                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning ml-2"
-                        (click)="deleteContractedInstitution(contractedInstitution)"></button>
+                    <p-button pRipple icon="pi pi-users" styleClass="p-button-rounded p-button-info"
+                        (onClick)="openStaffDialog(contractedInstitution)"></p-button>
+                    <p-button pRipple icon="pi pi-pencil" styleClass="p-button-rounded p-button-success ml-2"
+                        (onClick)="editContractedInstitution(contractedInstitution)"></p-button>
+                    <p-button pRipple icon="pi pi-trash" styleClass="p-button-rounded p-button-warning ml-2"
+                        (onClick)="deleteContractedInstitution(contractedInstitution)"></p-button>
                 </td>
             </tr>
         </ng-template>
@@ -200,10 +201,10 @@
         </div>
     </form>
     <p-footer>
-        <button pButton pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" class="p-button-text"
-            (click)="hideDialog()"></button>
-        <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" class="p-button-text"
-            (click)="saveContractedInstitution()" [disabled]="!(contractedInstitutionForm.valid)"></button>
+        <p-button pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" styleClass="p-button-text"
+            (onClick)="hideDialog()"></p-button>
+        <p-button pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" styleClass="p-button-text"
+            (onClick)="saveContractedInstitution()" [disabled]="!(contractedInstitutionForm.valid)"></p-button>
     </p-footer>
 </p-dialog>
 
@@ -213,10 +214,10 @@
     <form #contractedInstitutionStaffForm="ngForm">
         <p-toolbar styleClass="mb-4 gap-2">
             <ng-template pTemplate="left">
-                <button pButton pRipple
+                <p-button pRipple
                     label="{{ '::Admin:ContractedInstitutionStaff:NewContractedInstitutionStaff' | abpLocalization }}"
-                    icon="pi pi-plus" class="p-button-success mr-2" (click)="openNewStaff()"
-                    [loading]="loading"></button>
+                    icon="pi pi-plus" styleClass="p-button-success mr-2" (onClick)="openNewStaff()"
+                    [loading]="loading"></p-button>
             </ng-template>
         </p-toolbar>
         <p-table #dt [value]="staffList" [rows]="10" [paginator]="true" responsiveLayout="stack" [breakpoint]="'960px'"
@@ -241,8 +242,8 @@
             <ng-template pTemplate="body" let-staff let-editing="editing" let-ri="rowIndex">
                 <tr [pEditableRow]="staff">
                     <td>{{staff.nameSurname}}</td>
-                    <td>{{staff.phoneCountryCode?.phoneCode ?? staff.phoneCountryCode?.phoneCode + '
-                        '}}{{staff.phoneNumber}}</td>
+                    <td>{{staff.phoneCountryCode?.phoneCode ? staff.phoneCountryCode?.phoneCode + '
+                        ': ''}}{{staff.phoneNumber? staff.phoneNumber:''}}</td>
                     <td>{{staff.email}}</td>
                     <td class="text-center"><i class="pi"
                             [ngClass]="{ 'text-green-500 pi-check-circle': staff.isDefault, 'text-red-500 pi-times-circle': !staff.isDefault }"></i>
@@ -251,10 +252,10 @@
                             [ngClass]="{ 'text-green-500 pi-check-circle': staff.isActive, 'text-red-500 pi-times-circle': !staff.isActive }"></i>
                     </td>
                     <td>
-                        <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
-                            (click)="editStaff(staff)"></button>
-                        <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
-                            (click)="deleteStaff(staff)"></button>
+                        <p-button pRipple icon="pi pi-pencil" styleClass="p-button-rounded p-button-success mr-2"
+                            (onClick)="editStaff(staff)"></p-button>
+                        <p-button pRipple icon="pi pi-trash" styleClass="p-button-rounded p-button-warning"
+                            (onClick)="deleteStaff(staff)"></p-button>
                     </td>
                 </tr>
             </ng-template>
@@ -308,8 +309,7 @@
                 </div>
             </div>
             <div class="field">
-                <label for="email">{{ '::Admin:ContractedInstitutionStaff:Column:EMail' | abpLocalization }}&nbsp;<font
-                        style="color:red">*</font></label>
+                <label for="email">{{ '::Admin:ContractedInstitutionStaff:Column:EMail' | abpLocalization }}</label>
                 <input type="text" pInputText id="email" name="email" #email="ngModel" [email]="true"
                     [(ngModel)]="contractedInstitutionStaff.email" />
                 <small class="p-error" *ngIf="email.errors?.email">{{ '::Message:WrongEmailFormat' |
@@ -334,11 +334,11 @@
         </div>
     </form>
     <p-footer>
-        <button pButton pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" class="p-button-text"
-            (click)="hideStaffDialog()"></button>
-        <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" class="p-button-text"
-            (click)="saveContractedInstitutionStaff()"
-            [disabled]="!(contractedInstitutionStaffEditForm.valid)"></button>
+        <p-button pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" styleClass="p-button-text"
+            (onClick)="hideStaffDialog()"></p-button>
+        <p-button pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" styleClass="p-button-text"
+            (onClick)="saveContractedInstitutionStaff()"
+            [disabled]="!(contractedInstitutionStaffEditForm.valid)"></p-button>
     </p-footer>
 </p-dialog>
 

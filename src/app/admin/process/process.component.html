@@ -5,8 +5,8 @@
 <div class="card">
     <p-toolbar styleClass="mb-4 gap-2">
         <ng-template pTemplate="left">
-            <button pButton pRipple label="{{ '::Admin:Process:NewProcess' | abpLocalization }}" icon="pi pi-plus"
-                class="p-button-success mr-2" (click)="openNewProcess()" [loading]="loading"></button>
+            <p-button pRipple label="{{ '::Admin:Process:NewProcess' | abpLocalization }}" icon="pi pi-plus"
+            styleClass="p-button-success mr-2" (onClick)="openNewProcess()" [loading]="loading"></p-button>
         </ng-template>
     </p-toolbar>
 
@@ -28,6 +28,8 @@
                 </th>
                 <th pSortableColumn="processType.name">{{ '::Admin:Process:Column:Type' | abpLocalization }} <p-sortIcon
                         field="processType.name"></p-sortIcon></th>
+                <th pSortableColumn="processKind.name">{{ '::Admin:Process:Column:Kind' | abpLocalization }} <p-sortIcon
+                            field="processKind.name"></p-sortIcon></th>
                 <th class="w-8rem text-center">{{ '::Admin:Process:Column:IsActive' | abpLocalization }}</th>
                 <th class="w-8rem"></th>
             </tr>
@@ -39,14 +41,15 @@
                 <td>{{process.englishName}}</td>
                 <td>{{process.description}}</td>
                 <td>{{process.processType?.name}}</td>
+                <td>{{process.processKind?.name}}</td>
                 <td class="text-center"><i class="pi"
                         [ngClass]="{ 'text-green-500 pi-check-circle': process.isActive, 'text-red-500 pi-times-circle': !process.isActive }"></i>
                 </td>
                 <td>
-                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
-                        (click)="editProcess(process)"></button>
-                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
-                        (click)="deleteProcess(process)"></button>
+                    <p-button pRipple icon="pi pi-pencil" styleClass="p-button-rounded p-button-success mr-2"
+                        (onClick)="editProcess(process)"></p-button>
+                    <p-button pRipple icon="pi pi-trash" styleClass="p-button-rounded p-button-warning"
+                        (onClick)="deleteProcess(process)"></p-button>
                 </td>
             </tr>
         </ng-template>
@@ -121,6 +124,22 @@
                         }}</small>
                 </div>
                 <div class="field">
+                    <label for="processKind">{{ '::Admin:Process:Column:Kind' | abpLocalization
+                        }}&nbsp;<font style="color:red">*
+                        </font></label>
+                    <p-dropdown id="processKind" name="processKind" [filter]="true" filterBy="name" [showClear]="true"
+                        #processKind="ngModel" [options]="processKindList" [(ngModel)]="process.processKindId"
+                        [style]="{'width':'100%'}" styleClass="filterDropDown" optionValue="id"
+                        placeholder="{{ '::Select' | abpLocalization }}" optionLabel="name" appendTo="body"
+                        emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
+                        emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}" required>
+                    </p-dropdown>
+                    <small class="p-error" *ngIf="!(processKind.valid || processKind.pristine)">{{
+                        '::Message:RequiredField' |
+                        abpLocalization
+                        }}</small>
+                </div>
+                <div class="field">
                     <label for="isActive">{{ '::Admin:Process:Column:IsActive' | abpLocalization }}</label>
                     <div class="w-full">
                         <p-checkbox id="isActive" name="isActive" #isActive="ngModel" [(ngModel)]="process.isActive"
@@ -138,10 +157,10 @@
                         [breakpoint]="'960px'" [rowHover]="true" [loading]="loading" [showCurrentPageReport]="false">
                         <ng-template pTemplate="caption">
                             <div class="flex align-items-center justify-content-end">
-                                <button pButton pRipple
+                                <p-button pRipple
                                     label="{{ '::Admin:Process:ProcessCost:NewCost' | abpLocalization }}"
-                                    icon="pi pi-plus" class="p-button-success" (click)="openNewProcessCost()"
-                                    [loading]="loading" [style]="{'width':'unset'}"></button>
+                                    icon="pi pi-plus" styleClass="p-button-success" (onClick)="openNewProcessCost()"
+                                    [loading]="loading" [style]="{'width':'unset'}"></p-button>
                             </div>
                         </ng-template>
                         <ng-template pTemplate="header">
@@ -172,11 +191,11 @@
                                 <td>{{processCost.hospitalPrice | currency:'TRY':'symbol'}}</td>
                                 <td>{{processCost.ushasPrice | currency:'TRY':'symbol'}}</td>
                                 <td>
-                                    <button pButton pRipple icon="pi pi-pencil"
-                                        class="p-button-rounded p-button-success mr-2"
-                                        (click)="editProcessCost(processCost)"></button>
-                                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
-                                        (click)="deleteProcessCost(processCost)"></button>
+                                    <p-button pRipple icon="pi pi-pencil"
+                                    styleClass="p-button-rounded p-button-success mr-2"
+                                        (onClick)="editProcessCost(processCost)"></p-button>
+                                    <p-button pRipple icon="pi pi-trash" styleClass="p-button-rounded p-button-warning"
+                                        (onClick)="deleteProcessCost(processCost)"></p-button>
                                 </td>
                             </tr>
                         </ng-template>
@@ -205,10 +224,10 @@
                         [showCurrentPageReport]="false">
                         <ng-template pTemplate="caption">
                             <div class="flex align-items-center justify-content-end">
-                                <button pButton pRipple
+                                <p-button pRipple
                                     label="{{ '::Admin:Process:ProcessRelation:NewRelation' | abpLocalization }}"
-                                    icon="pi pi-plus" class="p-button-success" (click)="openNewProcessRelation()"
-                                    [loading]="loading" [style]="{'width':'unset'}"></button>
+                                    icon="pi pi-plus" styleClass="p-button-success" (onClick)="openNewProcessRelation()"
+                                    [loading]="loading" [style]="{'width':'unset'}"></p-button>
                             </div>
                         </ng-template>
                         <ng-template pTemplate="header">
@@ -225,6 +244,8 @@
                                 </th>
                                 <th pSortableColumn="processType.name">{{ '::Admin:Process:Column:Type' |
                                     abpLocalization }} <p-sortIcon field="processType.name"></p-sortIcon></th>
+                                <th pSortableColumn="processKind.name">{{ '::Admin:Process:Column:Kind' |
+                                    abpLocalization }} <p-sortIcon field="processKind.name"></p-sortIcon></th>
                                 <th class="w-8rem text-center">{{ '::Admin:Process:Column:IsActive' | abpLocalization }}
                                 </th>
                                 <th class="w-8rem"></th>
@@ -236,12 +257,13 @@
                                 <td>{{process.name}}</td>
                                 <td>{{process.description}}</td>
                                 <td>{{process.processType?.name}}</td>
+                                <td>{{process.processKind?.name}}</td>
                                 <td class="text-center"><i class="pi"
                                         [ngClass]="{ 'text-green-500 pi-check-circle': process.isActive, 'text-red-500 pi-times-circle': !process.isActive }"></i>
                                 </td>
                                 <td>
-                                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
-                                        (click)="deleteProcessRelation(process)"></button>
+                                    <p-button pRipple icon="pi pi-trash" styleClass="p-button-rounded p-button-warning"
+                                        (onClick)="deleteProcessRelation(process)"></p-button>
                                 </td>
                             </tr>
                         </ng-template>
@@ -261,10 +283,10 @@
         </div>
     </form>
     <p-footer>
-        <button pButton pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" class="p-button-text"
-            (click)="hideDialog()"></button>
-        <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" class="p-button-text"
-            (click)="saveProcess()" [disabled]="!(processForm.valid)"></button>
+        <p-button pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" styleClass="p-button-text"
+            (onClick)="hideDialog()"></p-button>
+        <p-button pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" styleClass="p-button-text"
+            (onClick)="saveProcess()" [disabled]="!(processForm.valid)"></p-button>
     </p-footer>
 </p-dialog>
 
@@ -326,11 +348,11 @@
         </div>
     </form>
     <p-footer>
-        <button pButton pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" class="p-button-text"
-            (click)="hideCostDialog()"></button>
-        <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" class="p-button-text"
-            (click)="saveProcessCost()"
-            [disabled]="!(costForm.valid) || cost?.validityEndDate < cost?.validityStartDate"></button>
+        <p-button pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" styleClass="p-button-text"
+            (onClick)="hideCostDialog()"></p-button>
+        <p-button pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" styleClass="p-button-text"
+            (onClick)="saveProcessCost()"
+            [disabled]="!(costForm.valid) || cost?.validityEndDate < cost?.validityStartDate"></p-button>
     </p-footer>
 </p-dialog>
 
@@ -367,10 +389,10 @@
         </div>
     </form>
     <p-footer>
-        <button pButton pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" class="p-button-text"
-            (click)="hideProcessRelationDialog()"></button>
-        <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" class="p-button-text"
-            (click)="saveProcessRelation()" [disabled]="!(processRelationForm.valid)"></button>
+        <p-button pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" styleClass="p-button-text"
+            (onClick)="hideProcessRelationDialog()"></p-button>
+        <p-button pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" styleClass="p-button-text"
+            (onClick)="saveProcessRelation()" [disabled]="!(processRelationForm.valid)"></p-button>
     </p-footer>
 </p-dialog>
 

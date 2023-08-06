@@ -8,9 +8,10 @@ import { GenderDto } from "@proxy/dto/gender";
 import { HospitalDto } from "@proxy/dto/hospital";
 import { NationalityDto } from "@proxy/dto/nationality";
 import { PatientAdmissionMethodDto } from "@proxy/dto/patient-admission-method";
+import { ProcessKindDto } from "@proxy/dto/process-kind";
 import { ProcessTypeDto } from "@proxy/dto/process-type";
 import { TreatmentTypeDto } from "@proxy/dto/treatment-type";
-import { BranchService, CityService, ContractedInstitutionService, CurrencyService, DocumentTypeService, GenderService, HospitalService, LanguageService, NationalityService, PatientAdmissionMethodService, ProcessTypeService, TreatmentTypeService } from "@proxy/service";
+import { BranchService, CityService, ContractedInstitutionService, CurrencyService, DocumentTypeService, GenderService, HospitalService, LanguageService, NationalityService, PatientAdmissionMethodService, ProcessKindService, ProcessTypeService, TreatmentTypeService } from "@proxy/service";
 import { forkJoin } from "rxjs";
 
 @Injectable({
@@ -29,7 +30,9 @@ export class CommonService {
     public branchList: BranchDto[] = [];
     public treatmentTypeList: TreatmentTypeDto[] = [];
     public processTypeList: ProcessTypeDto[] = [];
+    public processKindList: ProcessKindDto[] = [];
     public contractedInstitutionList: ContractedInstitutionDto[] = [];
+
 
     constructor(
         private nationalityService: NationalityService,
@@ -43,6 +46,7 @@ export class CommonService {
         private branchService: BranchService,
         private treatmentTypeService: TreatmentTypeService,
         private processTypeService: ProcessTypeService,
+        private processKindService: ProcessKindService,
         private contractedInstitutionService: ContractedInstitutionService
     ) {
     }
@@ -61,6 +65,7 @@ export class CommonService {
                 this.branchService.getList(true),
                 this.treatmentTypeService.getList(true),
                 this.processTypeService.getList(true),
+                this.processKindService.getList(true),
                 this.contractedInstitutionService.getList(true)
             ]).subscribe(
                 {
@@ -76,6 +81,7 @@ export class CommonService {
                         resBranchList,
                         resTreatmentTypeList,
                         resProcessTypeList,
+                        resProcessKindList,
                         resContractedInstitutionList
                     ]) => {
                         this.nationalityList = resNationalityList.items;
@@ -89,6 +95,7 @@ export class CommonService {
                         this.branchList = resBranchList.items;
                         this.treatmentTypeList = resTreatmentTypeList.items;
                         this.processTypeList = resProcessTypeList.items;
+                        this.processKindList = resProcessKindList.items;
                         this.contractedInstitutionList = resContractedInstitutionList.items;
                     },
                     error: (error: any) => {

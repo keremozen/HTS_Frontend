@@ -29,7 +29,6 @@ export class AppComponent implements OnInit {
       component: PrimeApplicationLayoutComponent,
       key: eThemeLeptonXComponents.ApplicationLayout,
     });
-    
   }
 
   ngOnInit(): void {

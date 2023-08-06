@@ -2,13 +2,13 @@ import { Component, Injector } from '@angular/core';
 import { CityDto } from '@proxy/dto/city';
 import { HospitalDto, SaveHospitalDto } from '@proxy/dto/hospital';
 import { HospitalStaffDto, SaveHospitalStaffDto } from '@proxy/dto/hospital-staff';
+import { HospitalUHBStaffDto, SaveHospitalUHBStaffDto } from '@proxy/dto/hospital-uhbstaff';
 import { NationalityDto } from '@proxy/dto/nationality';
-import { CityService, HospitalService, HospitalStaffService, NationalityService, UserService } from '@proxy/service';
+import { HospitalService, HospitalStaffService, HospitalUHBStaffService, UserService } from '@proxy/service';
 import { IdentityUserDto } from '@proxy/volo/abp/identity';
 import { forkJoin } from 'rxjs';
 import { CommonService } from 'src/app/services/common.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
-
 
 @Component({
   selector: 'app-hospital',
@@ -28,16 +28,21 @@ export class HospitalComponent extends AppComponentBase {
   hospitalDialog: boolean;
   hospitalStaffListDialog: boolean;
   hospitalStaffEditDialog: boolean;
+  hospitalUHBStaffListDialog: boolean;
+  hospitalUHBStaffEditDialog: boolean;
   hospitalList: HospitalWithStaffNames[];
   hospital: SaveHospitalDto;
   isEdit: boolean;
   hospitalToBeEdited: HospitalDto;
-  loading: boolean;
   totalRecords: number = 0;
   hospitalStaffList: HospitalStaffDto[] = [];
   hospitalStaffTotalRecords: number = 0;
+  hospitalUHBStaffList: HospitalUHBStaffDto[] = [];
+  hospitalUHBStaffTotalRecords: number = 0;
   hospitalStaff: SaveHospitalStaffDto;
   hospitalStaffToBeEdited: HospitalStaffDto;
+  hospitalUHBStaff: SaveHospitalUHBStaffDto;
+  hospitalUHBStaffToBeEdited: HospitalUHBStaffDto;
   uhbUserList: IdentityUserDto[] = [];
   selectedHospitalStaff: IdentityUserDto;
   cityList: CityDto[] = [];
@@ -46,6 +51,7 @@ export class HospitalComponent extends AppComponentBase {
     injector: Injector,
     private hospitalService: HospitalService,
     private hospitalStaffService: HospitalStaffService,
+    private hospitalUHBStaffService: HospitalUHBStaffService,
     private commonService: CommonService,
     private userService: UserService
   ) {
@@ -57,10 +63,8 @@ export class HospitalComponent extends AppComponentBase {
   }
 
   fetchData() {
-    this.loading = true;
     this.nationalityList = this.commonService.nationalityList;
     this.cityList = this.commonService.cityList;
-
     forkJoin([
       this.hospitalService.getList(),
       this.userService.getUhbStaffList()
@@ -70,25 +74,21 @@ export class HospitalComponent extends AppComponentBase {
           resHospitalList,
           resUserList
         ]) => {
-          this.commonService.hospitalList = resHospitalList.items.filter(h=>h.isActive==true);
+          this.commonService.hospitalList = resHospitalList.items.filter(h => h.isActive == true);
           this.totalRecords = resHospitalList.totalCount;
           this.hospitalList = [];
           resHospitalList.items.forEach(hospital => {
             let hospitalwithstaff = hospital as HospitalWithStaffNames;
             hospitalwithstaff.hospitalStaffNames = hospital.hospitalStaffs.filter(s => s.isActive).map(s => s.user.name + " " + s.user.surname).join("<br>");
+            hospitalwithstaff.hospitalUHBStaffNames = hospital.hospitalUHBStaffs.map(s => s.name + " " + s.surname).join("<br>");
             this.hospitalList.push(hospitalwithstaff);
           });
           this.uhbUserList = resUserList;
           if (this.hospitalToBeEdited) {
             this.hospitalToBeEdited = this.hospitalList.find(h=>h.id == this.hospitalToBeEdited.id);
             this.fetchHospitalStaff();
+            this.fetchHospitalUHBStaff();
           }
-        },
-        error: () => {
-          this.loading = false;
-        },
-        complete: () => {
-          this.loading = false;
         }
       }
     );
@@ -162,9 +162,20 @@ export class HospitalComponent extends AppComponentBase {
     this.hospitalStaffListDialog = true;
   }
 
+  openUHBStaffDialog(hospital: HospitalDto) {
+    this.hospitalToBeEdited = hospital;
+    this.fetchHospitalUHBStaff();
+    this.hospitalUHBStaffListDialog = true;
+  }
+
   fetchHospitalStaff() {
     this.hospitalStaffList = this.hospitalToBeEdited.hospitalStaffs as HospitalStaffDto[];
     this.hospitalStaffTotalRecords = this.hospitalToBeEdited.hospitalStaffs.length;
+  }
+
+  fetchHospitalUHBStaff() {
+    this.hospitalUHBStaffList = this.hospitalToBeEdited.hospitalUHBStaffs as HospitalUHBStaffDto[];
+    this.hospitalUHBStaffTotalRecords = this.hospitalToBeEdited.hospitalUHBStaffs.length;
   }
 
   openNewStaff() {
@@ -175,12 +186,26 @@ export class HospitalComponent extends AppComponentBase {
     this.hospitalStaffEditDialog = true;
   }
 
+  openNewUHBStaff() {
+    this.isEdit = false;
+    this.hospitalUHBStaff = {} as SaveHospitalUHBStaffDto;
+    this.hospitalUHBStaff.hospitalId = this.hospitalToBeEdited.id;
+    this.hospitalUHBStaffEditDialog = true;
+  }
+
   editStaff(hospitalStaff: HospitalStaffDto) {
     this.isEdit = true;
     this.hospitalStaffToBeEdited = hospitalStaff;
     this.hospitalStaff = { ...hospitalStaff as SaveHospitalStaffDto };
     this.selectedHospitalStaff = hospitalStaff.user;
     this.hospitalStaffEditDialog = true;
+  }
+
+  editUHBStaff(hospitalUHBStaff: HospitalUHBStaffDto) {
+    this.isEdit = true;
+    this.hospitalUHBStaffToBeEdited = hospitalUHBStaff;
+    this.hospitalUHBStaff = { ...hospitalUHBStaff as SaveHospitalUHBStaffDto };
+    this.hospitalUHBStaffEditDialog = true;
   }
 
   deleteStaff(hospitalStaff: HospitalStaffDto) {
@@ -194,6 +219,23 @@ export class HospitalComponent extends AppComponentBase {
             this.success(this.l('::Message:SuccessfulDeletion', this.l('::Admin:HospitalStaff:Name')));
             this.fetchData();
             this.hideStaffDialog();
+          }
+        });
+      }
+    });
+  }
+
+  deleteUHBStaff(hospitalUHBStaff: HospitalUHBStaffDto) {
+    this.confirm({
+      message: this.l('::Message:DeleteConfirmation', (hospitalUHBStaff.name + " " + hospitalUHBStaff.surname)),
+      header: this.l('::Confirm'),
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.hospitalUHBStaffService.delete(hospitalUHBStaff.id).subscribe({
+          complete: () => {
+            this.success(this.l('::Message:SuccessfulDeletion', this.l('::Admin:HospitalUHBStaff:Name')));
+            this.fetchData();
+            this.hideUHBStaffDialog();
           }
         });
       }
@@ -229,6 +271,33 @@ export class HospitalComponent extends AppComponentBase {
     }
   }
 
+  saveHospitalUHBStaff() {
+    let staffDto: SaveHospitalUHBStaffDto = {
+      hospitalId: this.hospitalToBeEdited.id,
+      name: this.hospitalUHBStaff.name,
+      surname: this.hospitalUHBStaff.surname,
+      email: this.hospitalUHBStaff.email
+    };
+    if (!this.isEdit) {
+      this.hospitalUHBStaffService.create(staffDto).subscribe({
+        complete: () => {
+          this.fetchData();
+          this.hideUHBStaffDialog();
+          this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:HospitalUHBStaff:Name')));
+        }
+      });
+    }
+    else {
+      this.hospitalUHBStaffService.update(this.hospitalUHBStaffToBeEdited.id, staffDto).subscribe({
+        complete: () => {
+          this.fetchData();
+          this.hideUHBStaffDialog();
+          this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:HospitalUHBStaff:Name')));
+        }
+      });
+    }
+  }
+
   hideStaffDialog() {
     this.hospitalStaff = null;
     this.hospitalStaffToBeEdited = null;
@@ -236,9 +305,17 @@ export class HospitalComponent extends AppComponentBase {
     this.selectedHospitalStaff = null;
   }
 
+  hideUHBStaffDialog() {
+    this.hospitalUHBStaff = null;
+    this.hospitalUHBStaffToBeEdited = null;
+    this.hospitalUHBStaffEditDialog = false;
+    
+  }
+
 }
 
 class HospitalWithStaffNames implements HospitalDto {
+
   name?: string;
   code?: string;
   address?: string;
@@ -250,7 +327,8 @@ class HospitalWithStaffNames implements HospitalDto {
   phoneCountryCode: NationalityDto;
   city: CityDto;
   hospitalStaffs: HospitalStaffDto[];
+  hospitalUHBStaffs: HospitalUHBStaffDto[];
   hospitalStaffNames: string;
+  hospitalUHBStaffNames: string;
   id?: number;
-
 }

@@ -5,10 +5,10 @@
 <div class="card">
     <p-toolbar styleClass="mb-4 gap-2">
         <ng-template pTemplate="left">
-            <button pButton pRipple
+            <p-button pRipple
                 label="{{ '::Admin:PatientAdmissionMethod:NewPatientAdmissionMethod' | abpLocalization }}"
-                icon="pi pi-plus" class="p-button-success mr-2" (click)="openNewPatientAdmissionMethod()"
-                [loading]="loading"></button>
+                icon="pi pi-plus" styleClass="p-button-success mr-2" (onClick)="openNewPatientAdmissionMethod()"
+                [loading]="loading"></p-button>
         </ng-template>
     </p-toolbar>
 
@@ -37,10 +37,10 @@
                         [ngClass]="{ 'text-green-500 pi-check-circle': patientAdmissionMethod.isActive, 'text-red-500 pi-times-circle': !patientAdmissionMethod.isActive }"></i>
                 </td>
                 <td>
-                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
-                        (click)="editPatientAdmissionMethod(patientAdmissionMethod)"></button>
-                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
-                        (click)="deletePatientAdmissionMethod(patientAdmissionMethod)"></button>
+                    <p-button pRipple icon="pi pi-pencil" styleClass="p-button-rounded p-button-success mr-2"
+                        (onClick)="editPatientAdmissionMethod(patientAdmissionMethod)"></p-button>
+                    <p-button pRipple icon="pi pi-trash" styleClass="p-button-rounded p-button-warning"
+                        (onClick)="deletePatientAdmissionMethod(patientAdmissionMethod)"></p-button>
                 </td>
             </tr>
         </ng-template>
@@ -90,10 +90,10 @@
         </div>
     </form>
     <p-footer>
-        <button pButton pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" class="p-button-text"
-            (click)="hideDialog()"></button>
-        <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" class="p-button-text"
-            (click)="savePatientAdmissionMethod()" [disabled]="!(patientAdmissionMethodForm.valid)"></button>
+        <p-button pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" styleClass="p-button-text"
+            (onClick)="hideDialog()"></p-button>
+        <p-button pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" styleClass="p-button-text"
+            (onClick)="savePatientAdmissionMethod()" [disabled]="!(patientAdmissionMethodForm.valid)"></p-button>
     </p-footer>
 </p-dialog>
 

@@ -18,6 +18,7 @@ import { RejectReasonComponent } from './reject-reason/reject-reason.component';
 import { PaymentReasonComponent } from './payment-reason/payment-reason.component';
 import { ContractedInstitutionTypeComponent } from './contracted-institution-type/contracted-institution-type.component';
 import { ContractedInstitutionKindComponent } from './contracted-institution-kind/contracted-institution-kind.component';
+import { ProcessKindComponent } from './process-kind/process-kind.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { ContractedInstitutionKindComponent } from './contracted-institution-kin
     ProcessTypeComponent,
     ProcessComponent,
     RejectReasonComponent,
-    PaymentReasonComponent
+    PaymentReasonComponent,
+    ProcessKindComponent
   ],
   imports: [
     SharedModule,

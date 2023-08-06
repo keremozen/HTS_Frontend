@@ -145,9 +145,9 @@
                 </div>
             </div>
             <div class="field grid mb-2 justify-content-end">
-                <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-save"
-                    class="p-button-secondary mr-2" [disabled]="!(salesInfoAndCompanionInfoForm.valid)"
-                    (click)="saveSalesAndCompanionInfo()"></button>
+                <p-button pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-save"
+                styleClass="p-button-success mr-2" [disabled]="!(salesInfoAndCompanionInfoForm.valid)"
+                    (onClick)="saveSalesAndCompanionInfo()"></p-button>
             </div>
         </div>
     </div>

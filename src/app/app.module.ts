@@ -63,7 +63,13 @@ echarts.registerTheme('macarons', Marcaron);
     FeatureManagementModule.forRoot(),
     NgxEchartsModule.forRoot({ echarts }),
   ],
-  declarations: [AppComponent, PrimeApplicationLayoutComponent, AppMenuComponent, TopbarComponent, LanguageComponent, CurrentUserComponent],
+  declarations: [AppComponent, 
+    PrimeApplicationLayoutComponent, 
+    AppMenuComponent, 
+    TopbarComponent, 
+    LanguageComponent, 
+    CurrentUserComponent
+  ],
   providers: [
     APP_ROUTE_PROVIDER,
     {

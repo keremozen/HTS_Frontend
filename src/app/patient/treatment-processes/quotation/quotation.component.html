@@ -83,16 +83,16 @@
                         <td class="white-space-nowrap">
                             <p-button
                                 pTooltip="{{ '::Quotation:ProformaTable:Button:SendToPatient' | abpLocalization }}"
-                                icon="pi pi-send" styleClass="p-button" (click)="onSendToPatientClick(proforma)"
+                                icon="pi pi-send" styleClass="p-button" (onClick)="onSendToPatientClick(proforma)"
                                 *ngIf="proforma.proformaStatusId == proformaStatusEnum.WillBeTransferedToPatient"></p-button>
                             <p-button pTooltip="{{ '::Quotation:ProformaTable:Button:Approve' | abpLocalization }}"
-                                icon="pi pi-check" styleClass="p-button-success" (click)="onApproveClick(proforma)"
+                                icon="pi pi-check" styleClass="p-button-success" (onClick)="onApproveClick(proforma)"
                                 *ngIf="proforma.proformaStatusId == proformaStatusEnum.MFBWaitingApproval || proforma.proformaStatusId == proformaStatusEnum.WaitingForPatientApproval"></p-button>
                             <p-button pTooltip="{{ '::Quotation:ProformaTable:Button:Reject' | abpLocalization }}"
-                                icon="pi pi-times" styleClass="p-button-danger ml-1" (click)="onRejectClick(proforma)"
+                                icon="pi pi-times" styleClass="p-button-danger ml-1" (onClick)="onRejectClick(proforma)"
                                 *ngIf="proforma.proformaStatusId == proformaStatusEnum.MFBWaitingApproval || proforma.proformaStatusId == proformaStatusEnum.WaitingForPatientApproval"></p-button>
                             <p-button pTooltip="{{ '::Quotation:ProformaTable:Button:Payment' | abpLocalization }}"
-                                icon="pi pi-dollar" styleClass="p-button" (click)="onPaymentClick(proforma)"
+                                icon="pi pi-dollar" styleClass="p-button" (onClick)="onPaymentClick(proforma)"
                                 *ngIf="proforma.proformaStatusId == proformaStatusEnum.WaitingForPayment"></p-button>
                         </td>
                     </tr>
@@ -141,10 +141,10 @@
         </div>
     </form>
     <p-footer>
-        <button pButton pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" class="p-button-text"
-            (click)="hideMFBrejectDialog()"></button>
-        <button pButton pRipple label="{{ '::RejectResponse' | abpLocalization }}" icon="pi pi-check"
-            class="p-button-text" (click)="onMFBReject()" [disabled]="!(mfbRejectForm.valid)"></button>
+        <p-button pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" styleClass="p-button-text"
+            (onClick)="hideMFBrejectDialog()"></p-button>
+        <p-button pRipple label="{{ '::RejectResponse' | abpLocalization }}" icon="pi pi-check"
+            styleClass="p-button-text" (onClick)="onMFBReject()" [disabled]="!(mfbRejectForm.valid)"></p-button>
     </p-footer>
 </p-dialog>
 
@@ -168,10 +168,10 @@
         </div>
     </form>
     <p-footer>
-        <button pButton pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" class="p-button-text"
-            (click)="hidePatientRejectDialog()"></button>
-        <button pButton pRipple label="{{ '::RejectResponse' | abpLocalization }}" icon="pi pi-check"
-            class="p-button-text" (click)="onPatientReject()" [disabled]="!(patientRejectForm.valid)"></button>
+        <p-button pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" styleClass="p-button-text"
+            (onClick)="hidePatientRejectDialog()"></p-button>
+        <p-button pRipple label="{{ '::RejectResponse' | abpLocalization }}" icon="pi pi-check"
+            styleClass="p-button-text" (onClick)="onPatientReject()" [disabled]="!(patientRejectForm.valid)"></p-button>
     </p-footer>
 </p-dialog>
 

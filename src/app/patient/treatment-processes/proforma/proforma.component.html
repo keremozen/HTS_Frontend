@@ -52,8 +52,8 @@
                 <div class="p-toolbar-group-start">
                 </div>
                 <div class="p-toolbar-group-end p-0">
-                    <button pButton pRipple label="{{ '::Proforma:TreatmentItem:Button:NewItem' | abpLocalization }}"
-                        icon="pi pi-plus" class="p-button-success ml-2" (click)="onNewTreatmentItem()"></button>
+                    <p-button pRipple label="{{ '::Proforma:TreatmentItem:Button:NewItem' | abpLocalization }}"
+                        icon="pi pi-plus" styleClass="p-button-success ml-2" (onClick)="onNewTreatmentItem()"></p-button>
                 </div>
             </p-toolbar>
             <p-table #dt [value]="treatmentItemList" [rows]="5" styleClass="pt-3" [paginator]="true" [rowHover]="true"
@@ -237,10 +237,10 @@
                             <div class="p-toolbar-group-start">
                             </div>
                             <div class="p-toolbar-group-end p-0">
-                                <button pButton pRipple
+                                <p-button pRipple
                                     label="{{ '::Proforma:NotIncludingService:Button:NewService' | abpLocalization }}"
-                                    icon="pi pi-plus" class="p-button-success ml-2"
-                                    (click)="onNewNotIncludingService()"></button>
+                                    icon="pi pi-plus" styleClass="p-button-success ml-2"
+                                    (onClick)="onNewNotIncludingService()"></p-button>
                             </div>
                         </p-toolbar>
                         <p-table #dt [value]="proformaNotIncludingServiceList" [rows]="5" styleClass="pt-3"
@@ -263,9 +263,9 @@
                                     <td>{{item.rowNumber}}</td>
                                     <td>{{item.description}}</td>
                                     <td *ngIf="!isDisabled">
-                                        <button pButton pRipple icon="pi pi-trash"
-                                            class="p-button-rounded p-button-danger"
-                                            (click)="removeNotIncludingService(item)"></button>
+                                        <p-button pRipple icon="pi pi-trash"
+                                        styleClass="p-button-rounded p-button-danger"
+                                            (onClick)="removeNotIncludingService(item)"></p-button>
                                     </td>
                                 </tr>
                             </ng-template>
@@ -383,11 +383,11 @@
                         class="w-full"></textarea>
                 </fieldset>
                 <div class="text-right">
-                    <button pButton pRipple label="{{ '::Proforma:Button:Save' | abpLocalization }}"
-                        class="p-button-success ml-2 mt-4" (click)="onSaveProforma()" *ngIf="!isDisabled"></button>
-                    <button pButton pRipple class="p-button-success ml-2 mt-4" [disabled]="!this.selectedProformaId"
-                        label="{{ '::Proforma:Button:Send' | abpLocalization }}" (click)="onSendProforma()"
-                        *ngIf="!isDisabled"></button>
+                    <p-button pRipple label="{{ '::Proforma:Button:Save' | abpLocalization }}"
+                    styleClass="p-button-success ml-2 mt-4" (onClick)="onSaveProforma()" *ngIf="!isDisabled"></p-button>
+                    <p-button pRipple styleClass="p-button-success ml-2 mt-4" [disabled]="!this.selectedProformaId"
+                        label="{{ '::Proforma:Button:Send' | abpLocalization }}" (onClick)="onSendProforma()"
+                        *ngIf="!isDisabled"></p-button>
                 </div>
             </div>
         </div>
@@ -439,10 +439,10 @@
         </div>
     </form>
     <p-footer>
-        <button pButton pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" class="p-button-text"
-            (click)="hideTreatmentItemDialog()"></button>
-        <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" class="p-button-text"
-            (click)="addTreatmentItem()" [disabled]="!(processForm.valid)"></button>
+        <p-button pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" styleClass="p-button-text"
+            (onClick)="hideTreatmentItemDialog()"></p-button>
+        <p-button pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" styleClass="p-button-text"
+            (onClick)="addTreatmentItem()" [disabled]="!(processForm.valid)"></p-button>
     </p-footer>
 </p-dialog>
 
@@ -466,10 +466,10 @@
         </div>
     </form>
     <p-footer>
-        <button pButton pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" class="p-button-text"
-            (click)="hideNotIncludingItemsDialog()"></button>
-        <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" class="p-button-text"
-            (click)="addNotIncludingService()" [disabled]="!(notIncludingServiceForm.valid)"></button>
+        <p-button pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" styleClass="p-button-text"
+            (onClick)="hideNotIncludingItemsDialog()"></p-button>
+        <p-button pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" styleClass="p-button-text"
+            (onClick)="addNotIncludingService()" [disabled]="!(notIncludingServiceForm.valid)"></p-button>
     </p-footer>
 </p-dialog>
 

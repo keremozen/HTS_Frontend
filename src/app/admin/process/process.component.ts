@@ -1,11 +1,13 @@
 import { Component, Injector } from '@angular/core';
 import { ProcessDto, SaveProcessDto } from '@proxy/dto/process';
 import { ProcessCostDto, SaveProcessCostDto } from '@proxy/dto/process-cost';
+import { ProcessKindDto } from '@proxy/dto/process-kind';
 import { ProcessRelationDto, SaveProcessRelationDto } from '@proxy/dto/process-relation';
 import { ProcessTypeDto } from '@proxy/dto/process-type';
 import { ProcessTypeService } from '@proxy/service';
 import { ProcessService } from '@proxy/service/process.service';
 import { forkJoin } from 'rxjs';
+import { CommonService } from 'src/app/services/common.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 
@@ -26,6 +28,7 @@ export class ProcessComponent extends AppComponentBase {
     processDialog: boolean;
     processList: ProcessDto[];
     processTypeList: ProcessTypeDto[] = [];
+    processKindList: ProcessKindDto[] = [];
     processCostList: SaveProcessCostDto[] = [];
     includedProcessList: ProcessDto[] = [];
     processRelationList: SaveProcessRelationDto[] = [];
@@ -48,7 +51,7 @@ export class ProcessComponent extends AppComponentBase {
     constructor(
         injector: Injector,
         private processService: ProcessService,
-        private processTypeListService: ProcessTypeService
+        private commonService: CommonService
     ) {
         super(injector);
     }
@@ -58,16 +61,16 @@ export class ProcessComponent extends AppComponentBase {
     }
 
     fetchData() {
+        this.processTypeList = this.commonService.processTypeList;
+        this.processKindList = this.commonService.processKindList;
         this.loading = true;
 
         forkJoin([
-            this.processService.getList(),
-            this.processTypeListService.getList()
+            this.processService.getList()
         ]).subscribe(
             {
                 next: ([
-                    resProcessList,
-                    resProcessTypeList
+                    resProcessList
                 ]) => {
                     this.processList = resProcessList.items;
                     this.processList.forEach(process => {
@@ -76,7 +79,6 @@ export class ProcessComponent extends AppComponentBase {
                             cost.validityEndDate = new Date(cost.validityEndDate);
                         })
                     });
-                    this.processTypeList = resProcessTypeList.items;
                 },
                 error: () => {
                     this.loading = false;

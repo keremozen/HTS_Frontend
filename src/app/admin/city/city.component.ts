@@ -24,7 +24,7 @@ export class CityComponent extends AppComponentBase {
     city: SaveCityDto;
     isEdit: boolean;
     cityToBeEdited: CityDto;
-    loading: boolean;
+    loading: boolean = false;
     totalRecords: number = 0;
 
     constructor(

@@ -2,8 +2,8 @@
     <div class="p-toolbar-group-start">
     </div>
     <div class="p-toolbar-group-end p-0">
-        <button pButton pRipple label="{{ '::OperationalInfo:NewOperation' | abpLocalization }}" icon="pi pi-plus"
-            class="p-button-success ml-2" (click)="onNewOperation()"></button>
+        <p-button pRipple label="{{ '::OperationalInfo:NewOperation' | abpLocalization }}" icon="pi pi-plus"
+        styleClass="p-button-success ml-2" (onClick)="onNewOperation()"></p-button>
     </div>
 </p-toolbar>
 
@@ -53,13 +53,13 @@
             <td>{{operation.operationType?.name}}</td>
             <td>{{operation.operationStatus?.name}}</td>
             <td class="text-right">
-                <button pButton pRipple label="{{ '::HospitalConsultation:Button:Consultation' | abpLocalization }}"
-                    class="p-button-info ml-2" (click)="openConsultation(operation.hospitalResponse.hospitalConsultation)"
-                    *ngIf="operation.operationTypeId == operationTypeEnum.HospitalConsultation"></button>
-                <button pButton pRipple label="{{ '::HospitalConsultation:Button:Answer' | abpLocalization }}"
-                    class="p-button-warning ml-2" (click)="openHospitalResponse(operation)"></button>
-                <button pButton pRipple class="p-button-success ml-2" label="{{ '::OperationalInfo:Button:CreateProforma' | abpLocalization }}"
-                    (click)="onCreateProforma(operation)" [disabled]="!hasPriceExceptingOperation"></button>
+                <p-button pRipple label="{{ '::HospitalConsultation:Button:Consultation' | abpLocalization }}"
+                styleClass="p-button-info ml-2" (onClick)="openConsultation(operation.hospitalResponse.hospitalConsultation)"
+                    *ngIf="operation.operationTypeId == operationTypeEnum.HospitalConsultation"></p-button>
+                <p-button pRipple label="{{ '::HospitalConsultation:Button:Answer' | abpLocalization }}"
+                styleClass="p-button-warning ml-2" (onClick)="openHospitalResponse(operation)"></p-button>
+                <p-button pRipple styleClass="p-button-success ml-2" label="{{ '::OperationalInfo:Button:CreateProforma' | abpLocalization }}"
+                    (onClick)="onCreateProforma(operation)" [disabled]="!hasPriceExceptingOperation"></p-button>
             </td>
         </tr>
     </ng-template>

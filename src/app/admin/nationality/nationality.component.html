@@ -3,9 +3,9 @@
 <div class="card">
     <p-toolbar styleClass="mb-4 gap-2">
         <ng-template pTemplate="left">
-            <button pButton pRipple label="{{ '::Admin:Nationality:NewNationality' | abpLocalization }}"
-                icon="pi pi-plus" class="p-button-success mr-2" (click)="openNewNationality()"
-                [loading]="loading"></button>
+            <p-button pRipple label="{{ '::Admin:Nationality:NewNationality' | abpLocalization }}"
+                icon="pi pi-plus" styleClass="p-button-success mr-2" (onClick)="openNewNationality()"
+                [loading]="loading"></p-button>
         </ng-template>
     </p-toolbar>
     <p-table #dt [value]="nationalityList" [rows]="10" [paginator]="true" responsiveLayout="stack"
@@ -31,10 +31,10 @@
                         [ngClass]="{ 'text-green-500 pi-check-circle': nationality.isActive, 'text-red-500 pi-times-circle': !nationality.isActive }"></i>
                 </td>
                 <td>
-                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
-                        (click)="editNationality(nationality)"></button>
-                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
-                        (click)="deleteNationality(nationality)"></button>
+                    <p-button pRipple icon="pi pi-pencil" styleClass="p-button-rounded p-button-success mr-2"
+                        (onClick)="editNationality(nationality)"></p-button>
+                    <p-button pRipple icon="pi pi-trash" styleClass="p-button-rounded p-button-warning"
+                        (onClick)="deleteNationality(nationality)"></p-button>
                 </td>
             </tr>
         </ng-template>
@@ -82,10 +82,10 @@
         </div>
     </form>
     <p-footer>
-        <button pButton pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" class="p-button-text"
-            (click)="hideDialog()"></button>
-        <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" class="p-button-text"
-            (click)="saveNationality()" [disabled]="!(languageForm.valid)"></button>
+        <p-button pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" styleClass="p-button-text"
+            (onClick)="hideDialog()"></p-button>
+        <p-button pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" styleClass="p-button-text"
+            (onClick)="saveNationality()" [disabled]="!(languageForm.valid)"></p-button>
     </p-footer>
 </p-dialog>
 <p-confirmDialog [style]="{width: '450px'}" rejectLabel="{{ '::Reject' | abpLocalization }}"

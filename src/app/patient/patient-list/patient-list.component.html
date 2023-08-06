@@ -91,10 +91,10 @@
                     </div>
                 </div>
                 <div class="col flex align-self-end mb-2">
-                    <button pButton pRipple label="{{ '::ClearFilter' | abpLocalization }}" icon="pi pi-filter-slash"
-                        class="p-button-success" (click)="onClearFilters()"></button>
-                    <button pButton pRipple label="{{ '::Filter' | abpLocalization }}" icon="pi pi-filter-fill"
-                        class="p-button-success ml-2" (click)="onFilter()"></button>
+                    <p-button pRipple label="{{ '::ClearFilter' | abpLocalization }}" icon="pi pi-filter-slash"
+                    styleClass="p-button-success" (onClick)="onClearFilters()"></p-button>
+                    <p-button pRipple label="{{ '::Filter' | abpLocalization }}" icon="pi pi-filter-fill"
+                    styleClass="p-button-success ml-2" (onClick)="onFilter()"></p-button>
                 </div>
             </div>
 
@@ -104,8 +104,8 @@
 <div class="card">
     <p-toolbar styleClass="mb-4 gap-2" *ngIf="isAllowedToManage">
         <ng-template pTemplate="left">
-            <button pButton pRipple label="{{ '::Patients:NewPatient' | abpLocalization }}" icon="pi pi-plus"
-                class="p-button-success mr-2" (click)="openNewPatient()"></button>
+            <p-button pRipple label="{{ '::Patients:NewPatient' | abpLocalization }}" icon="pi pi-plus"
+            styleClass="p-button-success mr-2" (onClick)="openNewPatient()"></p-button>
         </ng-template>
     </p-toolbar>
 
@@ -154,10 +154,10 @@
                 <td>{{patient.creationTime | date: "dd.MM.yyyy"}}</td>
                 <td>{{patient.creator?.name + (patient.creator?.surname ? (" " + patient.creator?.surname) : "")}}</td>
                 <td class="text-right" *ngIf="isAllowedToManage">
-                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
-                        (click)="editPatient(patient.id)"></button>
-                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
-                        (click)="deletePatient(patient)"></button>
+                    <p-button pRipple icon="pi pi-pencil" styleClass="p-button-rounded p-button-success mr-2"
+                        (onClick)="editPatient(patient.id)"></p-button>
+                    <p-button pRipple icon="pi pi-trash" styleClass="p-button-rounded p-button-warning"
+                        (onClick)="deletePatient(patient)"></p-button>
                 </td>
             </tr>
         </ng-template>

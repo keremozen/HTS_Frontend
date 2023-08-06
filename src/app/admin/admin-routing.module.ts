@@ -16,6 +16,7 @@ import { RejectReasonComponent } from './reject-reason/reject-reason.component';
 import { PaymentReasonComponent } from './payment-reason/payment-reason.component';
 import { ContractedInstitutionTypeComponent } from './contracted-institution-type/contracted-institution-type.component';
 import { ContractedInstitutionKindComponent } from './contracted-institution-kind/contracted-institution-kind.component';
+import { ProcessKindComponent } from './process-kind/process-kind.component';
 
 const routes: Routes = [
   {
@@ -88,6 +89,12 @@ const routes: Routes = [
     path: 'processType', component: ProcessTypeComponent, canActivate: [PermissionGuard],
     data: {
         requiredPolicy: 'HTS.ProcessTypeManagement' 
+    }
+  },
+  {
+    path: 'processKind', component: ProcessKindComponent, canActivate: [PermissionGuard],
+    data: {
+        requiredPolicy: 'HTS.ProcessKindManagement' 
     }
   },
   {

@@ -35,6 +35,14 @@ export class OperationService {
     { apiName: this.apiName });
   
 
+  sendToPricingById = (id: number) =>
+    this.restService.request<any, void>({
+      method: 'POST',
+      url: `/api/app/operation/${id}/send-to-pricing`,
+    },
+    { apiName: this.apiName });
+  
+
   update = (id: number, operation: SaveOperationDto) =>
     this.restService.request<any, void>({
       method: 'PUT',

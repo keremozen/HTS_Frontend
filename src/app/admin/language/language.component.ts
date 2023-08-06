@@ -3,7 +3,7 @@ import { LanguageDto, SaveLanguageDto } from '@proxy/dto/language';
 import { LanguageService } from '@proxy/service/language.service';
 import { CommonService } from 'src/app/services/common.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
-
+import * as XLSX from 'xlsx';
 
 @Component({
     selector: 'app-language',
@@ -42,17 +42,17 @@ export class LanguageComponent extends AppComponentBase {
     fetchData() {
         this.loading = true;
         this.languageService.getList().subscribe({
-          next: data => {
-            this.languageList = data.items;
-            this.totalRecords = data.totalCount;
-            this.commonService.languageList = this.languageList.filter(l=>l.isActive == true);
-          },
-          error: () => {
-            this.loading = false;
-          },
-          complete: () => {
-            this.loading = false;
-          }
+            next: data => {
+                this.languageList = data.items;
+                this.totalRecords = data.totalCount;
+                this.commonService.languageList = this.languageList.filter(l => l.isActive == true);
+            },
+            error: () => {
+                this.loading = false;
+            },
+            complete: () => {
+                this.loading = false;
+            }
         });
     }
 
@@ -114,4 +114,28 @@ export class LanguageComponent extends AppComponentBase {
         this.languageDialog = false;
     }
 
+    myUploader(event) {
+        console.log("onUpload() START");
+        for (let file of event.files) {
+            console.log("FILE TO BE UPLOADED: ", file);
+            debugger;
+            const reader: FileReader = new FileReader();
+            reader.onload = (e: any) => {
+                debugger;
+                const bstr: string = e.target.result;
+                const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
+
+                const wsname: string = wb.SheetNames[0];
+                const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+                const data = <any>(XLSX.utils.sheet_to_json(ws, { header: 1 }));
+                
+            };
+            reader.readAsBinaryString(file);
+        }
+    }
+}
+
+interface UploadEvent {
+    originalEvent: Event;
+    files: File[];
 }

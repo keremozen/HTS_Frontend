@@ -121,9 +121,9 @@
             <div class="col-12">
                 <p-toolbar styleClass="customToolbar">
                     <div class="p-toolbar-group-end p-0">
-                        <button pButton pRipple
+                        <p-button pRipple
                             label="{{ '::PaymentDialog:PaymentItemTable:AddItem' | abpLocalization }}" icon="pi pi-plus"
-                            class="p-button-success mr-2" (click)="newPaymentItem()"></button>
+                            styleClass="p-button-success mr-2" (onClick)="newPaymentItem()"></p-button>
                     </div>
                 </p-toolbar>
                 <p-table #dt [value]="payment.paymentItems" [rows]="5" styleClass="pt-3" [paginator]="true"
@@ -183,8 +183,8 @@
                             <td>{{paymentItem.currency?.name}}</td>
                             <td>{{paymentItem.price | currency: paymentItem.currencyCode:'symbol':'0.2-2'}}</td>
                             <td>
-                                <button pButton pRipple icon="pi pi-trash" (click)="deletePaymentItem(paymentItem)"
-                                    class="p-button-rounded p-button-warning"></button>
+                                <p-button pRipple icon="pi pi-trash" (onClick)="deletePaymentItem(paymentItem)"
+                                styleClass="p-button-rounded p-button-warning"></p-button>
                             </td>
                         </tr>
                     </ng-template>
@@ -203,9 +203,9 @@
             </div>
             <div class="col-12">
                 <div class="flex justify-content-end">
-                    <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-save"
-                        [disabled]="!(paymentForm.valid) || payment.paymentItems?.length == 0" class="p-button-success mr-2 mt-4 w-12rem"
-                        [loading]="loading" (click)="onPaymentSave()"></button>
+                    <p-button pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-save"
+                        [disabled]="!(paymentForm.valid) || payment.paymentItems?.length == 0" styleClass="p-button-success mr-2 mt-4 w-12rem"
+                        [loading]="loading" (onClick)="onPaymentSave()"></p-button>
                 </div>
             </div>
         </div>
@@ -288,10 +288,10 @@
         </div>
     </form>
     <p-footer>
-        <button pButton pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" class="p-button-text"
-            (click)="hidePaymentItemDialog()"></button>
-        <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" class="p-button-text"
-            (click)="savePaymentItem()" [disabled]="!(paymentItemForm.valid)"></button>
+        <p-button pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" styleClass="p-button-text"
+            (onClick)="hidePaymentItemDialog()"></p-button>
+        <p-button pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" styleClass="p-button-text"
+            (onClick)="savePaymentItem()" [disabled]="!(paymentItemForm.valid)"></p-button>
     </p-footer>
 </p-dialog>
 

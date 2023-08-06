@@ -1,9 +1,8 @@
 import { mapEnumToOptions } from '@abp/ng.core';
 
 export enum EntityEnum_HospitalizationTypeEnum {
-  MedicalTreatment = 1,
-  Hospitalization = 2,
-  SurgicalHospitalization = 3,
+  MedicalTreatmentHospitalization = 1,
+  SurgicalHospitalization = 2,
 }
 
 export const entityEnum_HospitalizationTypeEnumOptions = mapEnumToOptions(EntityEnum_HospitalizationTypeEnum);

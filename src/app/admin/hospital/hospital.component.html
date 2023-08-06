@@ -6,13 +6,13 @@
 <div class="card">
     <p-toolbar styleClass="mb-4 gap-2">
         <ng-template pTemplate="left">
-            <button pButton pRipple label="{{ '::Admin:Hospital:NewHospital' | abpLocalization }}" icon="pi pi-plus"
-                class="p-button-success mr-2" [loading]="loading" (click)="openNewHospital()"></button>
+            <p-button pRipple label="{{ '::Admin:Hospital:NewHospital' | abpLocalization }}" icon="pi pi-plus"
+            styleClass="p-button-success mr-2" (onClick)="openNewHospital()"></p-button>
         </ng-template>
     </p-toolbar>
 
     <p-table #dt [value]="hospitalList" [rows]="10" [paginator]="true" responsiveLayout="stack" [breakpoint]="'960px'"
-        [rowHover]="true" dataKey="Id" [loading]="loading"
+        [rowHover]="true" dataKey="Id"
         currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
         [showCurrentPageReport]="true">
         <ng-template pTemplate="header">
@@ -29,10 +29,12 @@
                     }} <p-sortIcon field="phoneNumber"></p-sortIcon></th>
                 <th pSortableColumn="email">{{ '::Admin:Hospital:Column:EMail' | abpLocalization
                     }} <p-sortIcon field="email"></p-sortIcon></th>
+                <th>{{ '::Admin:Hospital:Column:UHBStaffs' |
+                    abpLocalization }}</th>
                 <th>{{ '::Admin:Hospital:Column:Staffs' |
                     abpLocalization }}</th>
                 <th class="text-center">{{ '::Admin:Hospital:Column:IsActive' | abpLocalization }}</th>
-                <th style="width:11rem;"></th>
+                <th style="width:13rem;"></th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-hospital>
@@ -45,18 +47,25 @@
                     '}}{{hospital.phoneNumber}}</td>
                 <td>{{!hospital.email ? '-' : hospital.email}}</td>
                 <td>
+                    <div [innerHTML]="!hospital.hospitalUHBStaffNames ? '-': hospital.hospitalUHBStaffNames"></div>
+                </td>
+                <td>
                     <div [innerHTML]="!hospital.hospitalStaffNames ? '-': hospital.hospitalStaffNames"></div>
                 </td>
                 <td class="text-center"><i class="pi"
                         [ngClass]="{ 'text-green-500 pi-check-circle': hospital.isActive, 'text-red-500 pi-times-circle': !hospital.isActive }"></i>
                 </td>
                 <td class="text-right">
-                    <button pButton pRipple icon="pi pi-users" class="p-button-rounded p-button-info"
-                        (click)="openStaffDialog(hospital)"></button>
-                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success ml-2"
-                        (click)="editHospital(hospital)"></button>
-                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning ml-2"
-                        (click)="deleteHospital(hospital)"></button>
+                    <p-button pRipple icon="pi pi-users" styleClass="p-button-rounded p-button-info"
+                        [pTooltip]="'::Admin:Hospital:Column:UHBStaffs' | abpLocalization"
+                        (onClick)="openUHBStaffDialog(hospital)"></p-button>
+                    <p-button pRipple icon="pi pi-users" styleClass="p-button-rounded p-button-info ml-2"
+                        [pTooltip]="'::Admin:Hospital:Column:Staffs' | abpLocalization"
+                        (onClick)="openStaffDialog(hospital)"></p-button>
+                    <p-button pRipple icon="pi pi-pencil" styleClass="p-button-rounded p-button-success ml-2"
+                        (onClick)="editHospital(hospital)"></p-button>
+                    <p-button pRipple icon="pi pi-trash" styleClass="p-button-rounded p-button-warning ml-2"
+                        (onClick)="deleteHospital(hospital)"></p-button>
                 </td>
             </tr>
         </ng-template>
@@ -155,77 +164,162 @@
         </div>
     </form>
     <p-footer>
-        <button pButton pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" class="p-button-text"
-            (click)="hideDialog()"></button>
-        <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" class="p-button-text"
-            (click)="saveHospital()" [disabled]="!(hospitalForm.valid)"></button>
+        <p-button pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" styleClass="p-button-text"
+            (onClick)="hideDialog()"></p-button>
+        <p-button pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" styleClass="p-button-text"
+            (onClick)="saveHospital()" [disabled]="!(hospitalForm.valid)"></p-button>
     </p-footer>
 </p-dialog>
 
 <p-dialog [(visible)]="hospitalStaffListDialog" [style]="{width: '80vw'}"
     header="{{ '::Admin:Hospital:HospitalStaffManagement' | abpLocalization }}" [modal]="true" styleClass="p-fluid"
     (onHide)="refreshHospital()">
-    <form #hospitalStaffForm="ngForm">
-        <p-toolbar styleClass="mb-4 gap-2">
-            <ng-template pTemplate="left">
-                <button pButton pRipple label="{{ '::Admin:HospitalStaff:NewHospitalStaff' | abpLocalization }}"
-                    icon="pi pi-plus" class="p-button-success mr-2" (click)="openNewStaff()"
-                    [loading]="loading"></button>
-            </ng-template>
-        </p-toolbar>
-        <p-table #dt [value]="hospitalStaffList" [rows]="10" [paginator]="true" responsiveLayout="stack"
-            [breakpoint]="'960px'" [rowHover]="true" [loading]="loading"
-            currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
-            [showCurrentPageReport]="true">
-            <ng-template pTemplate="header">
-                <tr>
-                    <th pSortableColumn="nameSurname">{{ '::Admin:HospitalStaff:Column:NameSurname' |
-                        abpLocalization }} <p-sortIcon field="nameSurname"></p-sortIcon></th>
-                    <th pSortableColumn="phoneNumber">{{ '::Admin:HospitalStaff:Column:PhoneNumber' |
-                        abpLocalization }} <p-sortIcon field="phoneNumber"></p-sortIcon></th>
-                    <th pSortableColumn="email">{{ '::Admin:HospitalStaff:Column:Email' | abpLocalization
-                        }} <p-sortIcon field="email"></p-sortIcon></th>
-                    <th class="text-center">{{ '::Admin:HospitalStaff:Column:IsDefault' | abpLocalization }}</th>
-                    <th class="text-center">{{ '::Admin:HospitalStaff:Column:IsActive' | abpLocalization }}</th>
-                    <th style="width:8rem;"></th>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-staff let-editing="editing" let-ri="rowIndex">
-                <tr [pEditableRow]="staff">
-                    <td>{{staff.user?.name}} {{staff.user?.surname}}</td>
-                    <td>{{staff.user?.phoneNumber}}</td>
-                    <td>{{staff.user?.email}}</td>
-                    <td class="text-center"><i class="pi"
-                            [ngClass]="{ 'text-green-500 pi-check-circle': staff.isDefault, 'text-red-500 pi-times-circle': !staff.isDefault }"></i>
-                    </td>
-                    <td class="text-center"><i class="pi"
-                            [ngClass]="{ 'text-green-500 pi-check-circle': staff.isActive, 'text-red-500 pi-times-circle': !staff.isActive }"></i>
-                    </td>
-                    <td class="text-right">
-                        <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
-                            (click)="editStaff(staff)"></button>
-                        <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
-                            (click)="deleteStaff(staff)"></button>
-                    </td>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="emptymessage">
-                <div class="m-3">
-                    {{ '::Table:EmptyMessage' | abpLocalization }}
-                </div>
-            </ng-template>
-            <ng-template pTemplate="summary">
-                <div class="flex align-items-center justify-content-between" *ngIf="hospitalStaffTotalRecords > 0">
-                    {{ '::Table:Summary' | abpLocalization:(hospitalStaffTotalRecords) }}
-                </div>
-            </ng-template>
-        </p-table>
+    <p-toolbar styleClass="mb-4 gap-2">
+        <ng-template pTemplate="left">
+            <p-button pRipple label="{{ '::Admin:HospitalStaff:NewHospitalStaff' | abpLocalization }}"
+                icon="pi pi-plus" styleClass="p-button-success mr-2" (onClick)="openNewStaff()"></p-button>
+        </ng-template>
+    </p-toolbar>
+    <p-table #dt [value]="hospitalStaffList" [rows]="10" [paginator]="true" responsiveLayout="stack"
+        [breakpoint]="'960px'" [rowHover]="true"
+        currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
+        [showCurrentPageReport]="true">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="nameSurname">{{ '::Admin:HospitalStaff:Column:NameSurname' |
+                    abpLocalization }} <p-sortIcon field="nameSurname"></p-sortIcon></th>
+                <th pSortableColumn="phoneNumber">{{ '::Admin:HospitalStaff:Column:PhoneNumber' |
+                    abpLocalization }} <p-sortIcon field="phoneNumber"></p-sortIcon></th>
+                <th pSortableColumn="email">{{ '::Admin:HospitalStaff:Column:Email' | abpLocalization
+                    }} <p-sortIcon field="email"></p-sortIcon></th>
+                <th class="text-center">{{ '::Admin:HospitalStaff:Column:IsDefault' | abpLocalization }}</th>
+                <th class="text-center">{{ '::Admin:HospitalStaff:Column:IsActive' | abpLocalization }}</th>
+                <th style="width:8rem;"></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-staff let-editing="editing" let-ri="rowIndex">
+            <tr [pEditableRow]="staff">
+                <td>{{staff.user?.name}} {{staff.user?.surname}}</td>
+                <td>{{staff.user?.phoneNumber}}</td>
+                <td>{{staff.user?.email}}</td>
+                <td class="text-center"><i class="pi"
+                        [ngClass]="{ 'text-green-500 pi-check-circle': staff.isDefault, 'text-red-500 pi-times-circle': !staff.isDefault }"></i>
+                </td>
+                <td class="text-center"><i class="pi"
+                        [ngClass]="{ 'text-green-500 pi-check-circle': staff.isActive, 'text-red-500 pi-times-circle': !staff.isActive }"></i>
+                </td>
+                <td class="text-right">
+                    <p-button pRipple icon="pi pi-pencil" styleClass="p-button-rounded p-button-success mr-2"
+                        (onClick)="editStaff(staff)"></p-button>
+                    <p-button pRipple icon="pi pi-trash" styleClass="p-button-rounded p-button-warning"
+                        (onClick)="deleteStaff(staff)"></p-button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <div class="m-3">
+                {{ '::Table:EmptyMessage' | abpLocalization }}
+            </div>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="flex align-items-center justify-content-between" *ngIf="hospitalStaffTotalRecords > 0">
+                {{ '::Table:Summary' | abpLocalization:(hospitalStaffTotalRecords) }}
+            </div>
+        </ng-template>
+    </p-table>
+</p-dialog>
+
+<p-dialog [(visible)]="hospitalUHBStaffListDialog" [style]="{width: '80vw'}"
+    header="{{ '::Admin:Hospital:HospitalUHBStaffManagement' | abpLocalization }}" [modal]="true" styleClass="p-fluid"
+    (onHide)="refreshHospital()">
+    <p-toolbar styleClass="mb-4 gap-2">
+        <ng-template pTemplate="left">
+            <p-button pRipple label="{{ '::Admin:HospitalUHBStaff:NewHospitalUHBStaff' | abpLocalization }}"
+                icon="pi pi-plus" styleClass="p-button-success mr-2" (onClick)="openNewUHBStaff()"></p-button>
+        </ng-template>
+    </p-toolbar>
+    <p-table #dt [value]="hospitalUHBStaffList" [rows]="10" [paginator]="true" responsiveLayout="stack"
+        [breakpoint]="'960px'" [rowHover]="true"
+        currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
+        [showCurrentPageReport]="true">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="nameSurname">{{ '::Admin:HospitalUHBStaff:Column:NameSurname' |
+                    abpLocalization }} <p-sortIcon field="nameSurname"></p-sortIcon></th>
+                <th pSortableColumn="email">{{ '::Admin:HospitalUHBStaff:Column:Email' | abpLocalization
+                    }} <p-sortIcon field="email"></p-sortIcon></th>
+                <th style="width:8rem;"></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-staff let-editing="editing" let-ri="rowIndex">
+            <tr [pEditableRow]="staff">
+                <td>{{staff.name}} {{staff.surname}}</td>
+                <td>{{staff.email}}</td>
+                <td class="text-right">
+                    <p-button pRipple icon="pi pi-pencil" styleClass="p-button-rounded p-button-success mr-2"
+                        (onClick)="editUHBStaff(staff)"></p-button>
+                    <p-button pRipple icon="pi pi-trash" styleClass="p-button-rounded p-button-warning"
+                        (onClick)="deleteUHBStaff(staff)"></p-button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <div class="m-3">
+                {{ '::Table:EmptyMessage' | abpLocalization }}
+            </div>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="flex align-items-center justify-content-between" *ngIf="hospitalUHBStaffTotalRecords > 0">
+                {{ '::Table:Summary' | abpLocalization:(hospitalUHBStaffTotalRecords) }}
+            </div>
+        </ng-template>
+    </p-table>
+</p-dialog>
+
+<p-dialog [(visible)]="hospitalUHBStaffEditDialog" [style]="{width: '450px'}"
+    header="{{ '::Admin:HospitalUHBStaff:HospitalUHBStaffDetails' | abpLocalization }}" [modal]="true" styleClass="p-fluid"
+    (onHide)="hideUHBStaffDialog()">
+    <form #hospitalUHBStaffEditForm="ngForm">
+        <div *ngIf="hospitalUHBStaff">
+            <div class="field">
+                <label for="name">{{ '::Admin:HospitalUHBStaff:Column:Name' | abpLocalization
+                    }}&nbsp;<font style="color:red">*</font></label>
+                <input type="text" pInputText id="name" name="name" #name="ngModel"
+                    [(ngModel)]="hospitalUHBStaff.name" required autofocus />
+                <small class="p-error" *ngIf="!(name.valid || name.pristine)">{{ '::Message:RequiredField'
+                    |
+                    abpLocalization }}</small>
+            </div>
+            <div class="field">
+                <label for="surname">{{ '::Admin:HospitalUHBStaff:Column:Surname' | abpLocalization
+                    }}&nbsp;<font style="color:red">*</font></label>
+                <input type="text" pInputText id="surname" name="surname" #surname="ngModel"
+                    [(ngModel)]="hospitalUHBStaff.surname" required autofocus />
+                <small class="p-error" *ngIf="!(surname.valid || surname.pristine)">{{ '::Message:RequiredField'
+                    |
+                    abpLocalization }}</small>
+            </div>
+            <div class="field">
+                <label for="email">{{ '::Admin:HospitalUHBStaff:Column:Email' | abpLocalization }}&nbsp;<font
+                        style="color:red">*</font></label>
+                <input type="text" pInputText id="email" name="email" #email="ngModel" [email]="true"
+                    [(ngModel)]="hospitalUHBStaff.email" />
+                <small class="p-error" *ngIf="email.errors?.email">{{ '::Message:WrongEmailFormat' |
+                    abpLocalization }}</small>
+            </div>
+        </div>
     </form>
+    <p-footer>
+        <p-button pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" styleClass="p-button-text"
+            (onClick)="hideUHBStaffDialog()"></p-button>
+        <p-button pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" styleClass="p-button-text"
+            (onClick)="saveHospitalUHBStaff()" [disabled]="!(hospitalUHBStaffEditForm.valid)"></p-button>
+    </p-footer>
 </p-dialog>
 
 <p-dialog [(visible)]="hospitalStaffEditDialog" [style]="{width: '450px'}"
-    header="{{ '::Admin:HospitalStaff:HospitalStaffDetails' | abpLocalization }}" [modal]="true" styleClass="p-fluid"
-    (onHide)="hideStaffDialog()">
+    header="{{ '::Admin:HospitalStaff:HospitalStaffDetails' | abpLocalization }}" [modal]="true"
+    styleClass="p-fluid" (onHide)="hideStaffDialog()">
     <form #hospitalStaffEditForm="ngForm">
         <div *ngIf="hospitalStaff">
             <div class="field">
@@ -262,17 +356,17 @@
             <div class="field">
                 <label for="isActive">{{ '::Admin:HospitalStaff:Column:IsActive' | abpLocalization }}</label>
                 <div class="w-full">
-                    <p-checkbox id="isActive" name="isActive" #isActive="ngModel" [(ngModel)]="hospitalStaff.isActive"
-                        [binary]="true"></p-checkbox>
+                    <p-checkbox id="isActive" name="isActive" #isActive="ngModel"
+                        [(ngModel)]="hospitalStaff.isActive" [binary]="true"></p-checkbox>
                 </div>
             </div>
         </div>
     </form>
     <p-footer>
-        <button pButton pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" class="p-button-text"
-            (click)="hideStaffDialog()"></button>
-        <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" class="p-button-text"
-            (click)="saveHospitalStaff()" [disabled]="!(hospitalStaffEditForm.valid)"></button>
+        <p-button pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" styleClass="p-button-text"
+            (onClick)="hideStaffDialog()"></p-button>
+        <p-button pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" styleClass="p-button-text"
+            (onClick)="saveHospitalStaff()" [disabled]="!(hospitalStaffEditForm.valid)"></p-button>
     </p-footer>
 </p-dialog>
 

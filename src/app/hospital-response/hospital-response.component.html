@@ -159,10 +159,10 @@
                             <div class="ml-3"></div>
                         </div>
                         <div class="p-toolbar-group-end p-0">
-                            <button pButton pRipple
+                            <p-button pRipple
                                 label="{{ '::HospitalResponse:AnticipatedProcesses:NewProcess' | abpLocalization }}"
-                                icon="pi pi-plus" class="p-button-success mr-2" (click)="openNewProcess()"
-                                [loading]="loading"></button>
+                                icon="pi pi-plus" styleClass="p-button-success mr-2" (onClick)="openNewProcess()"
+                                [loading]="loading"></p-button>
                         </div>
                     </p-toolbar>
 
@@ -197,8 +197,8 @@
                                 <td>{{process.process?.name}}</td>
                                 <td>{{process.amount}}</td>
                                 <td>
-                                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
-                                        (click)="deleteProcess(process)"></button>
+                                    <p-button pRipple icon="pi pi-trash" styleClass="p-button-rounded p-button-warning"
+                                        (onClick)="deleteProcess(process)"></p-button>
                                 </td>
                             </tr>
                         </ng-template>
@@ -227,10 +227,10 @@
                             <div class="ml-3"></div>
                         </div>
                         <div class="p-toolbar-group-end p-0">
-                            <button pButton pRipple
+                            <p-button pRipple
                                 label="{{ '::HospitalResponse:AnticipatedMaterials:NewMaterial' | abpLocalization }}"
-                                icon="pi pi-plus" class="p-button-success mr-2" (click)="openNewMaterial()"
-                                [loading]="loading"></button>
+                                icon="pi pi-plus" styleClass="p-button-success mr-2" (onClick)="openNewMaterial()"
+                                [loading]="loading"></p-button>
                         </div>
                     </p-toolbar>
 
@@ -256,8 +256,8 @@
                                 <td>{{material.process?.name}}</td>
                                 <td>{{material.amount}}</td>
                                 <td>
-                                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
-                                        (click)="deleteMaterial(material)"></button>
+                                    <p-button pRipple icon="pi pi-trash" styleClass="p-button-rounded p-button-warning"
+                                        (onClick)="deleteMaterial(material)"></p-button>
                                 </td>
                             </tr>
                         </ng-template>
@@ -275,9 +275,9 @@
 
                 </fieldset>
                 <div class="flex justify-content-end">
-                    <button pButton pRipple label="{{ '::Send' | abpLocalization }}" icon="pi pi-send"
-                        [disabled]="!(hospitalResponseForm.valid)" class="p-button-success mr-2 mt-4 w-12rem"
-                        [loading]="loading" (click)="onResponseSend()"></button>
+                    <p-button pRipple label="{{ '::Send' | abpLocalization }}" icon="pi pi-send"
+                        [disabled]="!(hospitalResponseForm.valid)" styleClass="p-button-success mr-2 mt-4 w-12rem"
+                        [loading]="loading" (onClick)="onResponseSend()"></p-button>
                 </div>
             </div>
         </div>
@@ -329,10 +329,10 @@
         </div>
     </form>
     <p-footer>
-        <button pButton pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" class="p-button-text"
-            (click)="hideProcessDialog()"></button>
-        <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" class="p-button-text"
-            (click)="saveProcess()" [disabled]="!(processForm.valid)"></button>
+        <p-button pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" styleClass="p-button-text"
+            (onClick)="hideProcessDialog()"></p-button>
+        <p-button pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" styleClass="p-button-text"
+            (onClick)="saveProcess()" [disabled]="!(processForm.valid)"></p-button>
     </p-footer>
 </p-dialog>
 
@@ -381,10 +381,10 @@
         </div>
     </form>
     <p-footer>
-        <button pButton pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" class="p-button-text"
-            (click)="hideMaterialDialog()"></button>
-        <button pButton pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" class="p-button-text"
-            (click)="saveMaterial()" [disabled]="!(materialForm.valid)"></button>
+        <p-button pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" styleClass="p-button-text"
+            (onClick)="hideMaterialDialog()"></p-button>
+        <p-button pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" styleClass="p-button-text"
+            (onClick)="saveMaterial()" [disabled]="!(materialForm.valid)"></p-button>
     </p-footer>
 </p-dialog>
 
