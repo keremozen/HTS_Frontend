@@ -4,7 +4,7 @@ import { HospitalConsultationDto } from '@proxy/dto/hospital-consultation';
 import { HospitalConsultationDocumentDto } from '@proxy/dto/hospital-consultation-document';
 import { HospitalResponseDto } from '@proxy/dto/hospital-response';
 import { HospitalResponseProcessDto } from '@proxy/dto/hospital-response-process';
-import { EntityEnum_OperationStatusEnum, EntityEnum_OperationTypeEnum, EntityEnum_PatientDocumentStatusEnum, EntityEnum_ProcessTypeEnum } from '@proxy/enum';
+import { EntityEnum_OperationStatusEnum, EntityEnum_OperationTypeEnum, EntityEnum_PatientDocumentStatusEnum, EntityEnum_PatientTreatmentStatusEnum, EntityEnum_ProcessTypeEnum } from '@proxy/enum';
 import { HospitalResponseService, OperationService } from '@proxy/service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { CommonService } from 'src/app/services/common.service';
@@ -51,6 +51,7 @@ export class OperationalInfoComponent extends AppComponentBase {
   public operationTypeEnum = EntityEnum_OperationTypeEnum;
   public patientDocumentStatusEnum = EntityEnum_PatientDocumentStatusEnum;
   public operationStatusEnum = EntityEnum_OperationStatusEnum;
+  public treatmentProcessStatusEnum = EntityEnum_PatientTreatmentStatusEnum;
 
   ref: DynamicDialogRef;
 
@@ -182,7 +183,8 @@ export class OperationalInfoComponent extends AppComponentBase {
       baseZIndex: 10000,
       maximizable: true,
       data: {
-        operation: operation
+        operation: operation,
+        isDisabled: operation.patientTreatmentProcess.treatmentProcessStatusId === this.treatmentProcessStatusEnum.ProformaCreatedWaitingForMFBApproval
       },
     });
 
@@ -191,6 +193,14 @@ export class OperationalInfoComponent extends AppComponentBase {
       this.selectedOperation = null;
       this.onOperationChange.emit();
     });
+  }
+
+  onSendToPricing(operation: OperationDto) {
+    this.operationService.sendToPricingById(+operation.id).subscribe(r => {
+      this.fetchData();
+      this.selectedOperation = null;
+      this.onOperationChange.emit();
+    })
   }
 
 }

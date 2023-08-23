@@ -15,7 +15,7 @@ export interface PatientDocumentDto extends AuditedEntityWithUserDto<number, Ide
 export interface SavePatientDocumentDto {
   patientId: number;
   documentTypeId: number;
-  description: string;
+  description?: string;
   fileName: string;
   file: string;
 }

@@ -79,7 +79,8 @@ export class CompanionInfoComponent extends AppComponentBase {
     if (this.salesInfoAndCompanionInfo.contractedInstitutionStaffId) {
       let staff = this.institutionStaffList.find(s => s.id == this.salesInfoAndCompanionInfo.contractedInstitutionStaffId);
       this.selectedStaffEmail = staff.email;
-      this.selectedStaffPhone = this.nationalityList.find(n => n.id == staff.phoneCountryCodeId)?.phoneCode + " " + staff.phoneNumber;
+      const phoneCodeNationality = this.nationalityList.find(n => n.id == staff.phoneCountryCodeId);
+      this.selectedStaffPhone = (phoneCodeNationality?.phoneCode ? phoneCodeNationality?.phoneCode + ' ' : '') + (staff.phoneNumber ? staff.phoneNumber : '');
     }
   }
 

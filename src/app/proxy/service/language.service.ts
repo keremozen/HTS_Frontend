@@ -19,6 +19,15 @@ export class LanguageService {
     { apiName: this.apiName });
   
 
+  createList = (languages: SaveLanguageDto[]) =>
+    this.restService.request<any, void>({
+      method: 'POST',
+      url: '/api/app/language/list',
+      body: languages,
+    },
+    { apiName: this.apiName });
+  
+
   delete = (id: number) =>
     this.restService.request<any, void>({
       method: 'DELETE',

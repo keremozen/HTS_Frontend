@@ -9,20 +9,20 @@ export class ExternalService {
   apiName = 'Default';
   
 
-  checkSutCodesBySutCodesRequest = (sutCodesRequest: SutCodesRequestDto) =>
+  htsHastaBilgisiByHtsCode = (htsCode: string) =>
     this.restService.request<any, ExternalApiResult>({
       method: 'POST',
-      url: '/api/app/external/check-sut-codes',
-      body: sutCodesRequest,
+      url: '/api/app/external/hts-hasta-bilgisi',
+      params: { htsCode },
     },
     { apiName: this.apiName });
   
 
-  getPatientInfoByHtsCode = (htsCode: string) =>
+  htsHizmetKoduKontrolBySutCodesRequest = (sutCodesRequest: SutCodesRequestDto) =>
     this.restService.request<any, ExternalApiResult>({
-      method: 'GET',
-      url: '/api/app/external/patient-info',
-      params: { htsCode },
+      method: 'POST',
+      url: '/api/app/external/hts-hizmet-kodu-kontrol',
+      body: sutCodesRequest,
     },
     { apiName: this.apiName });
 

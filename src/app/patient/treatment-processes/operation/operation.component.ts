@@ -242,7 +242,9 @@ export class OperationComponent extends AppComponentBase {
           });
         }
         else {
-          this.operation.appointedInterpreterId = this.selectedInterpreter.id;
+          if (this.selectedInterpreter) {
+            this.operation.appointedInterpreterId = this.selectedInterpreter.id;
+          }
           this.operationService.update(this.operationId, this.operation).subscribe({
             complete: () => {
               this.success(this.l('::Message:SuccessfulSave', this.l('::OperationalInfo:Title')));

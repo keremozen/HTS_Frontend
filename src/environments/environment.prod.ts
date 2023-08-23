@@ -1,6 +1,6 @@
 import { Environment } from '@abp/ng.core';
 
-const baseUrl = 'https://hts-web1';
+const baseUrl = 'https://webhts.ushas.com.tr';
 
 export const environment = {
   production: false,
@@ -10,7 +10,7 @@ export const environment = {
     logoUrl: 'assets/images/logo/logo-sb1.svg',
   },
   oAuthConfig: {
-    issuer: 'https://hts-web1:44381/',
+    issuer: 'https://apihts.ushas.com.tr/',
     redirectUri: baseUrl,
     clientId: 'HTS_App',
     responseType: 'code',
@@ -19,7 +19,7 @@ export const environment = {
   },
   apis: {
     default: {
-      url: 'https://hts-web1:44381',
+      url: 'https://apihts.ushas.com.tr',
       rootNamespace: 'HTS',
     },
   },

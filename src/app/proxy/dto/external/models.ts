@@ -6,6 +6,7 @@ export interface ExternalApiResult {
 }
 
 export interface SutCodesRequestDto {
-  htsCode?: string;
-  sutCodes: string[];
+  htsKodu?: string;
+  sutKoduList: string[];
+  sysTakipNo?: string;
 }

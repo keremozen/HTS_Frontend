@@ -18,6 +18,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { forkJoin } from 'rxjs';
 import { CommonService } from 'src/app/services/common.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
+import { saveAs } from "file-saver";
 
 @Component({
   selector: 'app-proforma',
@@ -31,7 +32,7 @@ export class ProformaComponent extends AppComponentBase {
   hospitalResponse: HospitalResponseDto;
   saveProforma: SaveProformaDto;
   currencyList: CurrencyDto[] = [];
-  currencyName: string;
+  currencyName: string = "TRY";
   proformaList: ProformaListDto[] = [];
   selectedProformaId: number;
   selectedProforma: ProformaDto;
@@ -95,32 +96,12 @@ export class ProformaComponent extends AppComponentBase {
       complete: () => {
         if (this.proformaList.length > 0) {
           this.selectedProformaId = this.proformaList[0].id;
-          this.proformaService.getById(this.selectedProformaId).subscribe({
-            next: (res) => {
-              this.isEdit = true;
-              this.selectedProforma = res;
-              this.saveProforma = {} as SaveProformaDto;
-              this.saveProforma.currencyId = this.selectedProforma.currencyId;
-              this.saveProforma.description = this.selectedProforma.description;
-              this.saveProforma.exchangeRate = this.selectedProforma.exchangeRate;
-              this.saveProforma.operationId = this.selectedProforma.operationId;
-              this.saveProforma.proformaCode = this.selectedProforma.proformaCode;
-              this.saveProforma.proformaStatusId = this.selectedProforma.proformaStatusId;
-              this.saveProforma.totalProformaPrice = this.selectedProforma.totalProformaPrice;
-              this.saveProforma.tpDescription = this.selectedProforma.tpDescription;
-              this.saveProforma.version = this.selectedProforma.version;
-              this.saveProforma.proformaNotIncludingServices = this.selectedProforma.proformaNotIncludingServices as SaveProformaNotIncludingServiceDto[];
-              this.saveProforma.proformaAdditionalServices = this.selectedProforma.proformaAdditionalServices as SaveProformaAdditionalServiceDto[];
-              this.saveProforma.proformaProcesses = this.selectedProforma.proformaProcesses as SaveProformaProcessDto[];
-            },
-            complete: () => {
-              this.fetchData();
-            }
-          });
+          this.getProforma();
         }
         else {
           this.isEdit = false;
           this.saveProforma = {} as SaveProformaDto;
+          this.saveProforma.description = this.l("::Proforma:DefaultDescriptionText");
           this.saveProforma.operationId = +this.operation.id;
           this.fetchData();
         }
@@ -129,7 +110,35 @@ export class ProformaComponent extends AppComponentBase {
     });
   }
 
+  private getProforma() {
+    this.proformaService.getById(this.selectedProformaId).subscribe({
+      next: (res) => {
+        this.isEdit = true;
+        this.selectedProforma = res;
+        this.saveProforma = {} as SaveProformaDto;
+        this.saveProforma.description = this.l("::Proforma:DefaultDescriptionText");
+        this.saveProforma.currencyId = this.selectedProforma.currencyId;
+        this.saveProforma.description = this.selectedProforma.description;
+        this.saveProforma.exchangeRate = this.selectedProforma.exchangeRate;
+        this.saveProforma.operationId = this.selectedProforma.operationId;
+        this.saveProforma.proformaCode = this.selectedProforma.proformaCode;
+        this.saveProforma.proformaStatusId = this.selectedProforma.proformaStatusId;
+        this.saveProforma.totalProformaPrice = this.selectedProforma.totalProformaPrice;
+        this.saveProforma.tpDescription = this.selectedProforma.tpDescription;
+        this.saveProforma.version = this.selectedProforma.version;
+        this.saveProforma.proformaNotIncludingServices = this.selectedProforma.proformaNotIncludingServices as SaveProformaNotIncludingServiceDto[];
+        this.saveProforma.proformaAdditionalServices = this.selectedProforma.proformaAdditionalServices as SaveProformaAdditionalServiceDto[];
+        this.saveProforma.proformaProcesses = this.selectedProforma.proformaProcesses as SaveProformaProcessDto[];
+      },
+      complete: () => {
+        this.fetchData();
+      }
+    });
+  }
+
   fetchData() {
+    this.selectedAdditionalServices = [];
+    this.saveAdditionalServiceList = [];
     this.currencyList = this.commonService.currencyList;
     this.branchList = this.commonService.branchList;
     this.roomTypeList = entityEnum_RoomTypeEnumOptions;
@@ -213,6 +222,11 @@ export class ProformaComponent extends AppComponentBase {
     });
   }
 
+  onProformaChange() {
+    this.getProforma();
+  }
+
+
   private generateItems() {
     this.treatmentItemList = [];
     this.anticipatedMaterialList = [];
@@ -270,10 +284,23 @@ export class ProformaComponent extends AppComponentBase {
     else {
       this.exchangeRateInfoService.get(this.saveProforma.currencyId).subscribe({
         next: (res) => {
-          this.saveProforma.exchangeRate = res.exchangeRate;
+          if (res) {
+            this.saveProforma.exchangeRate = res.exchangeRate;
+            this.updateItems();
+          }
+          else {
+            this.error(this.l("::Proforma:Error:CurrencyNotFound"));
+            const tlCurrency = this.currencyList.find(c => c.name == "TL");
+            if (tlCurrency) {
+              this.saveProforma.currencyId = tlCurrency.id;
+              this.currencyName = "TRY";
+              this.saveProforma.exchangeRate = 1;
+              this.updateItems();
+            }
+          }
         },
         complete: () => {
-          this.updateItems();
+
         }
       });
     }
@@ -378,6 +405,19 @@ export class ProformaComponent extends AppComponentBase {
     });
   }
 
+  downloadProforma() {
+    if (this.selectedProformaId) {
+      this.proformaService.createProformaPdfById(this.selectedProformaId).subscribe({
+        next: r => {
+          const source = `data:application/pdf;base64,${r}`;
+          const link = document.createElement("a");
+          link.href = source;
+          link.download = `${this.selectedProforma.proformaCode}.pdf`
+          link.click();
+        }
+      });
+    }
+  }
 }
 
 class SaveProformaNotIncludingServiceDtoWithRowNumber implements SaveProformaNotIncludingServiceDto {

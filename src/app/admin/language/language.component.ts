@@ -115,27 +115,23 @@ export class LanguageComponent extends AppComponentBase {
     }
 
     myUploader(event) {
-        console.log("onUpload() START");
         for (let file of event.files) {
-            console.log("FILE TO BE UPLOADED: ", file);
-            debugger;
             const reader: FileReader = new FileReader();
             reader.onload = (e: any) => {
-                debugger;
                 const bstr: string = e.target.result;
                 const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
-
                 const wsname: string = wb.SheetNames[0];
                 const ws: XLSX.WorkSheet = wb.Sheets[wsname];
-                const data = <any>(XLSX.utils.sheet_to_json(ws, { header: 1 }));
-                
+                const data: SaveLanguageDto[] = JSON.parse(JSON.stringify((XLSX.utils.sheet_to_json(ws, { header: 0 }))));
+                debugger;
+                this.languageService.createList(data).subscribe({
+                    complete: () => {
+                        this.fetchData();
+                        this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:Language:Name')));
+                    }
+                })
             };
             reader.readAsBinaryString(file);
         }
     }
-}
-
-interface UploadEvent {
-    originalEvent: Event;
-    files: File[];
 }
