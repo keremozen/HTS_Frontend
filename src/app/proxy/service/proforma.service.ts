@@ -10,7 +10,7 @@ export class ProformaService {
   
 
   approveMFB = (id: number) =>
-    this.restService.request<any, object>({
+    this.restService.request<any, void>({
       method: 'POST',
       url: `/api/app/proforma/${id}/approve-mFB`,
     },
@@ -26,7 +26,7 @@ export class ProformaService {
   
 
   createProformaPdfById = (id: number) =>
-    this.restService.request<any, object>({
+    this.restService.request<any, number[]>({
       method: 'POST',
       url: `/api/app/proforma/${id}/proforma-pdf`,
     },

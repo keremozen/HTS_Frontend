@@ -30,6 +30,7 @@ export class PatientComponent extends AppComponentBase {
   minBirthDate: Date = moment('01.01.1900').toDate();
   creatorName: string;
   creationTime: Date;
+  isAllowedToManage: boolean = false;
 
   constructor(
     injector: Injector,
@@ -38,10 +39,11 @@ export class PatientComponent extends AppComponentBase {
     private route: ActivatedRoute,
   ) {
     super(injector);
+    this.isAllowedToManage = this.permission.getGrantedPolicy("HTS.PatientManagement")
   }
 
   ngOnInit() {
-    
+
     if (this.route.snapshot.paramMap.get('id')) {
       this.patientId = +this.route.snapshot.paramMap.get('id');
       if (this.patient) {
@@ -50,8 +52,8 @@ export class PatientComponent extends AppComponentBase {
         this.genderList = this.commonService.genderList;
         this.patientService.get(this.patientId).subscribe({
           next: (patient) => {
-            this.patientView = {...patient};
-            this.creatorName = (patient.creator as unknown as IdentityUserDto).name;
+            this.patientView = { ...patient };
+            this.creatorName = (patient.creator as unknown as IdentityUserDto).name + " " + (patient.creator as unknown as IdentityUserDto).surname;
             this.creationTime = new Date(patient.creationTime);
             this.patient = patient as SavePatientDto;
           },

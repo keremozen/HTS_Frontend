@@ -14,7 +14,6 @@ import { HospitalConsultationService, HospitalResponseService, HospitalResponseT
 import { forkJoin } from 'rxjs';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 import { CommonService } from '../services/common.service';
-import { DialogService, DynamicDialogConfig } from 'primeng/dynamicdialog';
 
 @Component({
   selector: 'app-hospital-response',
@@ -70,12 +69,23 @@ export class HospitalResponseComponent extends AppComponentBase {
   }
 
   ngOnInit() {
-    if (this.route.snapshot.paramMap.get('uid')) {
-      this.consultationId = +this.route.snapshot.paramMap.get('uid');
-      this.hospitalResponse.hospitalConsultationId = this.consultationId;
-      this.hospitalResponse.hospitalResponseBranches = [];
-      this.hospitalResponse.hospitalResponseProcesses = [];
-      this.fetchData();
+    const base64param = this.route.snapshot.paramMap.get('uid')!.split('.')[1];
+    if (base64param) {
+      try {
+        const uid = atob(base64param);
+        if (uid && !isNaN(+uid)) {
+          this.consultationId = +uid;
+          this.hospitalResponse.hospitalConsultationId = this.consultationId;
+          this.hospitalResponse.hospitalResponseBranches = [];
+          this.hospitalResponse.hospitalResponseProcesses = [];
+          this.fetchData();
+        }
+        else {
+          this.error(this.l('::HTS:28'));
+        }
+      } catch (error) {
+        this.error(this.l('::HTS:28'));
+      }
     }
   }
 

@@ -8,14 +8,16 @@ export interface PatientDocumentDto extends AuditedEntityWithUserDto<number, Ide
   fileName?: string;
   patientId: number;
   file?: string;
+  contentType?: string;
   documentType: DocumentTypeDto;
   patientDocumentStatusId: EntityEnum_PatientDocumentStatusEnum;
 }
 
 export interface SavePatientDocumentDto {
   patientId: number;
-  documentTypeId: number;
+  documentTypeId?: number;
   description?: string;
   fileName: string;
   file: string;
+  contentType: string;
 }

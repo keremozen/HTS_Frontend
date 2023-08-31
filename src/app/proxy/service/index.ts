@@ -12,6 +12,7 @@ export * from './external.service';
 export * from './gender.service';
 export * from './hospital-consultation-document.service';
 export * from './hospital-consultation.service';
+export * from './hospital-pricer.service';
 export * from './hospital-response-type.service';
 export * from './hospital-response.service';
 export * from './hospital-staff.service';

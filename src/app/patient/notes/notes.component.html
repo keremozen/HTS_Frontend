@@ -8,7 +8,7 @@
     </div>
     <div class="p-toolbar-group-end p-0">
         <p-button pRipple label="{{ '::New' | abpLocalization }}" icon="pi pi-plus" styleClass="p-button-success mr-2"
-            (onClick)="openNew()" [loading]="loading"></p-button>
+            (onClick)="openNew()" [loading]="loading" *ngIf="isAllowedToManage"></p-button>
     </div>
 </p-toolbar>
 
@@ -26,7 +26,7 @@
             <th style="width: 12rem" pSortableColumn="creationTime">{{ '::Notes:Column:Created' | abpLocalization }}
                 <p-sortIcon field="creationTime"></p-sortIcon>
             </th>
-            <th style="width: 4rem"></th>
+            <th style="width: 4rem" *ngIf="isAllowedToManage"></th>
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-note>
@@ -42,7 +42,7 @@
             </td>
             <td>{{note.creator?.name + (note.creator?.surname ? (" " + note.creator?.surname) : "")}}</td>
             <td>{{note.creationTime | date: 'dd.MM.yyyy'}}</td>
-            <td>
+            <td *ngIf="isAllowedToManage">
                 <p-button pRipple icon="pi pi-trash" styleClass="p-button-rounded p-button-danger"
                     (onClick)="revokeNote(note)"
                     [disabled]="note.patientNoteStatusId === patientNoteStatusEnum.Revoked"></p-button>

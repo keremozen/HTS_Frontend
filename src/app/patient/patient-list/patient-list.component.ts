@@ -97,6 +97,11 @@ export class PatientListComponent extends AppComponentBase {
     this.router.navigate(['/patient/new']);
   }
 
+  editPatientByRowClick(event: any, id: number) {
+    if(event.srcElement.nodeName.toLowerCase() != 'button') {
+      this.router.navigate(['/patient/edit/' + id]);
+    }
+  }
 
   editPatient(id: number) {
     this.router.navigate(['/patient/edit/' + id]);
@@ -110,7 +115,7 @@ export class PatientListComponent extends AppComponentBase {
       accept: () => {
         this.patientService.delete(+patient.id).subscribe({
           complete: () => {
-            this.success(this.l('::Message:SuccessfulDeletion', this.l('::Patient:Name')));
+            this.success(this.l('::Message:SuccessfulDeletion', this.l('::PatientDetail:Name')));
             this.fetchData();
           }
         });

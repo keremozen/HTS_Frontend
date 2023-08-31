@@ -8,7 +8,7 @@
     </div>
     <div class="p-toolbar-group-end p-0">
         <p-button pRipple label="{{ '::New' | abpLocalization }}" icon="pi pi-plus" styleClass="p-button-success mr-2"
-            (onClick)="openNew()" [loading]="loading"></p-button>
+            (onClick)="openNew()" [loading]="loading"  *ngIf="isAllowedToManage"></p-button>
     </div>
 </p-toolbar>
 
@@ -22,6 +22,8 @@
                     field="fileName"></p-sortIcon></th>
             <th pSortableColumn="description">{{ '::Documents:Column:Description' | abpLocalization }} <p-sortIcon
                     field="description"></p-sortIcon></th>
+            <th pSortableColumn="documentType.name">{{ '::Documents:Column:DocumentType' | abpLocalization }} <p-sortIcon
+                    field="documentType.name"></p-sortIcon></th>
             <th style="width: 12rem" pSortableColumn="creator.name">{{ '::Documents:Column:CreatedBy' | abpLocalization
                 }}
                 <p-sortIcon field="creator.name"></p-sortIcon>
@@ -29,23 +31,25 @@
             <th style="width: 12rem" pSortableColumn="creationTime">{{ '::Documents:Column:Created' | abpLocalization }}
                 <p-sortIcon field="creationTime"></p-sortIcon>
             </th>
-            <th style="width: 4rem"></th>
+            <th style="width: 4rem" *ngIf="isAllowedToManage"></th>
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-document>
         <tr>
-            <td>{{document.fileName}}
+            <td><a class="cursor-pointer text-gray-900" (click)="showFile(document.id)">{{document.fileName}}</a>
                 <p-tag severity="warning" value="{{ '::Revoked' | abpLocalization }}" [rounded]="true"
                     styleClass="revokeTag" class="ml-3"
                     *ngIf="document.patientDocumentStatusId === patientDocumentStatusEnum.Revoked"></p-tag>
             </td>
             <td>
                 <div class="overflow cursor-pointer" [pTooltip]="document.description" tooltipStyleClass="wideTooltip"
-                    tooltipPosition="bottom">{{document.description}}</div>
+                    tooltipPosition="bottom">{{document.description}}
+                </div>
             </td>
+            <td>{{document.documentType?.name}}</td>
             <td>{{document.creator?.name + (document.creator?.surname ? (" " + document.creator?.surname) : "")}}</td>
             <td>{{document.creationTime | date: 'dd.MM.yyyy'}}</td>
-            <td>
+            <td *ngIf="isAllowedToManage">
                 <p-button pRipple icon="pi pi-trash" styleClass="p-button-rounded p-button-danger"
                     (onClick)="revokeDocument(document)"
                     [disabled]="document.patientDocumentStatusId === patientDocumentStatusEnum.Revoked"></p-button>
@@ -75,7 +79,7 @@
                 </label>
                 <p-fileUpload #documents id="documents" name="documents"
                     chooseLabel="{{ '::ChooseFile' | abpLocalization}}" (onSelect)="onSelect($event)"
-                    maxFileSize="1000000" [auto]="true">
+                    maxFileSize="10000000" [auto]="true">
                     <ng-template let-file pTemplate="file">
                         <div class="inline-flex m-2">
                             <div class="fileContainer flex flex-wrap">
@@ -116,21 +120,13 @@
                 <label for="documentType">{{ '::Documents:Column:DocumentType' | abpLocalization }}</label>
                 <p-dropdown id="documentType" name="documentType" #documentType="ngModel" [options]="documentTypeList"
                     [(ngModel)]="document.documentTypeId" placeholder="{{ '::Select' | abpLocalization }}"
-                    [style]="{'width':'100%'}" styleClass="filterDropDown" optionValue="id"
-                    optionLabel="name" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
-                <small class="p-error" *ngIf="!(documentType.valid || documentType.pristine)">{{
-                    '::Message:RequiredField' |
-                    abpLocalization
-                    }}</small>
+                    [style]="{'width':'100%'}" styleClass="filterDropDown" optionValue="id" optionLabel="name"
+                    emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
             </div>
             <div class="field">
                 <label for="description">{{ '::Documents:Column:Description' | abpLocalization }}</label>
                 <textarea rows="5" pInputText id="description" name="description" #description="ngModel"
                     [(ngModel)]="document.description"></textarea>
-                <small class="p-error" *ngIf="!(description.valid || description.pristine)">{{ '::Message:RequiredField'
-                    |
-                    abpLocalization
-                    }}</small>
             </div>
         </div>
     </form>

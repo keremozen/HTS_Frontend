@@ -23,12 +23,14 @@ export class TreatmentProcessesComponent extends AppComponentBase {
   doesHaveAnySalesMethodAndCompanionInfo: boolean = false;
   activeIndex = 0;
   salesAndCompanionInfo: SalesMethodAndCompanionInfoDto;
+  isAllowedToManage: boolean = false;
 
   constructor(
     injector: Injector,
     private patientTreatmentProcessService: PatientTreatmentProcessService,
     private salesAndCompanionInfoService: SalesMethodAndCompanionInfoService) {
     super(injector);
+    this.isAllowedToManage = this.permission.getGrantedPolicy("HTS.PatientManagement");
   }
 
   ngOnInit(): void {

@@ -35,6 +35,8 @@ export class OperationalInfoComponent extends AppComponentBase {
   branchList: BranchDto[] = [];
   branchListText: string;
   hasPriceExceptingOperation: boolean = false;
+  isAllowedToManage: boolean = false;
+  isAllowedToCreateProforma: boolean = false;
 
   displayConsultationDialog: boolean;
   hospitalConsultation: HospitalConsultationDto;
@@ -65,6 +67,8 @@ export class OperationalInfoComponent extends AppComponentBase {
     public dialogService: DialogService
   ) {
     super(injector);
+    this.isAllowedToManage = this.permission.getGrantedPolicy("HTS.PatientManagement");
+    this.isAllowedToCreateProforma = this.permission.getGrantedPolicy("HTS.ProformaManagement");
   }
 
   ngOnInit(): void {

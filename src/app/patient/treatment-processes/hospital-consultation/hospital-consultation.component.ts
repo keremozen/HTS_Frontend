@@ -46,6 +46,7 @@ export class HospitalConsultationComponent extends AppComponentBase {
   hospitalResponseTypeList: HospitalResponseTypeDto[] = [];
   branchListText: string;
   doesHaveAnyApproved: boolean;
+  isAllowedToConsult: boolean = false;
 
   // Document Related variables
   documentTypeList: DocumentTypeDto[] = [];
@@ -65,7 +66,7 @@ export class HospitalConsultationComponent extends AppComponentBase {
     private hospitalResponseService: HospitalResponseService
   ) {
     super(injector);
-
+    this.isAllowedToConsult = this.permission.getGrantedPolicy("HTS.HospitalConsultation");
   }
 
   ngOnInit(): void {
@@ -128,6 +129,7 @@ export class HospitalConsultationComponent extends AppComponentBase {
   }
 
   saveConsultation() {
+    debugger;
     this.hospitalConsultation.hospitalIds = this.selectedHospitals;
     this.hospitalConsultation.hospitalConsultationDocuments = this.hospitalConsultationDocuments as unknown as SaveHospitalConsultationDocumentDto[];
     this.hospitalConsultationService.create(this.hospitalConsultation).subscribe({
@@ -281,18 +283,20 @@ export class HospitalConsultationComponent extends AppComponentBase {
         header: this.l('::Confirm'),
         icon: 'pi pi-exclamation-triangle',
         accept: () => {
-          this.patientDocumentService.getList(this.patientId).subscribe({
+          this.patientDocumentService.getDetailedList(this.patientId).subscribe({
             next: (res) => {
               this.hospitalConsultationDocuments = res.items.filter(n => n.patientDocumentStatusId !== EntityEnum_PatientDocumentStatusEnum.Revoked) as unknown as HospitalConsultationDocumentDto[];
+              debugger;
             }
           });
         }
       });
     }
     else {
-      this.patientDocumentService.getList(this.patientId).subscribe({
+      this.patientDocumentService.getDetailedList(this.patientId).subscribe({
         next: (res) => {
           this.hospitalConsultationDocuments = res.items.filter(n => n.patientDocumentStatusId !== EntityEnum_PatientDocumentStatusEnum.Revoked) as unknown as HospitalConsultationDocumentDto[];
+          debugger;
         }
       });
     }
@@ -317,7 +321,9 @@ export class HospitalConsultationComponent extends AppComponentBase {
       if (this.hospitalConsultationDocument) {
         this.hospitalConsultationDocument.fileName = this.uploadedDocuments[0].name;
         this.hospitalConsultationDocument.file = (fileReader.result as string).split(',')[1];
+        this.hospitalConsultationDocument.contentType = this.uploadedDocuments[0].type;
         this.hospitalConsultationDocument.patientDocumentStatusId = EntityEnum_PatientDocumentStatusEnum.NewRecord;
+        this.hospitalConsultationDocument.documentType = this.documentTypeList.find(dt=>dt.id == this.hospitalConsultationDocument.documentTypeId);
         this.hospitalConsultationDocuments.push({ ...this.hospitalConsultationDocument });
         this.success(this.l('::Message:SuccessfulSave', this.l('::Documents:NameSingular')));
         this.hideHospitalConsultationDocumentDialog();

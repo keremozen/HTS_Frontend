@@ -42,8 +42,10 @@ export class OperationComponent extends AppComponentBase {
   selectedTreatmentType: TreatmentTypeDto;
   selectedBranches: number[] = [];
   loading: boolean;
+  isInNewRecordStatus: boolean = false;
   public hospitalResponseTypeEnum = EntityEnum_HospitalResponseTypeEnum;
   public processTypeEnum = EntityEnum_ProcessTypeEnum;
+  public operationStatusEnum = EntityEnum_OperationStatusEnum;
 
   consultationId: number;
   consultation: HospitalConsultationDto;
@@ -51,7 +53,6 @@ export class OperationComponent extends AppComponentBase {
   anticipatedProcesses: SaveHospitalResponseProcessWithDetailDto[] = [];
   anticipatedMaterials: SaveHospitalResponseProcessWithDetailDto[] = [];
   totalRecords: number;
-  isAllowedToManage: boolean = false;
   process: SaveHospitalResponseProcessWithDetailDto;
   processDialog: boolean = false;
   processList: ProcessDto[] = [];
@@ -83,6 +84,7 @@ export class OperationComponent extends AppComponentBase {
       this.loading = true;
       this.fetchData().subscribe({
         next: () => {
+          this.isInNewRecordStatus = true;
           this.isManual = true;
           this.hospitalResponse = {} as SaveHospitalResponseDto;
           this.operation = {} as SaveOperationDto;
@@ -90,6 +92,7 @@ export class OperationComponent extends AppComponentBase {
           this.patient = this.dialogConfig.data?.patient;
           this.operation.patientTreatmentProcessId = this.patientTreatmentProcessId;
           this.hospitalResponse.hospitalConsultationId = null;
+          this.hospitalResponse.possibleTreatmentDate = null;
           this.loading = false;
         },
         error: () => {
@@ -105,6 +108,7 @@ export class OperationComponent extends AppComponentBase {
       this.fetchData().subscribe({
         next: () => {
           this.isManual = false;
+          this.isInNewRecordStatus = (this.dialogConfig.data?.operation as OperationDto).operationStatusId == this.operationStatusEnum.NewRecord;
           this.operationId = +(this.dialogConfig.data?.operation as OperationDto).id;
           this.operation = this.dialogConfig.data?.operation as SaveOperationDto;
           if (this.operation.travelDateToTurkey) {
@@ -117,7 +121,9 @@ export class OperationComponent extends AppComponentBase {
             this.selectedInterpreter = (this.dialogConfig.data?.operation as OperationDto).appointedInterpreter;
           }
           this.hospitalResponse = this.dialogConfig.data?.hospitalResponse as SaveHospitalResponseDto;
-          this.hospitalResponse.possibleTreatmentDate = new Date(this.hospitalResponse.possibleTreatmentDate);
+          if (this.hospitalResponse.possibleTreatmentDate) {
+            this.hospitalResponse.possibleTreatmentDate = new Date(this.hospitalResponse.possibleTreatmentDate);
+          }
           this.selectedBranches = this.hospitalResponse.hospitalResponseBranches.map(b => b.branchId);
           this.hospitalResponse.hospitalResponseProcesses.forEach(process => {
             let processWithDetail = process as SaveHospitalResponseProcessWithDetailDto;
@@ -218,7 +224,7 @@ export class OperationComponent extends AppComponentBase {
       header: this.l('::Confirm'),
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-
+        debugger;
         if (this.isManual) {
           this.hospitalResponse.hospitalResponseBranches = [];
           this.selectedBranches.forEach(branch => {
@@ -242,6 +248,25 @@ export class OperationComponent extends AppComponentBase {
           });
         }
         else {
+
+          //Yeni kayıt güncelleniyor
+          if (this.isInNewRecordStatus) {
+            this.hospitalResponse.hospitalResponseBranches = [];
+            this.selectedBranches.forEach(branch => {
+              this.hospitalResponse.hospitalResponseBranches.push({
+                hospitalResponseId: 0,
+                branchId: branch
+              });
+            });
+            if (this.selectedInterpreter) {
+              this.operation.appointedInterpreterId = this.selectedInterpreter.id;
+            }
+            this.hospitalResponse.hospitalResponseProcesses = [];
+            this.hospitalResponse.hospitalResponseProcesses.push(...this.anticipatedProcesses);
+            this.hospitalResponse.hospitalResponseProcesses.push(...this.anticipatedMaterials);
+            this.operation.hospitalResponse = this.hospitalResponse;
+          }
+
           if (this.selectedInterpreter) {
             this.operation.appointedInterpreterId = this.selectedInterpreter.id;
           }

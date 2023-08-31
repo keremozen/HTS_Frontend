@@ -10,7 +10,7 @@
         </ng-template>
         <ng-template pTemplate="right">
             <p-fileUpload mode="basic" chooseLabel="Excel'den Aktar" name="excelImport[]"
-                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" maxFileSize="1000000" [multiple]="false" [auto]="true"
+                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" maxFileSize="10000000" [multiple]="false" [auto]="true"
                 customUpload="true" (uploadHandler)="myUploader($event)"></p-fileUpload>
         </ng-template>
     </p-toolbar>

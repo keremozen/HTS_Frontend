@@ -3,7 +3,7 @@
         <div class="grid">
             <div class="col-4">
                 <div class="pl-3 pr-3 pt-2 pb-3 m-2">
-                    <div class="field grid" *ngIf="isManual">
+                    <div class="field grid" *ngIf="isInNewRecordStatus">
                         <label for="hospital" class="col-fixed"
                             style="width:140px">{{'::HospitalResponse:Field:HospitalName' |
                             abpLocalization}}</label>
@@ -11,7 +11,7 @@
                             <p-dropdown id="hospital" name="hospital" #hospital="ngModel" [options]="hospitalList"
                                 [(ngModel)]="operation.hospitalId" placeholder="{{ '::Select' | abpLocalization }}"
                                 [style]="{'width':'100%'}" required="true" styleClass="filterDropDown"
-                                optionLabel="name" optionValue="id"
+                                optionLabel="name" optionValue="id" [disabled]="!isManual && !isInNewRecordStatus"
                                 emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
                         </div>
                     </div>
@@ -26,7 +26,7 @@
                                 placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
                                 required="true" styleClass="filterDropDown" optionLabel="name" optionValue="id"
                                 emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
-                                [disabled]="!isManual"></p-dropdown>
+                                [disabled]="!isManual && !isInNewRecordStatus"></p-dropdown>
                         </div>
                     </div>
                     <div class="field grid">
@@ -44,7 +44,7 @@
                                 required="true" styleClass="filterDropDown" optionLabel="name" optionValue="id"
                                 [required]="hospitalResponse.hospitalResponseTypeId == hospitalResponseTypeEnum.SuitableForTreatment"
                                 emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
-                                [disabled]="!isManual"></p-dropdown>
+                                [disabled]="!isManual && !isInNewRecordStatus"></p-dropdown>
                         </div>
                     </div>
                     <div class="field grid">
@@ -61,7 +61,7 @@
                                 emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
                                 [required]="hospitalResponse.hospitalResponseTypeId == hospitalResponseTypeEnum.SuitableForTreatment"
                                 emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}"
-                                [disabled]="!isManual"></p-multiSelect>
+                                [disabled]="!isManual && !isInNewRecordStatus"></p-multiSelect>
                         </div>
                     </div>
                     <div class="field grid">
@@ -71,7 +71,7 @@
                         <div class="col">
                             <p-calendar id="calTreatmentDate" name="calTreatmentDate" #calTreatmentDate="ngModel"
                                 [(ngModel)]="hospitalResponse.possibleTreatmentDate" [showIcon]="true"
-                                inputStyleClass="text-sm" dateFormat="dd.mm.yy" [disabled]="!isManual"></p-calendar>
+                                inputStyleClass="text-sm" dateFormat="dd.mm.yy" [disabled]="!isManual && !isInNewRecordStatus"></p-calendar>
                         </div>
                     </div>
                     <div class="field grid">
@@ -86,7 +86,7 @@
                                 #numberOfHospitalizationDays="ngModel"
                                 [required]="hospitalResponse.hospitalResponseTypeId == hospitalResponseTypeEnum.SuitableForTreatment"
                                 [(ngModel)]="hospitalResponse.hospitalizationNumber"
-                                [disabled]="!isManual"></p-inputNumber>
+                                [disabled]="!isManual && !isInNewRecordStatus"></p-inputNumber>
                         </div>
                     </div>
                 </div>
@@ -98,7 +98,7 @@
                         abpLocalization}}
                     </legend>
 
-                    <p-toolbar styleClass="customToolbar" *ngIf="isManual">
+                    <p-toolbar styleClass="customToolbar" *ngIf="isManual || isInNewRecordStatus">
                         <div class="p-toolbar-group-start">
                             <div class="ml-3"></div>
                         </div>
@@ -132,7 +132,7 @@
                                     }}
                                     <p-sortIcon field="amount"></p-sortIcon>
                                 </th>
-                                <th class="w-4rem" *ngIf="isManual"></th>
+                                <th class="w-4rem" *ngIf="isManual || isInNewRecordStatus"></th>
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="body" let-process>
@@ -140,7 +140,7 @@
                                 <td>{{process.process?.code}}</td>
                                 <td>{{process.process?.name}}</td>
                                 <td>{{process.amount}}</td>
-                                <td *ngIf="isManual">
+                                <td *ngIf="isManual || isInNewRecordStatus">
                                     <p-button pRipple icon="pi pi-trash" styleClass="p-button-rounded p-button-warning"
                                         (onClick)="deleteProcess(process)"></p-button>
                                 </td>
@@ -167,7 +167,7 @@
                         abpLocalization}}
                     </legend>
 
-                    <p-toolbar styleClass="customToolbar" *ngIf="isManual">
+                    <p-toolbar styleClass="customToolbar" *ngIf="isManual || isInNewRecordStatus">
                         <div class="p-toolbar-group-start">
                             <div class="ml-3"></div>
                         </div>
@@ -193,14 +193,14 @@
                                     abpLocalization }}
                                     <p-sortIcon field="amount"></p-sortIcon>
                                 </th>
-                                <th class="w-4rem" *ngIf="isManual"></th>
+                                <th class="w-4rem" *ngIf="isManual || isInNewRecordStatus"></th>
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="body" let-material>
                             <tr>
                                 <td>{{material.process?.name}}</td>
                                 <td>{{material.amount}}</td>
-                                <td *ngIf="isManual">
+                                <td *ngIf="isManual || isInNewRecordStatus">
                                     <p-button pRipple icon="pi pi-trash" styleClass="p-button-rounded p-button-warning"
                                         (onClick)="deleteMaterial(material)"></p-button>
                                 </td>
@@ -229,7 +229,7 @@
                     </legend>
                     <textarea pInputText id="description" name="description" #description="ngModel"
                         [(ngModel)]="hospitalResponse.description" class="w-full h-full"
-                        [disabled]="!isManual"></textarea>
+                        [disabled]="!isManual && !isInNewRecordStatus"></textarea>
                 </fieldset>
             </div>
             <div class="col-4">

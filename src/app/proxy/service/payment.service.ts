@@ -20,9 +20,17 @@ export class PaymentService {
   
 
   createInvoicePdfById = (id: number) =>
-    this.restService.request<any, void>({
+    this.restService.request<any, number[]>({
       method: 'POST',
       url: `/api/app/payment/${id}/invoice-pdf`,
+    },
+    { apiName: this.apiName });
+  
+
+  finalizePaymentById = (id: number) =>
+    this.restService.request<any, void>({
+      method: 'POST',
+      url: `/api/app/payment/${id}/finalize-payment`,
     },
     { apiName: this.apiName });
   

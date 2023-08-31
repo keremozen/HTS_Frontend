@@ -42,6 +42,10 @@ echarts.use(
 );
 echarts.registerTheme('macarons', Marcaron);
 
+import localeDe from '@angular/common/locales/de';
+import { registerLocaleData } from '@angular/common';
+registerLocaleData(localeDe);
+
 @NgModule({
   imports: [
     BrowserModule,

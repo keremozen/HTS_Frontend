@@ -24,12 +24,14 @@ export class NotesComponent extends AppComponentBase {
   loading: boolean;
   totalRecords: number;
   public patientNoteStatusEnum = EntityEnum_PatientNoteStatusEnum;
+  isAllowedToManage: boolean = false;
 
   constructor(
     injector: Injector,
     private patientNoteService: PatientNoteService
   ) {
     super(injector);
+    this.isAllowedToManage = this.permission.getGrantedPolicy("HTS.PatientManagement")
 
   }
 

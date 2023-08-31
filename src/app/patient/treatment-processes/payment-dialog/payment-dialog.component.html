@@ -128,6 +128,7 @@
                 </p-toolbar>
                 <p-table #dt [value]="payment.paymentItems" [rows]="5" styleClass="pt-3" [paginator]="true"
                     [rowHover]="true" [loading]="loading"
+                    selectionMode="single" [(selection)]="selectedPaymentItem" dataKey="id" (onRowSelect)="onPaymentItemSelect($event)"
                     currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
                     [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
                     <ng-template pTemplate="header">
@@ -174,7 +175,7 @@
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="body" let-paymentItem>
-                        <tr>
+                        <tr [pSelectableRow]="paymentItem">
                             <td>{{paymentItem.rowNumber}}</td>
                             <td>{{paymentItem.paymentKind?.name}}</td>
                             <td>{{paymentItem.posApproveCode ?? '-'}}</td>

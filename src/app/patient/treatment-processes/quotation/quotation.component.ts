@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Injector, Input, Output, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Injector, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ProformaPricingListDto, RejectProformaDto } from '@proxy/dto/proforma';
 import { EntityEnum_OperationTypeEnum, EntityEnum_ProformaStatusEnum } from '@proxy/enum';
 import { OperationService, ProformaService, RejectReasonService } from '@proxy/service';
@@ -8,6 +8,7 @@ import { ProformaComponent } from '../proforma/proforma.component';
 import { PatientDto } from '@proxy/dto/patient';
 import { RejectReasonDto } from '@proxy/dto/reject-reason';
 import { PaymentDialogComponent } from '../payment-dialog/payment-dialog.component';
+import { PaymentListComponent } from '../payment-list/payment-list.component';
 
 @Component({
   selector: 'app-quotation',
@@ -19,12 +20,15 @@ export class QuotationComponent extends AppComponentBase {
 
   @Input() patientTreatmentId: number;
   @Input() patient: PatientDto;
+  @Output() onQuotationChange: EventEmitter<any> = new EventEmitter();
+  @ViewChild('paymentListComp') paymentListComp: PaymentListComponent;
+
   proformaList: ProformaPricingListDto[] = [];
   loading: boolean = false;
   public proformaStatusEnum = EntityEnum_ProformaStatusEnum;
   public operationTypeEnum = EntityEnum_OperationTypeEnum;
-  @Output() onQuotationChange: EventEmitter<any> = new EventEmitter();
-  ref: DynamicDialogRef;
+  paymentDialogRef: DynamicDialogRef;
+  proformaDialogRef: DynamicDialogRef;
 
   displayMFBReject: boolean = false;
   displayPatientReject: boolean = false;
@@ -161,7 +165,7 @@ export class QuotationComponent extends AppComponentBase {
   onProformaCodeClick(proforma: ProformaPricingListDto) {
     this.operationService.get(proforma.operationId).subscribe({
       next: (op) => {
-        this.ref = this.dialogService.open(ProformaComponent, {
+        this.proformaDialogRef = this.dialogService.open(ProformaComponent, {
           header: this.l('::Proforma:Title'),
           width: '85vw',
           contentStyle: { overflow: 'auto' },
@@ -172,13 +176,15 @@ export class QuotationComponent extends AppComponentBase {
             isDisabled: proforma.proformaStatusId !== this.proformaStatusEnum.MFBWaitingApproval
           }
         });
+
+        this.proformaDialogRef.onClose.subscribe(() => {
+          this.fetchData();
+          this.onQuotationChange.emit();
+        });
       }
     });
 
-    this.ref.onClose.subscribe(() => {
-      this.fetchData();
-      this.onQuotationChange.emit();
-    });
+    
   }
 
   onSendToPatientClick(proforma: ProformaPricingListDto) {
@@ -201,8 +207,7 @@ export class QuotationComponent extends AppComponentBase {
   onPaymentClick(proforma: ProformaPricingListDto) {
     this.operationService.get(proforma.operationId).subscribe({
       next: (op) => {
-        console.log(op);
-        this.ref = this.dialogService.open(PaymentDialogComponent, {
+        this.paymentDialogRef = this.dialogService.open(PaymentDialogComponent, {
           header: this.l('::PaymentDialog:Title'),
           width: '85vw',
           contentStyle: { overflow: 'auto' },
@@ -218,12 +223,15 @@ export class QuotationComponent extends AppComponentBase {
             ptpId: op.patientTreatmentProcessId
           },
         });
+
+        this.paymentDialogRef.onClose.subscribe(() => {
+          this.fetchData();
+          this.paymentListComp.fetchData();
+          this.onQuotationChange.emit();
+        });
       }
     });
 
-    this.ref.onClose.subscribe(() => {
-      this.fetchData();
-      this.onQuotationChange.emit();
-    });
+    
   }
 }

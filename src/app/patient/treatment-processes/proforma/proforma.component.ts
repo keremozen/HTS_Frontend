@@ -1,5 +1,5 @@
 import { ABP } from '@abp/ng.core';
-import { Component, Injector, ViewEncapsulation } from '@angular/core';
+import { Component, Injector, LOCALE_ID, ViewEncapsulation } from '@angular/core';
 import { AdditionalServiceDto } from '@proxy/dto/additional-service';
 import { BranchDto } from '@proxy/dto/branch';
 import { CurrencyDto } from '@proxy/dto/currency';
@@ -18,13 +18,15 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { forkJoin } from 'rxjs';
 import { CommonService } from 'src/app/services/common.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
-import { saveAs } from "file-saver";
 
 @Component({
   selector: 'app-proforma',
   templateUrl: './proforma.component.html',
   styleUrls: ['./proforma.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  providers: [
+    { provide: LOCALE_ID, useValue: 'de-DE' },  
+    ]
 })
 export class ProformaComponent extends AppComponentBase {
 
@@ -65,11 +67,6 @@ export class ProformaComponent extends AppComponentBase {
   notIncludingServiceRowNumber: number = 1;
   showNotIncludingItemsDialog: boolean = false;
   proformaNotIncludingService: SaveProformaNotIncludingServiceDtoWithRowNumber;
-
-  //TODO: Kerem mockup sonra silinecek
-  treatmentDescription_Temp: string;
-  proformaDescription_Temp: string;
-  hospitalDescription_Temp: string;
 
 
   constructor(
@@ -132,6 +129,7 @@ export class ProformaComponent extends AppComponentBase {
       },
       complete: () => {
         this.fetchData();
+        this.onCurrencyChange();
       }
     });
   }
@@ -155,6 +153,7 @@ export class ProformaComponent extends AppComponentBase {
       ]
     ) => {
 
+      debugger;
       if (!this.isEdit) {
         this.saveProforma.currencyId = this.currencyList.find(c => c.isDefault).id;
         this.onCurrencyChange();

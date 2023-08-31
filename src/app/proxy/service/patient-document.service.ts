@@ -27,6 +27,22 @@ export class PatientDocumentService {
     { apiName: this.apiName });
   
 
+  get = (id: number) =>
+    this.restService.request<any, PatientDocumentDto>({
+      method: 'GET',
+      url: `/api/app/patient-document/${id}`,
+    },
+    { apiName: this.apiName });
+  
+
+  getDetailedList = (patientId: number) =>
+    this.restService.request<any, PagedResultDto<PatientDocumentDto>>({
+      method: 'GET',
+      url: `/api/app/patient-document/detailed-list/${patientId}`,
+    },
+    { apiName: this.apiName });
+  
+
   getList = (patientId: number) =>
     this.restService.request<any, PagedResultDto<PatientDocumentDto>>({
       method: 'GET',

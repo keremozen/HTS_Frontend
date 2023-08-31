@@ -27,6 +27,7 @@ export class DocumentsComponent extends AppComponentBase {
   uploadedDocuments: any[] = [];
   loading: boolean;
   totalRecords: number = 0;
+  isAllowedToManage: boolean = false;
   public patientDocumentStatusEnum = EntityEnum_PatientDocumentStatusEnum;
   @ViewChild("documents", { static: false }) documentUpload: FileUpload;
   @ViewChild("documentForm", {static:false}) documentForm: Form;
@@ -37,6 +38,7 @@ export class DocumentsComponent extends AppComponentBase {
     private documentService: PatientDocumentService
   ) {
     super(injector);
+    this.isAllowedToManage = this.permission.getGrantedPolicy("HTS.PatientManagement");
   }
 
   ngOnInit(): void {
@@ -72,6 +74,18 @@ export class DocumentsComponent extends AppComponentBase {
     this.totalRecords = this.documentsToBeDisplayed.length;
   }
 
+  showFile(documentId: number) {
+    this.documentService.get(documentId).subscribe({
+      next: r => {
+        const source = `data:${r.contentType};base64,${r.file}`;
+        const link = document.createElement("a");
+        link.href = source;
+        link.download = r.fileName
+        link.click();
+      }
+    });
+  }
+
   openNew() {
     this.document = {} as SavePatientDocumentDto;
     this.document.patientId = this.patientId;
@@ -84,6 +98,7 @@ export class DocumentsComponent extends AppComponentBase {
     fileReader.onload = (r) => {
       if (this.document) {
         this.document.fileName = this.uploadedDocuments[0].name;
+        this.document.contentType = this.uploadedDocuments[0].type;
         this.document.file = fileReader.result as string;
         this.documentService.create(this.document).subscribe({
           next: (res) => {

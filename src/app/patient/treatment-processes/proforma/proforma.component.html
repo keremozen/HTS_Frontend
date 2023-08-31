@@ -112,7 +112,7 @@
                             <td [pEditableColumn]="item.treatmentCount" pEditableColumnField="treatmentCount">
                                 <p-cellEditor>
                                     <ng-template pTemplate="input">
-                                        <p-inputNumber size="2" [(ngModel)]="item.treatmentCount"></p-inputNumber>
+                                        <p-inputNumber name="treatmentCount" #treatmentCount="ngModel" size="2" [(ngModel)]="item.treatmentCount"></p-inputNumber>
                                     </ng-template>
                                     <ng-template pTemplate="output">
                                         {{ item.treatmentCount }}
@@ -125,7 +125,7 @@
                             <td [pEditableColumn]="item.change" pEditableColumnField="change">
                                 <p-cellEditor>
                                     <ng-template pTemplate="input">
-                                        <p-inputNumber size="3" suffix="%" [max]="999" [min]="-999"
+                                        <p-inputNumber name="changeAmount" #changeAmount="ngModel" size="3" suffix="%" [max]="999" [min]="-999"
                                             [(ngModel)]="item.change"></p-inputNumber>
                                     </ng-template>
                                     <ng-template pTemplate="output">
@@ -219,11 +219,11 @@
                         <fieldset class="border pl-3 pr-3 pt-2 pb-3 proformaFieldSet proformaFieldHeight">
                             <legend class="float-none w-auto pl-3 pr-3 text-sm proformaFieldSetlegend">
                                 {{'::Proforma:Field:TreatmentDescription' |
-                                abpLocalization}} *
+                                abpLocalization}}
                             </legend>
                             <textarea rows="3" pInputText id="treatmentDescription" name="treatmentDescription"
                                 #treatmentDescription="ngModel" [(ngModel)]="saveProforma.tpDescription" class="w-full"
-                                [disabled]="isDisabled" required></textarea>
+                                [disabled]="isDisabled"></textarea>
                         </fieldset>
                     </div>
                     <div class="col-12 mt-3">
@@ -400,7 +400,7 @@
                             *ngIf="!isDisabled"></p-button>
                         <p-button pRipple styleClass="p-button-success ml-2 mt-4" [disabled]="!this.selectedProformaId || !(proformaForm.valid)"
                             label="{{ '::Proforma:Button:Send' | abpLocalization }}" (onClick)="onSendProforma()"
-                            *ngIf="!isDisabled"></p-button>
+                            *ngIf="!isDisabled "></p-button>
                     </div>
                 </div>
             </div>

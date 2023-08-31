@@ -4,7 +4,6 @@ import { SharedModule } from '../shared/shared.module';
 import { FormsModule } from '@angular/forms';
 import { HospitalResponseComponent } from './hospital-response.component';
 import { RouterModule, Routes } from '@angular/router';
-import { PatientModule } from '../patient/patient.module';
 
 const routes: Routes = [
   /*{

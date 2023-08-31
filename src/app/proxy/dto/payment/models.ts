@@ -6,7 +6,7 @@ import type { PaymentItemDto, SavePaymentItemDto } from '../payment-item/models'
 import { IdentityUserDto } from '@abp/ng.identity/proxy';
 
 export interface ListPaymentDto extends EntityDto<number> {
-  proformaId: number;
+  proformaId?: number;
   ptpId: number;
   hospitalId: number;
   rowNumber: number;
@@ -26,7 +26,7 @@ export interface ListPaymentDto extends EntityDto<number> {
 }
 
 export interface PaymentDto extends AuditedEntityWithUserDto<number, IdentityUserDto> {
-  proformaId: number;
+  proformaId?: number;
   ptpId: number;
   hospitalId: number;
   rowNumber: number;
@@ -47,7 +47,7 @@ export interface PaymentDto extends AuditedEntityWithUserDto<number, IdentityUse
 }
 
 export interface SavePaymentDto {
-  proformaId: number;
+  proformaId?: number;
   ptpId: number;
   hospitalId: number;
   payerNameSurname: string;

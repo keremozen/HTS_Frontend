@@ -28,6 +28,7 @@ export class CompanionInfoComponent extends AppComponentBase {
   loading: boolean;
   selectedStaffEmail: string;
   selectedStaffPhone: string;
+  isAllowedToManage: boolean = false;
   @Output() save: EventEmitter<any> = new EventEmitter();
 
   constructor(
@@ -37,6 +38,7 @@ export class CompanionInfoComponent extends AppComponentBase {
     private salesAndCompanionInfoService: SalesMethodAndCompanionInfoService
   ) {
     super(injector);
+    this.isAllowedToManage = this.permission.getGrantedPolicy("HTS.PatientManagement");
   }
 
   ngOnInit(): void {

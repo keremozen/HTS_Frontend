@@ -7,12 +7,12 @@
     <p-toolbar styleClass="mb-4 gap-2">
         <ng-template pTemplate="left">
             <p-button pRipple label="{{ '::Admin:Hospital:NewHospital' | abpLocalization }}" icon="pi pi-plus"
-            styleClass="p-button-success mr-2" (onClick)="openNewHospital()"></p-button>
+                styleClass="p-button-success mr-2" (onClick)="openNewHospital()"></p-button>
         </ng-template>
     </p-toolbar>
 
     <p-table #dt [value]="hospitalList" [rows]="10" [paginator]="true" responsiveLayout="stack" [breakpoint]="'960px'"
-        [rowHover]="true" dataKey="Id"
+        [rowHover]="true" dataKey="Id" styleClass="p-datatable-gridlines"
         currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
         [showCurrentPageReport]="true">
         <ng-template pTemplate="header">
@@ -33,8 +33,10 @@
                     abpLocalization }}</th>
                 <th>{{ '::Admin:Hospital:Column:Staffs' |
                     abpLocalization }}</th>
+                <th>{{ '::Admin:Hospital:Column:Pricers' |
+                    abpLocalization }}</th>
                 <th class="text-center">{{ '::Admin:Hospital:Column:IsActive' | abpLocalization }}</th>
-                <th style="width:13rem;"></th>
+                <th style="width:8rem;"></th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-hospital>
@@ -47,21 +49,36 @@
                     '}}{{hospital.phoneNumber}}</td>
                 <td>{{!hospital.email ? '-' : hospital.email}}</td>
                 <td>
-                    <div [innerHTML]="!hospital.hospitalUHBStaffNames ? '-': hospital.hospitalUHBStaffNames"></div>
+                    <div class="flex justify-content-between">
+                        <div class="flex align-items-center"
+                            [innerHTML]="!hospital.hospitalUHBStaffNames ? '-': hospital.hospitalUHBStaffNames"></div>
+                        <p-button pRipple icon="pi pi-plus" styleClass="p-button-rounded p-button-info ml-2"
+                            [pTooltip]="'::Admin:Hospital:Column:UHBStaffs' | abpLocalization"
+                            (onClick)="openUHBStaffDialog(hospital)"></p-button>
+                    </div>
                 </td>
                 <td>
-                    <div [innerHTML]="!hospital.hospitalStaffNames ? '-': hospital.hospitalStaffNames"></div>
+                    <div class="flex justify-content-between">
+                        <div class="flex align-items-center"
+                            [innerHTML]="!hospital.hospitalStaffNames ? '-': hospital.hospitalStaffNames"></div>
+                        <p-button pRipple icon="pi pi-plus" styleClass="p-button-rounded p-button-info ml-2"
+                            [pTooltip]="'::Admin:Hospital:Column:Staffs' | abpLocalization"
+                            (onClick)="openStaffDialog(hospital)"></p-button>
+                    </div>
+                </td>
+                <td>
+                    <div class="flex justify-content-between">
+                        <div class="flex align-items-center"
+                            [innerHTML]="!hospital.hospitalPricerNames ? '-': hospital.hospitalPricerNames"></div>
+                        <p-button pRipple icon="pi pi-plus" styleClass="p-button-rounded p-button-info ml-2"
+                            [pTooltip]="'::Admin:Hospital:Column:Pricers' | abpLocalization"
+                            (onClick)="openPricerDialog(hospital)"></p-button>
+                    </div>
                 </td>
                 <td class="text-center"><i class="pi"
                         [ngClass]="{ 'text-green-500 pi-check-circle': hospital.isActive, 'text-red-500 pi-times-circle': !hospital.isActive }"></i>
                 </td>
                 <td class="text-right">
-                    <p-button pRipple icon="pi pi-users" styleClass="p-button-rounded p-button-info"
-                        [pTooltip]="'::Admin:Hospital:Column:UHBStaffs' | abpLocalization"
-                        (onClick)="openUHBStaffDialog(hospital)"></p-button>
-                    <p-button pRipple icon="pi pi-users" styleClass="p-button-rounded p-button-info ml-2"
-                        [pTooltip]="'::Admin:Hospital:Column:Staffs' | abpLocalization"
-                        (onClick)="openStaffDialog(hospital)"></p-button>
                     <p-button pRipple icon="pi pi-pencil" styleClass="p-button-rounded p-button-success ml-2"
                         (onClick)="editHospital(hospital)"></p-button>
                     <p-button pRipple icon="pi pi-trash" styleClass="p-button-rounded p-button-warning ml-2"
@@ -176,8 +193,8 @@
     (onHide)="refreshHospital()">
     <p-toolbar styleClass="mb-4 gap-2">
         <ng-template pTemplate="left">
-            <p-button pRipple label="{{ '::Admin:HospitalStaff:NewHospitalStaff' | abpLocalization }}"
-                icon="pi pi-plus" styleClass="p-button-success mr-2" (onClick)="openNewStaff()"></p-button>
+            <p-button pRipple label="{{ '::Admin:HospitalStaff:NewHospitalStaff' | abpLocalization }}" icon="pi pi-plus"
+                styleClass="p-button-success mr-2" (onClick)="openNewStaff()"></p-button>
         </ng-template>
     </p-toolbar>
     <p-table #dt [value]="hospitalStaffList" [rows]="10" [paginator]="true" responsiveLayout="stack"
@@ -276,16 +293,74 @@
     </p-table>
 </p-dialog>
 
+<p-dialog [(visible)]="hospitalPricerListDialog" [style]="{width: '80vw'}"
+    header="{{ '::Admin:Hospital:HospitalPricerManagement' | abpLocalization }}" [modal]="true" styleClass="p-fluid"
+    (onHide)="refreshHospital()">
+    <p-toolbar styleClass="mb-4 gap-2">
+        <ng-template pTemplate="left">
+            <p-button pRipple label="{{ '::Admin:HospitalPricer:NewHospitalPricer' | abpLocalization }}"
+                icon="pi pi-plus" styleClass="p-button-success mr-2" (onClick)="openNewPricer()"></p-button>
+        </ng-template>
+    </p-toolbar>
+    <p-table #dt [value]="hospitalPricerList" [rows]="10" [paginator]="true" responsiveLayout="stack"
+        [breakpoint]="'960px'" [rowHover]="true"
+        currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
+        [showCurrentPageReport]="true">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="nameSurname">{{ '::Admin:HospitalPricer:Column:NameSurname' |
+                    abpLocalization }} <p-sortIcon field="nameSurname"></p-sortIcon></th>
+                <th pSortableColumn="phoneNumber">{{ '::Admin:HospitalPricer:Column:PhoneNumber' |
+                    abpLocalization }} <p-sortIcon field="phoneNumber"></p-sortIcon></th>
+                <th pSortableColumn="email">{{ '::Admin:HospitalPricer:Column:Email' | abpLocalization
+                    }} <p-sortIcon field="email"></p-sortIcon></th>
+                <th class="text-center">{{ '::Admin:HospitalPricer:Column:IsDefault' | abpLocalization }}</th>
+                <th class="text-center">{{ '::Admin:HospitalPricer:Column:IsActive' | abpLocalization }}</th>
+                <th style="width:8rem;"></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-pricer let-editing="editing" let-ri="rowIndex">
+            <tr [pEditableRow]="pricer">
+                <td>{{pricer.user?.name}} {{pricer.user?.surname}}</td>
+                <td>{{pricer.user?.phoneNumber}}</td>
+                <td>{{pricer.user?.email}}</td>
+                <td class="text-center"><i class="pi"
+                        [ngClass]="{ 'text-green-500 pi-check-circle': pricer.isDefault, 'text-red-500 pi-times-circle': !pricer.isDefault }"></i>
+                </td>
+                <td class="text-center"><i class="pi"
+                        [ngClass]="{ 'text-green-500 pi-check-circle': pricer.isActive, 'text-red-500 pi-times-circle': !pricer.isActive }"></i>
+                </td>
+                <td class="text-right">
+                    <p-button pRipple icon="pi pi-pencil" styleClass="p-button-rounded p-button-success mr-2"
+                        (onClick)="editPricer(pricer)"></p-button>
+                    <p-button pRipple icon="pi pi-trash" styleClass="p-button-rounded p-button-warning"
+                        (onClick)="deletePricer(pricer)"></p-button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <div class="m-3">
+                {{ '::Table:EmptyMessage' | abpLocalization }}
+            </div>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="flex align-items-center justify-content-between" *ngIf="hospitalPricerTotalRecords > 0">
+                {{ '::Table:Summary' | abpLocalization:(hospitalPricerTotalRecords) }}
+            </div>
+        </ng-template>
+    </p-table>
+</p-dialog>
+
 <p-dialog [(visible)]="hospitalUHBStaffEditDialog" [style]="{width: '450px'}"
-    header="{{ '::Admin:HospitalUHBStaff:HospitalUHBStaffDetails' | abpLocalization }}" [modal]="true" styleClass="p-fluid"
-    (onHide)="hideUHBStaffDialog()">
+    header="{{ '::Admin:HospitalUHBStaff:HospitalUHBStaffDetails' | abpLocalization }}" [modal]="true"
+    styleClass="p-fluid" (onHide)="hideUHBStaffDialog()">
     <form #hospitalUHBStaffEditForm="ngForm">
         <div *ngIf="hospitalUHBStaff">
             <div class="field">
                 <label for="name">{{ '::Admin:HospitalUHBStaff:Column:Name' | abpLocalization
                     }}&nbsp;<font style="color:red">*</font></label>
-                <input type="text" pInputText id="name" name="name" #name="ngModel"
-                    [(ngModel)]="hospitalUHBStaff.name" required autofocus />
+                <input type="text" pInputText id="name" name="name" #name="ngModel" [(ngModel)]="hospitalUHBStaff.name"
+                    required autofocus />
                 <small class="p-error" *ngIf="!(name.valid || name.pristine)">{{ '::Message:RequiredField'
                     |
                     abpLocalization }}</small>
@@ -318,15 +393,15 @@
 </p-dialog>
 
 <p-dialog [(visible)]="hospitalStaffEditDialog" [style]="{width: '450px'}"
-    header="{{ '::Admin:HospitalStaff:HospitalStaffDetails' | abpLocalization }}" [modal]="true"
-    styleClass="p-fluid" (onHide)="hideStaffDialog()">
+    header="{{ '::Admin:HospitalStaff:HospitalStaffDetails' | abpLocalization }}" [modal]="true" styleClass="p-fluid"
+    (onHide)="hideStaffDialog()">
     <form #hospitalStaffEditForm="ngForm">
         <div *ngIf="hospitalStaff">
             <div class="field">
                 <label for="staff">{{ '::Admin:HospitalStaff:Column:Staff' | abpLocalization }}&nbsp;<font
                         style="color:red">*</font></label>
                 <p-dropdown id="staff" name="staff" #staff="ngModel" [filter]="true" filterBy="name" [showClear]="true"
-                    [options]="uhbUserList" [(ngModel)]="selectedHospitalStaff"
+                    [options]="allHospitalStaffs" [(ngModel)]="selectedHospitalStaff"
                     placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
                     styleClass="filterDropDown" appendTo="body" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
                     emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}" required>
@@ -356,8 +431,8 @@
             <div class="field">
                 <label for="isActive">{{ '::Admin:HospitalStaff:Column:IsActive' | abpLocalization }}</label>
                 <div class="w-full">
-                    <p-checkbox id="isActive" name="isActive" #isActive="ngModel"
-                        [(ngModel)]="hospitalStaff.isActive" [binary]="true"></p-checkbox>
+                    <p-checkbox id="isActive" name="isActive" #isActive="ngModel" [(ngModel)]="hospitalStaff.isActive"
+                        [binary]="true"></p-checkbox>
                 </div>
             </div>
         </div>
@@ -367,6 +442,59 @@
             (onClick)="hideStaffDialog()"></p-button>
         <p-button pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" styleClass="p-button-text"
             (onClick)="saveHospitalStaff()" [disabled]="!(hospitalStaffEditForm.valid)"></p-button>
+    </p-footer>
+</p-dialog>
+
+<p-dialog [(visible)]="hospitalPricerEditDialog" [style]="{width: '450px'}"
+    header="{{ '::Admin:HospitalPricer:HospitalPricerDetails' | abpLocalization }}" [modal]="true" styleClass="p-fluid"
+    (onHide)="hidePricerDialog()">
+    <form #hospitalPricerEditForm="ngForm">
+        <div *ngIf="hospitalPricer">
+            <div class="field">
+                <label for="pricer">{{ '::Admin:HospitalPricer:Column:Pricer' | abpLocalization }}&nbsp;<font
+                        style="color:red">*</font></label>
+                <p-dropdown id="pricer" name="pricer" #pricer="ngModel" [filter]="true" filterBy="name"
+                    [showClear]="true" [options]="allHospitalPricers" [(ngModel)]="selectedHospitalPricer"
+                    placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
+                    styleClass="filterDropDown" appendTo="body" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
+                    emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}" required>
+                    <ng-template pTemplate="selectedItem">
+                        <div class="flex align-items-center gap-2" *ngIf="selectedHospitalPricer">
+                            <div>{{ selectedHospitalPricer.name }} {{ selectedHospitalPricer.surname }}</div>
+                        </div>
+                    </ng-template>
+                    <ng-template let-pricer pTemplate="item">
+                        <div class="flex align-items-center gap-2">
+                            <div>{{ pricer.name }} {{ pricer.surname }}</div>
+                        </div>
+                    </ng-template>
+                </p-dropdown>
+                <small class="p-error" *ngIf="!(pricer.valid || pricer.pristine)">{{ '::Message:RequiredField'
+                    |
+                    abpLocalization }}</small>
+            </div>
+            <div class="field">
+                <label for="isDefault">{{ '::Admin:HospitalPricer:Column:IsDefault' | abpLocalization
+                    }}</label>
+                <div class="w-full">
+                    <p-checkbox id="isDefault" name="isDefault" #isDefault="ngModel"
+                        [(ngModel)]="hospitalPricer.isDefault" [binary]="true"></p-checkbox>
+                </div>
+            </div>
+            <div class="field">
+                <label for="isActive">{{ '::Admin:HospitalPricer:Column:IsActive' | abpLocalization }}</label>
+                <div class="w-full">
+                    <p-checkbox id="isActive" name="isActive" #isActive="ngModel" [(ngModel)]="hospitalPricer.isActive"
+                        [binary]="true"></p-checkbox>
+                </div>
+            </div>
+        </div>
+    </form>
+    <p-footer>
+        <p-button pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" styleClass="p-button-text"
+            (onClick)="hidePricerDialog()"></p-button>
+        <p-button pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" styleClass="p-button-text"
+            (onClick)="saveHospitalPricer()" [disabled]="!(hospitalPricerEditForm.valid)"></p-button>
     </p-footer>
 </p-dialog>
 

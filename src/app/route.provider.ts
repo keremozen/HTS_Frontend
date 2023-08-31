@@ -21,7 +21,7 @@ function configureRoutes(routesService: RoutesService) {
         name: '::Menu:Patients',
         iconClass: 'fas fa-hospital-user',
         order: 2,
-        requiredPolicy: 'HTS.PatientAccess',
+        requiredPolicy: 'HTS.PatientList',
         layout: eLayoutType.application
       },
       {
@@ -29,7 +29,7 @@ function configureRoutes(routesService: RoutesService) {
         name: '::Menu:Patients1',
         order: 3,
         invisible: true,
-        layout: eLayoutType.empty
+        layout: eLayoutType.application
       },
       {
         path: '/admin/hospital',
@@ -43,7 +43,7 @@ function configureRoutes(routesService: RoutesService) {
       {
         path: '/admin/nationality',
         name: '::Menu:Admin:Nationality',
-        iconClass: 'fas fa-passport',
+        iconClass: 'fas fa-globe-europe',
         parentName: eThemeSharedRouteNames.Administration,
         order: 101,
         requiredPolicy: 'HTS.NationalityManagement',
@@ -135,7 +135,7 @@ function configureRoutes(routesService: RoutesService) {
         name: '::Menu:Admin:ProcessKind',
         iconClass: 'fas fa-procedures',
         parentName: eThemeSharedRouteNames.Administration,
-        order: 112,
+        order: 111,
         requiredPolicy: 'HTS.ProcessKindManagement',
         layout: eLayoutType.application
       },
@@ -151,7 +151,7 @@ function configureRoutes(routesService: RoutesService) {
       {
         path: '/admin/rejectReason',
         name: '::Menu:Admin:RejectReason',
-        iconClass: 'fas fa-syringe',
+        iconClass: 'fas fa-window-close',
         parentName: eThemeSharedRouteNames.Administration,
         order: 113,
         requiredPolicy: 'HTS.RejectReasonManagement',
@@ -160,7 +160,7 @@ function configureRoutes(routesService: RoutesService) {
       {
         path: '/admin/paymentReason',
         name: '::Menu:Admin:PaymentReason',
-        iconClass: 'fas fa-syringe',
+        iconClass: 'fas fa-money-bill-wave',
         parentName: eThemeSharedRouteNames.Administration,
         order: 114,
         requiredPolicy: 'HTS.PaymentReasonManagement',

@@ -5,19 +5,21 @@ import { IdentityUserDto } from '@abp/ng.identity/proxy';
 
 export interface HospitalConsultationDocumentDto extends AuditedEntityWithUserDto<number, IdentityUserDto> {
   hospitalConsultationId: number;
-  documentTypeId: number;
+  documentTypeId?: number;
   patientDocumentStatusId: number;
   description?: string;
   fileName?: string;
   file?: string;
+  contentType?: string;
   documentType: DocumentTypeDto;
   patientDocumentStatus: EntityEnum_PatientDocumentStatusEnum;
 }
 
 export interface SaveHospitalConsultationDocumentDto {
-  documentTypeId: number;
+  documentTypeId?: number;
   patientDocumentStatusId: number;
-  description: string;
+  description?: string;
   fileName: string;
   file: string;
+  contentType: string;
 }

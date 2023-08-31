@@ -3,11 +3,12 @@
     </div>
     <div class="p-toolbar-group-end p-0">
         <p-button pRipple label="{{ '::OperationalInfo:NewOperation' | abpLocalization }}" icon="pi pi-plus"
-        styleClass="p-button-success ml-2" (onClick)="onNewOperation()"></p-button>
+            styleClass="p-button-success ml-2" (onClick)="onNewOperation()" *ngIf="isAllowedToManage"></p-button>
     </div>
 </p-toolbar>
 
-<p-table #dt [value]="operations" [rows]="5" styleClass="pt-3" [paginator]="true" [rowHover]="true" selectionMode="single" [(selection)]="selectedOperation" dataKey="id"
+<p-table #dt [value]="operations" [rows]="5" styleClass="pt-3" [paginator]="true" [rowHover]="true"
+    selectionMode="single" [(selection)]="selectedOperation" dataKey="id"
     currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
     [showCurrentPageReport]="false" [alwaysShowPaginator]="false" (onRowSelect)="onOperationSelect($event)">
     <ng-template pTemplate="header">
@@ -54,14 +55,19 @@
             <td>{{operation.operationStatus?.name}}</td>
             <td class="text-right">
                 <p-button pRipple label="{{ '::HospitalConsultation:Button:Consultation' | abpLocalization }}"
-                styleClass="p-button-info ml-2" (onClick)="openConsultation(operation.hospitalResponse.hospitalConsultation)"
+                    styleClass="p-button-info ml-2"
+                    (onClick)="openConsultation(operation.hospitalResponse.hospitalConsultation)"
                     *ngIf="operation.operationTypeId == operationTypeEnum.HospitalConsultation"></p-button>
                 <p-button pRipple label="{{ '::HospitalConsultation:Button:Answer' | abpLocalization }}"
-                styleClass="p-button-warning ml-2" (onClick)="openHospitalResponse(operation)"></p-button>
-                <p-button pRipple styleClass="p-button-success ml-2" label="{{ '::OperationalInfo:Button:CreateProforma' | abpLocalization }}"
-                    (onClick)="onCreateProforma(operation)" [disabled]="!hasPriceExceptingOperation" *ngIf="operation.operationStatus?.id != operationStatusEnum.NewRecord"></p-button>
-                    <p-button pRipple styleClass="p-button-success ml-2" label="{{ '::OperationalInfo:Button:SendToPricing' | abpLocalization }}"
-                    (onClick)="onSendToPricing(operation)" [disabled]="!hasPriceExceptingOperation" *ngIf="operation.operationStatus?.id == operationStatusEnum.NewRecord"></p-button>
+                    styleClass="p-button-warning ml-2" (onClick)="openHospitalResponse(operation)"></p-button>
+                <p-button pRipple styleClass="p-button-success ml-2"
+                    label="{{ '::OperationalInfo:Button:CreateProforma' | abpLocalization }}"
+                    (onClick)="onCreateProforma(operation)" [disabled]="!hasPriceExceptingOperation || !isAllowedToCreateProforma"
+                    *ngIf="operation.operationStatus?.id != operationStatusEnum.NewRecord"></p-button>
+                <p-button pRipple styleClass="p-button-success ml-2"
+                    label="{{ '::OperationalInfo:Button:SendToPricing' | abpLocalization }}"
+                    (onClick)="onSendToPricing(operation)" [disabled]="isAllowedToManage"
+                    *ngIf="operation.operationStatus?.id == operationStatusEnum.NewRecord"></p-button>
             </td>
         </tr>
     </ng-template>
@@ -89,8 +95,8 @@
                         abpLocalization}}
                     </legend>
                     <p-listbox id="lstHospital" name="lstHospital" #lstHospital="ngModel" [options]="hospitalList"
-                        [(ngModel)]="selectedHospitals" optionLabel="name" optionValue="id" [checkbox]="true" [filter]="true"
-                        [multiple]="true" [metaKeySelection]="false" [disabled]="true"
+                        [(ngModel)]="selectedHospitals" optionLabel="name" optionValue="id" [checkbox]="true"
+                        [filter]="true" [multiple]="true" [metaKeySelection]="false" [disabled]="true"
                         emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" styleClass="hospitalListStyle"
                         emptyFilterMessage="{{ '::EmptyMessage' | abpLocalization }}" required></p-listbox>
                 </fieldset>
@@ -171,7 +177,8 @@
                             style="width:140px">{{'::HospitalResponse:Field:HospitalName' |
                             abpLocalization}}</label>
                         <div class="col">
-                            {{hospitalResponse.hospitalConsultation ? hospitalResponse.hospitalConsultation.hospital?.name : operation?.hospital?.name}}
+                            {{hospitalResponse.hospitalConsultation ?
+                            hospitalResponse.hospitalConsultation.hospital?.name : operation?.hospital?.name}}
                         </div>
                     </div>
                     <div class="field grid">
@@ -236,8 +243,8 @@
                         {{'::HospitalResponse:FieldLegend:AnticipatedProcesses' |
                         abpLocalization}}
                     </legend>
-                    <p-table #dt [value]="anticipatedProcesses" [rows]="5" styleClass="pt-3"
-                        [paginator]="true" [globalFilterFields]="['description']" [rowHover]="true" [loading]="loading"
+                    <p-table #dt [value]="anticipatedProcesses" [rows]="5" styleClass="pt-3" [paginator]="true"
+                        [globalFilterFields]="['description']" [rowHover]="true" [loading]="loading"
                         currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
                         [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
                         <ng-template pTemplate="header">
@@ -278,8 +285,8 @@
                         {{'::HospitalResponse:FieldLegend:AnticipatedMaterials' |
                         abpLocalization}}
                     </legend>
-                    <p-table #dt [value]="anticipatedMaterials" [rows]="5" styleClass="pt-3"
-                        [paginator]="true" [rowHover]="true" [loading]="loading"
+                    <p-table #dt [value]="anticipatedMaterials" [rows]="5" styleClass="pt-3" [paginator]="true"
+                        [rowHover]="true" [loading]="loading"
                         currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
                         [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
                         <ng-template pTemplate="header">

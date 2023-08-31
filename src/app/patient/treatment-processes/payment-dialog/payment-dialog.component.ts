@@ -1,7 +1,7 @@
 import { ConfigStateService, CurrentUserDto } from '@abp/ng.core';
 import { ThemeSharedTestingModule } from '@abp/ng.theme.shared/testing';
 import { DatePipe } from '@angular/common';
-import { Component, Injector, ViewEncapsulation } from '@angular/core';
+import { Component, Injector, LOCALE_ID, ViewEncapsulation } from '@angular/core';
 import { CurrencyDto } from '@proxy/dto/currency';
 import { HospitalDto } from '@proxy/dto/hospital';
 import { SavePaymentDto } from '@proxy/dto/payment';
@@ -13,12 +13,14 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { forkJoin } from 'rxjs';
 import { CommonService } from 'src/app/services/common.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
-
 @Component({
   selector: 'app-payment-dialog',
   templateUrl: './payment-dialog.component.html',
   styleUrls: ['./payment-dialog.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  providers: [
+    { provide: LOCALE_ID, useValue: 'de-DE' },  
+    ]
 })
 
 export class PaymentDialogComponent extends AppComponentBase {
@@ -40,6 +42,7 @@ export class PaymentDialogComponent extends AppComponentBase {
   rowNumber: number = 1;
   isRelatedWithProforma: boolean = false;
   currentUser: CurrentUserDto;
+  selectedPaymentItem: SavePaymentItemWithDetail;
 
   constructor(
     injector: Injector,
@@ -96,8 +99,21 @@ export class PaymentDialogComponent extends AppComponentBase {
     this.paymentItem.currency = this.currencyList.find(c => c.id == this.paymentItem.currencyId);
     this.paymentItem.currencyCode = this.paymentItem.currency.name == 'TL' ? 'TRY' : this.paymentItem.currency.name;
     this.paymentItem.paymentKind = this.paymentKindList.find(pk => pk.id == this.paymentItem.paymentKindId);
-    this.payment.paymentItems.push(this.paymentItem);
-    this.reorderItems()
+    debugger;
+    if (this.paymentItem.rowNumber) {
+      this.payment.paymentItems = (this.payment.paymentItems as SavePaymentItemWithDetail[]).map(item => {
+        if (item.rowNumber == this.paymentItem.rowNumber) {
+          item = this.paymentItem;
+        }
+        return item;
+      });
+      //let tempPaymentItem = (this.payment.paymentItems as SavePaymentItemWithDetail[]).find(p => p.rowNumber == this.paymentItem.rowNumber);
+      //temppaymentItem = this.paymentItem;
+    } else {
+      this.payment.paymentItems.push(this.paymentItem);
+      this.reorderItems();
+    }
+
     this.hidePaymentItemDialog();
   }
 
@@ -122,6 +138,12 @@ export class PaymentDialogComponent extends AppComponentBase {
       }
     });
   }
+
+  onPaymentItemSelect(event: any) {
+    this.paymentItem = JSON.parse(JSON.stringify(this.selectedPaymentItem));
+    this.paymentItemDialog = true;
+  }
+
 
 }
 

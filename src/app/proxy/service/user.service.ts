@@ -26,18 +26,26 @@ export class UserService {
     { apiName: this.apiName });
   
 
-  getInterpreterList = () =>
+  getHospitalPricerList = () =>
     this.restService.request<any, IdentityUserDto[]>({
       method: 'GET',
-      url: '/api/app/user/interpreter-list',
+      url: '/api/app/user/hospital-pricer-list',
     },
     { apiName: this.apiName });
   
 
-  getUhbStaffList = () =>
+  getHospitalStaffList = () =>
     this.restService.request<any, IdentityUserDto[]>({
       method: 'GET',
-      url: '/api/app/user/uhb-staff-list',
+      url: '/api/app/user/hospital-staff-list',
+    },
+    { apiName: this.apiName });
+  
+
+  getInterpreterList = () =>
+    this.restService.request<any, IdentityUserDto[]>({
+      method: 'GET',
+      url: '/api/app/user/interpreter-list',
     },
     { apiName: this.apiName });
 
