@@ -433,7 +433,7 @@
                     }}&nbsp;<font style="color:red">*
                     </font></label>
                 <p-autoComplete id="ddlProcessList" name="ddlProcessList" #ddlProcessList="ngModel"
-                    [(ngModel)]="selectedProcess" [suggestions]="filteredProcesses"
+                    [(ngModel)]="selectedProcess" [suggestions]="filteredProcesses" [minLength]="3" [delay]="500"
                     (completeMethod)="filterProcess($event)" field="name" [forceSelection]="true"
                     [style]="{'width':'100%'}" styleClass="filterAutoComplete" appendTo="body" required>
                     <ng-template pTemplate="selectedItem">

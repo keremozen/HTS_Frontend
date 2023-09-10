@@ -320,7 +320,7 @@
                     }}&nbsp;<font style="color:red">*
                     </font></label>
                 <p-autoComplete id="ddlProcessList" name="ddlProcessList" #ddlProcessList="ngModel"
-                    [(ngModel)]="process.process" [suggestions]="filteredProcesses"
+                    [(ngModel)]="process.process" [suggestions]="filteredProcesses" [minLength]="3" [delay]="500"
                     (completeMethod)="filterProcess($event)" field="name" [forceSelection]="true"
                     [style]="{'width':'100%'}" styleClass="filterAutoComplete" appendTo="body" required>
                     <ng-template pTemplate="selectedItem">
@@ -371,22 +371,6 @@
                 <label for="ddlProcessList">{{ '::HospitalResponse:Material:Column:Name' | abpLocalization
                     }}&nbsp;<font style="color:red">*
                     </font></label>
-                <!-- <p-dropdown id="ddlProcessList" name="ddlProcessList" #ddlProcessList="ngModel" [filter]="true"
-                    filterBy="name" [showClear]="true" [options]="materialProcessList" [(ngModel)]="material.process"
-                    placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
-                    styleClass="filterDropDown" appendTo="body" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
-                    emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}" required appendTo="body">
-                    <ng-template pTemplate="selectedItem">
-                        <div class="flex align-items-center gap-2" *ngIf="material.process">
-                            <div>{{ material.process.code }} - {{ material.process.name }}</div>
-                        </div>
-                    </ng-template>
-                    <ng-template let-process pTemplate="item">
-                        <div class="flex align-items-center gap-2">
-                            <div>{{ process.code }} - {{ process.name }}</div>
-                        </div>
-                    </ng-template>
-                </p-dropdown> -->
                 <p-autoComplete id="ddlProcessList" name="ddlProcessList" #ddlProcessList="ngModel"
                     [(ngModel)]="material.process" [suggestions]="filteredMaterials"
                     (completeMethod)="filterMaterial($event)" field="name" [forceSelection]="true"
