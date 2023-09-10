@@ -1,21 +1,26 @@
 <form #proformaForm="ngForm">
     <div class="grid grid-nogutter" *ngIf="operation && hospitalResponse">
-        <div class="col-3">
+        <div class="col-4">
             <div class="field grid mb-2">
-                <label for="currency" class="font-bold col-12 mb-2 mt-1 md:col-5 md:mb-0">{{ '::Proforma:Field:Currency'
-                    |
-                    abpLocalization }}&nbsp;<font style="color:red">*</font></label>
-                <div class="col-12 md:col-7">
+                <label for="currency" class="font-bold col-12 mb-2 mt-1 md:col-4 md:mb-0">{{ '::Proforma:Field:Currency'
+                    | abpLocalization }}&nbsp;<font style="color:red">*</font></label>
+                <div class="col-12 md:col-8 flex align-items-center">
                     <p-dropdown id="currency" name="currency" #currency="ngModel" [options]="currencyList"
                         [(ngModel)]="saveProforma.currencyId" placeholder="{{ '::Select' | abpLocalization }}"
                         [style]="{'width':'100px'}" styleClass="filterDropDown" optionLabel="name" optionValue="id"
                         appendTo="body" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
                         (onChange)="onCurrencyChange()" [disabled]="isDisabled"></p-dropdown>
+
                     <p-chip *ngIf="saveProforma.exchangeRate && saveProforma.exchangeRate != 1" class="ml-3">
                         <div class="p-2">
                             <i class="fas fa-lira-sign mr-1"></i>{{saveProforma.exchangeRate}}
                         </div>
                     </p-chip>
+
+                    <div class="p-2 flex justify-content-end" *ngIf="exchangeRateDate">
+                        <span class="text-xs">Son Güncelleme Zamanı<br>{{exchangeRateDate | date:'dd.MM.YYYY
+                            HH:mm'}}</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -38,9 +43,10 @@
                 </div>
             </div>
         </div>
-        <div class="col-3 align-self-center flex justify-content-end">
+        <div class="col-2 align-self-center flex justify-content-end">
             <p-message severity="error" text="Proforma Kaydı Oluşmamıştır" *ngIf="proformaList.length == 0"></p-message>
-            <i class="pi pi-download mr-3 pt-1 cursor-pointer" style="font-size: 1.4rem" *ngIf="proformaList.length > 0" (click)="downloadProforma()"></i>
+            <i class="pi pi-download mr-3 pt-1 cursor-pointer" style="font-size: 1.4rem" *ngIf="proformaList.length > 0"
+                (click)="downloadProforma()"></i>
             <p-dropdown *ngIf="proformaList.length > 0" id="ddlProformaList" name="ddlProformaList"
                 #ddlProformaList="ngModel" [options]="proformaList" [(ngModel)]="selectedProformaId"
                 [style]="{'width':'100%'}" optionValue="id" optionLabel="name" styleClass="filterDropDown"
@@ -103,6 +109,7 @@
                                 abpLocalization }}
                                 <p-sortIcon field="proformaFinalPrice"></p-sortIcon>
                             </th>
+                            <th></th>
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="body" let-item let-editing="editing">
@@ -112,7 +119,8 @@
                             <td [pEditableColumn]="item.treatmentCount" pEditableColumnField="treatmentCount">
                                 <p-cellEditor>
                                     <ng-template pTemplate="input">
-                                        <p-inputNumber name="treatmentCount" #treatmentCount="ngModel" size="2" [(ngModel)]="item.treatmentCount"></p-inputNumber>
+                                        <p-inputNumber name="treatmentCount" #treatmentCount="ngModel" size="2"
+                                            [(ngModel)]="item.treatmentCount"></p-inputNumber>
                                     </ng-template>
                                     <ng-template pTemplate="output">
                                         {{ item.treatmentCount }}
@@ -125,8 +133,8 @@
                             <td [pEditableColumn]="item.change" pEditableColumnField="change">
                                 <p-cellEditor>
                                     <ng-template pTemplate="input">
-                                        <p-inputNumber name="changeAmount" #changeAmount="ngModel" size="3" suffix="%" [max]="999" [min]="-999"
-                                            [(ngModel)]="item.change"></p-inputNumber>
+                                        <p-inputNumber name="changeAmount" #changeAmount="ngModel" size="3" suffix="%"
+                                            [max]="999" [min]="-999" [(ngModel)]="item.change"></p-inputNumber>
                                     </ng-template>
                                     <ng-template pTemplate="output">
                                         {{ item.change }} %
@@ -134,6 +142,10 @@
                                 </p-cellEditor>
                             </td>
                             <td>{{item.proformaFinalPrice | currency: this.currencyName:'symbol':'0.2-2'}}</td>
+                            <td>
+                                <p-button pRipple icon="pi pi-trash" styleClass="p-button-rounded p-button-danger"
+                                    (onClick)="removeItem(item)" [disabled]="isDisabled"></p-button>
+                            </td>
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="footer">
@@ -171,8 +183,8 @@
                                         '::Proforma:AdditionalServices:Field:Day' |
                                         abpLocalization }}&nbsp;<font style="color:red">*</font></label>
                                     <div class="col-9 p-0">
-                                        <p-inputNumber [id]="'dayCount'+i" [name]="'dayCount'+i" #dayCount="ngModel" [size]="2"
-                                            [min]="1" required [(ngModel)]="service.dayCount"
+                                        <p-inputNumber [id]="'dayCount'+i" [name]="'dayCount'+i" #dayCount="ngModel"
+                                            [size]="2" [min]="1" required [(ngModel)]="service.dayCount"
                                             [disabled]="isDisabled"></p-inputNumber>
                                     </div>
                                 </div>
@@ -181,8 +193,9 @@
                                         '::Proforma:AdditionalServices:Field:RoomType' |
                                         abpLocalization }}&nbsp;<font style="color:red">*</font></label>
                                     <div class="col-7 p-0">
-                                        <p-dropdown [id]="'ddlRoomType'+i" [name]="'ddlRoomType'+i" #ddlRoomType="ngModel"
-                                            [options]="roomTypeList" [(ngModel)]="service.roomTypeId"
+                                        <p-dropdown [id]="'ddlRoomType'+i" [name]="'ddlRoomType'+i"
+                                            #ddlRoomType="ngModel" [options]="roomTypeList"
+                                            [(ngModel)]="service.roomTypeId"
                                             placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
                                             appendTo="body" optionLabel="key" optionValue="value"
                                             emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" required
@@ -195,8 +208,8 @@
                                         '::Proforma:AdditionalServices:Field:Piece' |
                                         abpLocalization }}&nbsp;<font style="color:red">*</font></label>
                                     <div class="col-9 p-0">
-                                        <p-inputNumber [id]="'piece'+i" [name]="'piece'+i" #piece="ngModel" [size]="2" [min]="1"
-                                            required [(ngModel)]="service.itemCount"
+                                        <p-inputNumber [id]="'piece'+i" [name]="'piece'+i" #piece="ngModel" [size]="2"
+                                            [min]="1" required [(ngModel)]="service.itemCount"
                                             [disabled]="isDisabled"></p-inputNumber>
                                     </div>
                                 </div>
@@ -205,8 +218,8 @@
                                         '::Proforma:AdditionalServices:Field:Companion' |
                                         abpLocalization }}&nbsp;<font style="color:red">*</font></label>
                                     <div class="col-7 p-0">
-                                        <p-inputNumber [id]="'companion'+i" [name]="'companion'+i" #companion="ngModel" [size]="2"
-                                            [min]="0" required [(ngModel)]="service.companionCount"
+                                        <p-inputNumber [id]="'companion'+i" [name]="'companion'+i" #companion="ngModel"
+                                            [size]="2" [min]="0" required [(ngModel)]="service.companionCount"
                                             [disabled]="isDisabled"></p-inputNumber>
                                     </div>
                                 </div>
@@ -337,7 +350,7 @@
                             <ng-template pTemplate="body" let-item>
                                 <tr>
                                     <td>{{item.name}}</td>
-                                    <td>{{ item.amount }}</td>
+                                    <td>{{item.amount }}</td>
                                     <td>{{item.unitCost | currency:'TRY':'symbol':'0.2-2'}}</td>
                                     <td>{{item.totalCost | currency:'TRY':'symbol':'0.2-2'}}</td>
                                     <td>{{item.proformaCost | currency: this.currencyName:'symbol':'0.2-2'}}</td>
@@ -396,9 +409,11 @@
                     </fieldset>
                     <div class="text-right">
                         <p-button pRipple label="{{ '::Proforma:Button:Save' | abpLocalization }}"
-                            styleClass="p-button-success ml-2 mt-4" (onClick)="onSaveProforma()" [disabled]="!(proformaForm.valid)"
+                            styleClass="p-button-success ml-2 mt-4" (onClick)="onSaveProforma()"
+                            [disabled]="!(proformaForm.valid) || treatmentItemList.length == 0"
                             *ngIf="!isDisabled"></p-button>
-                        <p-button pRipple styleClass="p-button-success ml-2 mt-4" [disabled]="!this.selectedProformaId || !(proformaForm.valid)"
+                        <p-button pRipple styleClass="p-button-success ml-2 mt-4"
+                            [disabled]="!this.selectedProformaId || treatmentItemList.length == 0 || !(proformaForm.valid)"
                             label="{{ '::Proforma:Button:Send' | abpLocalization }}" (onClick)="onSendProforma()"
                             *ngIf="!isDisabled "></p-button>
                     </div>
@@ -417,22 +432,22 @@
                 <label for="ddlProcessList">{{ '::Admin:Process:Name' | abpLocalization
                     }}&nbsp;<font style="color:red">*
                     </font></label>
-                <p-dropdown id="ddlProcessList" name="ddlProcessList" #ddlProcessList="ngModel" [filter]="true"
-                    filterBy="name" [showClear]="true" [options]="sutProcessList" [(ngModel)]="selectedProcess"
-                    placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
-                    styleClass="filterDropDown" appendTo="body" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
-                    emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}" required appendTo="body">
+                <p-autoComplete id="ddlProcessList" name="ddlProcessList" #ddlProcessList="ngModel"
+                    [(ngModel)]="selectedProcess" [suggestions]="filteredProcesses"
+                    (completeMethod)="filterProcess($event)" field="name" [forceSelection]="true"
+                    [style]="{'width':'100%'}" styleClass="filterAutoComplete" appendTo="body" required>
                     <ng-template pTemplate="selectedItem">
                         <div class="flex align-items-center gap-2" *ngIf="selectedProcess">
-                            <div>{{ selectedProcess.code }} - {{ selectedProcess.name }}</div>
+                            <div class="white-space-normal">{{ selectedProcess.code }} - {{ selectedProcess.name }}
+                            </div>
                         </div>
                     </ng-template>
                     <ng-template let-process pTemplate="item">
                         <div class="flex align-items-center gap-2">
-                            <div>{{ process.code }} - {{ process.name }}</div>
+                            <div class="white-space-normal">{{ process.code }} - {{ process.name }}</div>
                         </div>
                     </ng-template>
-                </p-dropdown>
+                </p-autoComplete>
                 <small class="p-error" *ngIf="!(ddlProcessList.valid || ddlProcessList.pristine)">{{
                     '::Message:RequiredField' |
                     abpLocalization

@@ -81,8 +81,8 @@
         </div>
     </ng-template>
     <ng-template pTemplate="summary">
-        <div class="flex align-items-center justify-content-between" *ngIf="totalCount > 0">
-            {{ '::Table:Summary' | abpLocalization: totalCount }}
+        <div class="flex align-items-center justify-content-between" *ngIf="paymentList.length > 0">
+            {{ '::Table:Summary' | abpLocalization: paymentList.length }}
         </div>
     </ng-template>
 </p-table>

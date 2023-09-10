@@ -18,6 +18,7 @@ import { HospitalDto } from '@proxy/dto/hospital';
 import { OperationDto, SaveOperationDto } from '@proxy/dto/operation';
 import { TreatmentTypeDto } from '@proxy/dto/treatment-type';
 import { IdentityUserDto } from '@abp/ng.identity/proxy';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-operation',
@@ -55,9 +56,8 @@ export class OperationComponent extends AppComponentBase {
   totalRecords: number;
   process: SaveHospitalResponseProcessWithDetailDto;
   processDialog: boolean = false;
-  processList: ProcessDto[] = [];
-  sutProcessList: ProcessDto[] = [];
-  materialProcessList: ProcessDto[] = [];
+  filteredProcesses: ProcessDto[] = [];
+  filteredMaterials: ProcessDto[] = [];
   material: SaveHospitalResponseProcessWithDetailDto;
   materialDialog: boolean = false;
 
@@ -127,13 +127,15 @@ export class OperationComponent extends AppComponentBase {
           this.selectedBranches = this.hospitalResponse.hospitalResponseBranches.map(b => b.branchId);
           this.hospitalResponse.hospitalResponseProcesses.forEach(process => {
             let processWithDetail = process as SaveHospitalResponseProcessWithDetailDto;
-            processWithDetail.process = this.processList.find(p => p.id == process.processId);
-            if (processWithDetail.process.processTypeId == this.processTypeEnum.SutCode) {
-              this.anticipatedProcesses.push(processWithDetail);
-            }
-            else if (processWithDetail.process.processTypeId == this.processTypeEnum.Material) {
-              this.anticipatedMaterials.push(processWithDetail);
-            }
+            this.processService.get(process.processId).subscribe(res=> {
+              processWithDetail.process = res;
+              if (processWithDetail.process.processTypeId == this.processTypeEnum.SutCode) {
+                this.anticipatedProcesses.push(processWithDetail);
+              }
+              else if (processWithDetail.process.processTypeId == this.processTypeEnum.Material) {
+                this.anticipatedMaterials.push(processWithDetail);
+              }
+            });
           });
           this.loading = false;
         },
@@ -154,25 +156,38 @@ export class OperationComponent extends AppComponentBase {
       this.hostipalResponseTypeService.getList(),
       this.hospitalizationTypeService.getList(),
       this.treatmentTypeService.getList(),
-      this.processService.getList(),
       this.userService.getInterpreterList()
     ]).pipe(
       map(([
         resHospitalResponseTypeList,
         resHospitalizationTypeList,
         resTreatmentTypeList,
-        resProcessList,
         resInterpreterList
       ]) => {
         this.hospitalResponseTypeList = resHospitalResponseTypeList.items;
         this.hospitalizationTypeList = resHospitalizationTypeList.items;
         this.treatmentTypeList = resTreatmentTypeList.items;
-        this.processList = resProcessList.items;
-        this.sutProcessList = [...this.processList.filter(p => p.processTypeId == this.processTypeEnum.SutCode)];
-        this.materialProcessList = [...this.processList.filter(p => p.processTypeId == this.processTypeEnum.Material)];
         this.interpreterList = resInterpreterList;
       })
     );
+  }
+
+  filterProcess(event: any) {
+    let query = event.query;
+    this.processService.getListByKeyword(query, EntityEnum_ProcessTypeEnum.SutCode).subscribe({
+      next: (res) => {
+        this.filteredProcesses = res.items;
+      }
+    });
+  }
+
+  filterMaterial(event: any) {
+    let query = event.query;
+    this.processService.getListByKeyword(query, EntityEnum_ProcessTypeEnum.Material).subscribe({
+      next: (res) => {
+        this.filteredProcesses = res.items;
+      }
+    });
   }
 
   openNewMaterial() {
@@ -224,7 +239,6 @@ export class OperationComponent extends AppComponentBase {
       header: this.l('::Confirm'),
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        debugger;
         if (this.isManual) {
           this.hospitalResponse.hospitalResponseBranches = [];
           this.selectedBranches.forEach(branch => {

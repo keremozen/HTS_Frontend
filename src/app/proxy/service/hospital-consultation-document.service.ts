@@ -16,6 +16,14 @@ export class HospitalConsultationDocumentService {
       url: `/api/app/hospital-consultation-document/forward-documents/${patientId}`,
     },
     { apiName: this.apiName });
+  
+
+  get = (id: number) =>
+    this.restService.request<any, HospitalConsultationDocumentDto>({
+      method: 'GET',
+      url: `/api/app/hospital-consultation-document/${id}`,
+    },
+    { apiName: this.apiName });
 
   constructor(private restService: RestService) {}
 }

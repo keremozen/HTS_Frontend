@@ -44,6 +44,15 @@ export class ProcessService {
     { apiName: this.apiName });
   
 
+  getListByKeyword = (keyword: string, processTypeId: number, isActive?: boolean) =>
+    this.restService.request<any, PagedResultDto<ProcessDto>>({
+      method: 'GET',
+      url: `/api/app/process/by-keyword/${processTypeId}`,
+      params: { keyword, isActive },
+    },
+    { apiName: this.apiName });
+  
+
   update = (id: number, process: SaveProcessDto) =>
     this.restService.request<any, ProcessDto>({
       method: 'PUT',

@@ -19,7 +19,6 @@ export class PaymentListComponent extends AppComponentBase {
   @Input() ptpId: number;
   @Input() patient: PatientDto;
   paymentList: ListPaymentDto[] = [];
-  totalCount: number = 0;
   loading: boolean = false;
   paymentDialogRef: DynamicDialogRef;
   displayUploadInvoice: boolean = false;
@@ -47,7 +46,6 @@ export class PaymentListComponent extends AppComponentBase {
     this.paymentService.getList(this.ptpId).subscribe({
       next: (res) => {
         this.paymentList = res.items;
-        this.totalCount = res.totalCount;
       },
       complete: () => {
         this.loading = false;

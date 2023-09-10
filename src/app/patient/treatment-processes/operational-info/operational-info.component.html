@@ -8,9 +8,8 @@
 </p-toolbar>
 
 <p-table #dt [value]="operations" [rows]="5" styleClass="pt-3" [paginator]="true" [rowHover]="true"
-    selectionMode="single" [(selection)]="selectedOperation" dataKey="id"
-    currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
-    [showCurrentPageReport]="false" [alwaysShowPaginator]="false" (onRowSelect)="onOperationSelect($event)">
+    dataKey="id" currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
+    [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
     <ng-template pTemplate="header">
         <tr>
             <th style="width: 12rem" pSortableColumn="patientTreatmentProcess.treatmentCode">{{
@@ -43,7 +42,7 @@
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-operation>
-        <tr [pSelectableRow]="operation">
+        <tr class="cursor-pointer" (click)="onOperationSelect($event, operation)">
             <td>{{operation.patientTreatmentProcess?.treatmentCode}}</td>
             <td>{{operation.id}}</td>
             <td>{{operation.hospital ? operation.hospital.name :
@@ -55,18 +54,18 @@
             <td>{{operation.operationStatus?.name}}</td>
             <td class="text-right">
                 <p-button pRipple label="{{ '::HospitalConsultation:Button:Consultation' | abpLocalization }}"
-                    styleClass="p-button-info ml-2"
+                    styleClass="p-button-info ml-2" class="inline-block"
                     (onClick)="openConsultation(operation.hospitalResponse.hospitalConsultation)"
                     *ngIf="operation.operationTypeId == operationTypeEnum.HospitalConsultation"></p-button>
                 <p-button pRipple label="{{ '::HospitalConsultation:Button:Answer' | abpLocalization }}"
-                    styleClass="p-button-warning ml-2" (onClick)="openHospitalResponse(operation)"></p-button>
-                <p-button pRipple styleClass="p-button-success ml-2"
+                    styleClass="p-button-warning ml-2" class="inline-block" (onClick)="openHospitalResponse(operation)"></p-button>
+                <p-button pRipple styleClass="p-button-success ml-2" class="inline-block"
                     label="{{ '::OperationalInfo:Button:CreateProforma' | abpLocalization }}"
                     (onClick)="onCreateProforma(operation)" [disabled]="!hasPriceExceptingOperation || !isAllowedToCreateProforma"
                     *ngIf="operation.operationStatus?.id != operationStatusEnum.NewRecord"></p-button>
-                <p-button pRipple styleClass="p-button-success ml-2"
+                <p-button pRipple styleClass="p-button-success ml-2" class="inline-block"
                     label="{{ '::OperationalInfo:Button:SendToPricing' | abpLocalization }}"
-                    (onClick)="onSendToPricing(operation)" [disabled]="isAllowedToManage"
+                    (onClick)="onSendToPricing(operation)" [disabled]="!isAllowedToSendToPricing"
                     *ngIf="operation.operationStatus?.id == operationStatusEnum.NewRecord"></p-button>
             </td>
         </tr>

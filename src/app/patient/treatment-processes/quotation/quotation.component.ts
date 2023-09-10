@@ -35,6 +35,11 @@ export class QuotationComponent extends AppComponentBase {
   rejectProforma: RejectProformaDto;
   rejectReasonList: RejectReasonDto[] = [];
 
+  isAllowedToManagePatient: boolean = false;
+  isAllowedToManageProforma: boolean = false;
+  isAllowedToApproveRejectAsMFB: boolean = false;
+  isAllowedToApproveRejectAsPatient: boolean = false;
+
   constructor(
     injector: Injector,
     private proformaService: ProformaService,
@@ -43,13 +48,14 @@ export class QuotationComponent extends AppComponentBase {
     public dialogService: DialogService
   ) {
     super(injector);
-
+    this.isAllowedToManagePatient = this.permission.getGrantedPolicy("HTS.PatientManagement");
+    this.isAllowedToManageProforma = this.permission.getGrantedPolicy("HTS.ProformaManagement");
+    this.isAllowedToApproveRejectAsMFB = this.permission.getGrantedPolicy("HTS.MFBApproval");
+    this.isAllowedToApproveRejectAsPatient = this.permission.getGrantedPolicy("HTS.PatientApproval");
   }
 
   ngOnInit(): void {
-
     this.fetchData();
-
   }
 
   fetchData() {

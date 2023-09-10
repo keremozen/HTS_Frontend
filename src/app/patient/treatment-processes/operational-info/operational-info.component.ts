@@ -27,7 +27,6 @@ export class OperationalInfoComponent extends AppComponentBase {
   @Input() patient: PatientDto;
 
   operations: OperationDto[] = [];
-  selectedOperation: OperationDto;
   operation: OperationDto;
   loading: boolean;
   totalRecords: number = 0;
@@ -37,6 +36,7 @@ export class OperationalInfoComponent extends AppComponentBase {
   hasPriceExceptingOperation: boolean = false;
   isAllowedToManage: boolean = false;
   isAllowedToCreateProforma: boolean = false;
+  isAllowedToSendToPricing: boolean = false;
 
   displayConsultationDialog: boolean;
   hospitalConsultation: HospitalConsultationDto;
@@ -69,6 +69,7 @@ export class OperationalInfoComponent extends AppComponentBase {
     super(injector);
     this.isAllowedToManage = this.permission.getGrantedPolicy("HTS.PatientManagement");
     this.isAllowedToCreateProforma = this.permission.getGrantedPolicy("HTS.ProformaManagement");
+    this.isAllowedToSendToPricing = this.permission.getGrantedPolicy("HTS.SendToPricing");
   }
 
   ngOnInit(): void {
@@ -83,7 +84,7 @@ export class OperationalInfoComponent extends AppComponentBase {
       next: (resOperationList) => {
         this.operations = resOperationList.items;
         this.totalRecords = resOperationList.totalCount;
-        this.hasPriceExceptingOperation = this.operations.some(o=>o.operationStatusId == this.operationStatusEnum.PriceExpecting ||o.operationStatusId == this.operationStatusEnum.MFBRejectedPriceExpecting)
+        this.hasPriceExceptingOperation = this.operations.some(o => o.operationStatusId == this.operationStatusEnum.PriceExpecting || o.operationStatusId == this.operationStatusEnum.MFBRejectedPriceExpecting)
       },
       error: () => {
         this.loading = false;
@@ -130,14 +131,15 @@ export class OperationalInfoComponent extends AppComponentBase {
 
         this.ref.onClose.subscribe(() => {
           this.fetchData();
-          this.selectedOperation = null;
         });
       }
     });
   }
 
-  onOperationSelect(event: any) {
-    this.onDisplayOperation(this.selectedOperation);
+  onOperationSelect(event: any, selectedOperation: OperationDto) {
+    if (event.srcElement.nodeName.toLowerCase() != 'p-button' && event.srcElement.nodeName.toLowerCase() != 'button') {
+      this.onDisplayOperation(selectedOperation);
+    }
   }
 
   openConsultation(consultation: HospitalConsultationDto) {
@@ -156,18 +158,18 @@ export class OperationalInfoComponent extends AppComponentBase {
   }
 
   openHospitalResponse(operation: OperationDto) {
-      this.hospitalResponseService.get(operation.hospitalResponse.id).subscribe({
-        next: (res) => {
-          this.operation = operation;
-          this.hospitalResponse = res;
-          this.branchListText = this.branchList.filter(h => this.hospitalResponse.hospitalResponseBranches.map(b => b.branchId).includes(h.id)).map(b => b.name).join("<br>");
-          this.anticipatedProcesses = this.hospitalResponse.hospitalResponseProcesses.filter(r => r.process.processTypeId == this.processTypeEnum.SutCode);
-          this.anticipatedMaterials = this.hospitalResponse.hospitalResponseProcesses.filter(r => r.process.processTypeId == this.processTypeEnum.Material);
-        },
-        complete: () => {
-          this.displayHospitalResponseDialog = true;
-        }
-      });
+    this.hospitalResponseService.get(operation.hospitalResponse.id).subscribe({
+      next: (res) => {
+        this.operation = operation;
+        this.hospitalResponse = res;
+        this.branchListText = this.branchList.filter(h => this.hospitalResponse.hospitalResponseBranches.map(b => b.branchId).includes(h.id)).map(b => b.name).join("<br>");
+        this.anticipatedProcesses = this.hospitalResponse.hospitalResponseProcesses.filter(r => r.process.processTypeId == this.processTypeEnum.SutCode);
+        this.anticipatedMaterials = this.hospitalResponse.hospitalResponseProcesses.filter(r => r.process.processTypeId == this.processTypeEnum.Material);
+      },
+      complete: () => {
+        this.displayHospitalResponseDialog = true;
+      }
+    });
   }
 
   hideHospitalResponseDialog() {
@@ -194,7 +196,6 @@ export class OperationalInfoComponent extends AppComponentBase {
 
     this.ref.onClose.subscribe(() => {
       this.fetchData();
-      this.selectedOperation = null;
       this.onOperationChange.emit();
     });
   }
@@ -202,7 +203,6 @@ export class OperationalInfoComponent extends AppComponentBase {
   onSendToPricing(operation: OperationDto) {
     this.operationService.sendToPricingById(+operation.id).subscribe(r => {
       this.fetchData();
-      this.selectedOperation = null;
       this.onOperationChange.emit();
     })
   }

@@ -25,7 +25,8 @@
                         [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
                         <ng-template pTemplate="header">
                             <tr>
-                                <th pSortableColumn="fileName">{{ '::Documents:Column:FileName' | abpLocalization }}
+                                <th pSortableColumn="fileName">
+                                    {{ '::Documents:Column:FileName' | abpLocalization }}
                                     <p-sortIcon field="fileName"></p-sortIcon>
                                 </th>
                                 <th pSortableColumn="documentType">{{ '::Documents:Column:DocumentType' |
@@ -40,7 +41,8 @@
                         </ng-template>
                         <ng-template pTemplate="body" let-document>
                             <tr>
-                                <td>{{document.fileName}}</td>
+                                <td><a class="cursor-pointer text-gray-900"
+                                        (click)="showFile(document.id)">{{document.fileName}}</a></td>
                                 <td>
                                     <div class="overflow cursor-pointer" [pTooltip]="document.description"
                                         tooltipStyleClass="wideTooltip" tooltipPosition="bottom">
@@ -141,10 +143,15 @@
                 <fieldset class="border pl-3 pr-3 pt-2 pb-3 m-2 responseFieldSet" style="height:18rem;">
                     <legend class="float-none w-auto pl-3 pr-3 text-sm responseFieldSetlegend">
                         {{'::HospitalResponse:FieldLegend:HospitalDescription' |
-                        abpLocalization}}
+                        abpLocalization}} <font style="color:red"
+                            *ngIf="selectedHospitalResponseType == hospitalResponseTypeEnum.NotSuitableForTreatment">
+                            &nbsp;*
+                        </font>
                     </legend>
                     <textarea pInputText id="description" name="description" #description="ngModel"
-                        [(ngModel)]="hospitalResponse.description" required class="w-full h-full"></textarea>
+                        [(ngModel)]="hospitalResponse.description"
+                        [required]="selectedHospitalResponseType == hospitalResponseTypeEnum.NotSuitableForTreatment"
+                        class="w-full h-full"></textarea>
                 </fieldset>
             </div>
             <div class="col-4">
@@ -294,22 +301,22 @@
                 <label for="ddlProcessList">{{ '::Admin:Process:Name' | abpLocalization
                     }}&nbsp;<font style="color:red">*
                     </font></label>
-                <p-dropdown id="ddlProcessList" name="ddlProcessList" #ddlProcessList="ngModel" [filter]="true"
-                    filterBy="name" [showClear]="true" [options]="sutProcessList" [(ngModel)]="process.process"
-                    placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
-                    styleClass="filterDropDown" appendTo="body" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
-                    emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}" required appendTo="body">
+                <p-autoComplete id="ddlProcessList" name="ddlProcessList" #ddlProcessList="ngModel"
+                    [(ngModel)]="process.process" [suggestions]="filteredProcesses"
+                    (completeMethod)="filterProcess($event)" field="name" [forceSelection]="true"
+                    [style]="{'width':'100%'}" styleClass="filterAutoComplete" appendTo="body" required>
                     <ng-template pTemplate="selectedItem">
                         <div class="flex align-items-center gap-2" *ngIf="process.process">
-                            <div>{{ process.process.code }} - {{ process.process.name }}</div>
+                            <div class="white-space-normal">{{ process.process.code }} - {{ process.process.name }}
+                            </div>
                         </div>
                     </ng-template>
                     <ng-template let-process pTemplate="item">
                         <div class="flex align-items-center gap-2">
-                            <div>{{ process.code }} - {{ process.name }}</div>
+                            <div class="white-space-normal">{{ process.code }} - {{ process.name }}</div>
                         </div>
                     </ng-template>
-                </p-dropdown>
+                </p-autoComplete>
                 <small class="p-error" *ngIf="!(ddlProcessList.valid || ddlProcessList.pristine)">{{
                     '::Message:RequiredField' |
                     abpLocalization
@@ -346,22 +353,22 @@
                 <label for="ddlProcessList">{{ '::HospitalResponse:Material:Column:Name' | abpLocalization
                     }}&nbsp;<font style="color:red">*
                     </font></label>
-                <p-dropdown id="ddlProcessList" name="ddlProcessList" #ddlProcessList="ngModel" [filter]="true"
-                    filterBy="name" [showClear]="true" [options]="materialProcessList" [(ngModel)]="material.process"
-                    placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
-                    styleClass="filterDropDown" appendTo="body" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
-                    emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}" required appendTo="body">
+                <p-autoComplete id="ddlProcessList" name="ddlProcessList" #ddlProcessList="ngModel"
+                    [(ngModel)]="material.process" [suggestions]="filteredMaterials"
+                    (completeMethod)="filterMaterial($event)" field="name" [forceSelection]="true"
+                    [style]="{'width':'100%'}" styleClass="filterAutoComplete" appendTo="body" required>
                     <ng-template pTemplate="selectedItem">
                         <div class="flex align-items-center gap-2" *ngIf="material.process">
-                            <div>{{ material.process.code }} - {{ material.process.name }}</div>
+                            <div class="white-space-normal">{{ material.process.code }} - {{ material.process.name }}
+                            </div>
                         </div>
                     </ng-template>
-                    <ng-template let-process pTemplate="item">
+                    <ng-template let-material pTemplate="item">
                         <div class="flex align-items-center gap-2">
-                            <div>{{ process.code }} - {{ process.name }}</div>
+                            <div class="white-space-normal">{{ material.code }} - {{ material.name }}</div>
                         </div>
                     </ng-template>
-                </p-dropdown>
+                </p-autoComplete>
                 <small class="p-error" *ngIf="!(ddlProcessList.valid || ddlProcessList.pristine)">{{
                     '::Message:RequiredField' |
                     abpLocalization

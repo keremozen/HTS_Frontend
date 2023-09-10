@@ -42,6 +42,7 @@ import { ChartModule } from 'primeng/chart';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { ChipModule} from 'primeng/chip';
 import { DataViewModule, DataViewLayoutOptions } from 'primeng/dataview';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 
 /**************/
 
@@ -86,7 +87,8 @@ import { DataViewModule, DataViewLayoutOptions } from 'primeng/dataview';
     TagModule,
     ChartModule,
     ChipModule,
-    DataViewModule
+    DataViewModule,
+    AutoCompleteModule
   ],
   exports: [
     CoreModule,
@@ -129,7 +131,8 @@ import { DataViewModule, DataViewLayoutOptions } from 'primeng/dataview';
     ChartModule,
     ChipModule,
     DataViewModule,
-    DataViewLayoutOptions
+    DataViewLayoutOptions,
+    AutoCompleteModule
   ],
   providers: [ConfirmationService, MessageService]
 })

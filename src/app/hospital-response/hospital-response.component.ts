@@ -10,7 +10,7 @@ import { HospitalizationTypeDto } from '@proxy/dto/hospitalization-type';
 import { PatientDto } from '@proxy/dto/patient';
 import { ProcessDto } from '@proxy/dto/process';
 import { EntityEnum_HospitalResponseTypeEnum, EntityEnum_ProcessTypeEnum } from '@proxy/enum';
-import { HospitalConsultationService, HospitalResponseService, HospitalResponseTypeService, HospitalizationTypeService, ProcessService } from '@proxy/service';
+import { HospitalConsultationDocumentService, HospitalConsultationService, HospitalResponseService, HospitalResponseTypeService, HospitalizationTypeService, ProcessService } from '@proxy/service';
 import { forkJoin } from 'rxjs';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 import { CommonService } from '../services/common.service';
@@ -43,9 +43,8 @@ export class HospitalResponseComponent extends AppComponentBase {
 
   process: SaveHospitalResponseProcessWithDetailDto;
   processDialog: boolean = false;
-  processList: ProcessDto[] = [];
-  sutProcessList: ProcessDto[] = [];
-  materialProcessList: ProcessDto[] = [];
+  filteredProcesses: ProcessDto[] = [];
+  filteredMaterials: ProcessDto[] = [];
 
   material: SaveHospitalResponseProcessWithDetailDto;
   materialDialog: boolean = false;
@@ -60,6 +59,7 @@ export class HospitalResponseComponent extends AppComponentBase {
     private hostipalResponseTypeService: HospitalResponseTypeService,
     private hospitalizationTypeService: HospitalizationTypeService,
     private hospitalConsultationService: HospitalConsultationService,
+    private hospitalConsultationDocumentService: HospitalConsultationDocumentService,
     private hospitalResponseService: HospitalResponseService,
     private commonService: CommonService,
     private processService: ProcessService,
@@ -96,22 +96,17 @@ export class HospitalResponseComponent extends AppComponentBase {
       this.hospitalConsultationService.get(this.consultationId),
       this.hostipalResponseTypeService.getList(),
       this.hospitalizationTypeService.getList(),
-      this.processService.getList()
     ]).subscribe(
       {
         next: ([
           resConsultation,
           resHospitalResponseTypeList,
-          resHospitalizationTypeList,
-          resProcessList
+          resHospitalizationTypeList
         ]) => {
           this.consultation = resConsultation;
           this.documents.push(...this.consultation.hospitalConsultationDocuments);
           this.hospitalResponseTypeList = resHospitalResponseTypeList.items;
           this.hospitalizationTypeList = resHospitalizationTypeList.items;
-          this.processList = resProcessList.items;
-          this.sutProcessList = [...this.processList.filter(p => p.processTypeId == this.processTypeEnum.SutCode)];
-          this.materialProcessList = [...this.processList.filter(p => p.processTypeId == this.processTypeEnum.Material)];
         },
         error: () => {
           this.loading = false;
@@ -121,6 +116,36 @@ export class HospitalResponseComponent extends AppComponentBase {
         }
       }
     );
+  }
+
+  filterProcess(event: any) {
+    let query = event.query;
+    this.processService.getListByKeyword(query, EntityEnum_ProcessTypeEnum.SutCode).subscribe({
+      next: (res) => {
+        this.filteredProcesses = res.items;
+      }
+    });
+  }
+
+  filterMaterial(event: any) {
+    let query = event.query;
+    this.processService.getListByKeyword(query, EntityEnum_ProcessTypeEnum.Material).subscribe({
+      next: (res) => {
+        this.filteredProcesses = res.items;
+      }
+    });
+  }
+
+  showFile(documentId: number) {
+    this.hospitalConsultationDocumentService.get(documentId).subscribe({
+      next: r => {
+        const source = `data:${r.contentType};base64,${r.file}`;
+        const link = document.createElement("a");
+        link.href = source;
+        link.download = r.fileName
+        link.click();
+      }
+    });
   }
 
   openNewMaterial() {
@@ -173,11 +198,11 @@ export class HospitalResponseComponent extends AppComponentBase {
       header: this.l('::Confirm'),
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        debugger;
         this.hospitalResponse.hospitalResponseTypeId = this.selectedHospitalResponseType;
-        this.hospitalResponse.hospitalizationTypeId = this.selectedHospitalizationType.id;
+
+        this.hospitalResponse.hospitalizationTypeId = this.selectedHospitalizationType ? this.selectedHospitalizationType.id : null;
         this.hospitalResponse.hospitalResponseBranches = [];
-        this.selectedBranches.forEach(branch => {
+        this.selectedBranches?.forEach(branch => {
           this.hospitalResponse.hospitalResponseBranches.push({
             hospitalResponseId: 0,
             branchId: branch.id

@@ -11,7 +11,7 @@ import { ProformaDto, ProformaListDto, SaveProformaDto } from '@proxy/dto/profor
 import { SaveProformaAdditionalServiceDto } from '@proxy/dto/proforma-additional-service';
 import { SaveProformaNotIncludingServiceDto } from '@proxy/dto/proforma-not-including-service';
 import { SaveProformaProcessDto } from '@proxy/dto/proforma-process';
-import { EntityEnum_AdditionalServiceEnum, EntityEnum_ProcessTypeEnum, EntityEnum_ProformaStatusEnum, EntityEnum_RoomTypeEnum, entityEnum_RoomTypeEnumOptions } from '@proxy/enum';
+import { EntityEnum_AdditionalServiceEnum, EntityEnum_OperationStatusEnum, EntityEnum_ProcessTypeEnum, EntityEnum_ProformaStatusEnum, EntityEnum_RoomTypeEnum, entityEnum_RoomTypeEnumOptions } from '@proxy/enum';
 import { AdditionalServiceService, ExchangeRateInformationService, HospitalResponseService, ProcessService, ProformaService } from '@proxy/service';
 import * as moment from 'moment';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -25,8 +25,8 @@ import { AppComponentBase } from 'src/app/shared/common/app-component-base';
   styleUrls: ['./proforma.component.scss'],
   encapsulation: ViewEncapsulation.None,
   providers: [
-    { provide: LOCALE_ID, useValue: 'de-DE' },  
-    ]
+    { provide: LOCALE_ID, useValue: 'de-DE' },
+  ]
 })
 export class ProformaComponent extends AppComponentBase {
 
@@ -40,6 +40,7 @@ export class ProformaComponent extends AppComponentBase {
   selectedProforma: ProformaDto;
   isEdit: boolean = false;
   isDisabled: boolean = false;
+  exchangeRateDate: Date;
 
   hospitalName: string;
   proformaDate = moment();
@@ -54,20 +55,23 @@ export class ProformaComponent extends AppComponentBase {
   branchList: BranchDto[] = [];
   branchListText: string;
   showTreatmentItemDialog: boolean;
-  sutProcessList: ProcessDto[] = [];
   selectedProcess: ProcessDto;
   roomTypeList: ABP.Option<typeof EntityEnum_RoomTypeEnum>[] = [];
+  filteredProcesses: ProcessDto[] = [];
 
   public processTypeEnum = EntityEnum_ProcessTypeEnum;
   public additionalServiceEnum = EntityEnum_AdditionalServiceEnum;
   public roomTypeEnum = EntityEnum_RoomTypeEnum;
   public proformaStatusEnum = EntityEnum_ProformaStatusEnum;
+  public operationStatusEnum = EntityEnum_OperationStatusEnum;
 
   proformaNotIncludingServiceList: SaveProformaNotIncludingServiceDtoWithRowNumber[] = [];
   notIncludingServiceRowNumber: number = 1;
   showNotIncludingItemsDialog: boolean = false;
   proformaNotIncludingService: SaveProformaNotIncludingServiceDtoWithRowNumber;
 
+  isAllowedToManageProforma: boolean = false;
+  isAllowedToMFBApprove: boolean = false;
 
   constructor(
     injector: Injector,
@@ -81,11 +85,13 @@ export class ProformaComponent extends AppComponentBase {
     private exchangeRateInfoService: ExchangeRateInformationService
   ) {
     super(injector);
+    this.isAllowedToManageProforma = this.permission.getGrantedPolicy("HTS.ProformaManagement");
+    this.isAllowedToMFBApprove = this.permission.getGrantedPolicy("HTS.MFBApproval");
   }
 
   ngOnInit() {
-    this.isDisabled = this.dialogConfig.data?.isDisabled;
     this.operation = this.dialogConfig.data?.operation;
+    this.isDisabled = this.dialogConfig.data?.isDisabled || (this.operation.operationStatusId == this.operationStatusEnum.ProformaCreatedWaitingForMFBApproval && !this.isAllowedToMFBApprove);
     this.proformaService.getNameListByOperationId(+this.operation.id).subscribe({
       next: (res) => {
         this.proformaList = res;
@@ -143,13 +149,11 @@ export class ProformaComponent extends AppComponentBase {
 
     forkJoin([
       this.additionalServiceService.getList(),
-      this.hospitalResponseService.get(this.operation.hospitalResponseId),
-      this.processService.getList(true)
+      this.hospitalResponseService.get(this.operation.hospitalResponseId)
     ]).subscribe((
       [
         resAdditionalServiceList,
-        resHospitalResponse,
-        resProcessList
+        resHospitalResponse
       ]
     ) => {
 
@@ -182,12 +186,9 @@ export class ProformaComponent extends AppComponentBase {
       this.processes = this.hospitalResponse.hospitalResponseProcesses.filter(p => p.process.processTypeId == this.processTypeEnum.SutCode &&
         p.process.processCosts.some(c => this.proformaDate.isSameOrAfter(c.validityStartDate, 'day') &&
           this.proformaDate.isSameOrBefore(c.validityEndDate, 'day')));
+      debugger;
       this.materials = this.hospitalResponse.hospitalResponseProcesses.filter(p => p.process.processTypeId == this.processTypeEnum.Material &&
         p.process.processCosts.some(c => this.proformaDate.isSameOrAfter(c.validityStartDate, 'day') &&
-          this.proformaDate.isSameOrBefore(c.validityEndDate, 'day')));
-
-      this.sutProcessList = resProcessList.items.filter(p => p.processTypeId == this.processTypeEnum.SutCode &&
-        p.processCosts.some(c => this.proformaDate.isSameOrAfter(c.validityStartDate, 'day') &&
           this.proformaDate.isSameOrBefore(c.validityEndDate, 'day')));
 
       if (!this.isEdit) {
@@ -197,9 +198,10 @@ export class ProformaComponent extends AppComponentBase {
         this.treatmentItemList = this.saveProforma.proformaProcesses as SaveProformaProcessDtoWithDetails[];
 
         this.treatmentItemList.forEach(treatmentItem => {
-          const process = this.sutProcessList.find(p => p.id == treatmentItem.processId);
-          treatmentItem.code = process.code;
-          treatmentItem.name = process.name;
+          this.processService.get(treatmentItem.processId).subscribe(res => {
+            treatmentItem.code = res.code;
+            treatmentItem.name = res.name;
+          });
         });
 
         this.proformaNotIncludingServiceList = this.saveProforma.proformaNotIncludingServices as SaveProformaNotIncludingServiceDtoWithRowNumber[];
@@ -225,8 +227,17 @@ export class ProformaComponent extends AppComponentBase {
     this.getProforma();
   }
 
+  filterProcess(event: any) {
+    let query = event.query;
+    this.processService.getListByKeyword(query, EntityEnum_ProcessTypeEnum.SutCode).subscribe({
+      next: (res) => {
+        this.filteredProcesses = res.items;
+      }
+    });
+  }
 
   private generateItems() {
+    debugger;
     this.treatmentItemList = [];
     this.anticipatedMaterialList = [];
     this.processes.forEach(process => {
@@ -284,10 +295,12 @@ export class ProformaComponent extends AppComponentBase {
       this.exchangeRateInfoService.get(this.saveProforma.currencyId).subscribe({
         next: (res) => {
           if (res) {
+            this.exchangeRateDate = new Date(res.creationTime);
             this.saveProforma.exchangeRate = res.exchangeRate;
             this.updateItems();
           }
           else {
+            this.exchangeRateDate = null;
             this.error(this.l("::Proforma:Error:CurrencyNotFound"));
             const tlCurrency = this.currencyList.find(c => c.name == "TL");
             if (tlCurrency) {
@@ -329,6 +342,11 @@ export class ProformaComponent extends AppComponentBase {
     this.treatmentItemList.push(this.treatmentItem);
     this.updateItems();
     this.hideTreatmentItemDialog();
+  }
+
+  removeItem(item: SaveProformaProcessDtoWithDetails) {
+    this.treatmentItemList = this.treatmentItemList.filter(i => i.processId != item.processId);
+    this.updateItems();
   }
 
   onNewNotIncludingService() {

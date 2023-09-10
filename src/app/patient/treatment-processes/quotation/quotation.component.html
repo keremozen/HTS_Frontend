@@ -84,15 +84,19 @@
                             <p-button
                                 pTooltip="{{ '::Quotation:ProformaTable:Button:SendToPatient' | abpLocalization }}"
                                 icon="pi pi-send" styleClass="p-button-rounded p-button-secondary" (onClick)="onSendToPatientClick(proforma)"
+                                [disabled]="!isAllowedToManagePatient"
                                 *ngIf="proforma.proformaStatusId == proformaStatusEnum.WillBeTransferedToPatient"></p-button>
                             <p-button pTooltip="{{ '::Quotation:ProformaTable:Button:Approve' | abpLocalization }}"
                                 icon="pi pi-check" styleClass="p-button-rounded p-button-success" (onClick)="onApproveClick(proforma)"
+                                [disabled]="!(proforma.proformaStatusId == proformaStatusEnum.MFBWaitingApproval && isAllowedToApproveRejectAsMFB) && !(proforma.proformaStatusId == proformaStatusEnum.WaitingForPatientApproval && isAllowedToApproveRejectAsPatient)"
                                 *ngIf="proforma.proformaStatusId == proformaStatusEnum.MFBWaitingApproval || proforma.proformaStatusId == proformaStatusEnum.WaitingForPatientApproval"></p-button>
                             <p-button pTooltip="{{ '::Quotation:ProformaTable:Button:Reject' | abpLocalization }}"
                                 icon="pi pi-times" styleClass="p-button-rounded p-button-danger ml-1" (onClick)="onRejectClick(proforma)"
+                                [disabled]="!(proforma.proformaStatusId == proformaStatusEnum.MFBWaitingApproval && isAllowedToApproveRejectAsMFB) && !(proforma.proformaStatusId == proformaStatusEnum.WaitingForPatientApproval && isAllowedToApproveRejectAsPatient)"
                                 *ngIf="proforma.proformaStatusId == proformaStatusEnum.MFBWaitingApproval || proforma.proformaStatusId == proformaStatusEnum.WaitingForPatientApproval"></p-button>
                             <p-button pTooltip="{{ '::Quotation:ProformaTable:Button:Payment' | abpLocalization }}"
                                 icon="pi pi-calculator" styleClass="p-button-rounded p-button-secondary" (onClick)="onPaymentClick(proforma)"
+                                [disabled]="!isAllowedToManageProforma"
                                 *ngIf="proforma.proformaStatusId == proformaStatusEnum.WaitingForPayment"></p-button>
                         </td>
                     </tr>
