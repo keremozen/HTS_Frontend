@@ -123,7 +123,6 @@ export class LanguageComponent extends AppComponentBase {
                 const wsname: string = wb.SheetNames[0];
                 const ws: XLSX.WorkSheet = wb.Sheets[wsname];
                 const data: SaveLanguageDto[] = JSON.parse(JSON.stringify((XLSX.utils.sheet_to_json(ws, { header: 0 }))));
-                debugger;
                 this.languageService.createList(data).subscribe({
                     complete: () => {
                         this.fetchData();

@@ -99,7 +99,6 @@ export class PaymentDialogComponent extends AppComponentBase {
     this.paymentItem.currency = this.currencyList.find(c => c.id == this.paymentItem.currencyId);
     this.paymentItem.currencyCode = this.paymentItem.currency.name == 'TL' ? 'TRY' : this.paymentItem.currency.name;
     this.paymentItem.paymentKind = this.paymentKindList.find(pk => pk.id == this.paymentItem.paymentKindId);
-    debugger;
     if (this.paymentItem.rowNumber) {
       this.payment.paymentItems = (this.payment.paymentItems as SavePaymentItemWithDetail[]).map(item => {
         if (item.rowNumber == this.paymentItem.rowNumber) {

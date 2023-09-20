@@ -13,7 +13,7 @@
 }
 
 .responseFieldHeight {
-    height: 20rem;
+    height: 100%;
 }
 
 .responseFieldFullHeight {
@@ -27,4 +27,12 @@
 
 .p-autocomplete-panel {
     max-width: 28vw;
+}
+
+.customTable.p-datatable .p-datatable-thead > tr > th {
+    background-color: rgba(235, 245, 238,.2);
+}
+
+.customTable.p-datatable .p-datatable-footer {
+    background-color: rgba(235, 245, 238,.2);
 }

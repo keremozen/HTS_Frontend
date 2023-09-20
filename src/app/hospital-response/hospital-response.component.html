@@ -19,7 +19,7 @@
                         {{'::HospitalResponse:FieldLegend:PatientDocuments' |
                         abpLocalization}}
                     </legend>
-                    <p-table #dt [value]="documents" [rows]="5" styleClass="pt-3" [paginator]="true" [rowHover]="true"
+                    <p-table #dt [value]="documents" [rows]="5" styleClass="pt-3 customTable" [paginator]="true" [rowHover]="true"
                         [loading]="loading"
                         currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
                         [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
@@ -60,8 +60,8 @@
                             </div>
                         </ng-template>
                         <ng-template pTemplate="summary">
-                            <div class="flex align-items-center justify-content-between" *ngIf="totalRecords > 0">
-                                {{ '::Table:Summary' | abpLocalization: totalRecords }}
+                            <div class="flex align-items-center justify-content-between" *ngIf="documents.length > 0">
+                                {{ '::Table:Summary' | abpLocalization: documents.length }}
                             </div>
                         </ng-template>
                     </p-table>
@@ -173,7 +173,7 @@
                         </div>
                     </p-toolbar>
 
-                    <p-table #dt [value]="anticipatedProcesses" [rows]="5" styleClass="pt-3" [paginator]="true"
+                    <p-table #dt [value]="anticipatedProcesses" [rows]="5" styleClass="pt-3 customTable" [paginator]="true"
                         [rowHover]="true" [loading]="loading"
                         currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
                         [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
@@ -215,8 +215,8 @@
                             </div>
                         </ng-template>
                         <ng-template pTemplate="summary">
-                            <div class="flex align-items-center justify-content-between" *ngIf="totalRecords > 0">
-                                {{ '::Table:Summary' | abpLocalization: totalRecords }}
+                            <div class="flex align-items-center justify-content-between" *ngIf="anticipatedProcesses.length > 0">
+                                {{ '::Table:Summary' | abpLocalization: anticipatedProcesses.length }}
                             </div>
                         </ng-template>
                     </p-table>
@@ -241,7 +241,7 @@
                         </div>
                     </p-toolbar>
 
-                    <p-table #dt [value]="anticipatedMaterials" [rows]="5" styleClass="pt-3" [paginator]="true"
+                    <p-table #dt [value]="anticipatedMaterials" [rows]="5" styleClass="pt-3 customTable" [paginator]="true"
                         [globalFilterFields]="['name']" [rowHover]="true" [loading]="loading"
                         currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
                         [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
@@ -274,8 +274,8 @@
                             </div>
                         </ng-template>
                         <ng-template pTemplate="summary">
-                            <div class="flex align-items-center justify-content-between" *ngIf="totalRecords > 0">
-                                {{ '::Table:Summary' | abpLocalization: totalRecords }}
+                            <div class="flex align-items-center justify-content-between" *ngIf="anticipatedMaterials.length > 0">
+                                {{ '::Table:Summary' | abpLocalization: anticipatedMaterials.length }}
                             </div>
                         </ng-template>
                     </p-table>

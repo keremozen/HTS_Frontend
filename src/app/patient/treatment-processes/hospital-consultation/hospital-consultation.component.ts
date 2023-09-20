@@ -129,7 +129,6 @@ export class HospitalConsultationComponent extends AppComponentBase {
   }
 
   saveConsultation() {
-    debugger;
     this.hospitalConsultation.hospitalIds = this.selectedHospitals;
     this.hospitalConsultation.hospitalConsultationDocuments = this.hospitalConsultationDocuments as unknown as SaveHospitalConsultationDocumentDto[];
     this.hospitalConsultationService.create(this.hospitalConsultation).subscribe({
@@ -286,7 +285,6 @@ export class HospitalConsultationComponent extends AppComponentBase {
           this.patientDocumentService.getDetailedList(this.patientId).subscribe({
             next: (res) => {
               this.hospitalConsultationDocuments = res.items.filter(n => n.patientDocumentStatusId !== EntityEnum_PatientDocumentStatusEnum.Revoked) as unknown as HospitalConsultationDocumentDto[];
-              debugger;
             }
           });
         }
@@ -296,7 +294,6 @@ export class HospitalConsultationComponent extends AppComponentBase {
       this.patientDocumentService.getDetailedList(this.patientId).subscribe({
         next: (res) => {
           this.hospitalConsultationDocuments = res.items.filter(n => n.patientDocumentStatusId !== EntityEnum_PatientDocumentStatusEnum.Revoked) as unknown as HospitalConsultationDocumentDto[];
-          debugger;
         }
       });
     }

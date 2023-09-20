@@ -131,7 +131,7 @@ export class HospitalResponseComponent extends AppComponentBase {
     let query = event.query;
     this.processService.getListByKeyword(query, EntityEnum_ProcessTypeEnum.Material).subscribe({
       next: (res) => {
-        this.filteredProcesses = res.items;
+        this.filteredMaterials = res.items;
       }
     });
   }
@@ -175,7 +175,6 @@ export class HospitalResponseComponent extends AppComponentBase {
   }
 
   saveProcess() {
-    debugger;
     this.process.processId = this.process.process.id;
     this.anticipatedProcesses.push(this.process);
     this.process = null;

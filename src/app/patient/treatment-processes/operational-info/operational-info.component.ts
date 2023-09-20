@@ -145,7 +145,6 @@ export class OperationalInfoComponent extends AppComponentBase {
   openConsultation(consultation: HospitalConsultationDto) {
     this.hospitalConsultation = consultation;
     this.selectedHospitals = [consultation.hospitalId];
-    debugger;
     this.hospitalConsultationDocuments = this.hospitalConsultation.hospitalConsultationDocuments;
     this.displayConsultationDialog = true;
   }

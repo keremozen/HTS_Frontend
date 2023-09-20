@@ -157,7 +157,6 @@ export class ProformaComponent extends AppComponentBase {
       ]
     ) => {
 
-      debugger;
       if (!this.isEdit) {
         this.saveProforma.currencyId = this.currencyList.find(c => c.isDefault).id;
         this.onCurrencyChange();
@@ -186,7 +185,6 @@ export class ProformaComponent extends AppComponentBase {
       this.processes = this.hospitalResponse.hospitalResponseProcesses.filter(p => p.process.processTypeId == this.processTypeEnum.SutCode &&
         p.process.processCosts.some(c => this.proformaDate.isSameOrAfter(c.validityStartDate, 'day') &&
           this.proformaDate.isSameOrBefore(c.validityEndDate, 'day')));
-      debugger;
       this.materials = this.hospitalResponse.hospitalResponseProcesses.filter(p => p.process.processTypeId == this.processTypeEnum.Material &&
         p.process.processCosts.some(c => this.proformaDate.isSameOrAfter(c.validityStartDate, 'day') &&
           this.proformaDate.isSameOrBefore(c.validityEndDate, 'day')));
@@ -237,7 +235,6 @@ export class ProformaComponent extends AppComponentBase {
   }
 
   private generateItems() {
-    debugger;
     this.treatmentItemList = [];
     this.anticipatedMaterialList = [];
     this.processes.forEach(process => {
@@ -269,11 +266,13 @@ export class ProformaComponent extends AppComponentBase {
     });
   }
 
-  private updateItems() {
+  private updateItems(shallUpdateProformaFinalPrice: boolean = true) {
     this.treatmentItemList.forEach(item => {
       item.totalPrice = +(item.treatmentCount * item.unitPrice).toFixed(2);
       item.proformaPrice = +(item.totalPrice / this.saveProforma.exchangeRate).toFixed(2);
-      item.proformaFinalPrice = +(((item.change + 100) * item.proformaPrice) / 100).toFixed(2);
+      if (shallUpdateProformaFinalPrice) {
+        item.proformaFinalPrice = +(((item.change + 100) * item.proformaPrice) / 100).toFixed(2);
+      }
     });
 
     this.saveProforma.totalProformaPrice = this.treatmentItemList.reduce((sum, current) => sum + current.proformaFinalPrice, 0);
@@ -318,8 +317,15 @@ export class ProformaComponent extends AppComponentBase {
     }
   }
 
-  onItemEditComplete() {
-    this.updateItems();
+  onFinalPriceChange(event, processCode: string) {
+    let newValue: number = event.value;
+    let item = this.treatmentItemList.find(ti => ti.code == processCode);
+    item.change = +((((newValue - item.proformaPrice) * 100) / item.proformaPrice).toFixed(2));
+    debugger;
+  }
+
+  onItemEditComplete(event: any) {
+    this.updateItems(event.field != 'proformaFinalPrice');
   }
 
   onNewTreatmentItem() {
@@ -334,6 +340,10 @@ export class ProformaComponent extends AppComponentBase {
   }
 
   addTreatmentItem() {
+    if (this.treatmentItemList.some(i => i.code == this.selectedProcess.code)) {
+      this.error(this.l("::HTS:31"));
+      return;
+    }
     this.treatmentItem.processId = this.selectedProcess.id;
     this.treatmentItem.code = this.selectedProcess.code;
     this.treatmentItem.name = this.selectedProcess.name;

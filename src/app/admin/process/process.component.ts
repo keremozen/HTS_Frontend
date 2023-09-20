@@ -143,7 +143,6 @@ export class ProcessComponent extends AppComponentBase {
             });
         }
         else {
-             debugger;
             this.processService.update(this.processToBeEdited.id, this.process).subscribe({
                 complete: () => {
                     this.fetchData();
@@ -237,7 +236,6 @@ export class ProcessComponent extends AppComponentBase {
             header: this.l('::Confirm'),
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
-                debugger;
                 this.processRelationList = this.processRelationList.filter(pr => pr.childProcessId != childProcess.id);
                 this.buildProcessRelationTable();
             }

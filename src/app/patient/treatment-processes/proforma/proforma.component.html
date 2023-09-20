@@ -17,7 +17,8 @@
                         </div>
                     </p-chip>
 
-                    <div class="p-2 flex justify-content-end" *ngIf="exchangeRateDate && saveProforma.exchangeRate != 1">
+                    <div class="p-2 flex justify-content-end"
+                        *ngIf="exchangeRateDate && saveProforma.exchangeRate != 1">
                         <span class="text-xs">Son Güncelleme Zamanı<br>{{exchangeRateDate | date:'dd.MM.YYYY
                             HH:mm'}}</span>
                     </div>
@@ -72,7 +73,7 @@
                     [rowHover]="true" [loading]="loading"
                     currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
                     [showCurrentPageReport]="false" [alwaysShowPaginator]="false"
-                    (onEditComplete)="onItemEditComplete()">
+                    (onEditComplete)="onItemEditComplete($event)">
                     <ng-template pTemplate="header">
                         <tr>
                             <th pSortableColumn="code">{{ '::Proforma:TreatmentItem:Column:Code' | abpLocalization }}
@@ -133,15 +134,26 @@
                             <td [pEditableColumn]="item.change" pEditableColumnField="change">
                                 <p-cellEditor>
                                     <ng-template pTemplate="input">
-                                        <p-inputNumber name="changeAmount" #changeAmount="ngModel" size="3" suffix="%"
-                                            [max]="999" [min]="-999" [(ngModel)]="item.change"></p-inputNumber>
+                                        <p-inputNumber name="changeAmount" #changeAmount="ngModel" size="4" suffix="%"
+                                            mode="decimal" [maxFractionDigits]="2" [(ngModel)]="item.change"></p-inputNumber>
                                     </ng-template>
                                     <ng-template pTemplate="output">
                                         {{ item.change }} %
                                     </ng-template>
                                 </p-cellEditor>
                             </td>
-                            <td>{{item.proformaFinalPrice | currency: this.currencyName:'symbol':'0.2-2'}}</td>
+                            <td [pEditableColumn]="item.proformaFinalPrice" pEditableColumnField="proformaFinalPrice">
+                                <p-cellEditor>
+                                    <ng-template pTemplate="input">
+                                        <p-inputNumber name="finalPrice" #finalPrice="ngModel" mode="currency" [currency]="currencyName" 
+                                        [maxFractionDigits]="2" [(ngModel)]="item.proformaFinalPrice" (onInput)="onFinalPriceChange($event, item.code)"></p-inputNumber>
+                                    </ng-template>
+                                    <ng-template pTemplate="output">
+                                        {{item.proformaFinalPrice | currency: this.currencyName:'symbol':'0.2-2'}}
+                                    </ng-template>
+                                </p-cellEditor>
+                               
+                            </td>
                             <td>
                                 <p-button pRipple icon="pi pi-trash" styleClass="p-button-rounded p-button-danger"
                                     (onClick)="removeItem(item)" [disabled]="isDisabled"></p-button>
