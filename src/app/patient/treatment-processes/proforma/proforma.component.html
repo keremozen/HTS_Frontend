@@ -72,8 +72,7 @@
                 <p-table #dt [value]="treatmentItemList" [rows]="5" styleClass="pt-3" [paginator]="true"
                     [rowHover]="true" [loading]="loading"
                     currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
-                    [showCurrentPageReport]="false" [alwaysShowPaginator]="false"
-                    (onEditComplete)="onItemEditComplete($event)">
+                    [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
                     <ng-template pTemplate="header">
                         <tr>
                             <th pSortableColumn="code">{{ '::Proforma:TreatmentItem:Column:Code' | abpLocalization }}
@@ -121,7 +120,7 @@
                                 <p-cellEditor>
                                     <ng-template pTemplate="input">
                                         <p-inputNumber name="treatmentCount" #treatmentCount="ngModel" size="2"
-                                            [(ngModel)]="item.treatmentCount"></p-inputNumber>
+                                            [(ngModel)]="item.treatmentCount" (onInput)="onTreatmentCountChange($event, item)"></p-inputNumber>
                                     </ng-template>
                                     <ng-template pTemplate="output">
                                         {{ item.treatmentCount }}
@@ -135,7 +134,7 @@
                                 <p-cellEditor>
                                     <ng-template pTemplate="input">
                                         <p-inputNumber name="changeAmount" #changeAmount="ngModel" size="4" suffix="%"
-                                            mode="decimal" [maxFractionDigits]="2" [(ngModel)]="item.change"></p-inputNumber>
+                                            mode="decimal" [maxFractionDigits]="2" [(ngModel)]="item.change" (onInput)="onChangeAmountChange($event, item)"></p-inputNumber>
                                     </ng-template>
                                     <ng-template pTemplate="output">
                                         {{ item.change }} %

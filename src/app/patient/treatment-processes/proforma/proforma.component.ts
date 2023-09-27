@@ -135,7 +135,7 @@ export class ProformaComponent extends AppComponentBase {
       },
       complete: () => {
         this.fetchData();
-        this.onCurrencyChange();
+        //this.onCurrencyChange();
       }
     });
   }
@@ -156,7 +156,6 @@ export class ProformaComponent extends AppComponentBase {
         resHospitalResponse
       ]
     ) => {
-
       if (!this.isEdit) {
         this.saveProforma.currencyId = this.currencyList.find(c => c.isDefault).id;
         this.onCurrencyChange();
@@ -216,7 +215,7 @@ export class ProformaComponent extends AppComponentBase {
           }
         });
 
-        this.updateItems();
+        //this.updateItems();
       }
     });
   }
@@ -266,16 +265,14 @@ export class ProformaComponent extends AppComponentBase {
     });
   }
 
-  private updateItems(shallUpdateProformaFinalPrice: boolean = true) {
+  private updateItems() {
     this.treatmentItemList.forEach(item => {
       item.totalPrice = +(item.treatmentCount * item.unitPrice).toFixed(2);
       item.proformaPrice = +(item.totalPrice / this.saveProforma.exchangeRate).toFixed(2);
-      if (shallUpdateProformaFinalPrice) {
-        item.proformaFinalPrice = +(((item.change + 100) * item.proformaPrice) / 100).toFixed(2);
-      }
+      item.proformaFinalPrice = +(((item.change + 100) * item.proformaPrice) / 100).toFixed(2);
     });
 
-    this.saveProforma.totalProformaPrice = this.treatmentItemList.reduce((sum, current) => sum + current.proformaFinalPrice, 0);
+    this.saveProforma.totalProformaPrice = +(this.treatmentItemList.reduce((sum, current) => sum + current.proformaFinalPrice, 0)).toFixed(2);
 
     this.anticipatedMaterialList.forEach(item => {
       item.totalCost = +(item.amount * item.unitCost).toFixed(2);
@@ -309,23 +306,30 @@ export class ProformaComponent extends AppComponentBase {
               this.updateItems();
             }
           }
-        },
-        complete: () => {
-
         }
       });
     }
+  }
+
+  onTreatmentCountChange(event, item: SaveProformaProcessDtoWithDetails) {
+    item.totalPrice = +(item.treatmentCount * item.unitPrice).toFixed(2);
+    item.proformaPrice = +(item.totalPrice / this.saveProforma.exchangeRate).toFixed(2);
+    item.proformaFinalPrice = +(((item.change + 100) * item.proformaPrice) / 100).toFixed(2);
+    this.saveProforma.totalProformaPrice = +(this.treatmentItemList.reduce((sum, current) => sum + current.proformaFinalPrice, 0)).toFixed(2);
+    debugger;
+  }
+
+  onChangeAmountChange(event, item: SaveProformaProcessDtoWithDetails) {
+    item.proformaFinalPrice = +(((item.change + 100) * item.proformaPrice) / 100).toFixed(2);
+    this.saveProforma.totalProformaPrice = +(this.treatmentItemList.reduce((sum, current) => sum + current.proformaFinalPrice, 0)).toFixed(2);
+    debugger;
   }
 
   onFinalPriceChange(event, processCode: string) {
     let newValue: number = event.value;
     let item = this.treatmentItemList.find(ti => ti.code == processCode);
     item.change = +((((newValue - item.proformaPrice) * 100) / item.proformaPrice).toFixed(2));
-    debugger;
-  }
-
-  onItemEditComplete(event: any) {
-    this.updateItems(event.field != 'proformaFinalPrice');
+    this.saveProforma.totalProformaPrice = +(this.treatmentItemList.reduce((sum, current) => sum + current.proformaFinalPrice, 0)).toFixed(2);
   }
 
   onNewTreatmentItem() {
