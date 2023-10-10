@@ -121,7 +121,7 @@
                 {{'::Quotation:FieldLegend:PaymentList' |
                 abpLocalization}}
             </legend>
-            <app-payment-list #paymentListComp [ptpId]="patientTreatmentId" [patient]="patient"></app-payment-list>
+            <app-payment-list #paymentListComp [ptpId]="patientTreatmentId" [patient]="patient" (onPaymentCompleted)="onPaymentCompleted()"></app-payment-list>
         </fieldset>
     </div>
 </div>

@@ -34,7 +34,6 @@ export class PaymentDialogComponent extends AppComponentBase {
   patientName: string;
   collectorName: string;
   paymentReasonList: PaymentReasonDto[] = [];
-  paymentDate: string = (new DatePipe("tr-TR")).transform(new Date(), 'dd.MM.yyyy HH:mm');
   payment: SavePaymentDto;
   paymentItemDialog: boolean = false;
   paymentItem: SavePaymentItemWithDetail;
@@ -67,6 +66,7 @@ export class PaymentDialogComponent extends AppComponentBase {
     this.proformaId = this.dialogConfig.data?.proformaId;
     this.ptpId = this.dialogConfig.data?.ptpId;
     this.payment = {} as SavePaymentDto;
+    this.payment.paymentDate = new Date();
     this.payment.proformaId = this.proformaId;
     this.payment.ptpId = this.ptpId;
     this.payment.paymentItems = this.payment.paymentItems as SavePaymentItemWithDetail[];

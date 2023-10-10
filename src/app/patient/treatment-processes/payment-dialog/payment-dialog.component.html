@@ -107,9 +107,8 @@
                         '::PaymentDialog:Field:PaymentDate'
                         | abpLocalization }}</label>
                     <div class="col-12 md:col-9">
-                        <input id="txtPaymentDate" name="txtPaymentDate" pInputText type="text" [disabled]="true"
-                            #txtPaymentDate="ngModel" [(ngModel)]="paymentDate"
-                            class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                        <p-calendar id="txtPaymentDate" name="txtPaymentDate" #txtPaymentDate="ngModel" [(ngModel)]="payment.paymentDate" 
+                        [showTime]="true" [showSeconds]="false" dateFormat="dd.mm.yy" class="text-sm text-color-secondary"></p-calendar>
                     </div>
                 </div>
                 <div class="field grid p-2 pt-0">

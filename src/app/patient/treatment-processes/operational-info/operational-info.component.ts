@@ -189,6 +189,7 @@ export class OperationalInfoComponent extends AppComponentBase {
       maximizable: true,
       data: {
         operation: operation,
+        hideSubmit: false,
         isDisabled: operation.patientTreatmentProcess.treatmentProcessStatusId === this.treatmentProcessStatusEnum.ProformaCreatedWaitingForMFBApproval
       },
     });

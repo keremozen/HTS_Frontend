@@ -96,10 +96,10 @@
                 <label for="invoice">{{ '::Payment:UploadInvoiceDialog:Field:Invoice' | abpLocalization }} <font style="color:red">*
                     </font>
                 </label>
-                <p-fileUpload #invoice id="invoice" name="invoice"
+                <p-fileUpload #invoice id="invoice" name="invoice" [disabled]="treatmentProcess?.treatmentProcessStatusId == preatmentTreatmentStatusEnum.PaymentCompletedTreatmentProcess"
                     chooseLabel="{{ '::ChooseFile' | abpLocalization}}" (onSelect)="onSelect($event)"
                     maxFileSize="10000000" [auto]="true">
-                    <ng-template let-file pTemplate="file">
+                    <!-- <ng-template let-file pTemplate="file">
                         <div class="inline-flex m-2">
                             <div class="fileContainer flex flex-wrap">
                                 <div class="flex align-items-center justify-content-center">
@@ -130,6 +130,44 @@
                                 </div>
                             </div>
                         </div>
+                    </ng-template> -->
+                    <ng-template let-file pTemplate="file">
+                       
+                    </ng-template>
+                    <ng-template pTemplate="content">
+                        <div *ngIf="uploadedInvoices.length">
+                            <div class="inline-flex m-2" *ngFor="let file of uploadedInvoices">
+                                <div class="fileContainer flex flex-wrap">
+                                    <div class="flex align-items-center justify-content-center">
+                                        <div class="flex p-2">
+                                            <i class="pi pi-image fileIcon"
+                                                *ngIf="file.type == 'image/jpeg' || file.type == 'image/png'"></i>
+                                            <i class="pi pi-file-pdf fileIcon" *ngIf="file.type == 'application/pdf'"></i>
+                                            <i class="pi pi-file-word fileIcon"
+                                                *ngIf="file.type == 'application/msword' || file.type == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'"></i>
+                                            <i class="pi pi-file-excel fileIcon"
+                                                *ngIf="file.type == 'application/msexcel' || file.type == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'"></i>
+                                            <i class="pi pi-file fileIcon" *ngIf="file.type != 'application/pdf' && 
+                                                file.type != 'application/msword' && 
+                                                file.type != 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' && 
+                                                file.type != 'application/msexcel' && 
+                                                file.type != 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' && 
+                                                file.type != 'image/jpeg' && 
+                                                file.type != 'image/png'"></i>
+                                        </div>
+                                        <div class="flex flex-column p-2">
+                                            <div class="fileName mb-2 font-medium cursor-pointer" (click)="openFile(file)">
+                                                {{file.name}}</div>
+                                            <div class="fileSize">{{file.size / 1024 | number: '1.0-2'}} Kb</div>
+                                        </div>
+                                        <div class="flex p-2 cursor-pointer" (click)="removeFile()" 
+                                            *ngIf="treatmentProcess?.treatmentProcessStatusId != preatmentTreatmentStatusEnum.PaymentCompletedTreatmentProcess">
+                                            <i class="pi pi-times-circle text-xl"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </ng-template>
                 </p-fileUpload>
                 <small class="p-error" *ngIf="!uploadedInvoices || uploadedInvoices?.length == 0">{{
@@ -141,7 +179,8 @@
         <p-button pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" styleClass="p-button-text"
             (onClick)="hideUploadInvoiceDialog()"></p-button>
         <p-button pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" styleClass="p-button-text"
-            (onClick)="uploadInvoice()" [disabled]="!(uploadForm.valid) || uploadForm?.length== 0"></p-button>
+            (onClick)="uploadInvoice()" [disabled]="!(uploadForm.valid) || uploadedInvoices?.length== 0"
+            *ngIf="treatmentProcess?.treatmentProcessStatusId != preatmentTreatmentStatusEnum.PaymentCompletedTreatmentProcess"></p-button>
     </p-footer>
 
 </p-dialog>

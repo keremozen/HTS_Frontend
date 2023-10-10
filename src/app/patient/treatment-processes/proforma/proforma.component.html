@@ -426,7 +426,7 @@
                         <p-button pRipple styleClass="p-button-success ml-2 mt-4"
                             [disabled]="!this.selectedProformaId || treatmentItemList.length == 0 || !(proformaForm.valid)"
                             label="{{ '::Proforma:Button:Send' | abpLocalization }}" (onClick)="onSendProforma()"
-                            *ngIf="!isDisabled "></p-button>
+                            *ngIf="!isDisabled && !hideSubmit"></p-button>
                     </div>
                 </div>
             </div>

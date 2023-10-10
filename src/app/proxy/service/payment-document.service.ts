@@ -25,6 +25,14 @@ export class PaymentDocumentService {
     { apiName: this.apiName });
   
 
+  getByPayment = (paymentId: number) =>
+    this.restService.request<any, PaymentDocumentDto>({
+      method: 'GET',
+      url: `/api/app/payment-document/by-payment/${paymentId}`,
+    },
+    { apiName: this.apiName });
+  
+
   save = (paymentDocument: SavePaymentDocumentDto) =>
     this.restService.request<any, void>({
       method: 'POST',

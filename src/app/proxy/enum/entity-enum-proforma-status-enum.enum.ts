@@ -9,6 +9,7 @@ export enum EntityEnum_ProformaStatusEnum {
   PatientRejected = 6,
   WaitingForPayment = 7,
   PaymentCompleted = 8,
+  MFBUpdatedCancelled = 9,
 }
 
 export const entityEnum_ProformaStatusEnumOptions = mapEnumToOptions(EntityEnum_ProformaStatusEnum);

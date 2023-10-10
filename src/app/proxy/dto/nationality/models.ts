@@ -7,6 +7,11 @@ export interface NationalityDto extends EntityDto<number> {
   isActive: boolean;
 }
 
+export interface SaveExchangeRateInformationDto {
+  currencyId: number;
+  exchangeRate: number;
+}
+
 export interface SaveNationalityDto {
   name: string;
   phoneCode: string;

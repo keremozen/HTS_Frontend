@@ -179,6 +179,7 @@ export class QuotationComponent extends AppComponentBase {
           maximizable: true,
           data: {
             operation: op,
+            hideSubmit: true,
             isDisabled: proforma.proformaStatusId !== this.proformaStatusEnum.MFBWaitingApproval
           }
         });
@@ -237,7 +238,10 @@ export class QuotationComponent extends AppComponentBase {
         });
       }
     });
+  }
 
-    
+  onPaymentCompleted() {
+    this.fetchData();
+    this.onQuotationChange.emit();
   }
 }

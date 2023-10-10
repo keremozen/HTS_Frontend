@@ -40,6 +40,7 @@ export class ProformaComponent extends AppComponentBase {
   selectedProforma: ProformaDto;
   isEdit: boolean = false;
   isDisabled: boolean = false;
+  hideSubmit: boolean = false;
   exchangeRateDate: Date;
 
   hospitalName: string;
@@ -91,6 +92,7 @@ export class ProformaComponent extends AppComponentBase {
 
   ngOnInit() {
     this.operation = this.dialogConfig.data?.operation;
+    this.hideSubmit = this.dialogConfig.data?.hideSubmit;
     this.isDisabled = this.dialogConfig.data?.isDisabled || (this.operation.operationStatusId == this.operationStatusEnum.ProformaCreatedWaitingForMFBApproval && !this.isAllowedToMFBApprove);
     this.proformaService.getNameListByOperationId(+this.operation.id).subscribe({
       next: (res) => {
@@ -135,7 +137,7 @@ export class ProformaComponent extends AppComponentBase {
       },
       complete: () => {
         this.fetchData();
-        //this.onCurrencyChange();
+        this.onCurrencyChange();
       }
     });
   }
@@ -200,6 +202,7 @@ export class ProformaComponent extends AppComponentBase {
             treatmentItem.name = res.name;
           });
         });
+        this.saveProforma.totalProformaPrice = +(this.treatmentItemList.reduce((sum, current) => sum + current.proformaFinalPrice, 0)).toFixed(2);
 
         this.proformaNotIncludingServiceList = this.saveProforma.proformaNotIncludingServices as SaveProformaNotIncludingServiceDtoWithRowNumber[];
         this.reorderNotIncludingServices();
@@ -250,7 +253,7 @@ export class ProformaComponent extends AppComponentBase {
       item.proformaFinalPrice = item.proformaPrice;
       this.treatmentItemList.push(item);
     });
-    this.saveProforma.totalProformaPrice = this.treatmentItemList.reduce((sum, current) => sum + current.proformaFinalPrice, 0);
+    this.saveProforma.totalProformaPrice = +(this.treatmentItemList.reduce((sum, current) => sum + current.proformaFinalPrice, 0)).toFixed(2);
 
     this.materials.forEach(material => {
       let item = new AnticipatedMaterial();
@@ -316,13 +319,11 @@ export class ProformaComponent extends AppComponentBase {
     item.proformaPrice = +(item.totalPrice / this.saveProforma.exchangeRate).toFixed(2);
     item.proformaFinalPrice = +(((item.change + 100) * item.proformaPrice) / 100).toFixed(2);
     this.saveProforma.totalProformaPrice = +(this.treatmentItemList.reduce((sum, current) => sum + current.proformaFinalPrice, 0)).toFixed(2);
-    debugger;
   }
 
   onChangeAmountChange(event, item: SaveProformaProcessDtoWithDetails) {
     item.proformaFinalPrice = +(((item.change + 100) * item.proformaPrice) / 100).toFixed(2);
     this.saveProforma.totalProformaPrice = +(this.treatmentItemList.reduce((sum, current) => sum + current.proformaFinalPrice, 0)).toFixed(2);
-    debugger;
   }
 
   onFinalPriceChange(event, processCode: string) {

@@ -52,6 +52,7 @@ export interface SavePaymentDto {
   hospitalId: number;
   payerNameSurname: string;
   paymentReasonId: number;
+  paymentDate: Date;
   processingNumber?: string;
   fileNumber?: string;
   description?: string;
