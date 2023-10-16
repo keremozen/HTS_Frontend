@@ -68,7 +68,7 @@ export class CompanionInfoComponent extends AppComponentBase {
       this.contractedInstitutionStaffService.getByInstitutionList(this.salesInfoAndCompanionInfo.contractedInstitutionId).subscribe({
         next: (staffList) => {
           this.institutionStaffList = staffList.items;
-          this.salesInfoAndCompanionInfo.contractedInstitutionStaffId = this.institutionStaffList.find(s=>s.isActive && s.isDefault).id;
+          this.salesInfoAndCompanionInfo.contractedInstitutionStaffId = this.institutionStaffList.find(s=>s.isActive && s.isDefault)?.id;
           if (this.salesInfoAndCompanionInfo.contractedInstitutionStaffId) {
             this.onInstitutionStaffSelect();
           }

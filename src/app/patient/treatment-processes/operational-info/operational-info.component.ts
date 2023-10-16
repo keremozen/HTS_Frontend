@@ -161,7 +161,7 @@ export class OperationalInfoComponent extends AppComponentBase {
       next: (res) => {
         this.operation = operation;
         this.hospitalResponse = res;
-        this.branchListText = this.branchList.filter(h => this.hospitalResponse.hospitalResponseBranches.map(b => b.branchId).includes(h.id)).map(b => b.name).join("<br>");
+        this.branchListText = this.branchList.filter(h => this.hospitalResponse.hospitalResponseBranches.map(b => b.branchId).includes(h?.id)).map(b => b?.name).join("<br>");
         this.anticipatedProcesses = this.hospitalResponse.hospitalResponseProcesses.filter(r => r.process.processTypeId == this.processTypeEnum.SutCode);
         this.anticipatedMaterials = this.hospitalResponse.hospitalResponseProcesses.filter(r => r.process.processTypeId == this.processTypeEnum.Material);
       },
