@@ -18,6 +18,15 @@ export class PatientTreatmentProcessService {
     { apiName: this.apiName });
   
 
+  setSysTrackingNumberByTreatmentCode = (treatmentCode: string) =>
+    this.restService.request<any, boolean>({
+      method: 'POST',
+      url: '/api/app/patient-treatment-process/set-sys-tracking-number',
+      params: { treatmentCode },
+    },
+    { apiName: this.apiName });
+  
+
   start = (patientId: number) =>
     this.restService.request<any, PatientTreatmentProcessDto>({
       method: 'POST',

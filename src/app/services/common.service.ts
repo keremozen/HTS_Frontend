@@ -6,13 +6,14 @@ import { CurrencyDto } from "@proxy/dto/currency";
 import { DocumentTypeDto } from "@proxy/dto/document-type";
 import { GenderDto } from "@proxy/dto/gender";
 import { HospitalDto } from "@proxy/dto/hospital";
+import { HTSTaskDto } from "@proxy/dto/htstask";
 import { NationalityDto } from "@proxy/dto/nationality";
 import { PatientAdmissionMethodDto } from "@proxy/dto/patient-admission-method";
 import { ProcessKindDto } from "@proxy/dto/process-kind";
 import { ProcessTypeDto } from "@proxy/dto/process-type";
 import { TreatmentTypeDto } from "@proxy/dto/treatment-type";
-import { BranchService, CityService, ContractedInstitutionService, CurrencyService, DocumentTypeService, GenderService, HospitalService, LanguageService, NationalityService, PatientAdmissionMethodService, ProcessKindService, ProcessTypeService, TreatmentTypeService } from "@proxy/service";
-import { forkJoin } from "rxjs";
+import { BranchService, CityService, ContractedInstitutionService, CurrencyService, DocumentTypeService, GenderService, HTSTaskService, HospitalService, LanguageService, NationalityService, PatientAdmissionMethodService, ProcessKindService, ProcessTypeService, TreatmentTypeService } from "@proxy/service";
+import { BehaviorSubject, forkJoin } from "rxjs";
 
 @Injectable({
     providedIn: 'root',
@@ -32,7 +33,13 @@ export class CommonService {
     public processTypeList: ProcessTypeDto[] = [];
     public processKindList: ProcessKindDto[] = [];
     public contractedInstitutionList: ContractedInstitutionDto[] = [];
+    //public taskList: HTSTaskDto[] = [];
+    private taskSource = new BehaviorSubject<HTSTaskDto[]>(null);
+    public taskList = this.taskSource.asObservable();
 
+    addTaskList(value: HTSTaskDto[]) {
+        this.taskSource.next(value);
+    }
 
     constructor(
         private nationalityService: NationalityService,
@@ -47,7 +54,8 @@ export class CommonService {
         private treatmentTypeService: TreatmentTypeService,
         private processTypeService: ProcessTypeService,
         private processKindService: ProcessKindService,
-        private contractedInstitutionService: ContractedInstitutionService
+        private contractedInstitutionService: ContractedInstitutionService,
+        private taskService: HTSTaskService
     ) {
     }
 
@@ -66,7 +74,8 @@ export class CommonService {
                 this.treatmentTypeService.getList(true),
                 this.processTypeService.getList(true),
                 this.processKindService.getList(true),
-                this.contractedInstitutionService.getList(true)
+                this.contractedInstitutionService.getList(true),
+                this.taskService.getList()
             ]).subscribe(
                 {
                     next: ([
@@ -82,7 +91,8 @@ export class CommonService {
                         resTreatmentTypeList,
                         resProcessTypeList,
                         resProcessKindList,
-                        resContractedInstitutionList
+                        resContractedInstitutionList,
+                        resTaskList
                     ]) => {
                         this.nationalityList = resNationalityList.items;
                         this.languageList = resLanguageList.items;
@@ -97,6 +107,7 @@ export class CommonService {
                         this.processTypeList = resProcessTypeList.items;
                         this.processKindList = resProcessKindList.items;
                         this.contractedInstitutionList = resContractedInstitutionList.items;
+                        this.addTaskList(resTaskList.items);
                     },
                     error: (error: any) => {
                         resolve(error);

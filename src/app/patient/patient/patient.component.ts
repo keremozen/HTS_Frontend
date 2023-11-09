@@ -1,3 +1,4 @@
+import { ConfigStateService, CurrentUserDto } from '@abp/ng.core';
 import { IdentityUserDto } from '@abp/ng.identity/proxy';
 import { Component, Injector, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
@@ -5,7 +6,7 @@ import { GenderDto } from '@proxy/dto/gender';
 import { LanguageDto } from '@proxy/dto/language';
 import { NationalityDto } from '@proxy/dto/nationality';
 import { PatientDto, SavePatientDto } from '@proxy/dto/patient';
-import { PatientService } from '@proxy/service';
+import { HTSTaskService, PatientService } from '@proxy/service';
 import * as moment from 'moment';
 import { CommonService } from 'src/app/services/common.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
@@ -31,11 +32,15 @@ export class PatientComponent extends AppComponentBase {
   creatorName: string;
   creationTime: Date;
   isAllowedToManage: boolean = false;
+  isAssignedToTik?: boolean = null;
+  currentUser: CurrentUserDto;
 
   constructor(
     injector: Injector,
+    private config: ConfigStateService,
     private commonService: CommonService,
     private patientService: PatientService,
+    private htsTaskService: HTSTaskService,
     private route: ActivatedRoute,
   ) {
     super(injector);
@@ -43,7 +48,11 @@ export class PatientComponent extends AppComponentBase {
   }
 
   ngOnInit() {
+    this.fetchData();
+  }
 
+  private fetchData() {
+    this.currentUser = this.config.getOne("currentUser");
     if (this.route.snapshot.paramMap.get('id')) {
       this.patientId = +this.route.snapshot.paramMap.get('id');
       if (this.patient) {
@@ -52,6 +61,7 @@ export class PatientComponent extends AppComponentBase {
         this.genderList = this.commonService.genderList;
         this.patientService.get(this.patientId).subscribe({
           next: (patient) => {
+            this.isAssignedToTik = patient.isAssignedToTik;
             this.patientView = { ...patient };
             this.creatorName = (patient.creator as unknown as IdentityUserDto).name + " " + (patient.creator as unknown as IdentityUserDto).surname;
             this.creationTime = new Date(patient.creationTime);
@@ -70,6 +80,9 @@ export class PatientComponent extends AppComponentBase {
 
   onSaveProfile() {
     this.loading = true;
+    if (this.patient.email === "") {
+      this.patient.email = null;
+    }
     this.patientService.update(this.patientId, this.patient).subscribe({
       complete: () => {
         this.success(this.l("::PatientDetail:SaveSuccessful"));
@@ -80,5 +93,23 @@ export class PatientComponent extends AppComponentBase {
       }
     });
 
+  }
+
+  onSendToTIK() {
+    this.htsTaskService.assignToTikByUserId(this.patientId).subscribe({
+      complete: () => {
+        this.success(this.l("::PatientDetail:SentToTikSuccessful"));
+        this.fetchData();
+      } 
+    });
+  }
+
+  onReturnFromTIK() {
+    this.htsTaskService.returnFromTikByUserId(this.patientId).subscribe({
+      complete: () => {
+        this.success(this.l("::PatientDetail:ReturnSuccessful"));
+        this.fetchData();
+      } 
+    });
   }
 }

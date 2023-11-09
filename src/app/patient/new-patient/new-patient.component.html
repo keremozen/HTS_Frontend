@@ -35,10 +35,10 @@
                             | abpLocalization }}&nbsp;<font style="color:red">*</font></label>
                         <div class="col-12 md:col-9">
                             <p-dropdown id="patientNationality" name="patientNationality" #patientNationality="ngModel"
-                                [filter]="true" filterBy="name" [showClear]="true" [options]="nationalityList"
+                                [filter]="true" filterBy="name" [showClear]="true" [options]="nationalityList" filterLocale="tr-TR"
                                 [(ngModel)]="patient.nationalityId" placeholder="{{ '::Select' | abpLocalization }}"
                                 [style]="{'width':'100%'}" required="true" styleClass="filterDropDown" optionValue="id"
-                                optionLabel="name" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
+                                optionLabel="name" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" filterLocale="tr-TR"
                                 emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}"></p-dropdown>
                         </div>
                     </div>
@@ -84,7 +84,7 @@
                         <div class="col-12 md:col-9">
                             <p-dropdown id="phoneCountryCode" name="phoneCountryCode" [filter]="true" filterBy="name"
                                 [showClear]="true" #phoneCountryCode="ngModel" [options]="nationalityList"
-                                [(ngModel)]="patient.phoneCountryCodeId"
+                                [(ngModel)]="patient.phoneCountryCodeId" filterLocale="tr-TR"
                                 [style]="{'width':'100px', 'margin-right':'10px'}" styleClass="filterDropDown"
                                 optionValue="id" placeholder="{{ '::Select' | abpLocalization }}"
                                 optionLabel="phoneCode" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
@@ -122,7 +122,7 @@
                                 [options]="languageList" [(ngModel)]="patient.motherTongueId"
                                 placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
                                 styleClass="filterDropDown" optionValue="id" optionLabel="name"
-                                emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
+                                emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" filterLocale="tr-TR"
                                 emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}"></p-dropdown>
                         </div>
                     </div>
@@ -135,7 +135,7 @@
                                 [options]="languageList" [(ngModel)]="patient.secondTongueId"
                                 placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
                                 styleClass="filterDropDown" optionValue="id" optionLabel="name"
-                                emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
+                                emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" filterLocale="tr-TR"
                                 emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}"></p-dropdown>
                         </div>
                     </div>

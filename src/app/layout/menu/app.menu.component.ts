@@ -3,6 +3,8 @@ import { Component, Injector, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 import { PrimeApplicationLayoutComponent } from '../prime-application-layout/prime-application-layout.component';
+import { CommonService } from 'src/app/services/common.service';
+import { HTSTaskDto } from '@proxy/dto/htstask';
 
 @Component({
     selector: 'app-menu',
@@ -11,32 +13,43 @@ import { PrimeApplicationLayoutComponent } from '../prime-application-layout/pri
 export class AppMenuComponent extends AppComponentBase implements OnInit {
 
     items: MenuItem[] = [];
+    taskList: HTSTaskDto[] = [];
 
     constructor(
         injector: Injector,
         public app: PrimeApplicationLayoutComponent,
-        public routes: RoutesService
+        public routes: RoutesService,
+        public commonService: CommonService
     ) {
         super(injector);
     }
 
     ngOnInit(): void {
-        this.routes.tree$.subscribe(res => {
-            this.items = [];
-            res.forEach(route => {
-                let menuItem = this.convertRouteToMenuItem(route);
-                if (menuItem) {
-                    menuItem.visible = menuItem.visible && (menuItem.items?.filter(m=>m.visible).length > 0 || route.path != undefined); 
-                    this.items.push(menuItem);
-                }
-            });
+        this.commonService.taskList.subscribe({
+            next: (resTaskList) => {
+                this.taskList = resTaskList;
+                this.routes.tree$.subscribe(res => {
+                    this.items = [];
+                    res.forEach(route => {
+                        let menuItem = this.convertRouteToMenuItem(route);
+                        if (menuItem) {
+                            menuItem.visible = menuItem.visible && (menuItem.items?.filter(m=>m.visible).length > 0 || route.path != undefined); 
+                            this.items.push(menuItem);
+                        }
+                    });
+                });
+            }
         });
+        
     }
 
     convertRouteToMenuItem(route: TreeNode<ABP.Route>): MenuItem {
         let menuItem: MenuItem;
         if (!route.invisible) {
             menuItem = {};
+            if (route.path === '/tasks' && this.taskList.length > 0) {
+                menuItem.badge = this.taskList.length.toString();
+            }
             menuItem.label = this.l(route.name);
             menuItem.icon = route.iconClass;
             menuItem.routerLink = route.path;

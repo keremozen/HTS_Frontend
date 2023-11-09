@@ -5,6 +5,18 @@
         <h4>{{title}}</h4>
     </div>
     <div class="col-10 flex justify-content-end text-xs grid-nogutter">
+        <div class="mr-4" *ngIf="isAssignedToTik == true && !currentUser.roles.includes('TİK')">
+            <p-button pRipple label="{{ '::PatientDetail:SentToTIK' | abpLocalization }}"
+            icon="pi pi-send" styleClass="p-button-danger" [disabled]="true"></p-button>
+        </div>
+        <div class="mr-4" *ngIf="isAssignedToTik == true && currentUser.roles.includes('TİK')">
+            <p-button pRipple label="{{ '::PatientDetail:ReturnFromTIK' | abpLocalization }}"
+            icon="pi pi-send" styleClass="p-button-warning" (onClick)="onReturnFromTIK()"></p-button>
+        </div>
+        <div class="mr-4" *ngIf="isAssignedToTik == null || isAssignedToTik == false">
+            <p-button pRipple label="{{ '::PatientDetail:SendToTIK' | abpLocalization }}"
+            icon="pi pi-send" styleClass="p-button-info" (onClick)="onSendToTIK()"></p-button>
+        </div>
         <div class="grid grid-nogutter w-15rem">
             <div class="col-6">Ekleyen Kullanıcı</div>
             <div class="col-6">{{creatorName}}</div>
@@ -47,7 +59,7 @@
                             | abpLocalization }}&nbsp;<font style="color:red">*</font></label>
                         <div class="col-12 md:col-9">
                             <p-dropdown id="patientNationality" name="patientNationality" #patientNationality="ngModel"
-                                [filter]="true" filterBy="name" [showClear]="true" [options]="nationalityList"
+                                [filter]="true" filterBy="name" [showClear]="true" [options]="nationalityList" filterLocale="tr-TR"
                                 [(ngModel)]="patient.nationalityId" placeholder="{{ '::Select' | abpLocalization }}"
                                 [style]="{'width':'100%'}" required="true" styleClass="filterDropDown" optionValue="id"
                                 optionLabel="name" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" [disabled]="!isAllowedToManage"
@@ -98,7 +110,7 @@
                                 [showClear]="true" #phoneCountryCode="ngModel" [options]="nationalityList"
                                 [(ngModel)]="patient.phoneCountryCodeId" [disabled]="!isAllowedToManage"
                                 [style]="{'width':'100px', 'margin-right':'10px'}" styleClass="filterDropDown"
-                                optionValue="id" placeholder="{{ '::Select' | abpLocalization }}"
+                                optionValue="id" placeholder="{{ '::Select' | abpLocalization }}" filterLocale="tr-TR"
                                 optionLabel="phoneCode" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
                                 emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}">
                                 <ng-template let-country pTemplate="item">
@@ -131,7 +143,7 @@
                         <div class="col-12 md:col-9">
                             <p-dropdown id="patientNativeLanguage" name="patientNativeLanguage"
                                 #patientNativeLanguage="ngModel" [filter]="true" filterBy="name" [showClear]="true"
-                                [options]="languageList" [(ngModel)]="patient.motherTongueId"
+                                [options]="languageList" [(ngModel)]="patient.motherTongueId" filterLocale="tr-TR"
                                 placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
                                 styleClass="filterDropDown" optionValue="id" optionLabel="name"
                                 emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" [disabled]="!isAllowedToManage"
@@ -144,7 +156,7 @@
                         <div class="col-12 md:col-9">
                             <p-dropdown id="patientSecondLanguage" name="patientSecondLanguage"
                                 #patientSecondLanguage="ngModel" [filter]="true" filterBy="name" [showClear]="true"
-                                [options]="languageList" [(ngModel)]="patient.secondTongueId"
+                                [options]="languageList" [(ngModel)]="patient.secondTongueId" filterLocale="tr-TR"
                                 placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
                                 styleClass="filterDropDown" optionValue="id" optionLabel="name"
                                 emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" [disabled]="!isAllowedToManage"

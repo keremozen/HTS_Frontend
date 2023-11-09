@@ -107,7 +107,7 @@
                     #type="ngModel" [options]="typeList" [(ngModel)]="contractedInstitution.typeId"
                     [style]="{'width':'100%'}" styleClass="filterDropDown" optionValue="id"
                     placeholder="{{ '::Select' | abpLocalization }}" optionLabel="name" appendTo="body"
-                    emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
+                    emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" filterLocale="tr-TR"
                     emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}">
                     <ng-template let-type pTemplate="item">
                         <div><b>{{ type.name }}</b></div>
@@ -121,7 +121,7 @@
                     #kind="ngModel" [options]="kindList" [(ngModel)]="contractedInstitution.kindId"
                     [style]="{'width':'100%'}" styleClass="filterDropDown" optionValue="id"
                     placeholder="{{ '::Select' | abpLocalization }}" optionLabel="name" appendTo="body"
-                    emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
+                    emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" filterLocale="tr-TR"
                     emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}">
                     <ng-template let-kind pTemplate="item">
                         <div><b>{{ kind.name }}</b></div>
@@ -134,7 +134,7 @@
                 <div class="flex">
                     <p-dropdown id="phoneCountryCode" name="phoneCountryCode" [filter]="true" filterBy="name"
                         [showClear]="true" #phoneCountryCode="ngModel" [options]="nationalityList"
-                        [(ngModel)]="contractedInstitution.phoneCountryCodeId"
+                        [(ngModel)]="contractedInstitution.phoneCountryCodeId" filterLocale="tr-TR"
                         [style]="{'width':'100px', 'margin-right':'10px', 'display':'inline-flex'}"
                         styleClass="filterDropDown" optionValue="id" placeholder="{{ '::Select' | abpLocalization }}"
                         optionLabel="phoneCode" appendTo="body" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
@@ -178,7 +178,7 @@
                     #country="ngModel" [options]="nationalityList" [(ngModel)]="contractedInstitution.nationalityId"
                     [style]="{'width':'100%'}" styleClass="filterDropDown" optionValue="id"
                     placeholder="{{ '::Select' | abpLocalization }}" optionLabel="name" appendTo="body"
-                    emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
+                    emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" filterLocale="tr-TR"
                     emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}">
                     <ng-template let-country pTemplate="item">
                         <div><b>{{ country.name }}</b></div>
@@ -293,7 +293,7 @@
                 <div class="flex">
                     <p-dropdown id="phoneCountryCode" name="phoneCountryCode" [filter]="true" filterBy="name"
                         [showClear]="true" #phoneCountryCode="ngModel" [options]="nationalityList"
-                        [(ngModel)]="contractedInstitutionStaff.phoneCountryCodeId"
+                        [(ngModel)]="contractedInstitutionStaff.phoneCountryCodeId" filterLocale="tr-TR"
                         [style]="{'width':'100px', 'margin-right':'10px'}" styleClass="filterDropDown" optionValue="id"
                         placeholder="{{ '::Select' | abpLocalization }}" optionLabel="phoneCode" appendTo="body"
                         emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"

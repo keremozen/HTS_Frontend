@@ -2,6 +2,8 @@ import { AuthService } from '@abp/ng.core';
 import { Component } from '@angular/core';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { EChartsOption } from 'echarts';
+import { CommonService } from '../services/common.service';
+import { HTSTaskService } from '@proxy/service';
 
 @Component({
   selector: 'app-home',
@@ -23,9 +25,16 @@ export class HomeComponent {
     return this.oAuthService.hasValidAccessToken();
   }
 
-  constructor(private oAuthService: OAuthService, private authService: AuthService) { }
+  constructor(private oAuthService: OAuthService, private authService: AuthService, private commonService: CommonService, private htsTaskService: HTSTaskService) { }
 
   ngOnInit(): void {
+
+    //Check task count 
+    this.htsTaskService.getList().subscribe({
+      next: (res) => {
+        this.commonService.addTaskList(res.items);
+      }
+    });
 
     const documentStyle = getComputedStyle(document.documentElement);
     const textColor = documentStyle.getPropertyValue('--text-color');

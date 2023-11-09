@@ -58,7 +58,7 @@
                                 [filter]="true" filterBy="name" [(ngModel)]="selectedBranches" display="chip"
                                 [style]="{'width':'100%'}" styleClass="filterDropDown text-sm" optionLabel="name"
                                 optionValue="id" placeholder="{{ '::Select' | abpLocalization }}"
-                                emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
+                                emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" filterLocale="tr-TR"
                                 [required]="hospitalResponse.hospitalResponseTypeId == hospitalResponseTypeEnum.SuitableForTreatment"
                                 emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}"
                                 [disabled]="!isManual && !isInNewRecordStatus"></p-multiSelect>
@@ -93,7 +93,7 @@
                 </div>
             </div>
             <div class="col-4">
-                <fieldset class="border pl-3 pr-3 pt-2 pb-3 m-2 responseFieldSet" style="height:30rem;">
+                <fieldset class="border pl-3 pr-3 pt-2 pb-3 m-2 responseFieldSet" style="min-height:30rem;">
                     <legend class="float-none w-auto pl-3 pr-3 text-sm responseFieldSetlegend">
                         {{'::HospitalResponse:FieldLegend:AnticipatedProcesses' |
                         abpLocalization}}
@@ -111,8 +111,8 @@
                         </div>
                     </p-toolbar>
 
-                    <p-table #dt [value]="anticipatedProcesses" [rows]="5" styleClass="pt-3" [paginator]="true"
-                        [rowHover]="true" [loading]="loading"
+                    <p-table #dtAnticipatedProcesses [value]="anticipatedProcesses" [rows]="5" styleClass="pt-3" [paginator]="true"
+                        [rowHover]="true" [loading]="loading" [totalRecords]="totalAnticipatedProcesses"
                         currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
                         [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
                         <ng-template pTemplate="header">
@@ -154,15 +154,15 @@
                         </ng-template>
                         <ng-template pTemplate="summary">
                             <div class="flex align-items-center justify-content-between"
-                                *ngIf="anticipatedProcesses.length > 0">
-                                {{ '::Table:Summary' | abpLocalization: anticipatedProcesses.length }}
+                                *ngIf="totalAnticipatedProcesses > 0">
+                                {{ '::Table:Summary' | abpLocalization: totalAnticipatedProcesses }}
                             </div>
                         </ng-template>
                     </p-table>
                 </fieldset>
             </div>
             <div class="col-4">
-                <fieldset class="border pl-3 pr-3 pt-2 pb-3 m-2 responseFieldSet" style="height:30rem;">
+                <fieldset class="border pl-3 pr-3 pt-2 pb-3 m-2 responseFieldSet" style="min-height:30rem;">
                     <legend class="float-none w-auto pl-3 pr-3 text-sm responseFieldSetlegend">
                         {{'::HospitalResponse:FieldLegend:AnticipatedMaterials' |
                         abpLocalization}}
@@ -180,8 +180,8 @@
                         </div>
                     </p-toolbar>
 
-                    <p-table #dt [value]="anticipatedMaterials" [rows]="5" styleClass="pt-3" [paginator]="true"
-                        [globalFilterFields]="['name']" [rowHover]="true" [loading]="loading"
+                    <p-table #dtAnticipatedMaterials [value]="anticipatedMaterials" [rows]="5" styleClass="pt-3" [paginator]="true"
+                        [rowHover]="true" [loading]="loading" [totalRecords]="totalAnticipatedMaterials"
                         currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
                         [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
                         <ng-template pTemplate="header">
@@ -214,8 +214,8 @@
                         </ng-template>
                         <ng-template pTemplate="summary">
                             <div class="flex align-items-center justify-content-between"
-                                *ngIf="anticipatedMaterials.length > 0">
-                                {{ '::Table:Summary' | abpLocalization: anticipatedMaterials.length }}
+                                *ngIf="totalAnticipatedMaterials > 0">
+                                {{ '::Table:Summary' | abpLocalization: totalAnticipatedMaterials }}
                             </div>
                         </ng-template>
                     </p-table>
@@ -368,10 +368,10 @@
     <form #materialForm="ngForm">
         <div *ngIf="material">
             <div class="field">
-                <label for="ddlProcessList">{{ '::HospitalResponse:Material:Column:Name' | abpLocalization
+                <label for="ddlMaterialList">{{ '::HospitalResponse:Material:Column:Name' | abpLocalization
                     }}&nbsp;<font style="color:red">*
                     </font></label>
-                <p-autoComplete id="ddlProcessList" name="ddlProcessList" #ddlProcessList="ngModel"
+                <p-autoComplete id="ddlMaterialList" name="ddlMaterialList" #ddlMaterialList="ngModel"
                     [(ngModel)]="material.process" [suggestions]="filteredMaterials"
                     (completeMethod)="filterMaterial($event)" field="name" [forceSelection]="true"
                     [style]="{'width':'100%'}" styleClass="filterAutoComplete" appendTo="body" required>
@@ -387,7 +387,7 @@
                         </div>
                     </ng-template>
                 </p-autoComplete>
-                <small class="p-error" *ngIf="!(ddlProcessList.valid || ddlProcessList.pristine)">{{
+                <small class="p-error" *ngIf="!(ddlMaterialList.valid || ddlMaterialList.pristine)">{{
                     '::Message:RequiredField' |
                     abpLocalization
                     }}</small>

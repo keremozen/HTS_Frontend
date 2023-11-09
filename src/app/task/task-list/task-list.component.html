@@ -1,0 +1,54 @@
+<p-toast></p-toast>
+
+<h4>{{ '::Tasks:Title' | abpLocalization }}</h4>
+
+<div class="card">
+    <p-table #dt [value]="taskList" [rows]="10" [paginator]="true" [globalFilterFields]="[]"
+        [tableStyle]="{'min-width': '75rem'}" [rowHover]="true" dataKey="Id"
+        currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
+        [showCurrentPageReport]="true" [totalRecords]="totalRecords" [loading]="loading">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="taskType.name">{{ '::Tasks:Column:TaskName' | abpLocalization }}
+                    <p-sortIcon field="taskType.name"></p-sortIcon>
+                </th>
+                <th pSortableColumn="patientNameSurname">{{ '::Tasks:Column:PatientNameSurname' | abpLocalization }}
+                    <p-sortIcon field="patientNameSurname"></p-sortIcon>
+                </th>
+                <th pSortableColumn="creationTime">{{ '::Tasks:Column:TaskDate' | abpLocalization }}
+                    <p-sortIcon field="creationTime"></p-sortIcon>
+                </th>
+                <th pSortableColumn="timeElapsed">{{ '::Tasks:Column:TimeElapsed' | abpLocalization }}
+                    <p-sortIcon field="timeElapsed"></p-sortIcon>
+                </th>
+                <th pSortableColumn="patientCreatedBy">{{ '::Tasks:Column:PatientCreatedBy' | abpLocalization }}
+                    <p-sortIcon field="patientCreatedBy"></p-sortIcon>
+                </th>
+                <th style="width:100px"></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-task>
+            <tr>
+                <td>{{task.taskType.name}}</td>
+                <td>{{task.patientNameSurname}}</td>
+                <td>{{task.creationTime | date: "dd.MM.yyyy HH:mm"}}</td>
+                <td>{{task.timeElapsed}}</td>
+                <td>{{task.patientCreatedBy}}</td>
+                <td>
+                    <p-button pRipple icon="pi pi-arrow-right" styleClass="p-button-rounded p-button-success"
+                        (onClick)="goToTask(task)"></p-button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <div class="m-3">
+                {{ '::Table:EmptyMessage' | abpLocalization }}
+            </div>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="flex align-items-center justify-content-between" *ngIf="totalRecords">
+                {{ '::Table:Summary' | abpLocalization:(totalRecords) }}
+            </div>
+        </ng-template>
+    </p-table>
+</div>

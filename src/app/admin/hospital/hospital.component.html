@@ -136,7 +136,7 @@
                     }}&nbsp;<font style="color:red">*
                     </font></label>
                 <p-dropdown id="city" name="city" [filter]="true" filterBy="name" [showClear]="true" #city="ngModel"
-                    [options]="cityList" [(ngModel)]="hospital.cityId" [style]="{'width':'100%'}"
+                    [options]="cityList" [(ngModel)]="hospital.cityId" [style]="{'width':'100%'}" filterLocale="tr-TR"
                     styleClass="filterDropDown" optionValue="id" placeholder="{{ '::Select' | abpLocalization }}"
                     optionLabel="name" appendTo="body" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
                     emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}" required>
@@ -150,7 +150,7 @@
                 <label for="phoneNumber">{{ '::Admin:Hospital:Column:PhoneNumber' | abpLocalization }}</label>
                 <div class="flex">
                     <p-dropdown id="phoneCountryCode" name="phoneCountryCode" [filter]="true" filterBy="name"
-                        [showClear]="true" #phoneCountryCode="ngModel" [options]="nationalityList"
+                        [showClear]="true" #phoneCountryCode="ngModel" [options]="nationalityList" filterLocale="tr-TR"
                         [(ngModel)]="hospital.phoneCountryCodeId" [style]="{'width':'100px', 'margin-right':'10px'}"
                         styleClass="filterDropDown" optionValue="id" placeholder="{{ '::Select' | abpLocalization }}"
                         optionLabel="phoneCode" appendTo="body" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
@@ -401,7 +401,7 @@
                 <label for="staff">{{ '::Admin:HospitalStaff:Column:Staff' | abpLocalization }}&nbsp;<font
                         style="color:red">*</font></label>
                 <p-dropdown id="staff" name="staff" #staff="ngModel" [filter]="true" filterBy="name" [showClear]="true"
-                    [options]="allHospitalStaffs" [(ngModel)]="selectedHospitalStaff"
+                    [options]="allHospitalStaffs" [(ngModel)]="selectedHospitalStaff" filterLocale="tr-TR"
                     placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
                     styleClass="filterDropDown" appendTo="body" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
                     emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}" required>
@@ -455,7 +455,7 @@
                         style="color:red">*</font></label>
                 <p-dropdown id="pricer" name="pricer" #pricer="ngModel" [filter]="true" filterBy="name"
                     [showClear]="true" [options]="allHospitalPricers" [(ngModel)]="selectedHospitalPricer"
-                    placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
+                    placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}" filterLocale="tr-TR"
                     styleClass="filterDropDown" appendTo="body" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
                     emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}" required>
                     <ng-template pTemplate="selectedItem">

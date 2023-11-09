@@ -1,6 +1,5 @@
 <p-toast></p-toast>
 
-
 <h4>{{ '::Patients:Title' | abpLocalization }}</h4>
 
 <div class="mb-3">
@@ -31,7 +30,7 @@
                             '::Patients:Column:Nationality' | abpLocalization }}</label>
                         <div class="col-12 md:col-9">
                             <p-multiSelect id="filterNationality" [options]="nationalityList" [filter]="true"
-                                filterBy="name" [(ngModel)]="patientFilter.nationalityIds" display="chip"
+                                filterBy="name" [(ngModel)]="patientFilter.nationalityIds" display="chip" filterLocale="tr-TR"
                                 [style]="{'width':'100%'}" styleClass="filterDropDown" optionValue="id"
                                 optionLabel="name" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
                                 emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}"></p-multiSelect>

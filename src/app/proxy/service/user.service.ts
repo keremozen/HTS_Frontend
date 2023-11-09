@@ -48,6 +48,14 @@ export class UserService {
       url: '/api/app/user/interpreter-list',
     },
     { apiName: this.apiName });
+  
+
+  getTikStaffList = () =>
+    this.restService.request<any, IdentityUserDto[]>({
+      method: 'GET',
+      url: '/api/app/user/tik-staff-list',
+    },
+    { apiName: this.apiName });
 
   constructor(private restService: RestService) {}
 }

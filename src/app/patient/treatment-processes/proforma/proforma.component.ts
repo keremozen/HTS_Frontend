@@ -283,6 +283,10 @@ export class ProformaComponent extends AppComponentBase {
     });
   }
 
+  private updateTotals() {
+    this.saveProforma.totalProformaPrice = +(this.treatmentItemList.reduce((sum, current) => sum + current.proformaFinalPrice, 0)).toFixed(2);
+  }
+
   onCurrencyChange() {
     this.currencyName = this.currencyList.find(c => c.id == this.saveProforma.currencyId).name;
     if (this.currencyName == "TL") {
@@ -354,14 +358,17 @@ export class ProformaComponent extends AppComponentBase {
     this.treatmentItem.name = this.selectedProcess.name;
     this.treatmentItem.unitPrice = this.selectedProcess.processCosts.reduce((sum, current) => sum + current.ushasPrice, 0);
     this.treatmentItem.change = 0;
+    this.treatmentItem.totalPrice = +(this.treatmentItem.treatmentCount * this.treatmentItem.unitPrice).toFixed(2);
+    this.treatmentItem.proformaPrice = +(this.treatmentItem.totalPrice / this.saveProforma.exchangeRate).toFixed(2);
+    this.treatmentItem.proformaFinalPrice = this.treatmentItem.proformaPrice;
     this.treatmentItemList.push(this.treatmentItem);
-    this.updateItems();
+    this.updateTotals();
     this.hideTreatmentItemDialog();
   }
 
   removeItem(item: SaveProformaProcessDtoWithDetails) {
     this.treatmentItemList = this.treatmentItemList.filter(i => i.processId != item.processId);
-    this.updateItems();
+    this.updateTotals();
   }
 
   onNewNotIncludingService() {

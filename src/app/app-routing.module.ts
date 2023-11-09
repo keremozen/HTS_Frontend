@@ -37,6 +37,10 @@ const routes: Routes = [
     path: 'hospital-response',
     loadChildren: () => import('./hospital-response/hospital-response.module').then(m => m.HospitalResponseModule)
   },
+  {
+    path: 'tasks',
+    loadChildren: () => import('./task/task.module').then(m => m.TaskModule)
+  },
 ];
 
 @NgModule({

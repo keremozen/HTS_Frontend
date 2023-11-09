@@ -166,6 +166,13 @@ function configureRoutes(routesService: RoutesService) {
         requiredPolicy: 'HTS.PaymentReasonManagement',
         layout: eLayoutType.application
       },
+      {
+        path: '/tasks',
+        name: '::Menu:Tasks',
+        iconClass: 'fas fa-tasks',
+        order: 200,
+        layout: eLayoutType.application
+      },
     ]);
   };
 }

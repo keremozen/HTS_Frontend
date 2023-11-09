@@ -52,7 +52,9 @@ export class OperationComponent extends AppComponentBase {
   consultation: HospitalConsultationDto;
   documents: HospitalConsultationDocumentDto[] = [];
   anticipatedProcesses: SaveHospitalResponseProcessWithDetailDto[] = [];
+  totalAnticipatedProcesses: number = 0;
   anticipatedMaterials: SaveHospitalResponseProcessWithDetailDto[] = [];
+  totalAnticipatedMaterials: number = 0;
   totalRecords: number;
   process: SaveHospitalResponseProcessWithDetailDto;
   processDialog: boolean = false;
@@ -130,10 +132,10 @@ export class OperationComponent extends AppComponentBase {
             this.processService.get(process.processId).subscribe(res=> {
               processWithDetail.process = res;
               if (processWithDetail.process.processTypeId == this.processTypeEnum.SutCode) {
-                this.anticipatedProcesses.push(processWithDetail);
+                this.totalAnticipatedProcesses = this.anticipatedProcesses.push(processWithDetail);
               }
               else if (processWithDetail.process.processTypeId == this.processTypeEnum.Material) {
-                this.anticipatedMaterials.push(processWithDetail);
+                this.totalAnticipatedMaterials = this.anticipatedMaterials.push(processWithDetail);
               }
             });
           });
@@ -185,7 +187,7 @@ export class OperationComponent extends AppComponentBase {
     let query = event.query;
     this.processService.getListByKeyword(query, EntityEnum_ProcessTypeEnum.Material).subscribe({
       next: (res) => {
-        this.filteredProcesses = res.items;
+        this.filteredMaterials = res.items;
       }
     });
   }
@@ -197,13 +199,14 @@ export class OperationComponent extends AppComponentBase {
 
   saveMaterial() {
     this.material.processId = this.material.process.id;
-    this.anticipatedMaterials.push(this.material);
+    this.totalAnticipatedMaterials =this.anticipatedMaterials.push(this.material);
     this.material = null;
     this.materialDialog = false;
   }
 
   deleteMaterial(material: SaveHospitalResponseProcessWithDetailDto) {
     this.anticipatedMaterials = this.anticipatedMaterials.filter(m => !(m.processId == material.processId && m.amount == material.amount));
+    this.totalAnticipatedMaterials = this.anticipatedMaterials.length;
   }
 
   hideMaterialDialog() {
@@ -218,13 +221,14 @@ export class OperationComponent extends AppComponentBase {
 
   saveProcess() {
     this.process.processId = this.process.process.id;
-    this.anticipatedProcesses.push(this.process);
+    this.totalAnticipatedProcesses = this.anticipatedProcesses.push(this.process);
     this.process = null;
     this.processDialog = false;
   }
 
   deleteProcess(process: SaveHospitalResponseProcessWithDetailDto) {
     this.anticipatedProcesses = this.anticipatedProcesses.filter(m => !(m.processId == process.processId && m.amount == process.amount));
+    this.totalAnticipatedProcesses = this.anticipatedProcesses.length;
   }
 
   hideProcessDialog() {

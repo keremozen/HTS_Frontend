@@ -43,6 +43,9 @@ export class NewPatientComponent extends AppComponentBase {
 
   onSaveProfile() {
     this.loading = true;
+    if (this.patient.email === "") {
+      this.patient.email = null;
+    }
     this.patientService.create(this.patient).subscribe({
       next: (res) => {
         this.success(this.l("::PatientDetail:SaveSuccessful"));

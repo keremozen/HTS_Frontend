@@ -201,10 +201,12 @@ export class OperationalInfoComponent extends AppComponentBase {
   }
 
   onSendToPricing(operation: OperationDto) {
-    this.operationService.sendToPricingById(+operation.id).subscribe(r => {
-      this.fetchData();
-      this.onOperationChange.emit();
-    })
+    this.operationService.sendToPricingById(+operation.id).subscribe({
+      next: r => {
+        this.fetchData();
+        this.onOperationChange.emit();
+      }
+    });
   }
 
 }

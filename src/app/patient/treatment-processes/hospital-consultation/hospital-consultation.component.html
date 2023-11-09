@@ -9,7 +9,7 @@
         </div>
     </p-toolbar>
 
-    <p-table #dt [value]="consultations" [rows]="5" styleClass="pt-3" [paginator]="true" [rowHover]="true"
+    <p-table #dt [value]="consultations" [rows]="5" styleClass="pt-3" [paginator]="true" [rowHover]="true" [totalRecords]="totalConsultations"
         currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
         [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
         <ng-template pTemplate="header">
@@ -89,7 +89,7 @@
                         abpLocalization}}
                     </legend>
                     <p-listbox id="lstHospital" name="lstHospital" #lstHospital="ngModel" [options]="hospitalList"
-                        [(ngModel)]="selectedHospitals" optionLabel="name" optionValue="id" [checkbox]="true"
+                        [(ngModel)]="selectedHospitals" optionLabel="name" optionValue="id" [checkbox]="true" filterLocale="tr-TR"
                         [filter]="true" [multiple]="true" [metaKeySelection]="false" [disabled]="isConsultationReadOnly"
                         emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" styleClass="hospitalListStyle"
                         emptyFilterMessage="{{ '::EmptyMessage' | abpLocalization }}" required></p-listbox>
@@ -130,7 +130,7 @@
                             </div>
                         </p-toolbar>
                         <p-table #dt [value]="hospitalConsultationDocuments" [rows]="5" styleClass="pt-3"
-                            [paginator]="true" [rowHover]="true" [loading]="loading"
+                            [paginator]="true" [rowHover]="true" [loading]="loading" [totalRecords]="totalConsultationDocuments"
                             currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
                             [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
                             <ng-template pTemplate="header">

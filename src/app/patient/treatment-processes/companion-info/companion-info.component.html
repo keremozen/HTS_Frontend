@@ -118,7 +118,7 @@
                 <div class="col-12 md:col-9">
                     <p-dropdown id="phoneCountryCode" name="phoneCountryCode" [filter]="true" filterBy="name"
                         [showClear]="true" #phoneCountryCode="ngModel" [options]="nationalityList"
-                        [(ngModel)]="salesInfoAndCompanionInfo.phoneCountryCodeId"
+                        [(ngModel)]="salesInfoAndCompanionInfo.phoneCountryCodeId" filterLocale="tr-TR"
                         [style]="{'width':'100px', 'margin-right':'10px'}" styleClass="filterDropDown" optionValue="id"
                         placeholder="{{ '::Select' | abpLocalization }}" optionLabel="phoneCode"
                         emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" [disabled]="!isAllowedToManage"

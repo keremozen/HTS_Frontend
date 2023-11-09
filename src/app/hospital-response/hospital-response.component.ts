@@ -35,7 +35,9 @@ export class HospitalResponseComponent extends AppComponentBase {
   selectedHospitalizationType: HospitalizationTypeDto;
   selectedBranches: BranchDto[] = [];
   anticipatedProcesses: SaveHospitalResponseProcessWithDetailDto[] = [];
+  totalAnticipatedProcesses: number = 0;
   anticipatedMaterials: SaveHospitalResponseProcessWithDetailDto[] = [];
+  totalAnticipatedMaterials: number = 0;
   loading: boolean;
   totalRecords: number;
   isAllowedToManage: boolean = false;
@@ -155,13 +157,14 @@ export class HospitalResponseComponent extends AppComponentBase {
 
   saveMaterial() {
     this.material.processId = this.material.process.id;
-    this.anticipatedMaterials.push(this.material);
+    this.totalAnticipatedMaterials = this.anticipatedMaterials.push(this.material);
     this.material = null;
     this.materialDialog = false;
   }
 
   deleteMaterial(material: SaveHospitalResponseProcessWithDetailDto) {
     this.anticipatedMaterials = this.anticipatedMaterials.filter(m => !(m.processId == material.processId && m.amount == material.amount));
+    this.totalAnticipatedMaterials = this.anticipatedMaterials.length;
   }
 
   hideMaterialDialog() {
@@ -176,13 +179,15 @@ export class HospitalResponseComponent extends AppComponentBase {
 
   saveProcess() {
     this.process.processId = this.process.process.id;
-    this.anticipatedProcesses.push(this.process);
+    this.totalAnticipatedProcesses = this.anticipatedProcesses.push(this.process);
+
     this.process = null;
     this.processDialog = false;
   }
 
   deleteProcess(process: SaveHospitalResponseProcessWithDetailDto) {
     this.anticipatedProcesses = this.anticipatedProcesses.filter(m => !(m.processId == process.processId && m.amount == process.amount));
+    this.totalAnticipatedProcesses = this.anticipatedProcesses.length;
   }
 
   hideProcessDialog() {

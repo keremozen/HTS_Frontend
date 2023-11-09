@@ -35,7 +35,8 @@ export class HospitalConsultationComponent extends AppComponentBase {
   anticipatedMaterials: HospitalResponseProcessDto[] = [];
   isConsultationReadOnly: boolean = false;
   loading: boolean;
-  totalRecords: number = 0;
+  totalConsultations: number = 0;
+  totalConsultationDocuments: number = 0;
   hospitalResponseDialog: boolean = false;
   consultationDialog: boolean = false;
   public consultationStatusEnum = EntityEnum_HospitalConsultationStatusEnum;
@@ -47,6 +48,7 @@ export class HospitalConsultationComponent extends AppComponentBase {
   branchListText: string;
   doesHaveAnyApproved: boolean;
   isAllowedToConsult: boolean = false;
+  
 
   // Document Related variables
   documentTypeList: DocumentTypeDto[] = [];
@@ -88,7 +90,7 @@ export class HospitalConsultationComponent extends AppComponentBase {
           resConsultationList
         ]) => {
           this.consultations = resConsultationList.items;
-          this.totalRecords = resConsultationList.totalCount;
+          this.totalConsultations = resConsultationList.totalCount;
           this.doesHaveAnyApproved = this.consultations.some(c=>c.hospitalConsultationStatusId == this.consultationStatusEnum.OperationApproved);
         },
         error: () => {
@@ -146,6 +148,7 @@ export class HospitalConsultationComponent extends AppComponentBase {
     this.selectedHospitals = [ consultation.hospitalId ];
     this.hospitalConsultationDocuments = [];
     this.hospitalConsultationDocuments.push(...consultation.hospitalConsultationDocuments);
+    this.totalConsultationDocuments = this.hospitalConsultationDocuments.length;
     this.isConsultationReadOnly = true;
     this.consultationDialog = true;
   }
