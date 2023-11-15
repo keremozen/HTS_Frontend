@@ -19,7 +19,7 @@ export interface ListPaymentDto extends EntityDto<number> {
   fileNumber?: string;
   proformaNumber?: string;
   description?: string;
-  paymentDate?: string;
+  paymentDate?: Date;
   paymentStatusId: EntityEnum_PaymentStatusEnum;
   totalPrice: number;
   paymentReason: PaymentReasonDto;

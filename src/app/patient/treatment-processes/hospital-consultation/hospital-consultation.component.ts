@@ -325,6 +325,7 @@ export class HospitalConsultationComponent extends AppComponentBase {
         this.hospitalConsultationDocument.patientDocumentStatusId = EntityEnum_PatientDocumentStatusEnum.NewRecord;
         this.hospitalConsultationDocument.documentType = this.documentTypeList.find(dt=>dt.id == this.hospitalConsultationDocument.documentTypeId);
         this.hospitalConsultationDocuments.push({ ...this.hospitalConsultationDocument });
+        this.totalConsultationDocuments = this.hospitalConsultationDocuments.length;
         this.success(this.l('::Message:SuccessfulSave', this.l('::Documents:NameSingular')));
         this.hideHospitalConsultationDocumentDialog();
       }

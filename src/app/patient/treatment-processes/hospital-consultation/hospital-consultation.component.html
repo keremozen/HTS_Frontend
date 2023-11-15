@@ -129,7 +129,7 @@
                                 </div>
                             </div>
                         </p-toolbar>
-                        <p-table #dt [value]="hospitalConsultationDocuments" [rows]="5" styleClass="pt-3"
+                        <p-table #dtConsultationDocuments [value]="hospitalConsultationDocuments" [rows]="3" styleClass="pt-3"
                             [paginator]="true" [rowHover]="true" [loading]="loading" [totalRecords]="totalConsultationDocuments"
                             currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
                             [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
@@ -174,8 +174,8 @@
                             </ng-template>
                             <ng-template pTemplate="summary">
                                 <div class="flex align-items-center justify-content-between"
-                                    *ngIf="hospitalConsultationDocuments.length > 0">
-                                    {{ '::Table:Summary' | abpLocalization: hospitalConsultationDocuments.length }}
+                                    *ngIf="totalConsultationDocuments > 0">
+                                    {{ '::Table:Summary' | abpLocalization: totalConsultationDocuments }}
                                 </div>
                             </ng-template>
                         </p-table>

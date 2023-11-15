@@ -2,7 +2,7 @@ import { Component, Injector, Input, ViewEncapsulation } from '@angular/core';
 import { PatientDto } from '@proxy/dto/patient';
 import { PatientTreatmentProcessDto } from '@proxy/dto/patient-treatment-process';
 import { SalesMethodAndCompanionInfoDto } from '@proxy/dto/sales-method-and-companion-info';
-import { PatientTreatmentProcessService, SalesMethodAndCompanionInfoService } from '@proxy/service';
+import { PatientTreatmentProcessService, SalesMethodAndCompanionInfoService, USSService } from '@proxy/service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 @Component({
@@ -28,7 +28,8 @@ export class TreatmentProcessesComponent extends AppComponentBase {
   constructor(
     injector: Injector,
     private patientTreatmentProcessService: PatientTreatmentProcessService,
-    private salesAndCompanionInfoService: SalesMethodAndCompanionInfoService) {
+    private salesAndCompanionInfoService: SalesMethodAndCompanionInfoService,
+    private ussService: USSService) {
     super(injector);
     this.isAllowedToManage = this.permission.getGrantedPolicy("HTS.PatientManagement");
   }
@@ -67,13 +68,19 @@ export class TreatmentProcessesComponent extends AppComponentBase {
     if (this.selectedProcess) {
       this.activeIndex = 0;
       this.displayProcessDetail = false;
-      this.salesAndCompanionInfoService.getByPatientTreatmentProcessId(this.selectedProcess.id as unknown as number).subscribe({
-        next: (res) => {
-          this.salesAndCompanionInfo = res as SalesMethodAndCompanionInfoDto;
-          this.doesHaveAnySalesMethodAndCompanionInfo = (res != null || res != undefined);
-        },
+
+      this.ussService.setENabizProcessByTreatmentCode(this.selectedProcess.treatmentCode).subscribe({
         complete: () => {
-          this.displayProcessDetail = true;
+          this.salesAndCompanionInfoService.getByPatientTreatmentProcessId(this.selectedProcess.id as unknown as number).subscribe({
+            next: (res) => {
+              debugger;
+              this.salesAndCompanionInfo = res as SalesMethodAndCompanionInfoDto;
+              this.doesHaveAnySalesMethodAndCompanionInfo = (res != null || res != undefined);
+            },
+            complete: () => {
+              this.displayProcessDetail = true;
+            }
+          });
         }
       });
     }

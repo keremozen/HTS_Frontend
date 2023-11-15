@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Injector, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ProformaPricingListDto, RejectProformaDto } from '@proxy/dto/proforma';
 import { EntityEnum_OperationTypeEnum, EntityEnum_ProformaStatusEnum } from '@proxy/enum';
-import { OperationService, ProformaService, RejectReasonService } from '@proxy/service';
+import { OperationService, PatientTreatmentProcessService, ProformaService, RejectReasonService, USSService } from '@proxy/service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 import { ProformaComponent } from '../proforma/proforma.component';
@@ -9,6 +9,9 @@ import { PatientDto } from '@proxy/dto/patient';
 import { RejectReasonDto } from '@proxy/dto/reject-reason';
 import { PaymentDialogComponent } from '../payment-dialog/payment-dialog.component';
 import { PaymentListComponent } from '../payment-list/payment-list.component';
+import { ListENabizProcessDto } from '@proxy/dto/external';
+import { forkJoin } from 'rxjs';
+import { PatientTreatmentProcessDto } from '@proxy/dto/patient-treatment-process';
 
 @Component({
   selector: 'app-quotation',
@@ -30,6 +33,10 @@ export class QuotationComponent extends AppComponentBase {
   paymentDialogRef: DynamicDialogRef;
   proformaDialogRef: DynamicDialogRef;
 
+  patientTreatmentProcess: PatientTreatmentProcessDto;
+  enabizProcessList: ListENabizProcessDto[] = [];
+  totalEnabizProcessCount: number = 0;
+
   displayMFBReject: boolean = false;
   displayPatientReject: boolean = false;
   rejectProforma: RejectProformaDto;
@@ -45,7 +52,9 @@ export class QuotationComponent extends AppComponentBase {
     private proformaService: ProformaService,
     private operationService: OperationService,
     private rejectReasonService: RejectReasonService,
-    public dialogService: DialogService
+    public dialogService: DialogService,
+    public ussService: USSService,
+    public patientTreatmentService: PatientTreatmentProcessService
   ) {
     super(injector);
     this.isAllowedToManagePatient = this.permission.getGrantedPolicy("HTS.PatientManagement");
@@ -59,9 +68,24 @@ export class QuotationComponent extends AppComponentBase {
   }
 
   fetchData() {
-    this.proformaService.getPricingListByPTPId(this.patientTreatmentId).subscribe({
-      next: (res) => {
-        this.proformaList = res as ProformaPricingListDto[];
+    forkJoin([
+      this.patientTreatmentService.getByPatientTreatmentProcessId(this.patientTreatmentId),
+      this.proformaService.getPricingListByPTPId(this.patientTreatmentId)
+    ]).subscribe({
+      next: ([
+        resPatientTreatment,
+        resPricingList
+      ]) => {
+        this.patientTreatmentProcess = resPatientTreatment;
+        this.proformaList = resPricingList as ProformaPricingListDto[];
+      },
+      complete: () => {
+        this.ussService.getENabizProcessesByTreatmentCode(this.patientTreatmentProcess.treatmentCode).subscribe({
+          next: (resEnabizProcess) => {
+            this.enabizProcessList = resEnabizProcess;
+            this.totalEnabizProcessCount = resEnabizProcess.length;
+          }
+        });
       }
     });
   }

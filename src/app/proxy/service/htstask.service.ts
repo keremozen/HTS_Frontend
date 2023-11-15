@@ -18,6 +18,15 @@ export class HTSTaskService {
     { apiName: this.apiName });
   
 
+  closeTaskBySaveTask = (saveTask: SaveHTSTaskDto) =>
+    this.restService.request<any, void>({
+      method: 'POST',
+      url: '/api/app/h-tSTask/close-task',
+      body: saveTask,
+    },
+    { apiName: this.apiName });
+  
+
   create = (saveTask: SaveHTSTaskDto) =>
     this.restService.request<any, void>({
       method: 'POST',

@@ -10,19 +10,18 @@ export class PatientTreatmentProcessService {
   apiName = 'Default';
   
 
-  getListByPatientId = (patientId: number) =>
-    this.restService.request<any, PagedResultDto<PatientTreatmentProcessDto>>({
+  getByPatientTreatmentProcessId = (patientTreatmentProcessId: number) =>
+    this.restService.request<any, PatientTreatmentProcessDto>({
       method: 'GET',
-      url: `/api/app/patient-treatment-process/by-patient-id/${patientId}`,
+      url: `/api/app/patient-treatment-process/by-patient-treatment-process-id/${patientTreatmentProcessId}`,
     },
     { apiName: this.apiName });
   
 
-  setSysTrackingNumberByTreatmentCode = (treatmentCode: string) =>
-    this.restService.request<any, boolean>({
-      method: 'POST',
-      url: '/api/app/patient-treatment-process/set-sys-tracking-number',
-      params: { treatmentCode },
+  getListByPatientId = (patientId: number) =>
+    this.restService.request<any, PagedResultDto<PatientTreatmentProcessDto>>({
+      method: 'GET',
+      url: `/api/app/patient-treatment-process/by-patient-id/${patientId}`,
     },
     { apiName: this.apiName });
   

@@ -5,6 +5,76 @@
                 {{'::Quotation:FieldLegend:HBYSProcesses' |
                 abpLocalization}}
             </legend>
+
+            <p-table #dt [value]="enabizProcessList" [rows]="5" styleClass="pt-3" [paginator]="true" [rowHover]="true"
+                [loading]="loading" [totalRecords]="totalEnabizProcessCount"
+                currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
+                [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="isleM_KODU">{{ '::Quotation:HBYSTable:Column:SutCode' |
+                            abpLocalization }}
+                            <p-sortIcon field="isleM_KODU"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="gerceklesmE_ZAMANI">{{ '::Quotation:HBYSTable:Column:CreationDate' |
+                            abpLocalization }}
+                            <p-sortIcon field="gerceklesmE_ZAMANI"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="hospitalPrice">{{ '::Quotation:HBYSTable:Column:HospitalPrice' |
+                            abpLocalization }}
+                            <p-sortIcon field="hospitalPrice"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="ushasPrice">{{ '::Quotation:HBYSTable:Column:UshasPrice' |
+                            abpLocalization }}
+                            <p-sortIcon field="ushasPrice"></p-sortIcon>
+                        </th>
+                        <th>{{ '::Quotation:HBYSTable:Column:ApplicationStatus' |
+                            abpLocalization }}
+                        </th>
+                        <th>{{ '::Quotation:HBYSTable:Column:CancellationStatus' |
+                            abpLocalization }}
+                        </th>
+                        <th>{{ '::Quotation:HBYSTable:Column:IsInProforma' |
+                            abpLocalization }}
+                        </th>
+                       
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-enabizProcess>
+                    <tr>
+                        <td>{{enabizProcess.isleM_KODU}}</td>
+                        <td>{{enabizProcess.gerceklesmE_ZAMANI}}</td>
+                        <td>{{enabizProcess.hospitalPrice}}</td>
+                        <td>{{enabizProcess.ushasPrice}}</td>
+                        <td></td>
+                        <td class="text-center">
+                            <i class="pi text-xl"
+                                [ngClass]="{ 
+                                    'text-green-500 pi-check-circle': enabizProcess.isCancelled == true, 
+                                    'text-red-500 pi-times-circle': enabizProcess.isCancelled == false,
+                                    'text-gray-600 pi-question-circle': enabizProcess.isCancelled == null }"></i>
+                        </td>
+                        <td class="text-center">
+                            <i class="pi text-xl"
+                                [ngClass]="{ 
+                                    'text-green-500 pi-check-circle': enabizProcess.isUsedInProforma == true, 
+                                    'text-red-500 pi-times-circle': enabizProcess.isUsedInProforma == false,
+                                    'text-gray-600 pi-question-circle': enabizProcess.isUsedInProforma == null }"></i>
+                        </td>
+                        
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <div class="m-3">
+                        {{ '::Table:EmptyMessage' | abpLocalization }}
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="summary">
+                    <div class="flex align-items-center justify-content-between" *ngIf="totalEnabizProcessCount > 0">
+                        {{ '::Table:Summary' | abpLocalization: totalEnabizProcessCount }}
+                    </div>
+                </ng-template>
+            </p-table>
         </fieldset>
     </div>
     <div class="col-6">
