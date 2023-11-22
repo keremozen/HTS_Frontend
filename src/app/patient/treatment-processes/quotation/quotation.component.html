@@ -6,12 +6,29 @@
                 abpLocalization}}
             </legend>
 
+            <p-toolbar styleClass="customToolbar">
+                <div class="p-toolbar-group-start"></div>
+                <div class="p-toolbar-group-end p-0">
+                    <p-button pRipple label="{{ '::Quotation:HBYSTable:CreateProforma' | abpLocalization }}"
+                        icon="pi pi-plus" styleClass="p-button-success mr-2" (onClick)="createProforma()"
+                        [loading]="loading"
+                        *ngIf="selectedENabizProcesses && selectedENabizProcesses.length > 0"></p-button>
+                    <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()"
+                        class="p-button-success ml-2" pTooltip="XLS" tooltipPosition="bottom"></button>
+                    <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="exportPdf()"
+                        class="p-button-warning ml-2" pTooltip="PDF" tooltipPosition="bottom"></button>
+                </div>
+            </p-toolbar>
+
             <p-table #dt [value]="enabizProcessList" [rows]="5" styleClass="pt-3" [paginator]="true" [rowHover]="true"
-                [loading]="loading" [totalRecords]="totalEnabizProcessCount"
+                selectionMode="multiple" [loading]="loading" [totalRecords]="totalEnabizProcessCount"
+                [(selection)]="selectedENabizProcesses" dataKey="id"
                 currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
-                [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
+                [showCurrentPageReport]="false" [alwaysShowPaginator]="false" [selectAll]="false">
                 <ng-template pTemplate="header">
                     <tr>
+                        <th style="width: 4rem">
+                        </th>
                         <th pSortableColumn="isleM_KODU">{{ '::Quotation:HBYSTable:Column:SutCode' |
                             abpLocalization }}
                             <p-sortIcon field="isleM_KODU"></p-sortIcon>
@@ -37,31 +54,33 @@
                         <th>{{ '::Quotation:HBYSTable:Column:IsInProforma' |
                             abpLocalization }}
                         </th>
-                       
+
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-enabizProcess>
                     <tr>
+                        <td>
+                            <p-tableCheckbox [value]="enabizProcess"
+                                [disabled]="enabizProcess.isUsedInProforma"></p-tableCheckbox>
+                        </td>
                         <td>{{enabizProcess.isleM_KODU}}</td>
-                        <td>{{enabizProcess.gerceklesmE_ZAMANI}}</td>
+                        <td>{{enabizProcess.gerceklesmeZamani | date: "dd.MM.yyyy HH:mm"}}</td>
                         <td>{{enabizProcess.hospitalPrice}}</td>
                         <td>{{enabizProcess.ushasPrice}}</td>
                         <td></td>
                         <td class="text-center">
-                            <i class="pi text-xl"
-                                [ngClass]="{ 
+                            <i class="pi text-xl" [ngClass]="{ 
                                     'text-green-500 pi-check-circle': enabizProcess.isCancelled == true, 
                                     'text-red-500 pi-times-circle': enabizProcess.isCancelled == false,
                                     'text-gray-600 pi-question-circle': enabizProcess.isCancelled == null }"></i>
                         </td>
                         <td class="text-center">
-                            <i class="pi text-xl"
-                                [ngClass]="{ 
+                            <i class="pi text-xl" [ngClass]="{ 
                                     'text-green-500 pi-check-circle': enabizProcess.isUsedInProforma == true, 
                                     'text-red-500 pi-times-circle': enabizProcess.isUsedInProforma == false,
                                     'text-gray-600 pi-question-circle': enabizProcess.isUsedInProforma == null }"></i>
                         </td>
-                        
+
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="emptymessage">
@@ -153,20 +172,22 @@
                         <td class="white-space-nowrap">
                             <p-button
                                 pTooltip="{{ '::Quotation:ProformaTable:Button:SendToPatient' | abpLocalization }}"
-                                icon="pi pi-send" styleClass="p-button-rounded p-button-secondary" (onClick)="onSendToPatientClick(proforma)"
-                                [disabled]="!isAllowedToManagePatient"
+                                icon="pi pi-send" styleClass="p-button-rounded p-button-secondary"
+                                (onClick)="onSendToPatientClick(proforma)" [disabled]="!isAllowedToManagePatient"
                                 *ngIf="proforma.proformaStatusId == proformaStatusEnum.WillBeTransferedToPatient"></p-button>
                             <p-button pTooltip="{{ '::Quotation:ProformaTable:Button:Approve' | abpLocalization }}"
-                                icon="pi pi-check" styleClass="p-button-rounded p-button-success" (onClick)="onApproveClick(proforma)"
+                                icon="pi pi-check" styleClass="p-button-rounded p-button-success"
+                                (onClick)="onApproveClick(proforma)"
                                 [disabled]="!(proforma.proformaStatusId == proformaStatusEnum.MFBWaitingApproval && isAllowedToApproveRejectAsMFB) && !(proforma.proformaStatusId == proformaStatusEnum.WaitingForPatientApproval && isAllowedToApproveRejectAsPatient)"
                                 *ngIf="proforma.proformaStatusId == proformaStatusEnum.MFBWaitingApproval || proforma.proformaStatusId == proformaStatusEnum.WaitingForPatientApproval"></p-button>
                             <p-button pTooltip="{{ '::Quotation:ProformaTable:Button:Reject' | abpLocalization }}"
-                                icon="pi pi-times" styleClass="p-button-rounded p-button-danger ml-1" (onClick)="onRejectClick(proforma)"
+                                icon="pi pi-times" styleClass="p-button-rounded p-button-danger ml-1"
+                                (onClick)="onRejectClick(proforma)"
                                 [disabled]="!(proforma.proformaStatusId == proformaStatusEnum.MFBWaitingApproval && isAllowedToApproveRejectAsMFB) && !(proforma.proformaStatusId == proformaStatusEnum.WaitingForPatientApproval && isAllowedToApproveRejectAsPatient)"
                                 *ngIf="proforma.proformaStatusId == proformaStatusEnum.MFBWaitingApproval || proforma.proformaStatusId == proformaStatusEnum.WaitingForPatientApproval"></p-button>
                             <p-button pTooltip="{{ '::Quotation:ProformaTable:Button:Payment' | abpLocalization }}"
-                                icon="pi pi-calculator" styleClass="p-button-rounded p-button-secondary" (onClick)="onPaymentClick(proforma)"
-                                [disabled]="!isAllowedToManageProforma"
+                                icon="pi pi-calculator" styleClass="p-button-rounded p-button-secondary"
+                                (onClick)="onPaymentClick(proforma)" [disabled]="!isAllowedToManageProforma"
                                 *ngIf="proforma.proformaStatusId == proformaStatusEnum.WaitingForPayment"></p-button>
                         </td>
                     </tr>
@@ -191,7 +212,8 @@
                 {{'::Quotation:FieldLegend:PaymentList' |
                 abpLocalization}}
             </legend>
-            <app-payment-list #paymentListComp [ptpId]="patientTreatmentId" [patient]="patient" (onPaymentCompleted)="onPaymentCompleted()"></app-payment-list>
+            <app-payment-list #paymentListComp [ptpId]="patientTreatmentId" [patient]="patient"
+                (onPaymentCompleted)="onPaymentCompleted()"></app-payment-list>
         </fieldset>
     </div>
 </div>

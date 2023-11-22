@@ -1,20 +1,20 @@
 
 export interface ENabizProcessDto {
-  gerceklesme_ZAMANI?: string;
-  islem_TURU?: string;
-  islem_KODU?: string;
-  islem_ADI?: string;
-  islem_ZAMANI?: string;
+  gerceklesmE_ZAMANI?: string;
+  isleM_TURU?: string;
+  isleM_KODU?: string;
+  isleM_ADI?: string;
+  isleM_ZAMANI?: string;
   adet?: string;
-  hasta_TUTARI?: string;
-  kurum_TUTARI?: string;
-  randevu_ZAMANI?: string;
-  kullanici_KIMLIK_NUMARASI?: string;
-  cihaz_NUMARASI?: string;
-  islem_REFERANS_NUMARASI?: string;
-  girisimsel_ISLEM_KODU?: string;
-  klinik_KODU?: string;
-  islem_PUAN_BILGISI?: string;
+  hastA_TUTARI?: string;
+  kuruM_TUTARI?: string;
+  randevU_ZAMANI?: string;
+  kullanicI_KIMLIK_NUMARASI?: string;
+  cihaZ_NUMARASI?: string;
+  isleM_REFERANS_NUMARASI?: string;
+  girisimseL_ISLEM_KODU?: string;
+  kliniK_KODU?: string;
+  isleM_PUAN_BILGISI?: string;
 }
 
 export interface ExternalApiResult {
@@ -26,9 +26,9 @@ export interface ExternalApiResult {
 export interface ListENabizProcessDto extends ENabizProcessDto {
   treatmentCode?: string;
   sysTrackingNumber?: string;
-  processId?: number;
   ushasPrice?: number;
   hospitalPrice?: number;
+  processId?: number;
   isCancelled: boolean;
   isUsedInProforma: boolean;
 }

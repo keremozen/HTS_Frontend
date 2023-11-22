@@ -22,6 +22,7 @@ export interface ProformaDto extends AuditedEntityWithUserDto<number, IdentityUs
   rejectReasonId?: number;
   rejectReasonMFB?: string;
   sendToPatientManually?: boolean;
+  isENabiz: boolean;
   rejectReason: RejectReasonDto;
   currency: CurrencyDto;
   operation: OperationDto;
@@ -55,6 +56,22 @@ export interface RejectProformaDto {
   id: number;
   rejectReasonId?: number;
   rejectReason?: string;
+}
+
+export interface SaveENabizProformaDto {
+  currencyId: number;
+  ptpId: number;
+  operationId?: number;
+  proformaStatusId: EntityEnum_ProformaStatusEnum;
+  exchangeRate: number;
+  totalProformaPrice: number;
+  proformaCode: string;
+  description?: string;
+  tpDescription?: string;
+  version: number;
+  proformaProcesses: SaveProformaProcessDto[];
+  proformaAdditionalServices: SaveProformaAdditionalServiceDto[];
+  proformaNotIncludingServices: SaveProformaNotIncludingServiceDto[];
 }
 
 export interface SaveProformaDto {

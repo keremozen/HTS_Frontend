@@ -1,6 +1,6 @@
 import { RestService } from '@abp/ng.core';
 import { Injectable } from '@angular/core';
-import type { ProformaDto, ProformaListDto, ProformaPricingListDto, RejectProformaDto, SaveProformaDto } from '../dto/proforma/models';
+import type { ProformaDto, ProformaListDto, ProformaPricingListDto, RejectProformaDto, SaveENabizProformaDto, SaveProformaDto } from '../dto/proforma/models';
 
 @Injectable({
   providedIn: 'root',
@@ -88,6 +88,15 @@ export class ProformaService {
     this.restService.request<any, object>({
       method: 'POST',
       url: '/api/app/proforma/save-and-approve-mFB',
+      body: proforma,
+    },
+    { apiName: this.apiName });
+  
+
+  saveENabiz = (proforma: SaveENabizProformaDto) =>
+    this.restService.request<any, number>({
+      method: 'POST',
+      url: '/api/app/proforma/save-eNabiz',
       body: proforma,
     },
     { apiName: this.apiName });

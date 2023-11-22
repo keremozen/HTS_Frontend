@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Injector, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ProformaPricingListDto, RejectProformaDto } from '@proxy/dto/proforma';
-import { EntityEnum_OperationTypeEnum, EntityEnum_ProformaStatusEnum } from '@proxy/enum';
+import { EntityEnum_OperationTypeEnum, EntityEnum_PatientTreatmentStatusEnum, EntityEnum_ProformaStatusEnum } from '@proxy/enum';
 import { OperationService, PatientTreatmentProcessService, ProformaService, RejectReasonService, USSService } from '@proxy/service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
@@ -12,6 +12,14 @@ import { PaymentListComponent } from '../payment-list/payment-list.component';
 import { ListENabizProcessDto } from '@proxy/dto/external';
 import { forkJoin } from 'rxjs';
 import { PatientTreatmentProcessDto } from '@proxy/dto/patient-treatment-process';
+import { CreateENabizProformaComponent } from '../create-enabiz-proforma/create-enabiz-proforma.component';
+import * as moment from 'moment';
+import * as FileSaver from 'file-saver';
+
+interface ExportColumn {
+  title: string;
+  dataKey: string;
+}
 
 @Component({
   selector: 'app-quotation',
@@ -34,8 +42,9 @@ export class QuotationComponent extends AppComponentBase {
   proformaDialogRef: DynamicDialogRef;
 
   patientTreatmentProcess: PatientTreatmentProcessDto;
-  enabizProcessList: ListENabizProcessDto[] = [];
+  enabizProcessList: ListENabizProcessDtoWithId[] = [];
   totalEnabizProcessCount: number = 0;
+  selectedENabizProcesses: ListENabizProcessDtoWithId[] = [];
 
   displayMFBReject: boolean = false;
   displayPatientReject: boolean = false;
@@ -46,6 +55,10 @@ export class QuotationComponent extends AppComponentBase {
   isAllowedToManageProforma: boolean = false;
   isAllowedToApproveRejectAsMFB: boolean = false;
   isAllowedToApproveRejectAsPatient: boolean = false;
+
+  ref: DynamicDialogRef;
+  treatmentProcessStatusEnum = EntityEnum_PatientTreatmentStatusEnum;
+  exportColumns!: ExportColumn[];
 
   constructor(
     injector: Injector,
@@ -68,6 +81,7 @@ export class QuotationComponent extends AppComponentBase {
   }
 
   fetchData() {
+    this.selectedENabizProcesses = [];
     forkJoin([
       this.patientTreatmentService.getByPatientTreatmentProcessId(this.patientTreatmentId),
       this.proformaService.getPricingListByPTPId(this.patientTreatmentId)
@@ -82,7 +96,24 @@ export class QuotationComponent extends AppComponentBase {
       complete: () => {
         this.ussService.getENabizProcessesByTreatmentCode(this.patientTreatmentProcess.treatmentCode).subscribe({
           next: (resEnabizProcess) => {
-            this.enabizProcessList = resEnabizProcess;
+            this.exportColumns = [
+              {title: 'Tracking Number', dataKey: 'sysTrackingNumber'},
+              {title: 'Tedavi Kodu', dataKey: 'treatmentCode'},
+              {title: 'Islem Kodu', dataKey: 'isleM_KODU'},
+              {title: 'Islem Adi', dataKey: 'isleM_ADI'},
+              {title: 'Islem Zamani', dataKey: 'isleM_ZAMANI'},
+              {title: 'Adet', dataKey: 'adet'},
+              {title: 'Islem Referans Numarasi', dataKey: 'isleM_REFERANS_NUMARASI'},
+              {title: 'Klinik Kodu', dataKey: 'kliniK_KODU'}
+            ]
+            this.enabizProcessList = resEnabizProcess as ListENabizProcessDtoWithId[];
+            var id = 1;
+            this.enabizProcessList.forEach(process => {
+              process.id = id;
+              debugger;
+              process.gerceklesmeZamani = moment(process.gerceklesmE_ZAMANI, "YYYYMMDDhhmm").toDate();
+              id++;
+            });
             this.totalEnabizProcessCount = resEnabizProcess.length;
           }
         });
@@ -142,7 +173,6 @@ export class QuotationComponent extends AppComponentBase {
           this.displayPatientReject = true;
         }
       });
-
     }
   }
 
@@ -215,7 +245,7 @@ export class QuotationComponent extends AppComponentBase {
       }
     });
 
-    
+
   }
 
   onSendToPatientClick(proforma: ProformaPricingListDto) {
@@ -247,8 +277,8 @@ export class QuotationComponent extends AppComponentBase {
           data: {
             isRelatedWithProforma: true,
             patientName: this.patient.name + (this.patient.surname ? " " + this.patient.surname : ""),
-            hospitalId: op.operationTypeId == this.operationTypeEnum.HospitalConsultation ? op.hospitalResponse.hospitalConsultation.hospital.id : 
-                                                  (op.operationTypeId == this.operationTypeEnum.Manual ? op.hospitalId : null),
+            hospitalId: op.operationTypeId == this.operationTypeEnum.HospitalConsultation ? op.hospitalResponse.hospitalConsultation.hospital.id :
+              (op.operationTypeId == this.operationTypeEnum.Manual ? op.hospitalId : null),
             proformaCode: proforma.proformaCode,
             proformaId: proforma.id,
             ptpId: op.patientTreatmentProcessId
@@ -268,4 +298,79 @@ export class QuotationComponent extends AppComponentBase {
     this.fetchData();
     this.onQuotationChange.emit();
   }
+
+  createProforma() {
+    this.ref = this.dialogService.open(CreateENabizProformaComponent, {
+      header: this.l('::Proforma:Title'),
+      width: '85vw',
+      contentStyle: { overflow: 'auto' },
+      baseZIndex: 10000,
+      maximizable: true,
+      data: {
+        enabizProcesses: this.selectedENabizProcesses,
+        ptpId: this.patientTreatmentId
+      },
+    });
+
+    this.ref.onClose.subscribe(() => {
+      this.fetchData();
+      this.onQuotationChange.emit();
+    });
+  }
+
+  exportExcel() {
+    import('xlsx').then((xlsx) => {
+        const worksheet = xlsx.utils.json_to_sheet(this.enabizProcessList);
+        const workbook = { Sheets: { data: worksheet }, SheetNames: ['data'] };
+        const excelBuffer: any = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
+        this.saveAsExcelFile(excelBuffer, 'HBYS İşlemleri');
+    });
+}
+
+exportPdf() {
+  import('jspdf').then((jsPDF) => {
+      import('jspdf-autotable').then((x) => {
+          const doc = new jsPDF.default('l', 'px', 'a4').setFont('Arial').setFontSize(2);
+          (doc as any).autoTable(this.exportColumns, this.enabizProcessList);
+          doc.save('hbys_islemleri.pdf');
+      });
+  });
+}
+
+saveAsExcelFile(buffer: any, fileName: string): void {
+    let EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+    let EXCEL_EXTENSION = '.xlsx';
+    const data: Blob = new Blob([buffer], {
+        type: EXCEL_TYPE
+    });
+    FileSaver.saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
+}
+
+}
+
+class ListENabizProcessDtoWithId implements ListENabizProcessDto {
+  id: number;
+  treatmentCode?: string;
+  sysTrackingNumber?: string;
+  processId?: number;
+  ushasPrice?: number;
+  hospitalPrice?: number;
+  isCancelled: boolean;
+  isUsedInProforma: boolean;
+  gerceklesmE_ZAMANI?: string;
+  islem_TURU?: string;
+  islem_KODU?: string;
+  islem_ADI?: string;
+  islem_ZAMANI?: string;
+  adet?: string;
+  hasta_TUTARI?: string;
+  kurum_TUTARI?: string;
+  randevu_ZAMANI?: string;
+  kullanici_KIMLIK_NUMARASI?: string;
+  cihaz_NUMARASI?: string;
+  islem_REFERANS_NUMARASI?: string;
+  girisimsel_ISLEM_KODU?: string;
+  klinik_KODU?: string;
+  islem_PUAN_BILGISI?: string;
+  gerceklesmeZamani: Date;
 }

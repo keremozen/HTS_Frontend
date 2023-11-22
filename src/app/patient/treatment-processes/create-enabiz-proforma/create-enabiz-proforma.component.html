@@ -1,0 +1,466 @@
+<form #proformaForm="ngForm">
+    <div class="grid grid-nogutter">
+        <div class="col-4">
+            <div class="field grid mb-2">
+                <label for="currency" class="font-bold col-12 mb-2 mt-1 md:col-4 md:mb-0">{{ '::Proforma:Field:Currency'
+                    | abpLocalization }}&nbsp;<font style="color:red">*</font></label>
+                <div class="col-12 md:col-8 flex align-items-center">
+                    <p-dropdown id="currency" name="currency" #currency="ngModel" [options]="currencyList"
+                        [(ngModel)]="saveProforma.currencyId" placeholder="{{ '::Select' | abpLocalization }}"
+                        [style]="{'width':'100px'}" styleClass="filterDropDown" optionLabel="name" optionValue="id"
+                        appendTo="body" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
+                        (onChange)="onCurrencyChange()"></p-dropdown>
+
+                    <p-chip *ngIf="saveProforma.exchangeRate && saveProforma.exchangeRate != 1" class="ml-3">
+                        <div class="p-2">
+                            <i class="fas fa-lira-sign mr-1"></i>{{saveProforma.exchangeRate}}
+                        </div>
+                    </p-chip>
+
+                    <div class="p-2 flex justify-content-end"
+                        *ngIf="exchangeRateDate && saveProforma.exchangeRate != 1">
+                        <span class="text-xs">Son Güncelleme Zamanı<br>{{exchangeRateDate | date:'dd.MM.YYYY
+                            HH:mm'}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-3 align-self-center">
+            <div class="field grid mb-2">
+                <label for="currency" class="font-bold col-12 mb-2 md:col-3 md:mb-0">{{ '::Proforma:Field:ProformaDate'
+                    |
+                    abpLocalization }}</label>
+                <div class="col-12 md:col-9">
+                    {{proformaDate | date: 'dd.MM.yyyy'}}
+                </div>
+            </div>
+        </div>
+        <div class="col-5 align-self-center flex justify-content-end">
+            <p-message severity="error" text="Proforma Kaydı Oluşmamıştır"></p-message>
+        </div>
+        <div class="col-12 mt-3">
+            <fieldset class="border pl-3 pr-3 pt-2 pb-3 proformaFieldSet proformaFieldHeight">
+                <legend class="float-none w-auto pl-3 pr-3 text-sm proformaFieldSetlegend">
+                    {{'::Proforma:Field:TreatmentItems' |
+                    abpLocalization}}
+                </legend>
+                <p-toolbar styleClass="customToolbar">
+                    <div class="p-toolbar-group-start">
+                    </div>
+                    <div class="p-toolbar-group-end p-0">
+                        <p-button pRipple label="{{ '::Proforma:TreatmentItem:Button:NewItem' | abpLocalization }}"
+                            icon="pi pi-plus" styleClass="p-button-success ml-2"
+                            (onClick)="onNewTreatmentItem()"></p-button>
+                    </div>
+                </p-toolbar>
+                <p-table #dt [value]="treatmentItemList" [rows]="5" styleClass="pt-3" [paginator]="true"
+                    [rowHover]="true" [loading]="loading"
+                    currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
+                    [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th pSortableColumn="code">{{ '::Proforma:TreatmentItem:Column:Code' | abpLocalization }}
+                                <p-sortIcon field="code"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="name">{{ '::Proforma:TreatmentItem:Column:Name' | abpLocalization }}
+                                <p-sortIcon field="name"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="treatmentCount">{{ '::Proforma:TreatmentItem:Column:Amount' |
+                                abpLocalization }}
+                                <p-sortIcon field="treatmentCount"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="unitPrice">{{ '::Proforma:TreatmentItem:Column:UnitCost' |
+                                abpLocalization
+                                }}
+                                <p-sortIcon field="unitPrice"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="totalPrice">{{ '::Proforma:TreatmentItem:Column:TotalCost' |
+                                abpLocalization
+                                }}
+                                <p-sortIcon field="totalPrice"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="proformaPrice">{{ '::Proforma:TreatmentItem:Column:ProformaCost' |
+                                abpLocalization }}
+                                <p-sortIcon field="proformaPrice"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="change">{{ '::Proforma:TreatmentItem:Column:Change' | abpLocalization
+                                }}
+                                <p-sortIcon field="change"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="proformaFinalPrice">{{
+                                '::Proforma:TreatmentItem:Column:ProformaFinalCost'
+                                |
+                                abpLocalization }}
+                                <p-sortIcon field="proformaFinalPrice"></p-sortIcon>
+                            </th>
+                            <th></th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-item let-editing="editing">
+                        <tr>
+                            <td>{{item.code}}</td>
+                            <td>{{item.name}}</td>
+                            <td [pEditableColumn]="item.treatmentCount" pEditableColumnField="treatmentCount">
+                                <p-cellEditor>
+                                    <ng-template pTemplate="input">
+                                        <p-inputNumber name="treatmentCount" #treatmentCount="ngModel" size="2"
+                                            [(ngModel)]="item.treatmentCount"
+                                            (onInput)="onTreatmentCountChange($event, item)"></p-inputNumber>
+                                    </ng-template>
+                                    <ng-template pTemplate="output">
+                                        {{ item.treatmentCount }}
+                                    </ng-template>
+                                </p-cellEditor>
+                            </td>
+                            <td>{{item.unitPrice | currency:'TRY':'symbol':'0.2-2'}}</td>
+                            <td>{{item.totalPrice | currency:'TRY':'symbol':'0.2-2'}}</td>
+                            <td>{{item.proformaPrice | currency: this.currencyName:'symbol':'0.2-2'}}</td>
+                            <td [pEditableColumn]="item.change" pEditableColumnField="change">
+                                <p-cellEditor>
+                                    <ng-template pTemplate="input">
+                                        <p-inputNumber name="changeAmount" #changeAmount="ngModel" size="4" suffix="%"
+                                            mode="decimal" [maxFractionDigits]="2" [(ngModel)]="item.change"
+                                            (onInput)="onChangeAmountChange($event, item)"></p-inputNumber>
+                                    </ng-template>
+                                    <ng-template pTemplate="output">
+                                        {{ item.change }} %
+                                    </ng-template>
+                                </p-cellEditor>
+                            </td>
+                            <td [pEditableColumn]="item.proformaFinalPrice" pEditableColumnField="proformaFinalPrice">
+                                <p-cellEditor>
+                                    <ng-template pTemplate="input">
+                                        <p-inputNumber name="finalPrice" #finalPrice="ngModel" mode="currency"
+                                            [currency]="currencyName" [maxFractionDigits]="2"
+                                            [(ngModel)]="item.proformaFinalPrice"
+                                            (onInput)="onFinalPriceChange($event, item.code)"></p-inputNumber>
+                                    </ng-template>
+                                    <ng-template pTemplate="output">
+                                        {{item.proformaFinalPrice | currency: this.currencyName:'symbol':'0.2-2'}}
+                                    </ng-template>
+                                </p-cellEditor>
+
+                            </td>
+                            <td>
+                                <p-button pRipple icon="pi pi-trash" styleClass="p-button-rounded p-button-danger"
+                                    (onClick)="removeItem(item)" [disabled]="isDisabled"></p-button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="footer">
+                        <tr>
+                            <td colspan="7" class="text-right">Proforma Toplamı</td>
+                            <td>{{saveProforma.totalProformaPrice | currency: this.currencyName:'symbol':'0.2-2'}}</td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <div class="m-3">
+                            {{ '::Table:EmptyMessage' | abpLocalization }}
+                        </div>
+                    </ng-template>
+                </p-table>
+            </fieldset>
+        </div>
+        <div class="col-12 mt-3 grid-nogutter">
+            <div class="grid grid-nogutter">
+                <div class="col-4">
+                    <fieldset class="border pl-3 pr-3 pt-2 pb-3 proformaFieldSet proformaFieldHeight">
+                        <legend class="float-none w-auto pl-3 pr-3 text-sm proformaFieldSetlegend">
+                            {{'::Proforma:Field:AdditionalServices' |
+                            abpLocalization}}
+                        </legend>
+                        <div *ngFor="let service of saveAdditionalServiceList; let i = index" class="field-checkbox">
+                            <p-checkbox [name]="'additionalServiceGroup'+i" [value]="service.additionalServiceId"
+                                [(ngModel)]="selectedAdditionalServices" [inputId]="service.additionalServiceId"
+                                [disabled]="isDisabled"></p-checkbox>
+                            <label [for]="service.additionalServiceId">{{ service.additionalService.name }}</label>
+
+                            <div class="flex col grid-nogutter ml-6 p-0"
+                                *ngIf="selectedAdditionalServices.indexOf(service.additionalServiceId) != -1">
+                                <div class="flex col-6 p-0" *ngIf="service.additionalService.day">
+                                    <label for="dayCount" class="col-3 p-0 align-self-center">{{
+                                        '::Proforma:AdditionalServices:Field:Day' |
+                                        abpLocalization }}&nbsp;<font style="color:red">*</font></label>
+                                    <div class="col-9 p-0">
+                                        <p-inputNumber [id]="'dayCount'+i" [name]="'dayCount'+i" #dayCount="ngModel"
+                                            [size]="2" [min]="1" required [(ngModel)]="service.dayCount"
+                                            [disabled]="isDisabled"></p-inputNumber>
+                                    </div>
+                                </div>
+                                <div class="flex col-6 p-0" *ngIf="service.additionalService.roomType">
+                                    <label for="roomType" class="col-5 p-0 align-self-center">{{
+                                        '::Proforma:AdditionalServices:Field:RoomType' |
+                                        abpLocalization }}&nbsp;<font style="color:red">*</font></label>
+                                    <div class="col-7 p-0">
+                                        <p-dropdown [id]="'ddlRoomType'+i" [name]="'ddlRoomType'+i"
+                                            #ddlRoomType="ngModel" [options]="roomTypeList"
+                                            [(ngModel)]="service.roomTypeId"
+                                            placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
+                                            appendTo="body" optionLabel="key" optionValue="value"
+                                            emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" required
+                                            appendTo="body" [disabled]="isDisabled">
+                                        </p-dropdown>
+                                    </div>
+                                </div>
+                                <div class="flex col-6 p-0" *ngIf="service.additionalService.piece">
+                                    <label for="piece" class="col-3 p-0 align-self-center">{{
+                                        '::Proforma:AdditionalServices:Field:Piece' |
+                                        abpLocalization }}&nbsp;<font style="color:red">*</font></label>
+                                    <div class="col-9 p-0">
+                                        <p-inputNumber [id]="'piece'+i" [name]="'piece'+i" #piece="ngModel" [size]="2"
+                                            [min]="1" required [(ngModel)]="service.itemCount"
+                                            [disabled]="isDisabled"></p-inputNumber>
+                                    </div>
+                                </div>
+                                <div class="flex col-6 p-0" *ngIf="service.additionalService.companion">
+                                    <label for="companion" class="col-5 p-0 align-self-center">{{
+                                        '::Proforma:AdditionalServices:Field:Companion' |
+                                        abpLocalization }}&nbsp;<font style="color:red">*</font></label>
+                                    <div class="col-7 p-0">
+                                        <p-inputNumber [id]="'companion'+i" [name]="'companion'+i" #companion="ngModel"
+                                            [size]="2" [min]="0" required [(ngModel)]="service.companionCount"
+                                            [disabled]="isDisabled"></p-inputNumber>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="col-8 pl-3 grid-nogutter">
+                    <div class="col-12">
+                        <fieldset class="border pl-3 pr-3 pt-2 pb-3 proformaFieldSet proformaFieldHeight">
+                            <legend class="float-none w-auto pl-3 pr-3 text-sm proformaFieldSetlegend">
+                                {{'::Proforma:Field:TreatmentDescription' |
+                                abpLocalization}}
+                            </legend>
+                            <textarea rows="3" pInputText id="treatmentDescription" name="treatmentDescription"
+                                #treatmentDescription="ngModel" [(ngModel)]="saveProforma.tpDescription"
+                                class="w-full"></textarea>
+                        </fieldset>
+                    </div>
+                    <div class="col-12 mt-3">
+                        <fieldset class="border pl-3 pr-3 pt-2 pb-3 proformaFieldSet proformaFieldHeight">
+                            <legend class="float-none w-auto pl-3 pr-3 text-sm proformaFieldSetlegend">
+                                {{'::Proforma:Field:ProformaDescription' |
+                                abpLocalization}} *
+                            </legend>
+                            <textarea rows="3" pInputText id="proformaDescription" name="proformaDescription"
+                                #proformaDescription="ngModel" [(ngModel)]="saveProforma.description" class="w-full"
+                                required></textarea>
+                        </fieldset>
+                    </div>
+                    <div class="col-12 mt-3">
+                        <fieldset class="border pl-3 pr-3 pt-2 pb-3 proformaFieldSet proformaFieldHeight">
+                            <legend class="float-none w-auto pl-3 pr-3 text-sm proformaFieldSetlegend">
+                                {{'::Proforma:Field:ExcludedServices' |
+                                abpLocalization}}
+                            </legend>
+                            <p-toolbar styleClass="customToolbar">
+                                <div class="p-toolbar-group-start">
+                                </div>
+                                <div class="p-toolbar-group-end p-0">
+                                    <p-button pRipple
+                                        label="{{ '::Proforma:NotIncludingService:Button:NewService' | abpLocalization }}"
+                                        icon="pi pi-plus" styleClass="p-button-success ml-2"
+                                        (onClick)="onNewNotIncludingService()"></p-button>
+                                </div>
+                            </p-toolbar>
+                            <p-table #dt [value]="proformaNotIncludingServiceList" [rows]="5" styleClass="pt-3"
+                                [paginator]="true" [rowHover]="true" [loading]="loading"
+                                currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
+                                [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th class="w-8rem">{{ '::Proforma:NotIncludingService:Column:RowNumber' |
+                                            abpLocalization }}
+                                        </th>
+                                        <th>{{ '::Proforma:NotIncludingService:Column:Description' |
+                                            abpLocalization }}
+                                        </th>
+                                        <th class="w-1rem" *ngIf="!isDisabled"></th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-item>
+                                    <tr>
+                                        <td>{{item.rowNumber}}</td>
+                                        <td>{{item.description}}</td>
+                                        <td *ngIf="!isDisabled">
+                                            <p-button pRipple icon="pi pi-trash"
+                                                styleClass="p-button-rounded p-button-danger"
+                                                (onClick)="removeNotIncludingService(item)"></p-button>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="emptymessage">
+                                    <div class="m-3 w-full">
+                                        {{ '::Table:EmptyMessage' | abpLocalization }}
+                                    </div>
+                                </ng-template>
+                                <ng-template pTemplate="summary">
+                                    <div class="flex align-items-center justify-content-between"
+                                        *ngIf="proformaNotIncludingServiceList.length > 0">
+                                        {{ '::Table:Summary' | abpLocalization: proformaNotIncludingServiceList.length
+                                        }}
+                                    </div>
+                                </ng-template>
+                            </p-table>
+                        </fieldset>
+                    </div>
+                    <div class="col-12 mt-3">
+                        <fieldset class="border pl-3 pr-3 pt-2 pb-3 proformaFieldSet proformaFieldHeight">
+                            <legend class="float-none w-auto pl-3 pr-3 text-sm proformaFieldSetlegend">
+                                {{'::Proforma:Field:Materials' |
+                                abpLocalization}}
+                            </legend>
+                            <p-table #dt [value]="anticipatedMaterialList" [rows]="5" styleClass="pt-3"
+                                [paginator]="true" [rowHover]="true" [loading]="loading"
+                                currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
+                                [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th pSortableColumn="name">{{ '::Proforma:AnticipatedMaterial:Column:Name' |
+                                            abpLocalization }}
+                                            <p-sortIcon field="name"></p-sortIcon>
+                                        </th>
+                                        <th pSortableColumn="amount">{{ '::Proforma:AnticipatedMaterial:Column:Amount' |
+                                            abpLocalization }}
+                                            <p-sortIcon field="amount"></p-sortIcon>
+                                        </th>
+                                        <th pSortableColumn="unitCost">{{
+                                            '::Proforma:AnticipatedMaterial:Column:UnitCost' |
+                                            abpLocalization }}
+                                            <p-sortIcon field="unitCost"></p-sortIcon>
+                                        </th>
+                                        <th pSortableColumn="totalCost">{{
+                                            '::Proforma:AnticipatedMaterial:Column:TotalCost'
+                                            |
+                                            abpLocalization }}
+                                            <p-sortIcon field="totalCost"></p-sortIcon>
+                                        </th>
+                                        <th pSortableColumn="proformaCost">{{
+                                            '::Proforma:AnticipatedMaterial:Column:ProformaCost' | abpLocalization }}
+                                            <p-sortIcon field="proformaCost"></p-sortIcon>
+                                        </th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-item>
+                                    <tr>
+                                        <td>{{item.name}}</td>
+                                        <td>{{item.amount }}</td>
+                                        <td>{{item.unitCost | currency:'TRY':'symbol':'0.2-2'}}</td>
+                                        <td>{{item.totalCost | currency:'TRY':'symbol':'0.2-2'}}</td>
+                                        <td>{{item.proformaCost | currency: this.currencyName:'symbol':'0.2-2'}}</td>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="emptymessage">
+                                    <div class="m-3">
+                                        {{ '::Table:EmptyMessage' | abpLocalization }}
+                                    </div>
+                                </ng-template>
+                                <ng-template pTemplate="summary">
+                                    <div class="flex align-items-center justify-content-between"
+                                        *ngIf="anticipatedMaterialList.length > 0">
+                                        {{ '::Table:Summary' | abpLocalization: anticipatedMaterialList.length }}
+                                    </div>
+                                </ng-template>
+                            </p-table>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 mt-3 grid-nogutter">
+            <div class="grid grid-nogutter">
+                <div class="col-12 pl-1">
+                    <div class="text-right">
+                        <p-button pRipple label="{{ '::Proforma:Button:Save' | abpLocalization }}"
+                            styleClass="p-button-success ml-2 mt-4" (onClick)="onSaveProforma()"
+                            [disabled]="!(proformaForm.valid) || treatmentItemList.length == 0"></p-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<!--ÖNGÖRÜLEN İŞLEM-->
+<p-dialog [(visible)]="showTreatmentItemDialog" [style]="{width: '30vw'}"
+    header="{{ '::Proforma:TreatmentItem:Dialog:Title' | abpLocalization }}" [modal]="true" styleClass="p-fluid"
+    (onHide)="hideTreatmentItemDialog()">
+    <form #processForm="ngForm">
+        <div *ngIf="treatmentItem">
+            <div class="field">
+                <label for="ddlProcessList">{{ '::Admin:Process:Name' | abpLocalization
+                    }}&nbsp;<font style="color:red">*
+                    </font></label>
+                <p-autoComplete id="ddlProcessList" name="ddlProcessList" #ddlProcessList="ngModel"
+                    [(ngModel)]="selectedProcess" [suggestions]="filteredProcesses" [minLength]="3" [delay]="500"
+                    (completeMethod)="filterProcess($event)" field="name" [forceSelection]="true"
+                    [style]="{'width':'100%'}" styleClass="filterAutoComplete" appendTo="body" required>
+                    <ng-template pTemplate="selectedItem">
+                        <div class="flex align-items-center gap-2" *ngIf="selectedProcess">
+                            <div class="white-space-normal">{{ selectedProcess.code }} - {{ selectedProcess.name }}
+                            </div>
+                        </div>
+                    </ng-template>
+                    <ng-template let-process pTemplate="item">
+                        <div class="flex align-items-center gap-2">
+                            <div class="white-space-normal">{{ process.code }} - {{ process.name }}</div>
+                        </div>
+                    </ng-template>
+                </p-autoComplete>
+                <small class="p-error" *ngIf="!(ddlProcessList.valid || ddlProcessList.pristine)">{{
+                    '::Message:RequiredField' |
+                    abpLocalization
+                    }}</small>
+            </div>
+            <div class="field">
+                <label for="processAmount">{{ '::HospitalResponse:Process:Column:Amount' | abpLocalization
+                    }}&nbsp;<font style="color:red">*
+                    </font></label>
+                <p-inputNumber id="processAmount" name="processAmount" #processAmount="ngModel"
+                    [(ngModel)]="treatmentItem.treatmentCount" required></p-inputNumber>
+                <small class="p-error" *ngIf="!(processAmount.valid || processAmount.pristine)">{{
+                    '::Message:RequiredField' |
+                    abpLocalization
+                    }}</small>
+            </div>
+        </div>
+    </form>
+    <p-footer>
+        <p-button pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" styleClass="p-button-text"
+            (onClick)="hideTreatmentItemDialog()"></p-button>
+        <p-button pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" styleClass="p-button-text"
+            (onClick)="addTreatmentItem()" [disabled]="!(processForm.valid)"></p-button>
+    </p-footer>
+</p-dialog>
+
+<!--DAHİL OLMAYAN İŞLEMLER-->
+<p-dialog [(visible)]="showNotIncludingItemsDialog" [style]="{width: '30vw'}"
+    header="{{ '::Proforma:NotIncludingService:Dialog:Title' | abpLocalization }}" [modal]="true" styleClass="p-fluid"
+    (onHide)="hideNotIncludingItemsDialog()">
+    <form #notIncludingServiceForm="ngForm">
+        <div *ngIf="proformaNotIncludingService">
+            <div class="field">
+                <label for="txtDescription">{{ '::Admin:Process:Name' | abpLocalization
+                    }}&nbsp;<font style="color:red">*
+                    </font></label>
+                <textarea rows="3" pInputText id="txtDescription" name="txtDescription" #txtDescription="ngModel"
+                    required [(ngModel)]="proformaNotIncludingService.description" class="w-full"></textarea>
+                <small class="p-error" *ngIf="!(txtDescription.valid || txtDescription.pristine)">{{
+                    '::Message:RequiredField' |
+                    abpLocalization
+                    }}</small>
+            </div>
+        </div>
+    </form>
+    <p-footer>
+        <p-button pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" styleClass="p-button-text"
+            (onClick)="hideNotIncludingItemsDialog()"></p-button>
+        <p-button pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" styleClass="p-button-text"
+            (onClick)="addNotIncludingService()" [disabled]="!(notIncludingServiceForm.valid)"></p-button>
+    </p-footer>
+</p-dialog>
+
+<p-confirmDialog key="proformaConfirm" [style]="{width: '450px'}" rejectLabel="{{ '::Reject' | abpLocalization }}"
+    acceptLabel="{{ '::Accept' | abpLocalization }}" rejectButtonStyleClass="p-button-text p-button-danger"
+    acceptButtonStyleClass="p-button-text p-button-success"></p-confirmDialog>

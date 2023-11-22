@@ -1,0 +1,18 @@
+
+.proformaFieldSet {
+    border-radius: 6px;
+    background-color: rgba(235, 245, 238,.2);
+    box-shadow: 1px 1px 5px -1px rgba(0,0,0,.2)
+}
+
+.proformaFieldSet .proformaFieldSetlegend {
+    border-radius: 4px;
+    background-color: #62929E;
+    font-weight: bold;
+    color: white;
+    padding: 4px 0px;
+}
+
+.p-autocomplete-panel {
+    max-width: 28vw;
+}

@@ -19,6 +19,7 @@ import { OperationComponent } from './treatment-processes/operation/operation.co
 import { ProformaComponent } from './treatment-processes/proforma/proforma.component';
 import { PaymentDialogComponent } from './treatment-processes/payment-dialog/payment-dialog.component';
 import { PaymentListComponent } from './treatment-processes/payment-list/payment-list.component';
+import { CreateENabizProformaComponent } from './treatment-processes/create-enabiz-proforma/create-enabiz-proforma.component';
 
 
 @NgModule({
@@ -36,7 +37,8 @@ import { PaymentListComponent } from './treatment-processes/payment-list/payment
     OperationComponent,
     ProformaComponent,
     PaymentDialogComponent,
-    PaymentListComponent
+    PaymentListComponent,
+    CreateENabizProformaComponent
   ],
   imports: [
     SharedModule,
