@@ -20,6 +20,7 @@ import { ProformaComponent } from './treatment-processes/proforma/proforma.compo
 import { PaymentDialogComponent } from './treatment-processes/payment-dialog/payment-dialog.component';
 import { PaymentListComponent } from './treatment-processes/payment-list/payment-list.component';
 import { CreateENabizProformaComponent } from './treatment-processes/create-enabiz-proforma/create-enabiz-proforma.component';
+import { AgentNotesComponent } from './treatment-processes/agent-notes/agent-notes.component';
 
 
 @NgModule({
@@ -45,7 +46,6 @@ import { CreateENabizProformaComponent } from './treatment-processes/create-enab
     CommonModule,
     FormsModule,
     PatientRoutingModule
-    
   ],
   providers: [
     DialogService

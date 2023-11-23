@@ -1,0 +1,89 @@
+<p-toolbar styleClass="customToolbar">
+    <div class="p-toolbar-group-start">
+        <div class="ml-3" *ngIf="allNotes && allNotes.length > 0 && revokedRecordCount > 0">
+            <p-checkbox [(ngModel)]="showRevokedRecords" [binary]="true" inputId="chkShowRevokedRecords"
+                (click)="onShowRevokedRecords()"></p-checkbox>
+            <label class="ml-3" for="chkShowRevokedRecords">{{"::ShowRevokedRecords" | abpLocalization}}</label>
+        </div>
+    </div>
+    <div class="p-toolbar-group-end p-0">
+        <p-button pRipple label="{{ '::New' | abpLocalization }}" icon="pi pi-plus" styleClass="p-button-success mr-2"
+            (onClick)="openNew()" [loading]="loading" *ngIf="isAllowedToManage && !readonly"></p-button>
+    </div>
+</p-toolbar>
+
+<p-table #dt [value]="notesToBeDisplayed" [rows]="4" styleClass="pt-3" [paginator]="true"
+    [globalFilterFields]="['note','createdBy']" [rowHover]="true"
+    currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
+    [showCurrentPageReport]="false" [alwaysShowPaginator]="false" [loading]="loading">
+    <ng-template pTemplate="header">
+        <tr>
+            <th pSortableColumn="note">{{ '::HospitalAgentNotes:Column:Note' | abpLocalization }} <p-sortIcon
+                    field="note"></p-sortIcon></th>
+            <th *ngIf="isCommitDbOnSave" style="width: 12rem" pSortableColumn="creator.name">{{ '::HospitalAgentNotes:Column:CreatedBy' | abpLocalization }}
+                <p-sortIcon field="creator.name"></p-sortIcon>
+            </th>
+            <th *ngIf="isCommitDbOnSave" style="width: 12rem" pSortableColumn="creationTime">{{ '::HospitalAgentNotes:Column:Created' | abpLocalization }}
+                <p-sortIcon field="creationTime"></p-sortIcon>
+            </th>
+            <th style="width: 4rem" *ngIf="isAllowedToManage && !readonly"></th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-note>
+        <tr>
+            <td>
+                <div class="overflow cursor-pointer" [pTooltip]="note.note" tooltipStyleClass="wideTooltip"
+                    tooltipPosition="bottom">{{note.note}}
+                    <p-tag severity="warning" value="{{ '::Revoked' | abpLocalization }}" [rounded]="true"
+                        styleClass="revokeTag" class="ml-3"
+                        *ngIf="note.statusId === agentNoteStatusEnum.Revoked"></p-tag>
+                </div>
+
+            </td>
+            <td *ngIf="isCommitDbOnSave">{{note.creator?.name + (note.creator?.surname ? (" " + note.creator?.surname) : "")}}</td>
+            <td *ngIf="isCommitDbOnSave">{{note.creationTime | date: 'dd.MM.yyyy'}}</td>
+            <td *ngIf="isAllowedToManage && !readonly">
+                <p-button pRipple icon="pi pi-trash" styleClass="p-button-rounded p-button-danger"
+                    (onClick)="revokeNote(note)"
+                    [disabled]="note.statusId === agentNoteStatusEnum.Revoked"></p-button>
+            </td>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+        <div class="m-3">
+            {{ '::Table:EmptyMessage' | abpLocalization }}
+        </div>
+    </ng-template>
+    <ng-template pTemplate="summary">
+        <div class="flex align-items-center justify-content-between" *ngIf="totalRecords > 0">
+            {{ '::Table:Summary' | abpLocalization: totalRecords }}
+        </div>
+    </ng-template>
+</p-table>
+
+<p-dialog [(visible)]="noteDialog" [style]="{width: '450px'}" header="{{ '::HospitalAgentNotes:NoteDetails' | abpLocalization }}"
+    [modal]="true" styleClass="p-fluid" (onHide)="hideDialog()">
+    <form #noteForm="ngForm">
+        <div *ngIf="note">
+            <div class="field">
+                <label for="noteText">{{ '::HospitalAgentNotes:Column:Note' | abpLocalization }} <font style="color:red">*</font>
+                </label>
+                <textarea rows="5" pInputText id="noteText" name="noteText" #noteText="ngModel" [(ngModel)]="note.note"
+                    required autofocus></textarea>
+                <small class="p-error" *ngIf="!(noteText.valid || noteText.pristine)">{{ '::Message:RequiredField' |
+                    abpLocalization
+                    }}</small>
+            </div>
+        </div>
+    </form>
+    <p-footer>
+        <p-button pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" styleClass="p-button-text"
+            (onClick)="hideDialog()"></p-button>
+        <p-button pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" styleClass="p-button-text"
+            (onClick)="saveNote()" [disabled]="!(noteForm.valid)"></p-button>
+    </p-footer>
+</p-dialog>
+
+<p-confirmDialog key="noteConfirm" [style]="{width: '450px'}" rejectLabel="{{ '::Reject' | abpLocalization }}"
+    acceptLabel="{{ '::Accept' | abpLocalization }}" rejectButtonStyleClass="p-button-text p-button-danger"
+    acceptButtonStyleClass="p-button-text p-button-success"></p-confirmDialog>

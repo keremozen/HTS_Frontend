@@ -1,4 +1,5 @@
 export * from './entity-enum-additional-service-enum.enum';
+export * from './entity-enum-hospital-agent-note-status-enum.enum';
 export * from './entity-enum-hospital-consultation-status-enum.enum';
 export * from './entity-enum-hospital-response-type-enum.enum';
 export * from './entity-enum-hospitalization-type-enum.enum';

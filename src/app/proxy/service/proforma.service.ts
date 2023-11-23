@@ -1,6 +1,6 @@
 import { RestService } from '@abp/ng.core';
 import { Injectable } from '@angular/core';
-import type { ProformaDto, ProformaListDto, ProformaPricingListDto, RejectProformaDto, SaveENabizProformaDto, SaveProformaDto } from '../dto/proforma/models';
+import type { ProformaDto, ProformaListDto, ProformaPdfDto, ProformaPricingListDto, RejectProformaDto, SaveENabizProformaDto, SaveProformaDto } from '../dto/proforma/models';
 
 @Injectable({
   providedIn: 'root',
@@ -26,7 +26,7 @@ export class ProformaService {
   
 
   createProformaPdfById = (id: number) =>
-    this.restService.request<any, number[]>({
+    this.restService.request<any, ProformaPdfDto>({
       method: 'POST',
       url: `/api/app/proforma/${id}/proforma-pdf`,
     },

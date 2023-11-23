@@ -298,7 +298,16 @@
                     </div>
                 </div>
             </div>
-            <div class="col-4 align-self-end">
+            <div class="col-4">
+                <fieldset class="border pl-3 pr-3 pt-2 pb-3 m-2 responseFieldSet">
+                    <legend class="float-none w-auto pl-3 pr-3 text-sm responseFieldSetlegend">
+                        {{'::Proforma:Field:HospitalAgentNote' |
+                        abpLocalization}}
+                    </legend>
+                    <app-agent-notes (onNoteAdded)="onNoteAdded($event)"></app-agent-notes>
+                </fieldset>
+            </div>
+            <div class="col-12 align-self-end">
                 <div class="flex justify-content-end">
                     <p-button pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-save"
                         [disabled]="!(hospitalResponseForm.valid)" styleClass="p-button-success mr-2 mt-4 w-12rem"

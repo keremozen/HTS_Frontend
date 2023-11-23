@@ -43,11 +43,14 @@ import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { ChipModule} from 'primeng/chip';
 import { DataViewModule, DataViewLayoutOptions } from 'primeng/dataview';
 import { AutoCompleteModule } from 'primeng/autocomplete';
+import { AgentNotesComponent } from '../patient/treatment-processes/agent-notes/agent-notes.component';
 
 /**************/
 
 @NgModule({
-  declarations: [],
+  declarations: [
+    AgentNotesComponent
+  ],
   imports: [
     CoreModule,
     FormsModule,
@@ -132,7 +135,8 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
     ChipModule,
     DataViewModule,
     DataViewLayoutOptions,
-    AutoCompleteModule
+    AutoCompleteModule,
+    AgentNotesComponent
   ],
   providers: [ConfirmationService, MessageService]
 })

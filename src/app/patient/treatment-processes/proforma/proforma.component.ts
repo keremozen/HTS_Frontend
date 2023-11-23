@@ -448,10 +448,10 @@ export class ProformaComponent extends AppComponentBase {
     if (this.selectedProformaId) {
       this.proformaService.createProformaPdfById(this.selectedProformaId).subscribe({
         next: r => {
-          const source = `data:application/pdf;base64,${r}`;
+          const source = `data:application/pdf;base64,${r.file}`;
           const link = document.createElement("a");
           link.href = source;
-          link.download = `${this.selectedProforma.proformaCode}.pdf`
+          link.download = `${this.selectedProforma.proformaCode}-${r.patientNameSurname}.pdf`
           link.click();
         }
       });

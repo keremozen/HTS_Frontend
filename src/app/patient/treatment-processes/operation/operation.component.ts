@@ -8,7 +8,7 @@ import { HospitalResponseTypeDto } from '@proxy/dto/hospital-response-type';
 import { HospitalizationTypeDto } from '@proxy/dto/hospitalization-type';
 import { PatientDto } from '@proxy/dto/patient';
 import { ProcessDto } from '@proxy/dto/process';
-import { EntityEnum_HospitalResponseTypeEnum, EntityEnum_OperationStatusEnum, EntityEnum_ProcessTypeEnum } from '@proxy/enum';
+import { EntityEnum_HospitalAgentNoteStatusEnum, EntityEnum_HospitalResponseTypeEnum, EntityEnum_OperationStatusEnum, EntityEnum_ProcessTypeEnum } from '@proxy/enum';
 import { HospitalResponseTypeService, HospitalizationTypeService, OperationService, ProcessService, TreatmentTypeService, UserService } from '@proxy/service';
 import { Observable, forkJoin, map, of } from 'rxjs';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
@@ -19,6 +19,7 @@ import { OperationDto, SaveOperationDto } from '@proxy/dto/operation';
 import { TreatmentTypeDto } from '@proxy/dto/treatment-type';
 import { IdentityUserDto } from '@abp/ng.identity/proxy';
 import * as moment from 'moment';
+import { HospitalAgentNoteDto, SaveHospitalAgentNoteDto } from '@proxy/dto/hospital-agent-note';
 
 @Component({
   selector: 'app-operation',
@@ -44,6 +45,7 @@ export class OperationComponent extends AppComponentBase {
   selectedBranches: number[] = [];
   loading: boolean;
   isInNewRecordStatus: boolean = false;
+  agentNotes: SaveHospitalAgentNoteDto[] = [];
   public hospitalResponseTypeEnum = EntityEnum_HospitalResponseTypeEnum;
   public processTypeEnum = EntityEnum_ProcessTypeEnum;
   public operationStatusEnum = EntityEnum_OperationStatusEnum;
@@ -236,6 +238,14 @@ export class OperationComponent extends AppComponentBase {
     this.processDialog = false;
   }
 
+  onNoteAdded(notes: HospitalAgentNoteDto[]) {
+    this.agentNotes = notes as SaveHospitalAgentNoteDto[];
+    this.agentNotes.forEach(note => {
+      note.statusId = EntityEnum_HospitalAgentNoteStatusEnum.NewRecord;
+    });
+  }
+
+
   onResponseSave() {
     this.confirm({
       key: 'operationConfirm',
@@ -255,8 +265,10 @@ export class OperationComponent extends AppComponentBase {
             this.operation.appointedInterpreterId = this.selectedInterpreter.id;
           }
           this.hospitalResponse.hospitalResponseProcesses = [];
+          this.hospitalResponse.hospitalAgentNotes = [];
           this.hospitalResponse.hospitalResponseProcesses.push(...this.anticipatedProcesses);
           this.hospitalResponse.hospitalResponseProcesses.push(...this.anticipatedMaterials);
+          this.hospitalResponse.hospitalAgentNotes.push(...this.agentNotes);
           this.operation.hospitalResponse = this.hospitalResponse;
           this.operationService.create(this.operation).subscribe({
             complete: () => {

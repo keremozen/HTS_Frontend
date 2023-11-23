@@ -15,7 +15,6 @@ import { TaskListComponent } from './task-list/task-list.component';
     CommonModule,
     FormsModule,
     TaskRoutingModule
-    
   ],
   providers: [
     DialogService

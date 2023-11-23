@@ -9,11 +9,12 @@ import { HospitalResponseTypeDto } from '@proxy/dto/hospital-response-type';
 import { HospitalizationTypeDto } from '@proxy/dto/hospitalization-type';
 import { PatientDto } from '@proxy/dto/patient';
 import { ProcessDto } from '@proxy/dto/process';
-import { EntityEnum_HospitalResponseTypeEnum, EntityEnum_ProcessTypeEnum } from '@proxy/enum';
+import { EntityEnum_HospitalAgentNoteStatusEnum, EntityEnum_HospitalResponseTypeEnum, EntityEnum_ProcessTypeEnum } from '@proxy/enum';
 import { HospitalConsultationDocumentService, HospitalConsultationService, HospitalResponseService, HospitalResponseTypeService, HospitalizationTypeService, ProcessService } from '@proxy/service';
 import { forkJoin } from 'rxjs';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 import { CommonService } from '../services/common.service';
+import { HospitalAgentNoteDto, SaveHospitalAgentNoteDto } from '@proxy/dto/hospital-agent-note';
 
 @Component({
   selector: 'app-hospital-response',
@@ -38,6 +39,7 @@ export class HospitalResponseComponent extends AppComponentBase {
   totalAnticipatedProcesses: number = 0;
   anticipatedMaterials: SaveHospitalResponseProcessWithDetailDto[] = [];
   totalAnticipatedMaterials: number = 0;
+  agentNotes: SaveHospitalAgentNoteDto[] = [];
   loading: boolean;
   totalRecords: number;
   isAllowedToManage: boolean = false;
@@ -195,6 +197,13 @@ export class HospitalResponseComponent extends AppComponentBase {
     this.processDialog = false;
   }
 
+  onNoteAdded(notes: HospitalAgentNoteDto[]) {
+    this.agentNotes = notes as SaveHospitalAgentNoteDto[];
+    this.agentNotes.forEach(note => {
+      note.statusId = EntityEnum_HospitalAgentNoteStatusEnum.NewRecord;
+    });
+  }
+
   onResponseSend() {
     this.confirm({
       key: 'hospitalResponseConfirm',
@@ -203,7 +212,6 @@ export class HospitalResponseComponent extends AppComponentBase {
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.hospitalResponse.hospitalResponseTypeId = this.selectedHospitalResponseType;
-
         this.hospitalResponse.hospitalizationTypeId = this.selectedHospitalizationType ? this.selectedHospitalizationType.id : null;
         this.hospitalResponse.hospitalResponseBranches = [];
         this.selectedBranches?.forEach(branch => {
@@ -213,8 +221,10 @@ export class HospitalResponseComponent extends AppComponentBase {
           });
         });
         this.hospitalResponse.hospitalResponseProcesses = [];
+        this.hospitalResponse.hospitalAgentNotes = [];
         this.hospitalResponse.hospitalResponseProcesses.push(...this.anticipatedProcesses);
         this.hospitalResponse.hospitalResponseProcesses.push(...this.anticipatedMaterials);
+        this.hospitalResponse.hospitalAgentNotes.push(...this.agentNotes);
 
         this.hospitalResponseService.create(this.hospitalResponse).subscribe({
           complete: () => {

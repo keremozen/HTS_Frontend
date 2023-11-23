@@ -10,6 +10,7 @@ export * from './document-type.service';
 export * from './exchange-rate-information.service';
 export * from './external.service';
 export * from './gender.service';
+export * from './hospital-agent-note.service';
 export * from './hospital-consultation-document.service';
 export * from './hospital-consultation.service';
 export * from './hospital-pricer.service';

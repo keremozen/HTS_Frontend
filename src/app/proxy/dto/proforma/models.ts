@@ -36,6 +36,11 @@ export interface ProformaListDto {
   name?: string;
 }
 
+export interface ProformaPdfDto {
+  file: number[];
+  patientNameSurname?: string;
+}
+
 export interface ProformaPricingListDto extends AuditedEntityWithUserDto<number, IdentityUserDto> {
   operationId: number;
   proformaStatusId: EntityEnum_ProformaStatusEnum;

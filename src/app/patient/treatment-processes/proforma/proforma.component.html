@@ -120,7 +120,8 @@
                                 <p-cellEditor>
                                     <ng-template pTemplate="input">
                                         <p-inputNumber name="treatmentCount" #treatmentCount="ngModel" size="2"
-                                            [(ngModel)]="item.treatmentCount" (onInput)="onTreatmentCountChange($event, item)"></p-inputNumber>
+                                            [(ngModel)]="item.treatmentCount"
+                                            (onInput)="onTreatmentCountChange($event, item)"></p-inputNumber>
                                     </ng-template>
                                     <ng-template pTemplate="output">
                                         {{ item.treatmentCount }}
@@ -134,7 +135,8 @@
                                 <p-cellEditor>
                                     <ng-template pTemplate="input">
                                         <p-inputNumber name="changeAmount" #changeAmount="ngModel" size="4" suffix="%"
-                                            mode="decimal" [maxFractionDigits]="2" [(ngModel)]="item.change" (onInput)="onChangeAmountChange($event, item)"></p-inputNumber>
+                                            mode="decimal" [maxFractionDigits]="2" [(ngModel)]="item.change"
+                                            (onInput)="onChangeAmountChange($event, item)"></p-inputNumber>
                                     </ng-template>
                                     <ng-template pTemplate="output">
                                         {{ item.change }} %
@@ -144,14 +146,16 @@
                             <td [pEditableColumn]="item.proformaFinalPrice" pEditableColumnField="proformaFinalPrice">
                                 <p-cellEditor>
                                     <ng-template pTemplate="input">
-                                        <p-inputNumber name="finalPrice" #finalPrice="ngModel" mode="currency" [currency]="currencyName" 
-                                        [maxFractionDigits]="2" [(ngModel)]="item.proformaFinalPrice" (onInput)="onFinalPriceChange($event, item.code)"></p-inputNumber>
+                                        <p-inputNumber name="finalPrice" #finalPrice="ngModel" mode="currency"
+                                            [currency]="currencyName" [maxFractionDigits]="2"
+                                            [(ngModel)]="item.proformaFinalPrice"
+                                            (onInput)="onFinalPriceChange($event, item.code)"></p-inputNumber>
                                     </ng-template>
                                     <ng-template pTemplate="output">
                                         {{item.proformaFinalPrice | currency: this.currencyName:'symbol':'0.2-2'}}
                                     </ng-template>
                                 </p-cellEditor>
-                               
+
                             </td>
                             <td>
                                 <p-button pRipple icon="pi pi-trash" styleClass="p-button-rounded p-button-danger"
@@ -323,7 +327,7 @@
         </div>
         <div class="col-12 mt-3 grid-nogutter">
             <div class="grid grid-nogutter">
-                <div class="col-6 pr-1">
+                <div class="col-6 pr-2">
                     <fieldset class="border pl-3 pr-3 pt-2 pb-3 proformaFieldSet proformaFieldHeight">
                         <legend class="float-none w-auto pl-3 pr-3 text-sm proformaFieldSetlegend">
                             {{'::Proforma:Field:Materials' |
@@ -408,7 +412,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-6 pl-1">
+                <div class="col-6 pl-2">
                     <fieldset class="border pl-3 pr-3 pt-2 pb-3 proformaFieldSet proformaFieldHeight">
                         <legend class="float-none w-auto pl-3 pr-3 text-sm proformaFieldSetlegend">
                             {{'::Proforma:Field:HospitalDescription' |
@@ -418,6 +422,15 @@
                             #hospitalDescription="ngModel" [(ngModel)]="hospitalResponse.description" [disabled]="true"
                             class="w-full"></textarea>
                     </fieldset>
+
+                    <fieldset class="border pl-3 pr-3 pt-2 pb-3 mt-3 proformaFieldSet">
+                        <legend class="float-none w-auto pl-3 pr-3 text-sm proformaFieldSetlegend">
+                            {{'::Proforma:Field:HospitalAgentNote' |
+                            abpLocalization}}
+                        </legend>
+                        <app-agent-notes [readonly]="true" [hospitalResponseId]="hospitalResponse.id"></app-agent-notes>
+                    </fieldset>
+
                     <div class="text-right">
                         <p-button pRipple label="{{ '::Proforma:Button:Save' | abpLocalization }}"
                             styleClass="p-button-success ml-2 mt-4" (onClick)="onSaveProforma()"

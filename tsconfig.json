@@ -27,6 +27,10 @@
     "useDefineForClassFields": false
   },
   "angularCompilerOptions": {
+    "disableTypeScriptVersionCheck": true,
+    "strictInjectionParameters": false,
+    "strictInputAccessModifiers": false,
+    "strictTemplates": false,
     "enableI18nLegacyMessageIdFormat": false
   }
 }
