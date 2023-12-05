@@ -1,15 +1,18 @@
-import { Component, Injector } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { Component, Injector, ViewChild } from '@angular/core';
 import { ProcessDto, SaveProcessDto } from '@proxy/dto/process';
 import { ProcessCostDto, SaveProcessCostDto } from '@proxy/dto/process-cost';
 import { ProcessKindDto } from '@proxy/dto/process-kind';
 import { ProcessRelationDto, SaveProcessRelationDto } from '@proxy/dto/process-relation';
 import { ProcessTypeDto } from '@proxy/dto/process-type';
-import { ProcessTypeService } from '@proxy/service';
+import { EntityEnum_ProcessTypeEnum } from '@proxy/enum';
 import { ProcessService } from '@proxy/service/process.service';
+import { FilterMetadata, FilterService, SelectItem } from 'primeng/api';
+import { Table } from 'primeng/table';
 import { forkJoin } from 'rxjs';
 import { CommonService } from 'src/app/services/common.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
-
+import * as FileSaver from 'file-saver';
 
 @Component({
     selector: 'app-process',
@@ -26,7 +29,7 @@ import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 export class ProcessComponent extends AppComponentBase {
 
     processDialog: boolean;
-    processList: ProcessDto[];
+    processList: ProcessDtoWithDetail[];
     processTypeList: ProcessTypeDto[] = [];
     processKindList: ProcessKindDto[] = [];
     processCostList: SaveProcessCostDto[] = [];
@@ -48,16 +51,90 @@ export class ProcessComponent extends AppComponentBase {
     processRelation: SaveProcessRelationDto;
     processRelationToBeEdited: ProcessRelationDto;
 
+    processTypeSet: SelectItem[];
+    processKindSet: SelectItem[];
+    @ViewChild('dt') table: Table;
+
+    /* Filter props */
+    filterCode: string;
+    filterName: string;
+    filterEnglishName: string;
+    filterUshasPrice: string;
+    filterValidityStart: Date;
+    filterValidityEnd: Date;
+    filterDescription: Date;
+    filterProcessType: SelectItem[];
+    filterProcessKind: SelectItem[];
+    filterActive: SelectItem[];
+
     constructor(
         injector: Injector,
         private processService: ProcessService,
-        private commonService: CommonService
+        private commonService: CommonService,
+        private filterService: FilterService
     ) {
         super(injector);
     }
 
     ngOnInit() {
+        this.filterService.register('customDateFilter', (value, filter): boolean => {
+            var datePipe = new DatePipe("tr");
+            if (filter === undefined || filter === null || filter === '') {
+                return true;
+            }
+
+            if (value === undefined || value === null) {
+                return false;
+            }
+            return datePipe.transform(value, 'dd.MM.yyyy') === datePipe.transform(filter, 'dd.MM.yyyy');
+        });
+
         this.fetchData();
+    }
+
+    setDropDownFilterOptions() {
+        this.processKindSet = [];
+        this.processTypeSet = [];
+        this.processKindList.forEach(kind => {
+            if (!this.processKindSet.some(s => s.value.Id == kind.id)) {
+                this.processKindSet.push({ label: kind.name, value: kind.id });
+            }
+        });
+        this.processTypeList.forEach(type => {
+            if (!this.processTypeSet.some(s => s.value.Id == type.id)) {
+                this.processTypeSet.push({ label: type.name, value: type.id });
+            }
+        });
+    }
+
+    resetTable() {
+        this.filterCode = (this.table.filters['code'] != null || this.table.filters['code'] != undefined) ? (this.table.filters['code'] as FilterMetadata).value : null;
+        this.filterName = (this.table.filters['name'] != null || this.table.filters['name'] != undefined) ? (this.table.filters['name'] as FilterMetadata).value : null;
+        this.filterEnglishName = (this.table.filters['englishName'] != null || this.table.filters['englishName'] != undefined) ? (this.table.filters['englishName'] as FilterMetadata).value : null;
+        this.filterUshasPrice = (this.table.filters['ushasPrice'] != null || this.table.filters['ushasPrice'] != undefined) ? (this.table.filters['ushasPrice'] as FilterMetadata).value : null;
+        this.filterValidityStart = (this.table.filters['validityStart'] != null || this.table.filters['validityStart'] != undefined) ? new Date((this.table.filters['validityStart'] as FilterMetadata).value) : null;
+        this.filterValidityEnd = (this.table.filters['validityEnd'] != null || this.table.filters['validityEnd'] != undefined) ? new Date((this.table.filters['validityEnd'] as FilterMetadata).value) : null;
+        this.filterDescription = (this.table.filters['description'] != null || this.table.filters['description'] != undefined) ? (this.table.filters['description'] as FilterMetadata).value : null;
+        if (this.table.filters['processType.id'] != null || this.table.filters['processType.id'] != undefined) {
+            this.filterProcessType = [];
+            ((this.table.filters['processType.id'] as FilterMetadata).value as number[]).forEach(n => {
+                let processTypeSelectItem = this.processTypeSet.find(p => p.value === n);
+                this.filterProcessType.push(processTypeSelectItem);
+            });
+        }
+        else {
+            this.filterProcessType = null;
+        }
+        if (this.table.filters['processKind.id'] != null || this.table.filters['processKind.id'] != undefined) {
+            this.filterProcessKind = [];
+            ((this.table.filters['processKind.id'] as FilterMetadata).value as number[]).forEach(n => {
+                let processKindSelectItem = this.processKindSet.find(p => p.value === n);
+                this.filterProcessKind.push(processKindSelectItem);
+            });
+        }
+        else {
+            this.filterProcessKind = null;
+        }
     }
 
     fetchData() {
@@ -72,11 +149,16 @@ export class ProcessComponent extends AppComponentBase {
                 next: ([
                     resProcessList
                 ]) => {
-                    this.processList = resProcessList.items;
+                    this.processList = resProcessList.items as ProcessDtoWithDetail[];
                     this.processList.forEach(process => {
                         process.processCosts.forEach(cost => {
                             cost.validityStartDate = new Date(cost.validityStartDate);
                             cost.validityEndDate = new Date(cost.validityEndDate);
+                            if (cost.validityStartDate <= new Date() && cost.validityEndDate >= new Date()) {
+                                process.ushasPrice = cost.ushasPrice;
+                                process.validityStart = cost.validityStartDate;
+                                process.validityEnd = cost.validityEndDate;
+                            }
                         })
                     });
                 },
@@ -84,6 +166,8 @@ export class ProcessComponent extends AppComponentBase {
                     this.loading = false;
                 },
                 complete: () => {
+                    this.setDropDownFilterOptions();
+                    this.resetTable();
                     this.loading = false;
                 }
             }
@@ -133,7 +217,7 @@ export class ProcessComponent extends AppComponentBase {
         this.process.processCosts = this.processCostList;
         this.process.processRelations = this.processRelationList;
         if (!this.isEdit) {
-           
+
             this.processService.create(this.process).subscribe({
                 complete: () => {
                     this.fetchData();
@@ -221,7 +305,7 @@ export class ProcessComponent extends AppComponentBase {
         this.processRelation = {} as SaveProcessRelationDto;
         if (this.isEdit) {
             this.processRelation.processId = this.processToBeEdited.id;
-            this.processListForRelated = this.processList.filter(p => p.id != this.processToBeEdited.id && !this.processRelationList.some(pr=> pr.childProcessId == p.id));
+            this.processListForRelated = this.processList.filter(p => p.id != this.processToBeEdited.id && !this.processRelationList.some(pr => pr.childProcessId == p.id));
         }
         else {
             this.processListForRelated = this.processList;
@@ -264,5 +348,57 @@ export class ProcessComponent extends AppComponentBase {
         });
     }
 
+    onValidityStartSelect(value) {
+        this.table.filter(new Date(value), 'validityStart', 'customDateFilter')
+    }
 
+    onValidityEndSelect(value) {
+        this.table.filter(new Date(value), 'validityEnd', 'customDateFilter')
+    }
+
+    onProcessTypeSelect(event) {
+        this.table.filter(event.value, 'processTypeId', 'in');
+    }
+
+    onProcessKindSelect(event) {
+        this.table.filter(event.value, 'processKindId', 'in');
+    }
+
+    exportExcel() {
+        import('xlsx').then((xlsx) => {
+            const worksheet = xlsx.utils.json_to_sheet(this.processList);
+            const workbook = { Sheets: { data: worksheet }, SheetNames: ['data'] };
+            const excelBuffer: any = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
+            this.saveAsExcelFile(excelBuffer, 'islemListesi');
+        });
+    }
+
+    saveAsExcelFile(buffer: any, fileName: string): void {
+        let EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+        let EXCEL_EXTENSION = '.xlsx';
+        const data: Blob = new Blob([buffer], {
+            type: EXCEL_TYPE
+        });
+        FileSaver.saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
+    }
+
+}
+
+
+class ProcessDtoWithDetail implements ProcessDto {
+    name?: string;
+    englishName?: string;
+    code?: string;
+    description?: string;
+    processTypeId: EntityEnum_ProcessTypeEnum;
+    processKindId?: number;
+    isActive: boolean;
+    processType: ProcessTypeDto;
+    processKind: ProcessKindDto;
+    processCosts: ProcessCostDto[];
+    processRelations: ProcessRelationDto[];
+    id?: number;
+    ushasPrice: number;
+    validityEnd: Date;
+    validityStart: Date;
 }

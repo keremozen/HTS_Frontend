@@ -6,7 +6,11 @@
     <p-toolbar styleClass="mb-4 gap-2">
         <ng-template pTemplate="left">
             <p-button pRipple label="{{ '::Admin:Process:NewProcess' | abpLocalization }}" icon="pi pi-plus"
-            styleClass="p-button-success mr-2" (onClick)="openNewProcess()" [loading]="loading"></p-button>
+                styleClass="p-button-success mr-2" (onClick)="openNewProcess()" [loading]="loading"></p-button>
+        </ng-template>
+        <ng-template pTemplate="right">
+            <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()"
+                class="p-button-success mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
         </ng-template>
     </p-toolbar>
 
@@ -18,10 +22,20 @@
             <tr>
                 <th pSortableColumn="code">{{ '::Admin:Process:Column:Code' | abpLocalization }} <p-sortIcon
                         field="code"></p-sortIcon></th>
+
                 <th pSortableColumn="name">{{ '::Admin:Process:Column:Name' | abpLocalization }} <p-sortIcon
                         field="name"></p-sortIcon></th>
                 <th pSortableColumn="englishName">{{ '::Admin:Process:Column:EnglishName' | abpLocalization }}
                     <p-sortIcon field="englishName"></p-sortIcon>
+                </th>
+                <th pSortableColumn="ushasPrice">{{ '::Admin:Process:Column:UshasPrice' | abpLocalization }}
+                    <p-sortIcon field="ushasPrice"></p-sortIcon>
+                </th>
+                <th pSortableColumn="validityStart">{{ '::Admin:Process:Column:ValidityStart' | abpLocalization }}
+                    <p-sortIcon field="validityStart"></p-sortIcon>
+                </th>
+                <th pSortableColumn="validityEnd">{{ '::Admin:Process:Column:ValidityEnd' | abpLocalization }}
+                    <p-sortIcon field="validityEnd"></p-sortIcon>
                 </th>
                 <th pSortableColumn="description">{{ '::Admin:Process:Column:Description' | abpLocalization }}
                     <p-sortIcon field="description"></p-sortIcon>
@@ -29,9 +43,58 @@
                 <th pSortableColumn="processType.name">{{ '::Admin:Process:Column:Type' | abpLocalization }} <p-sortIcon
                         field="processType.name"></p-sortIcon></th>
                 <th pSortableColumn="processKind.name">{{ '::Admin:Process:Column:Kind' | abpLocalization }} <p-sortIcon
-                            field="processKind.name"></p-sortIcon></th>
+                        field="processKind.name"></p-sortIcon></th>
                 <th class="w-8rem text-center">{{ '::Admin:Process:Column:IsActive' | abpLocalization }}</th>
                 <th class="w-8rem"></th>
+            </tr>
+            <tr>
+                <th>
+                    <input pInputText type="text" (input)="dt.filter($event.target.value, 'code', 'contains')"
+                        style="width:100%" autocomplete="off" [(ngModel)]="filterCode">
+                </th>
+                <th>
+                    <input pInputText type="text" (input)="dt.filter($event.target.value, 'name', 'contains')"
+                        style="width:100%" autocomplete="off" [(ngModel)]="filterName">
+                </th>
+                <th>
+                    <input pInputText type="text" (input)="dt.filter($event.target.value, 'englishName', 'contains')"
+                        style="width:100%" autocomplete="off" [(ngModel)]="filterEnglishName">
+                </th>
+                <th>
+                    <input pInputText type="number" (input)="dt.filter($event.target.value, 'ushasPrice', 'contains')"
+                        style="width:100%" autocomplete="off" [(ngModel)]="filterUshasPrice">
+                </th>
+                <th>
+                    <p-calendar (onSelect)="onValidityStartSelect($event)"
+                        (onClearClick)="dt.filter('', 'validityStart', 'contains')" [showButtonBar]="true"
+                        styleClass="customCalendar" [readonlyInput]="true" dateFormat="dd.mm.yy" appendTo="body"
+                        [inputStyle]="{'width':'100%'}" [(ngModel)]="filterValidityStart"></p-calendar>
+                </th>
+                <th>
+                    <p-calendar (onSelect)="onValidityEndSelect($event)"
+                        (onClearClick)="dt.filter('', 'validityEnd', 'contains')" [showButtonBar]="true"
+                        styleClass="customCalendar" [readonlyInput]="true" dateFormat="dd.mm.yy" appendTo="body"
+                        [inputStyle]="{'width':'100%'}" [(ngModel)]="filterValidityEnd"></p-calendar>
+                </th>
+                <th>
+                    <input pInputText type="text" (input)="dt.filter($event.target.value, 'description', 'contains')"
+                        style="width:100%" autocomplete="off" [(ngModel)]="filterDescription">
+                </th>
+                <th>
+                    <p-multiSelect [options]="processTypeSet" [displaySelectedLabel]="false" defaultLabel="Seçiniz"
+                        [filter]="false" styleClass="filterMultiSelect" emptyFilterMessage="Sonuç bulunamadı"
+                        (onChange)="onProcessTypeSelect($event)" [(ngModel)]="filterProcessType" appendTo="body">
+                    </p-multiSelect>
+                </th>
+                <th>
+                    <p-multiSelect [options]="processKindSet" [displaySelectedLabel]="false" defaultLabel="Seçiniz"
+                        [filter]="false" styleClass="filterMultiSelect" emptyFilterMessage="Sonuç bulunamadı"
+                        (onChange)="onProcessKindSelect($event)" [(ngModel)]="filterProcessKind" appendTo="body">
+                    </p-multiSelect>
+                </th>
+                <th>
+                </th>
+                <th></th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-process>
@@ -39,6 +102,9 @@
                 <td>{{process.code}}</td>
                 <td>{{process.name}}</td>
                 <td>{{process.englishName}}</td>
+                <td>{{process.ushasPrice | currency:'TRY':'symbol':'0.2-2'}}</td>
+                <td>{{process.validityStart | date: "dd.MM.yyyy"}}</td>
+                <td>{{process.validityEnd | date: "dd.MM.yyyy"}}</td>
                 <td>{{process.description}}</td>
                 <td>{{process.processType?.name}}</td>
                 <td>{{process.processKind?.name}}</td>
@@ -157,8 +223,7 @@
                         [breakpoint]="'960px'" [rowHover]="true" [loading]="loading" [showCurrentPageReport]="false">
                         <ng-template pTemplate="caption">
                             <div class="flex align-items-center justify-content-end">
-                                <p-button pRipple
-                                    label="{{ '::Admin:Process:ProcessCost:NewCost' | abpLocalization }}"
+                                <p-button pRipple label="{{ '::Admin:Process:ProcessCost:NewCost' | abpLocalization }}"
                                     icon="pi pi-plus" styleClass="p-button-success" (onClick)="openNewProcessCost()"
                                     [loading]="loading" [style]="{'width':'unset'}"></p-button>
                             </div>
@@ -192,7 +257,7 @@
                                 <td>{{processCost.ushasPrice | currency:'TRY':'symbol'}}</td>
                                 <td>
                                     <p-button pRipple icon="pi pi-pencil"
-                                    styleClass="p-button-rounded p-button-success mr-2"
+                                        styleClass="p-button-rounded p-button-success mr-2"
                                         (onClick)="editProcessCost(processCost)"></p-button>
                                     <p-button pRipple icon="pi pi-trash" styleClass="p-button-rounded p-button-warning"
                                         (onClick)="deleteProcessCost(processCost)"></p-button>

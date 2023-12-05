@@ -21,12 +21,24 @@
         <tr>
             <th pSortableColumn="treatmentCode">{{ '::TreatmentProcess:Column:Code' | abpLocalization }} <p-sortIcon
                     field="treatmentCode"></p-sortIcon></th>
-            <th pSortableColumn="State">{{ '::TreatmentProcess:Column:State' | abpLocalization }}
-                <p-sortIcon field="state"></p-sortIcon>
+            <th pSortableColumn="treatmentProcessStatus.name">{{ '::TreatmentProcess:Column:State' | abpLocalization }}
+                <p-sortIcon field="treatmentProcessStatus.name"></p-sortIcon>
             </th>
-            <th style="width: 15rem" pSortableColumn="CreatedBy">{{ '::TreatmentProcess:Column:CreatedBy' |
+            <th pSortableColumn="hbysPrice">{{ '::TreatmentProcess:Column:HBYSPrice' | abpLocalization }}
+                <p-sortIcon field="hbysPrice"></p-sortIcon>
+            </th>
+            <th pSortableColumn="proformaPrice">{{ '::TreatmentProcess:Column:ProformaPrice' | abpLocalization }}
+                <p-sortIcon field="proformaPrice"></p-sortIcon>
+            </th>
+            <th pSortableColumn="paymentPrice">{{ '::TreatmentProcess:Column:PaymentPrice' | abpLocalization }}
+                <p-sortIcon field="paymentPrice"></p-sortIcon>
+            </th>
+            <th pSortableColumn="unPaidPrice">{{ '::TreatmentProcess:Column:UnpaidPrice' | abpLocalization }}
+                <p-sortIcon field="unPaidPrice"></p-sortIcon>
+            </th>
+            <th style="width: 15rem" pSortableColumn="creator.name">{{ '::TreatmentProcess:Column:CreatedBy' |
                 abpLocalization }}
-                <p-sortIcon field="CreatedBy"></p-sortIcon>
+                <p-sortIcon field="creator.name"></p-sortIcon>
             </th>
             <th style="width: 15rem" pSortableColumn="creationTime">{{ '::TreatmentProcess:Column:Created' |
                 abpLocalization
@@ -39,6 +51,10 @@
         <tr [pSelectableRow]="process" class="cursor-pointer" (click)="onDisplayTreatmentProcessDetail()">
             <td>{{process.treatmentCode}}</td>
             <td>{{process.treatmentProcessStatus?.name}}</td>
+            <td>{{process.hbysPrice| currency:'TRY':'symbol':'0.2-2'}}</td>
+            <td>{{process.proformaPrice| currency:'TRY':'symbol':'0.2-2'}}</td>
+            <td>{{process.paymentPrice| currency:'TRY':'symbol':'0.2-2'}}</td>
+            <td>{{process.unPaidPrice| currency:'TRY':'symbol':'0.2-2'}}</td>
             <td>{{process.creator?.name + (process.creator?.surname ? (" " + process.creator?.surname) : "")}}</td>
             <td>{{process.creationTime | date: 'dd.MM.yyyy'}}</td>
         </tr>

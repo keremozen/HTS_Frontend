@@ -4,7 +4,9 @@ import { LanguageDto } from '@proxy/dto/language';
 import { NationalityDto } from '@proxy/dto/nationality';
 import { FilterPatientDto, PatientDto } from '@proxy/dto/patient';
 import { PatientTreatmentProcessDto } from '@proxy/dto/patient-treatment-process';
-import { PatientService } from '@proxy/service';
+import { TreatmentProcessStatusDto } from '@proxy/dto/treatment-process-status';
+import { PatientService, TreatmentProcessStatusService } from '@proxy/service';
+import { forkJoin } from 'rxjs';
 import { CommonService } from 'src/app/services/common.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
@@ -22,7 +24,7 @@ export class PatientListComponent extends AppComponentBase {
   nationalityList: NationalityDto[] = [];
   languageList: LanguageDto[] = [];
   genderList: GenderDto[] = [];
-  processList: PatientTreatmentProcessDto[] = [];
+  processStatusList: TreatmentProcessStatusDto[] = [];
   patientFilter: FilterPatientDto = {} as FilterPatientDto;
   loading: boolean;
   totalRecords: number;
@@ -32,7 +34,8 @@ export class PatientListComponent extends AppComponentBase {
   constructor(
     injector: Injector,
     private commonService: CommonService,
-    private patientService: PatientService
+    private patientService: PatientService,
+    private treatmentProcessStatusService: TreatmentProcessStatusService
   ) {
     super(injector);
     this.isAllowedToManage = this.permission.getGrantedPolicy("HTS.PatientManagement")
@@ -41,14 +44,22 @@ export class PatientListComponent extends AppComponentBase {
   ngOnInit() {
     this.fetchData();
   }
+  
   fetchData() {
     this.loading = true;
     this.nationalityList = this.commonService.nationalityList;
     this.languageList = this.commonService.languageList;
     this.genderList = this.commonService.genderList;
 
-    this.patientService.getList().subscribe({
-      next: (resPatientList) => {
+    forkJoin([
+      this.treatmentProcessStatusService.getList(),
+      this.patientService.getList()
+    ]).subscribe({
+      next: ([
+        resStatusList,
+        resPatientList
+      ]) => {
+        this.processStatusList = resStatusList.items;
         this.patientList = resPatientList.items;
         this.totalRecords = resPatientList.totalCount;
       },

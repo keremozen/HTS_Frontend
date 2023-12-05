@@ -10,7 +10,8 @@
                         <p-dropdown id="hospital" name="hospital" #hospital="ngModel" [options]="hospitalList"
                             [(ngModel)]="selectedHospitalId" placeholder="{{ '::Select' | abpLocalization }}"
                             [style]="{'width':'100%'}" required="true" styleClass="filterDropDown" optionLabel="name"
-                            optionValue="id" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" [disabled]="isRelatedWithProforma"></p-dropdown>
+                            optionValue="id" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
+                            [disabled]="isRelatedWithProforma"></p-dropdown>
                     </div>
                 </div>
                 <div class="field grid">
@@ -27,6 +28,7 @@
                         | abpLocalization }}</label>
                     <div class="col-12 md:col-9">
                         <input id="txtOrderNo" name="txtOrderNo" pInputText type="text" [disabled]="true"
+                            #txtOrderNo="ngModel" [(ngModel)]="orderNumber"
                             class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
                     </div>
                 </div>
@@ -58,10 +60,10 @@
                         <input id="txtPayerName" name="txtPayerName" pInputText type="text" #txtPayerName="ngModel"
                             [(ngModel)]="payment.payerNameSurname" required
                             class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
-                            <small class="p-error" *ngIf="!(txtPayerName.valid || txtPayerName.pristine)">{{
-                                '::Message:RequiredField' |
-                                abpLocalization
-                                }}</small>
+                        <small class="p-error" *ngIf="!(txtPayerName.valid || txtPayerName.pristine)">{{
+                            '::Message:RequiredField' |
+                            abpLocalization
+                            }}</small>
                     </div>
                 </div>
                 <div class="field grid">
@@ -75,10 +77,10 @@
                             placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}" required="true"
                             styleClass="filterDropDown" optionLabel="name" optionValue="id"
                             emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
-                            <small class="p-error" *ngIf="!(ddlPaymentReason.valid || ddlPaymentReason.pristine)">{{
-                                '::Message:RequiredField' |
-                                abpLocalization
-                                }}</small>
+                        <small class="p-error" *ngIf="!(ddlPaymentReason.valid || ddlPaymentReason.pristine)">{{
+                            '::Message:RequiredField' |
+                            abpLocalization
+                            }}</small>
                     </div>
                 </div>
                 <div class="field grid">
@@ -107,8 +109,9 @@
                         '::PaymentDialog:Field:PaymentDate'
                         | abpLocalization }}</label>
                     <div class="col-12 md:col-9">
-                        <p-calendar id="txtPaymentDate" name="txtPaymentDate" #txtPaymentDate="ngModel" [(ngModel)]="payment.paymentDate" 
-                        [showTime]="true" [showSeconds]="false" dateFormat="dd.mm.yy" class="text-sm text-color-secondary"></p-calendar>
+                        <p-calendar id="txtPaymentDate" name="txtPaymentDate" #txtPaymentDate="ngModel"
+                            [(ngModel)]="payment.paymentDate" [showTime]="true" [showSeconds]="false"
+                            dateFormat="dd.mm.yy" class="text-sm text-color-secondary"></p-calendar>
                     </div>
                 </div>
                 <div class="field grid p-2 pt-0">
@@ -120,14 +123,14 @@
             <div class="col-12">
                 <p-toolbar styleClass="customToolbar">
                     <div class="p-toolbar-group-end p-0">
-                        <p-button pRipple
-                            label="{{ '::PaymentDialog:PaymentItemTable:AddItem' | abpLocalization }}" icon="pi pi-plus"
-                            styleClass="p-button-success mr-2" (onClick)="newPaymentItem()"></p-button>
+                        <p-button pRipple label="{{ '::PaymentDialog:PaymentItemTable:AddItem' | abpLocalization }}"
+                            icon="pi pi-plus" styleClass="p-button-success mr-2"
+                            (onClick)="newPaymentItem()"></p-button>
                     </div>
                 </p-toolbar>
                 <p-table #dt [value]="payment.paymentItems" [rows]="5" styleClass="pt-3" [paginator]="true"
-                    [rowHover]="true" [loading]="loading"
-                    selectionMode="single" [(selection)]="selectedPaymentItem" dataKey="id" (onRowSelect)="onPaymentItemSelect($event)"
+                    [rowHover]="true" [loading]="loading" selectionMode="single" [(selection)]="selectedPaymentItem"
+                    dataKey="id" (onRowSelect)="onPaymentItemSelect($event)"
                     currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
                     [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
                     <ng-template pTemplate="header">
@@ -152,11 +155,11 @@
                                 abpLocalization }}
                                 <p-sortIcon field="bank"></p-sortIcon>
                             </th>
-                            <th pSortableColumn="queryNo">{{
+                            <th pSortableColumn="queryNumber">{{
                                 '::PaymentDialog:PaymentItemTable:Column:QueryNo'
                                 |
                                 abpLocalization }}
-                                <p-sortIcon field="queryNo"></p-sortIcon>
+                                <p-sortIcon field="queryNumber"></p-sortIcon>
                             </th>
                             <th pSortableColumn="currency">{{
                                 '::PaymentDialog:PaymentItemTable:Column:Currency'
@@ -179,12 +182,12 @@
                             <td>{{paymentItem.paymentKind?.name}}</td>
                             <td>{{paymentItem.posApproveCode ?? '-'}}</td>
                             <td>{{paymentItem.bank ?? '-'}}</td>
-                            <td>{{paymentItem.queryNo ?? '-'}}</td>
+                            <td>{{paymentItem.queryNumber ?? '-'}}</td>
                             <td>{{paymentItem.currency?.name}}</td>
                             <td>{{paymentItem.price | currency: paymentItem.currencyCode:'symbol':'0.2-2'}}</td>
                             <td>
                                 <p-button pRipple icon="pi pi-trash" (onClick)="deletePaymentItem(paymentItem)"
-                                styleClass="p-button-rounded p-button-warning"></p-button>
+                                    styleClass="p-button-rounded p-button-warning"></p-button>
                             </td>
                         </tr>
                     </ng-template>
@@ -204,8 +207,9 @@
             <div class="col-12">
                 <div class="flex justify-content-end">
                     <p-button pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-save"
-                        [disabled]="!(paymentForm.valid) || payment.paymentItems?.length == 0" styleClass="p-button-success mr-2 mt-4 w-12rem"
-                        [loading]="loading" (onClick)="onPaymentSave()"></p-button>
+                        [disabled]="!(paymentForm.valid) || payment.paymentItems?.length == 0"
+                        styleClass="p-button-success mr-2 mt-4 w-12rem" [loading]="loading"
+                        (onClick)="onPaymentSave()"></p-button>
                 </div>
             </div>
         </div>
@@ -252,7 +256,7 @@
                     abpLocalization
                     }}</label>
                 <input id="queryNo" name="queryNo" pInputText type="text" #queryNo="ngModel"
-                    [(ngModel)]="paymentItem.queryNo"
+                    [(ngModel)]="paymentItem.queryNumber"
                     class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
 
             </div>

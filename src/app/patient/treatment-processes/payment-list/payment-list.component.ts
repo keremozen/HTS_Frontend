@@ -78,7 +78,6 @@ export class PaymentListComponent extends AppComponentBase {
   }
 
   onNewPayment() {
-
     this.paymentDialogRef = this.dialogService.open(PaymentDialogComponent, {
       header: this.l('::PaymentDialog:Title'),
       width: '85vw',
@@ -141,7 +140,6 @@ export class PaymentListComponent extends AppComponentBase {
 
 
   uploadInvoice() {
-
     let fileReader = new FileReader();
     fileReader.readAsDataURL(this.uploadedInvoices[0]);
     fileReader.onload = (r) => {
@@ -164,6 +162,24 @@ export class PaymentListComponent extends AppComponentBase {
     this.paymentDocument = null;
     this.uploadedInvoices = [];
     this.displayUploadInvoice = false;
+  }
+
+  editPaymentItem(payment: ListPaymentDto) {
+    this.paymentDialogRef = this.dialogService.open(PaymentDialogComponent, {
+      header: this.l('::PaymentDialog:Title'),
+      width: '85vw',
+      contentStyle: { overflow: 'auto' },
+      baseZIndex: 10000,
+      maximizable: true,
+      data: {
+        paymentId: payment.id,
+        patientName: this.patient.name + (this.patient.surname ? " " + this.patient.surname : "")
+      },
+    });
+
+    this.paymentDialogRef.onClose.subscribe(() => {
+      this.fetchData();
+    });
   }
 
   onSelect(event: any) {

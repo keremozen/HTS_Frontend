@@ -1,7 +1,7 @@
 .processFieldSet {
     border-radius: 6px;
-    background-color: rgba(235, 245, 238,.2);
-    box-shadow: 1px 1px 5px -1px rgba(0,0,0,.2)
+    background-color: rgba(235, 245, 238, .2);
+    box-shadow: 1px 1px 5px -1px rgba(0, 0, 0, .2)
 }
 
 .processFieldSet .processFieldSetlegend {
@@ -13,3 +13,11 @@
 
 }
 
+.customCalendar.p-calendar .p-datepicker {
+    width: 300px;
+}
+
+.filterMultiSelect {
+    width: 100%;
+    font-weight: normal;
+}

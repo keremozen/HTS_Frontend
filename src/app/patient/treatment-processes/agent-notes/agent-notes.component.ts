@@ -118,7 +118,7 @@ export class AgentNotesComponent extends AppComponentBase {
 
   revokeNote(noteToBeRevoked: HospitalAgentNoteDto) {
     this.confirm({
-      key: 'noteConfirm',
+      key: 'agentNoteConfirm',
       message: this.l('::Message:RevokeConfirmation'),
       header: this.l('::Confirm'),
       icon: 'pi pi-exclamation-triangle',

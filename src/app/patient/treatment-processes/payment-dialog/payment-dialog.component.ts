@@ -19,12 +19,13 @@ import { AppComponentBase } from 'src/app/shared/common/app-component-base';
   styleUrls: ['./payment-dialog.component.scss'],
   encapsulation: ViewEncapsulation.None,
   providers: [
-    { provide: LOCALE_ID, useValue: 'de-DE' },  
-    ]
+    { provide: LOCALE_ID, useValue: 'de-DE' },
+  ]
 })
 
 export class PaymentDialogComponent extends AppComponentBase {
 
+  paymentId: number = null;
   hospitalList: HospitalDto[] = [];
   currencyList: CurrencyDto[] = [];
   selectedHospitalId: number;
@@ -42,6 +43,7 @@ export class PaymentDialogComponent extends AppComponentBase {
   isRelatedWithProforma: boolean = false;
   currentUser: CurrentUserDto;
   selectedPaymentItem: SavePaymentItemWithDetail;
+  orderNumber: string = "";
 
   constructor(
     injector: Injector,
@@ -59,29 +61,51 @@ export class PaymentDialogComponent extends AppComponentBase {
   ngOnInit() {
     this.currentUser = this.config.getOne("currentUser");
     this.collectorName = this.currentUser.name + (this.currentUser.surName ? (" " + this.currentUser.surName) : "");
+    this.hospitalList = this.commonService.hospitalList;
+    this.currencyList = this.commonService.currencyList;
+
     this.isRelatedWithProforma = this.dialogConfig.data?.isRelatedWithProforma;
     this.patientName = this.dialogConfig.data?.patientName;
     this.selectedHospitalId = this.dialogConfig.data?.hospitalId;
     this.proformaCode = this.dialogConfig.data?.proformaCode;
     this.proformaId = this.dialogConfig.data?.proformaId;
     this.ptpId = this.dialogConfig.data?.ptpId;
-    this.payment = {} as SavePaymentDto;
-    this.payment.paymentDate = new Date();
-    this.payment.proformaId = this.proformaId;
-    this.payment.ptpId = this.ptpId;
-    this.payment.paymentItems = this.payment.paymentItems as SavePaymentItemWithDetail[];
-    this.payment.paymentItems = [];
-    this.hospitalList = this.commonService.hospitalList;
-    this.currencyList = this.commonService.currencyList;
+    this.paymentId = this.dialogConfig.data?.paymentId;
+
     forkJoin([
       this.paymentKindService.getList(),
       this.paymentReasonService.getList(true)
-    ]).subscribe(([
-      resPaymentKind,
-      resPaymentReason
-    ]) => {
-      this.paymentKindList = resPaymentKind.items;
-      this.paymentReasonList = resPaymentReason.items;
+    ]).subscribe({
+      next: ([
+        resPaymentKind,
+        resPaymentReason
+      ]) => {
+        this.paymentKindList = resPaymentKind.items;
+        this.paymentReasonList = resPaymentReason.items;
+      },
+      complete: () => {
+        if (this.paymentId == null) {
+          this.payment = {} as SavePaymentDto;
+          this.payment.paymentDate = new Date();
+          this.payment.proformaId = this.proformaId;
+          this.payment.ptpId = this.ptpId;
+          this.payment.paymentItems = this.payment.paymentItems as SavePaymentItemWithDetail[];
+          this.payment.paymentItems = [];
+        }
+        else {
+          this.paymentService.get(this.paymentId).subscribe({
+            next: (resPayment) => {
+              this.orderNumber = resPayment.generatedRowNumber;
+              this.payment = resPayment as SavePaymentDto;
+              debugger;
+              this.selectedHospitalId = this.payment.hospitalId;
+              this.proformaCode = this.payment.proformaId.toString();
+              this.payment.paymentDate = new Date(this.payment.paymentDate);
+              this.reorderItems();
+            }
+          })
+        }
+      }
     });
   }
 

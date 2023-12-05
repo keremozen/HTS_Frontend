@@ -1,11 +1,13 @@
-import { Component, EventEmitter, Injector, Input, Output, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Injector, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ContractedInstitutionDto } from '@proxy';
 import { ContractedInstitutionStaffDto } from '@proxy/dto/contracted-institution-staff';
+import { SaveDocumentDto } from '@proxy/dto/invitation-letter-document';
 import { LanguageDto } from '@proxy/dto/language';
 import { NationalityDto } from '@proxy/dto/nationality';
 import { PatientAdmissionMethodDto } from '@proxy/dto/patient-admission-method';
 import { SalesMethodAndCompanionInfoDto } from '@proxy/dto/sales-method-and-companion-info';
-import { ContractedInstitutionService, ContractedInstitutionStaffService, LanguageService, NationalityService, PatientAdmissionMethodService, SalesMethodAndCompanionInfoService } from '@proxy/service';
+import { ContractedInstitutionService, ContractedInstitutionStaffService, InvitationLetterDocumentService, LanguageService, NationalityService, PatientAdmissionMethodService, SalesMethodAndCompanionInfoService } from '@proxy/service';
+import { FileUpload } from 'primeng/fileupload';
 import { forkJoin } from 'rxjs';
 import { CommonService } from 'src/app/services/common.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
@@ -29,13 +31,18 @@ export class CompanionInfoComponent extends AppComponentBase {
   selectedStaffEmail: string;
   selectedStaffPhone: string;
   isAllowedToManage: boolean = false;
+  displayUploadInvitationLetter: boolean = false;
+  uploadedInvitationLetters: any[] = [];
+  invitationLetterDocument: SaveDocumentDto;
   @Output() save: EventEmitter<any> = new EventEmitter();
+  @ViewChild("invitationLetter", { static: false }) documentUpload: FileUpload;
 
   constructor(
     injector: Injector,
     private commonService: CommonService,
     private contractedInstitutionStaffService: ContractedInstitutionStaffService,
-    private salesAndCompanionInfoService: SalesMethodAndCompanionInfoService
+    private salesAndCompanionInfoService: SalesMethodAndCompanionInfoService,
+    private invitationLetterService: InvitationLetterDocumentService
   ) {
     super(injector);
     this.isAllowedToManage = this.permission.getGrantedPolicy("HTS.PatientManagement");
@@ -94,6 +101,96 @@ export class CompanionInfoComponent extends AppComponentBase {
         this.save.emit();
       }
     });
+  }
+
+  download(salesInfoAndCompanionInfo: SalesMethodAndCompanionInfoDto) {
+    this.invitationLetterService.createInvitationLetterBySalesMethodId(salesInfoAndCompanionInfo.id).subscribe({
+      next: r => {
+        const source = `data:application/pdf;base64,${r}`;
+        const link = document.createElement("a");
+        link.href = source;
+        link.download = "invitationletter.pdf"    
+        link.click();
+      }
+    });
+  }
+
+  upload(salesInfoAndCompanionInfoId: number) {
+    this.invitationLetterService.getBySalesInfo(salesInfoAndCompanionInfoId).subscribe(r => {
+      if (r != null) {
+        this.invitationLetterDocument = r as SaveDocumentDto;
+        this.uploadedInvitationLetters.push(this.dataURLtoFile(r.file, r.fileName, r.contentType));
+        this.displayUploadInvitationLetter = true;
+      }
+      else {
+        this.invitationLetterDocument = {} as SaveDocumentDto;
+        this.invitationLetterDocument.salesMethodAndCompanionInfoId = salesInfoAndCompanionInfoId;
+        this.displayUploadInvitationLetter = true;
+      }
+    });
+  }
+
+  sendInvitationLetter(salesInfoAndCompanionInfoId: number) {
+    this.invitationLetterService.sendEMailToPatientBySalesMethodId(salesInfoAndCompanionInfoId).subscribe({
+      complete: () => {
+        this.success(this.l('::Message:SuccessfulSendInvitationLetter'));
+      }
+    });
+  }
+
+  dataURLtoFile(base64, filename, type) {
+    debugger;
+    var mime = type,
+      bstr = atob(base64),
+      n = bstr.length,
+      u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, { type: mime });
+  }
+
+  uploadInvitationLetter() {
+    let fileReader = new FileReader();
+    fileReader.readAsDataURL(this.uploadedInvitationLetters[0]);
+    fileReader.onload = (r) => {
+      if (this.invitationLetterDocument) {
+        this.invitationLetterDocument.fileName = this.uploadedInvitationLetters[0].name;
+        this.invitationLetterDocument.file = fileReader.result as string;
+        this.invitationLetterDocument.contentType = this.uploadedInvitationLetters[0].type;
+        this.invitationLetterService.upload(this.invitationLetterDocument).subscribe({
+          next: (res) => {
+            this.success(this.l('::Message:SuccessfulSave', this.l('::SalesAndCompanionInfo:InvitationLetters:NameSingular')));
+            this.fetchData();
+            this.hideUploadInvitationLetterDialog();
+          }
+        });
+      }
+    };
+  }
+
+  onSelect(event: any) {
+    this.uploadedInvitationLetters = [];
+    for (let file of event.files) {
+      this.uploadedInvitationLetters.push(file);
+    }
+  }
+
+  openFile(file: any) {
+    const url = window.URL.createObjectURL(file);
+    window.open(url, '_blank');
+    URL.revokeObjectURL(url);
+  }
+
+  removeFile() {
+    this.uploadedInvitationLetters = [];
+    this.documentUpload.clear();
+  }
+
+  hideUploadInvitationLetterDialog() {
+    this.invitationLetterDocument = null;
+    this.uploadedInvitationLetters = [];
+    this.displayUploadInvitationLetter = false;
   }
 
 }

@@ -36,7 +36,7 @@ export interface FilterPatientDto {
   genderIds: number[];
   motherTongueIds: number[];
   secondTongueIds: number[];
-  patientTreatmentProcessIds: number[];
+  patientTreatmentProcessStatusIds: number[];
 }
 
 export interface SavePatientDto {

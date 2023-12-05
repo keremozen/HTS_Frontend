@@ -140,9 +140,23 @@
                         </div>
                     </div>
                 </div> 
+
+                <fieldset class="border pl-3 pr-3 pt-2 pb-3 m-2 responseFieldSet" style="height:20rem;">
+                    <legend class="float-none w-auto pl-3 pr-3 text-sm responseFieldSetlegend">
+                        {{'::HospitalResponse:FieldLegend:HospitalDescription' |
+                        abpLocalization}} <font style="color:red"
+                            *ngIf="selectedHospitalResponseType == hospitalResponseTypeEnum.NotSuitableForTreatment">
+                            &nbsp;*
+                        </font>
+                    </legend>
+                    <textarea pInputText id="description" name="description" #description="ngModel"
+                        [(ngModel)]="hospitalResponse.description"
+                        [required]="selectedHospitalResponseType == hospitalResponseTypeEnum.NotSuitableForTreatment"
+                        class="w-full h-full"></textarea>
+                </fieldset>
             </div>
             <div class="col-4">
-                <fieldset class="border pl-3 pr-3 pt-2 pb-3 m-2 responseFieldSet" style="min-height:20rem;">
+                <fieldset class="border pl-3 pr-3 pt-2 pb-3 m-2 responseFieldSet" style="min-height:39rem;">
                     <legend class="float-none w-auto pl-3 pr-3 text-sm responseFieldSetlegend">
                         {{'::HospitalResponse:FieldLegend:AnticipatedProcesses' |
                         abpLocalization}}
@@ -159,7 +173,7 @@
                                 [loading]="loading"></p-button>
                         </div>
                     </p-toolbar>
-                    <p-table #dtAnticipatedProcess name="dtAnticipatedProcess" [value]="anticipatedProcesses" [rows]="5"
+                    <p-table #dtAnticipatedProcess name="dtAnticipatedProcess" [value]="anticipatedProcesses" [rows]="6"
                         styleClass="pt-3 customTable" [paginator]="true" [rowHover]="true" [loading]="loading"
                         [totalRecords]="totalAnticipatedProcesses" [showCurrentPageReport]="false"
                         [alwaysShowPaginator]="false">
@@ -210,7 +224,7 @@
                 </fieldset>
             </div>
             <div class="col-4">
-                <fieldset class="border pl-3 pr-3 pt-2 pb-3 m-2 responseFieldSet" style="min-height:20rem;">
+                <fieldset class="border pl-3 pr-3 pt-2 pb-3 m-2 responseFieldSet" style="min-height:39rem;">
                     <legend class="float-none w-auto pl-3 pr-3 text-sm responseFieldSetlegend">
                         {{'::HospitalResponse:FieldLegend:AnticipatedMaterials' |
                         abpLocalization}}
@@ -229,7 +243,7 @@
                     </p-toolbar>
 
                     <p-table #dtAnticipatedMaterials name="dtAnticipatedMaterials" [value]="anticipatedMaterials"
-                        [rows]="5" styleClass="pt-3 customTable" [paginator]="true" [rowHover]="true"
+                        [rows]="6" styleClass="pt-3 customTable" [paginator]="true" [rowHover]="true"
                         [loading]="loading" [totalRecords]="totalAnticipatedMaterials"
                         currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
                         [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
@@ -270,34 +284,10 @@
                     </p-table>
                 </fieldset>
             </div>
-            <div class="col-4">
-                <fieldset class="border pl-3 pr-3 pt-2 pb-3 m-2 responseFieldSet" style="height:20rem;">
-                    <legend class="float-none w-auto pl-3 pr-3 text-sm responseFieldSetlegend">
-                        {{'::HospitalResponse:FieldLegend:HospitalDescription' |
-                        abpLocalization}} <font style="color:red"
-                            *ngIf="selectedHospitalResponseType == hospitalResponseTypeEnum.NotSuitableForTreatment">
-                            &nbsp;*
-                        </font>
-                    </legend>
-                    <textarea pInputText id="description" name="description" #description="ngModel"
-                        [(ngModel)]="hospitalResponse.description"
-                        [required]="selectedHospitalResponseType == hospitalResponseTypeEnum.NotSuitableForTreatment"
-                        class="w-full h-full"></textarea>
-                </fieldset>
-            </div>
-            <div class="col-4">
-                <fieldset class="border pl-3 pr-3 pt-2 pb-3 m-2 responseFieldSet" style="min-height:20rem;">
-                    <legend class="float-none w-auto pl-3 pr-3 text-sm responseFieldSetlegend">
-                        {{'::Proforma:Field:HospitalAgentNote' |
-                        abpLocalization}}
-                    </legend>
-                    <app-agent-notes (onNoteAdded)="onNoteAdded($event)"></app-agent-notes>
-                </fieldset>
-            </div>
-            <div class="col-4">
+            <div class="col-12">
                 <div class="flex justify-content-end">
                     <p-button pRipple label="{{ '::Send' | abpLocalization }}" icon="pi pi-send"
-                        [disabled]="!(hospitalResponseForm.valid)" styleClass="p-button-success mr-2 mt-4 w-12rem"
+                        [disabled]="!(hospitalResponseForm.valid)" styleClass="p-button-success mr-2 w-12rem"
                         [loading]="loading" (onClick)="onResponseSend()"></p-button>
                 </div>
             </div>

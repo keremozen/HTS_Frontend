@@ -8,3 +8,13 @@ export interface PatientTreatmentProcessDto extends AuditedEntityWithUserDto<num
   treatmentProcessStatusId: EntityEnum_PatientTreatmentStatusEnum;
   treatmentProcessStatus: TreatmentProcessStatusDto;
 }
+
+export interface PatientTreatmentProcessDetailedDto extends AuditedEntityWithUserDto<number, IdentityUserDto> {
+  treatmentCode?: string;
+  hbysPrice: number;
+  proformaPrice: number;
+  paymentPrice: number;
+  unPaidPrice: number;
+  treatmentProcessStatusId: EntityEnum_PatientTreatmentStatusEnum;
+  treatmentProcessStatus: TreatmentProcessStatusDto;
+}

@@ -81,10 +81,10 @@
                         <label for="filterTreatmentProcess" class="col-12 mb-2 md:col-3 md:mb-0">{{
                             '::Patients:Column:TreatmentProcess' | abpLocalization }}</label>
                         <div class="col-12 md:col-9">
-                            <p-multiSelect id="filterTreatmentProcess" [options]="processList"
-                                [(ngModel)]="patientFilter.patientTreatmentProcessIds" display="chip"
+                            <p-multiSelect id="filterTreatmentProcess" [options]="processStatusList"
+                                [(ngModel)]="patientFilter.patientTreatmentProcessStatusIds" display="chip"
                                 [style]="{'width':'100%'}" styleClass="filterDropDown" optionValue="id"
-                                optionLabel="treatmentCode"
+                                optionLabel="name"
                                 emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-multiSelect>
                         </div>
                     </div>

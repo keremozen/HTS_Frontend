@@ -1,6 +1,6 @@
 import { Component, Injector, Input, ViewEncapsulation } from '@angular/core';
 import { PatientDto } from '@proxy/dto/patient';
-import { PatientTreatmentProcessDto } from '@proxy/dto/patient-treatment-process';
+import { PatientTreatmentProcessDetailedDto, PatientTreatmentProcessDto } from '@proxy/dto/patient-treatment-process';
 import { SalesMethodAndCompanionInfoDto } from '@proxy/dto/sales-method-and-companion-info';
 import { PatientTreatmentProcessService, SalesMethodAndCompanionInfoService, USSService } from '@proxy/service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
@@ -13,7 +13,7 @@ import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 })
 export class TreatmentProcessesComponent extends AppComponentBase {
   @Input() patient: PatientDto;
-  processes: PatientTreatmentProcessDto[] = [];
+  processes: PatientTreatmentProcessDetailedDto[] = [];
   selectedProcess: PatientTreatmentProcessDto;
   processDialog: boolean = false;
   showCompletedRecords: boolean = false;
