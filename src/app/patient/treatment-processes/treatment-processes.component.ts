@@ -70,6 +70,11 @@ export class TreatmentProcessesComponent extends AppComponentBase {
       this.displayProcessDetail = false;
 
       this.ussService.setENabizProcessByTreatmentCode(this.selectedProcess.treatmentCode).subscribe({
+        next: (res) => {
+          if (res.durum == 0) {
+            this.error(res.mesaj);
+          }
+        },
         complete: () => {
           this.salesAndCompanionInfoService.getByPatientTreatmentProcessId(this.selectedProcess.id as unknown as number).subscribe({
             next: (res) => {

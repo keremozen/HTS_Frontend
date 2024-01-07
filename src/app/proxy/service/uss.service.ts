@@ -37,7 +37,7 @@ export class USSService {
   
 
   setENabizProcessByTreatmentCode = (treatmentCode: string) =>
-    this.restService.request<any, void>({
+    this.restService.request<any, ExternalApiResult>({
       method: 'POST',
       url: '/api/app/u-sS/set-eNabiz-process',
       params: { treatmentCode },
