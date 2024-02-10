@@ -114,6 +114,10 @@ export class PatientListComponent extends AppComponentBase {
     }
   }
 
+  editPatientOnNewTab(id: number) {
+    this.router.navigate([]).then(result => {  window.open('/patient/edit/' + id, '_blank'); });
+  }
+
   editPatient(id: number) {
     this.router.navigate(['/patient/edit/' + id]);
   }

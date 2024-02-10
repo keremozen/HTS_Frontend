@@ -53,14 +53,15 @@ export class AppComponent implements OnInit {
       choose: 'Seç',
       upload: 'Yükle',
       cancel: 'Vazgeç',
-      dayNames: ['pazartesi', 'salı', 'çarşamba', 'perşembe', 'cuma', 'cumartesi', 'pazar'],
-      dayNamesShort: ['pzt', 'sal', 'çar', 'per', 'cum', 'cmt', 'pz'],
-      dayNamesMin: ['P', 'S', 'C', 'P', 'CU', 'CMT', 'PZ'],
+      dayNames: ['pazar', 'pazartesi', 'salı', 'çarşamba', 'perşembe', 'cuma', 'cumartesi'],
+      dayNamesShort: ['pz', 'pzt', 'sal', 'çar', 'per', 'cum', 'cmt'],
+      dayNamesMin: ['PZ', 'PZT', 'S', 'C', 'P', 'CU', 'CMT'],
       monthNames: ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'],
       monthNamesShort: ['oc', 'şub', 'mar', 'nis', 'may', 'hz', 'tem', 'ağu', 'eyl', 'ek', 'kas', 'ara'],
       today: 'Bugün',
       clear: 'Temizle',
-      weekHeader: 'Hafta'
+      weekHeader: 'Hafta',
+      firstDayOfWeek: 1
   });
   }
 }

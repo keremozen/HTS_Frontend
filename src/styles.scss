@@ -115,6 +115,10 @@
   border-color: var(--surface-border) !important;
 }
 
+.customCalendar.p-calendar .p-datepicker table th {
+  text-align: center;
+}
+
 .customCalendar.p-calendar .p-inputtext {
   padding: 0.5rem !important;
   color: var(--text-color-secondary) !important;
