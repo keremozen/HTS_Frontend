@@ -136,7 +136,7 @@
                         field="creationTime"></p-sortIcon></th>
                 <th pSortableColumn="creator.name">{{ '::Patients:Column:CreatedBy' | abpLocalization }} <p-sortIcon
                         field="creator.name"></p-sortIcon></th>
-                <th class="w-12rem" *ngIf="isAllowedToManage"></th>
+                <th class="w-12rem"></th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-patient>
@@ -153,13 +153,13 @@
                     patient.patientTreatmentProcesses[0]?.treatmentProcessStatus?.name + ")") : "-"}}</td>
                 <td>{{patient.creationTime | date: "dd.MM.yyyy"}}</td>
                 <td>{{patient.creator?.name + (patient.creator?.surname ? (" " + patient.creator?.surname) : "")}}</td>
-                <td class="text-right" *ngIf="isAllowedToManage">
+                <td class="text-right">
                     <p-button pRipple icon="pi pi-external-link" styleClass="p-button-rounded p-button-info mr-2"
                         (onClick)="editPatientOnNewTab(patient.id)"></p-button>
                     <p-button pRipple icon="pi pi-pencil" styleClass="p-button-rounded p-button-success mr-2"
-                        (onClick)="editPatient(patient.id)"></p-button>
+                        (onClick)="editPatient(patient.id)" *ngIf="isAllowedToManage"></p-button>
                     <p-button pRipple icon="pi pi-trash" styleClass="p-button-rounded p-button-warning"
-                        (onClick)="deletePatient(patient)"></p-button>
+                        (onClick)="deletePatient(patient)" *ngIf="isAllowedToManage"></p-button>
                 </td>
             </tr>
         </ng-template>
