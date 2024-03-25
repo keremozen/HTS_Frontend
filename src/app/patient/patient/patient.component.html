@@ -6,16 +6,16 @@
     </div>
     <div class="col-10 flex justify-content-end text-xs grid-nogutter">
         <div class="mr-4" *ngIf="isAssignedToTik == true && !currentUser.roles.includes('TİK')">
-            <p-button pRipple label="{{ '::PatientDetail:SentToTIK' | abpLocalization }}"
-            icon="pi pi-send" styleClass="p-button-danger" [disabled]="true"></p-button>
+            <p-button pRipple label="{{ '::PatientDetail:SentToTIK' | abpLocalization }}" icon="pi pi-send"
+                styleClass="p-button-danger" [disabled]="true"></p-button>
         </div>
         <div class="mr-4" *ngIf="isAssignedToTik == true && currentUser.roles.includes('TİK')">
-            <p-button pRipple label="{{ '::PatientDetail:ReturnFromTIK' | abpLocalization }}"
-            icon="pi pi-send" styleClass="p-button-warning" (onClick)="onReturnFromTIK()"></p-button>
+            <p-button pRipple label="{{ '::PatientDetail:ReturnFromTIK' | abpLocalization }}" icon="pi pi-send"
+                styleClass="p-button-warning" (onClick)="onReturnFromTIK()"></p-button>
         </div>
         <div class="mr-4" *ngIf="isAssignedToTik == null || isAssignedToTik == false">
-            <p-button pRipple label="{{ '::PatientDetail:SendToTIK' | abpLocalization }}"
-            icon="pi pi-send" styleClass="p-button-info" (onClick)="onSendToTIK()"></p-button>
+            <p-button pRipple label="{{ '::PatientDetail:SendToTIK' | abpLocalization }}" icon="pi pi-send"
+                styleClass="p-button-info" (onClick)="onSendToTIK()"></p-button>
         </div>
         <div class="grid grid-nogutter w-15rem">
             <div class="col-6">Ekleyen Kullanıcı</div>
@@ -49,7 +49,8 @@
                             abpLocalization }}&nbsp;<font style="color:red">*</font></label>
                         <div class="col-12 md:col-9">
                             <input id="patientSurname" name="patientSurname" #patientSurname="ngModel" pInputText
-                                type="text" [(ngModel)]="patient.surname" required="true" [disabled]="!isAllowedToManage"
+                                type="text" [(ngModel)]="patient.surname" required="true"
+                                [disabled]="!isAllowedToManage"
                                 class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
                         </div>
                     </div>
@@ -59,10 +60,11 @@
                             | abpLocalization }}&nbsp;<font style="color:red">*</font></label>
                         <div class="col-12 md:col-9">
                             <p-dropdown id="patientNationality" name="patientNationality" #patientNationality="ngModel"
-                                [filter]="true" filterBy="name" [showClear]="true" [options]="nationalityList" filterLocale="tr-TR"
-                                [(ngModel)]="patient.nationalityId" placeholder="{{ '::Select' | abpLocalization }}"
-                                [style]="{'width':'100%'}" required="true" styleClass="filterDropDown" optionValue="id"
-                                optionLabel="name" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" [disabled]="!isAllowedToManage"
+                                [filter]="true" filterBy="name" [showClear]="true" [options]="nationalityList"
+                                filterLocale="tr-TR" [(ngModel)]="patient.nationalityId"
+                                placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
+                                required="true" styleClass="filterDropDown" optionValue="id" optionLabel="name"
+                                emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" [disabled]="!isAllowedToManage"
                                 emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}"></p-dropdown>
                         </div>
                     </div>
@@ -72,7 +74,8 @@
                             abpLocalization }}</label>
                         <div class="col-12 md:col-9">
                             <input id="patientPassportNo" name="patientPassportNo" #patientPassportNo="ngModel"
-                                pInputText type="text" [(ngModel)]="patient.passportNumber" [disabled]="!isAllowedToManage"
+                                pInputText type="text" [(ngModel)]="patient.passportNumber"
+                                [disabled]="!isAllowedToManage"
                                 class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
                         </div>
                     </div>
@@ -86,8 +89,9 @@
                         <div class="col-12 md:col-9">
                             <p-calendar [(ngModel)]="patient.birthDate" id="patientBirthDate" name="patientBirthDate"
                                 #patientBirthDate="ngModel" dateFormat="dd.mm.yy" [showIcon]="true" inputId="icon"
-                                [maxDate]="maxBirthDate" [minDate]="minBirthDate" inputStyleClass="text-sm" [disabled]="!isAllowedToManage"
-                                styleClass="customCalendar" [style]="{'width':'100%'}"></p-calendar>
+                                [maxDate]="maxBirthDate" [minDate]="minBirthDate" inputStyleClass="text-sm"
+                                [disabled]="!isAllowedToManage" styleClass="customCalendar"
+                                [style]="{'width':'100%'}"></p-calendar>
                         </div>
                     </div>
                     <div class="field grid mb-2">
@@ -117,10 +121,9 @@
                                     <div><b>{{ country.phoneCode }}</b> - {{ country.name }}</div>
                                 </ng-template>
                             </p-dropdown>
-                            <p-inputMask id="patientPhoneNo" name="patientPhoneNo" #patientPhoneNo="ngModel"
-                                [unmask]="true" mask="(999) 999-9999" [(ngModel)]="patient.phoneNumber"
-                                placeholder="(999) 999-9999" [disabled]="!isAllowedToManage"
-                                styleClass="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary"></p-inputMask>
+                            <input id="patientPhoneNo" name="patientPhoneNo" #patientPhoneNo="ngModel" pInputText
+                                type="text" [(ngModel)]="patient.phoneNumber" [disabled]="!isAllowedToManage"
+                                class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary">
                         </div>
 
                     </div>

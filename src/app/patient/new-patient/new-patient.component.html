@@ -93,10 +93,9 @@
                                     <div><b>{{ country.phoneCode }}</b> - {{ country.name }}</div>
                                 </ng-template>
                             </p-dropdown>
-                            <p-inputMask id="patientPhoneNo" name="patientPhoneNo" #patientPhoneNo="ngModel"
-                                [unmask]="true" mask="(999) 999-9999" [(ngModel)]="patient.phoneNumber"
-                                placeholder="(999) 999-9999"
-                                styleClass="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary"></p-inputMask>
+                            <input id="patientPhoneNo" name="patientPhoneNo" #patientPhoneNo="ngModel"
+                                pInputText type="text" [(ngModel)]="patient.phoneNumber"
+                                class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary">
                         </div>
 
                     </div>

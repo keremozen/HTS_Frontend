@@ -131,11 +131,10 @@
                             <div><b>{{ country.phoneCode }}</b> - {{ country.name }}</div>
                         </ng-template>
                     </p-dropdown>
-                    <p-inputMask id="companionPhoneNo" name="companionPhoneNo" #companionPhoneNo="ngModel"
-                        [unmask]="true" mask="(999) 999-9999"
-                        [(ngModel)]="salesInfoAndCompanionInfo.companionPhoneNumber" placeholder="(999) 999-9999"
+                    <input id="companionPhoneNo" name="companionPhoneNo" #companionPhoneNo="ngModel" pInputText
+                        type="text" [(ngModel)]="salesInfoAndCompanionInfo.companionPhoneNumber"
                         [disabled]="!isAllowedToManage"
-                        styleClass="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary"></p-inputMask>
+                        class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary">
                 </div>
             </div>
             <div class="field grid mb-2">
@@ -158,7 +157,8 @@
                 <div class="col-12 md:col-9">
                     <i class="pi pi-download cursor-pointer mr-2" (click)="download(salesInfoAndCompanionInfo)"></i>
                     <i class="pi pi-upload cursor-pointer mr-2" (click)="upload(salesInfoAndCompanionInfo.id)"></i>
-                    <i class="pi pi-send cursor-pointer" (click)="sendInvitationLetter(salesInfoAndCompanionInfo.id)"></i>
+                    <i class="pi pi-send cursor-pointer"
+                        (click)="sendInvitationLetter(salesInfoAndCompanionInfo.id)"></i>
                 </div>
             </div>
             <div class="field grid mb-2 justify-content-end">
@@ -171,13 +171,14 @@
 </form>
 
 <p-dialog [(visible)]="displayUploadInvitationLetter" [style]="{width: '40vw'}"
-    header="{{ '::SalesAndCompanionInfo:UploadInvitationLetterDialog:Title' | abpLocalization }}" [modal]="true" styleClass="p-fluid"
-    (onHide)="hideUploadInvitationLetterDialog()">
+    header="{{ '::SalesAndCompanionInfo:UploadInvitationLetterDialog:Title' | abpLocalization }}" [modal]="true"
+    styleClass="p-fluid" (onHide)="hideUploadInvitationLetterDialog()">
     <form #uploadForm="ngForm">
         <div>
             <div class="field">
-                <label for="invitationLetter">{{ '::SalesAndCompanionInfo:UploadInvitationLetterDialog:Field:InvitationLetter' | abpLocalization }} <font
-                        style="color:red">*
+                <label for="invitationLetter">{{
+                    '::SalesAndCompanionInfo:UploadInvitationLetterDialog:Field:InvitationLetter' | abpLocalization }}
+                    <font style="color:red">*
                     </font>
                 </label>
                 <p-fileUpload #invitationLetter id="invitationLetter" name="invitationLetter"
@@ -231,7 +232,8 @@
         <p-button pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" styleClass="p-button-text"
             (onClick)="hideUploadInvitationLetterDialog()"></p-button>
         <p-button pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" styleClass="p-button-text"
-            (onClick)="uploadInvitationLetter()" [disabled]="!(uploadForm.valid) || uploadedInvitationLetters?.length== 0"></p-button>
+            (onClick)="uploadInvitationLetter()"
+            [disabled]="!(uploadForm.valid) || uploadedInvitationLetters?.length== 0"></p-button>
     </p-footer>
 
 </p-dialog>
