@@ -19,6 +19,7 @@ export interface PatientDto extends AuditedEntityWithUserDto<number, IdentityUse
   motherTongueId?: number;
   secondTongueId?: number;
   isAssignedToTik?: boolean;
+  noTreatmentPlan?: boolean;
   phoneCountryCode: NationalityDto;
   nationality: NationalityDto;
   gender: GenderDto;
@@ -51,4 +52,5 @@ export interface SavePatientDto {
   genderId?: number;
   motherTongueId?: number;
   secondTongueId?: number;
+  noTreatmentPlan?: boolean;
 }

@@ -72,18 +72,18 @@
     header="{{ '::Documents:DocumentDetails' | abpLocalization }}" [modal]="true" styleClass="p-fluid"
     (onHide)="hideDialog()">
     <form #documentForm="ngForm">
-        <div *ngIf="document">
+        <div>
             <div class="field">
                 <label for="documents">{{ '::Documents:Column:Document' | abpLocalization }} <font style="color:red">*
                     </font>
                 </label>
-                <p-fileUpload #documents id="documents" name="documents"
+                <p-fileUpload #documents id="documents" name="documents" [multiple]="true"
                     chooseLabel="{{ '::ChooseFile' | abpLocalization}}" (onSelect)="onSelect($event)"
-                    maxFileSize="10000000" [auto]="true">
+                    maxFileSize="20000000" [auto]="true">
                     <ng-template let-file pTemplate="file">
-                        <div class="inline-flex m-2">
-                            <div class="fileContainer flex flex-wrap">
-                                <div class="flex align-items-center justify-content-center">
+                        <div class="inline-flex m-2 w-full">
+                            <div class="fileContainer flex flex-wrap w-full justify-content-between">
+                                <div class="flex align-items-center">
                                     <div class="flex p-2">
                                         <i class="pi pi-image fileIcon"
                                             *ngIf="file.type == 'image/jpeg' || file.type == 'image/png'"></i>
@@ -105,9 +105,10 @@
                                             {{file.name}}</div>
                                         <div class="fileSize">{{file.size / 1024 | number: '1.0-2'}} Kb</div>
                                     </div>
-                                    <div class="flex p-2 cursor-pointer" (click)="removeFile()">
-                                        <i class="pi pi-times-circle text-xl"></i>
-                                    </div>
+                                   
+                                </div>
+                                <div class="flex p-2 cursor-pointer align-items-center" (click)="removeFile(file)">
+                                    <i class="pi pi-times-circle text-xl"></i>
                                 </div>
                             </div>
                         </div>
@@ -119,14 +120,14 @@
             <div class="field">
                 <label for="documentType">{{ '::Documents:Column:DocumentType' | abpLocalization }}</label>
                 <p-dropdown id="documentType" name="documentType" #documentType="ngModel" [options]="documentTypeList"
-                    [(ngModel)]="document.documentTypeId" placeholder="{{ '::Select' | abpLocalization }}"
+                    [(ngModel)]="selectedDocumentTypeId" placeholder="{{ '::Select' | abpLocalization }}"
                     [style]="{'width':'100%'}" styleClass="filterDropDown" optionValue="id" optionLabel="name"
                     emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
             </div>
             <div class="field">
                 <label for="description">{{ '::Documents:Column:Description' | abpLocalization }}</label>
                 <textarea rows="5" pInputText id="description" name="description" #description="ngModel"
-                    [(ngModel)]="document.description"></textarea>
+                    [(ngModel)]="documentDescription"></textarea>
             </div>
         </div>
     </form>

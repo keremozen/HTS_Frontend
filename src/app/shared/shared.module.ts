@@ -44,6 +44,10 @@ import { ChipModule} from 'primeng/chip';
 import { DataViewModule, DataViewLayoutOptions } from 'primeng/dataview';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { AgentNotesComponent } from '../patient/treatment-processes/agent-notes/agent-notes.component';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { VirtualScrollerModule } from 'primeng/virtualscroller';
+import { ScrollPanelModule } from 'primeng/scrollpanel';
+
 
 /**************/
 
@@ -87,11 +91,14 @@ import { AgentNotesComponent } from '../patient/treatment-processes/agent-notes/
     ListboxModule,
     MessagesModule,
     MessageModule,
+    SelectButtonModule,
     TagModule,
     ChartModule,
     ChipModule,
     DataViewModule,
-    AutoCompleteModule
+    AutoCompleteModule,
+    VirtualScrollerModule,
+    ScrollPanelModule
   ],
   exports: [
     CoreModule,
@@ -130,13 +137,16 @@ import { AgentNotesComponent } from '../patient/treatment-processes/agent-notes/
     ListboxModule,
     MessagesModule,
     MessageModule,
+    SelectButtonModule,
     TagModule,
     ChartModule,
     ChipModule,
     DataViewModule,
     DataViewLayoutOptions,
     AutoCompleteModule,
-    AgentNotesComponent
+    AgentNotesComponent,
+    VirtualScrollerModule,
+    ScrollPanelModule
   ],
   providers: [ConfirmationService, MessageService]
 })

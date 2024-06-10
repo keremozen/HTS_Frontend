@@ -20,7 +20,8 @@ export class DocumentsComponent extends AppComponentBase {
   allDocuments: PatientDocumentDto[] = [];
   documentsToBeDisplayed: PatientDocumentDto[] = [];
   documentDialog: boolean = false;
-  document: SavePatientDocumentDto;
+  //document: SavePatientDocumentDto;
+  documents: SavePatientDocumentDto[] = [];
   showRevokedRecords: boolean = false;
   revokedRecordCount: number = 0;
   documentTypeList: DocumentTypeDto[] = [];
@@ -28,9 +29,11 @@ export class DocumentsComponent extends AppComponentBase {
   loading: boolean;
   totalRecords: number = 0;
   isAllowedToManage: boolean = false;
+  selectedDocumentTypeId: number;
+  documentDescription: string;
   public patientDocumentStatusEnum = EntityEnum_PatientDocumentStatusEnum;
   @ViewChild("documents", { static: false }) documentUpload: FileUpload;
-  @ViewChild("documentForm", {static:false}) documentForm: Form;
+  @ViewChild("documentForm", { static: false }) documentForm: Form;
 
   constructor(
     injector: Injector,
@@ -61,7 +64,7 @@ export class DocumentsComponent extends AppComponentBase {
         this.loading = false;
       }
     });
-    
+
   }
 
   manageDocumentsToBeDisplayed() {
@@ -87,32 +90,45 @@ export class DocumentsComponent extends AppComponentBase {
   }
 
   openNew() {
-    this.document = {} as SavePatientDocumentDto;
-    this.document.patientId = this.patientId;
+    this.documents = [];
+    //this.document = {} as SavePatientDocumentDto;
+    //this.document.patientId = this.patientId;
     this.documentDialog = true;
   }
 
   saveDocument() {
-    let fileReader = new FileReader();
-    fileReader.readAsDataURL(this.uploadedDocuments[0]);
-    fileReader.onload = (r) => {
-      if (this.document) {
-        this.document.fileName = this.uploadedDocuments[0].name;
-        this.document.contentType = this.uploadedDocuments[0].type;
-        this.document.file = fileReader.result as string;
-        this.documentService.create(this.document).subscribe({
-          next: (res) => {
-            this.success(this.l('::Message:SuccessfulSave', this.l('::Documents:NameSingular')));
-            this.fetchData();
-            this.hideDialog();
-          }
-        });
+    this.documents.forEach(document => {
+      document.patientId = this.patientId;
+      document.documentTypeId = this.selectedDocumentTypeId;
+      document.description = this.documentDescription;
+    });
+    this.documentService.create(this.documents).subscribe({
+      next: (res) => {
+        this.success(this.l('::Message:SuccessfulSave', this.l('::Documents:NamePlural')));
+        this.fetchData();
+        this.hideDialog();
       }
-    };
+    });
+    // let fileReader = new FileReader();
+    // fileReader.readAsDataURL(this.uploadedDocuments[0]);
+    // fileReader.onload = (r) => {
+    //   if (this.document) {
+    //     this.document.fileName = this.uploadedDocuments[0].name;
+    //     this.document.contentType = this.uploadedDocuments[0].type;
+    //     this.document.file = fileReader.result as string;
+    //     this.documentService.create(this.document).subscribe({
+    //       next: (res) => {
+    //         this.success(this.l('::Message:SuccessfulSave', this.l('::Documents:NameSingular')));
+    //         this.fetchData();
+    //         this.hideDialog();
+    //       }
+    //     });
+    //   }
+    // };
   }
 
   hideDialog() {
-    this.document = null;
+    this.documents = [];
     this.uploadedDocuments = [];
     this.documentDialog = false;
   }
@@ -130,7 +146,7 @@ export class DocumentsComponent extends AppComponentBase {
             this.fetchData();
           }
         });
-        
+
       }
     });
   }
@@ -139,6 +155,15 @@ export class DocumentsComponent extends AppComponentBase {
     this.uploadedDocuments = [];
     for (let file of event.files) {
       this.uploadedDocuments.push(file);
+      let document = {} as SavePatientDocumentDto;
+      let fileReader = new FileReader();
+      fileReader.readAsDataURL(file);
+      fileReader.onload = (r) => {
+        document.fileName = file.name;
+        document.contentType = file.type;
+        document.file = fileReader.result as string;
+        this.documents.push(document);
+      };
     }
   }
 
@@ -148,9 +173,11 @@ export class DocumentsComponent extends AppComponentBase {
     URL.revokeObjectURL(url);
   }
 
-  removeFile() {
-    this.uploadedDocuments = [];
-    this.documentUpload.clear();
+  removeFile(file: any) {
+    let index = this.uploadedDocuments.findIndex(f => f.name === file.name);
+    this.uploadedDocuments = this.uploadedDocuments.filter(f => f.name !== file.name);
+    this.documents = this.documents.filter(d => d.fileName !== file.name);
+    this.documentUpload.remove(null, index);
   }
 
   onShowRevokedRecords() {

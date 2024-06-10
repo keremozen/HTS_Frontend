@@ -1,7 +1,13 @@
 <p-toast></p-toast>
 
-<h4>{{ '::Patients:Title' | abpLocalization }}</h4>
-
+<div class="flex justify-content-between align-items-baseline">
+    <div>
+        <h4>{{ '::Patients:Title' | abpLocalization }}</h4>
+    </div>
+    <div>
+        <p-selectButton [options]="viewOptions" [(ngModel)]="selectedView" optionLabel="label" optionValue="value" />
+    </div>
+</div>
 <div class="mb-3">
     <p-accordion styleClass="filterAccordionClass">
         <p-accordionTab iconPos="start">
@@ -108,72 +114,103 @@
                 styleClass="p-button-success mr-2" (onClick)="openNewPatient()"></p-button>
         </ng-template>
     </p-toolbar>
-
-    <p-table #dt [value]="patientList" [rows]="10" [paginator]="true" [globalFilterFields]="[]"
-        [tableStyle]="{'min-width': '75rem'}" [rowHover]="true" dataKey="Id"
-        currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
-        [showCurrentPageReport]="true" [totalRecords]="totalRecords" [loading]="loading">
-        <ng-template pTemplate="header">
-            <tr>
-                <th pSortableColumn="name">{{ '::Patients:Column:Name' | abpLocalization }} <p-sortIcon
-                        field="Name"></p-sortIcon></th>
-                <th pSortableColumn="surname">{{ '::Patients:Column:Surname' | abpLocalization }} <p-sortIcon
-                        field="Surname"></p-sortIcon></th>
-                <th pSortableColumn="nationality">{{ '::Patients:Column:Nationality' | abpLocalization }} <p-sortIcon
-                        field="nationality"></p-sortIcon></th>
-                <th pSortableColumn="passportNumber">{{ '::Patients:Column:PassportNo' | abpLocalization }} <p-sortIcon
-                        field="passportNunber"></p-sortIcon></th>
-                <th pSortableColumn="birthDate">{{ '::Patients:Column:BirthDate' | abpLocalization }} <p-sortIcon
-                        field="birthDate"></p-sortIcon></th>
-                <th pSortableColumn="gender">{{ '::Patients:Column:Gender' | abpLocalization }} <p-sortIcon
-                        field="gender"></p-sortIcon></th>
-                <th pSortableColumn="language">{{ '::Patients:Column:NativeLanguage' | abpLocalization }} <p-sortIcon
-                        field="language"></p-sortIcon></th>
-                <th pSortableColumn="treatmentProcess">{{ '::Patients:Column:TreatmentProcess' | abpLocalization }}
-                    <p-sortIcon field="treatmentProcess"></p-sortIcon>
-                </th>
-                <th pSortableColumn="creationTime">{{ '::Patients:Column:Created' | abpLocalization }} <p-sortIcon
-                        field="creationTime"></p-sortIcon></th>
-                <th pSortableColumn="creator.name">{{ '::Patients:Column:CreatedBy' | abpLocalization }} <p-sortIcon
-                        field="creator.name"></p-sortIcon></th>
-                <th class="w-12rem"></th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-patient>
-            <tr class="cursor-pointer" (click)="editPatientByRowClick($event, patient.id)">
-                <td>{{patient.name}}</td>
-                <td>{{patient.surname}}</td>
-                <td>{{patient.nationality ? patient.nationality.name : '-'}}</td>
-                <td>{{patient.passportNumber}}</td>
-                <td>{{patient.birthDate | date: "dd.MM.yyyy"}}</td>
-                <td>{{patient.gender?.name}}</td>
-                <td>{{patient.motherTongue ? patient.motherTongue.name : '-'}}</td>
-                <td>{{patient.patientTreatmentProcesses[0] ? (patient.patientTreatmentProcesses[0]?.treatmentCode + " ("
-                    +
-                    patient.patientTreatmentProcesses[0]?.treatmentProcessStatus?.name + ")") : "-"}}</td>
-                <td>{{patient.creationTime | date: "dd.MM.yyyy"}}</td>
-                <td>{{patient.creator?.name + (patient.creator?.surname ? (" " + patient.creator?.surname) : "")}}</td>
-                <td class="text-right">
-                    <p-button pRipple icon="pi pi-external-link" styleClass="p-button-rounded p-button-info mr-2"
-                        (onClick)="editPatientOnNewTab(patient.id)"></p-button>
-                    <p-button pRipple icon="pi pi-pencil" styleClass="p-button-rounded p-button-success mr-2"
-                        (onClick)="editPatient(patient.id)" *ngIf="isAllowedToManage"></p-button>
-                    <p-button pRipple icon="pi pi-trash" styleClass="p-button-rounded p-button-warning"
-                        (onClick)="deletePatient(patient)" *ngIf="isAllowedToManage"></p-button>
-                </td>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="emptymessage">
-            <div class="m-3">
-                {{ '::Table:EmptyMessage' | abpLocalization }}
+    <div *ngIf="selectedView=='list'">
+        <p-table #dt [value]="patientList" [rows]="10" [paginator]="true" [globalFilterFields]="[]"
+            [tableStyle]="{'min-width': '75rem'}" [rowHover]="true" dataKey="Id"
+            currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
+            [showCurrentPageReport]="true" [totalRecords]="totalRecords" [loading]="loading">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="name">{{ '::Patients:Column:Name' | abpLocalization }} <p-sortIcon
+                            field="Name"></p-sortIcon></th>
+                    <th pSortableColumn="surname">{{ '::Patients:Column:Surname' | abpLocalization }} <p-sortIcon
+                            field="Surname"></p-sortIcon></th>
+                    <th pSortableColumn="nationality">{{ '::Patients:Column:Nationality' | abpLocalization }}
+                        <p-sortIcon field="nationality"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="passportNumber">{{ '::Patients:Column:PassportNo' | abpLocalization }}
+                        <p-sortIcon field="passportNunber"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="birthDate">{{ '::Patients:Column:BirthDate' | abpLocalization }} <p-sortIcon
+                            field="birthDate"></p-sortIcon></th>
+                    <th pSortableColumn="gender">{{ '::Patients:Column:Gender' | abpLocalization }} <p-sortIcon
+                            field="gender"></p-sortIcon></th>
+                    <th pSortableColumn="language">{{ '::Patients:Column:NativeLanguage' | abpLocalization }}
+                        <p-sortIcon field="language"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="treatmentProcess">{{ '::Patients:Column:TreatmentProcess' | abpLocalization }}
+                        <p-sortIcon field="treatmentProcess"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="creationTime">{{ '::Patients:Column:Created' | abpLocalization }} <p-sortIcon
+                            field="creationTime"></p-sortIcon></th>
+                    <th pSortableColumn="creator.name">{{ '::Patients:Column:CreatedBy' | abpLocalization }} <p-sortIcon
+                            field="creator.name"></p-sortIcon></th>
+                    <th class="w-12rem"></th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-patient>
+                <tr class="cursor-pointer" (click)="editPatientByRowClick($event, patient.id)">
+                    <td>{{patient.name}}</td>
+                    <td>{{patient.surname}}</td>
+                    <td>{{patient.nationality ? patient.nationality.name : '-'}}</td>
+                    <td>{{patient.passportNumber}}</td>
+                    <td>{{patient.birthDate | date: "dd.MM.yyyy"}}</td>
+                    <td>{{patient.gender?.name}}</td>
+                    <td>{{patient.motherTongue ? patient.motherTongue.name : '-'}}</td>
+                    <td>{{getTreatmentProcessStatus(patient)}}
+                        <!-- {{patient.patientTreatmentProcesses[0] ? (patient.patientTreatmentProcesses[0]?.treatmentCode +
+                        " ("
+                        +
+                        patient.patientTreatmentProcesses[0]?.treatmentProcessStatus?.name + ")") : "-"}} -->
+                    </td>
+                    <td>{{patient.creationTime | date: "dd.MM.yyyy"}}</td>
+                    <td>{{patient.creator?.name + (patient.creator?.surname ? (" " + patient.creator?.surname) : "")}}
+                    </td>
+                    <td class="text-right">
+                        <p-button pRipple icon="pi pi-external-link" styleClass="p-button-rounded p-button-info mr-2"
+                            (onClick)="editPatientOnNewTab(patient.id)"></p-button>
+                        <p-button pRipple icon="pi pi-pencil" styleClass="p-button-rounded p-button-success mr-2"
+                            (onClick)="editPatient(patient.id)" *ngIf="isAllowedToManage"></p-button>
+                        <p-button pRipple icon="pi pi-trash" styleClass="p-button-rounded p-button-warning"
+                            (onClick)="deletePatient(patient)" *ngIf="isAllowedToManage"></p-button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <div class="m-3">
+                    {{ '::Table:EmptyMessage' | abpLocalization }}
+                </div>
+            </ng-template>
+            <ng-template pTemplate="summary">
+                <div class="flex align-items-center justify-content-between" *ngIf="totalRecords">
+                    {{ '::Table:Summary' | abpLocalization:(totalRecords) }}
+                </div>
+            </ng-template>
+        </p-table>
+    </div>
+    <div *ngIf="selectedView=='pane'">
+        <div class="flex flex-row" style="overflow: auto; white-space: nowrap;">
+            <div class="mr-1" *ngFor="let patientStatus of patientStatusList">
+                <p-virtualScroller [value]="getPatientList(patientStatus.value)" scrollHeight="450px"
+                    [style]="{'width':'20rem'}">
+                    <ng-template pTemplate="header">{{ patientStatus.label }}</ng-template>
+                    <ng-template let-patient pTemplate="item">
+                        <div class="flex flex-column p-2 mt-2 mb-2 flex-wrap bg-gray-100 border-round border-1 border-200" style="width:20rem">
+                            <div class="font-bold">
+                                {{patient.name}} {{patient.surname}}
+                            </div>
+                            <div>
+                                {{patient.nationality?.name}}
+                            </div>
+                            <div>
+                                Başakşehir Çam ve Sakura Şehir Hastanesi
+                            </div>
+                        </div>
+                    </ng-template>
+                </p-virtualScroller>
             </div>
-        </ng-template>
-        <ng-template pTemplate="summary">
-            <div class="flex align-items-center justify-content-between" *ngIf="totalRecords">
-                {{ '::Table:Summary' | abpLocalization:(totalRecords) }}
-            </div>
-        </ng-template>
-    </p-table>
+        </div>
+    </div>
 </div>
 
 <p-confirmDialog [style]="{width: '450px'}" rejectLabel="{{ '::Reject' | abpLocalization }}"

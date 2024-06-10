@@ -30,6 +30,27 @@ export class PatientListComponent extends AppComponentBase {
   totalRecords: number;
   isAllowedToManage: boolean = false;
   creatorNames: string;
+  viewOptions: any[] = [{ label: 'Liste Görünümü', value: 'list' }, { label: 'Pano Görünümü', value: 'pane' }];
+  selectedView: string = 'list';
+  patientStatusList: any[] = [
+    { label: 'Yeni', value: '1' },
+    { label: 'Tedavi Planı Hazırlanmayacak', value: '2' },
+    { label: 'Dokümanların Çevrilmesi Bekleniyor', value: '3' },
+    { label: 'Hastanelerden Cevap Bekleniyor', value: '4' },
+    { label: 'Ek Bilgi Bekleniyor', value: '5' },
+    { label: 'Hastane Cevabının Değerlendirilmesi Bekleniyor', value: '6' },
+    { label: 'Fiyatlandırmaya Gönderilmesi Bekleniyor', value: '7' },
+    { label: 'Fiyatlandırma Bekleniyor', value: '8' },
+    { label: 'MFB Onayı Bekleniyor', value: '9' },
+    { label: 'Proformanın İletilmesi Bekleniyor', value: '10' },
+    { label: 'Proformanın Cevaplanması Bekleniyor', value: '11' },
+    { label: 'Ön Ödemenin Alınması Bekleniyor', value: '12' },
+    { label: 'Davet Mektubu Gönderilmesi Bekleniyor', value: '13' },
+    { label: 'Seyahat ve Konaklama Planı Girilmesi Bekleniyor', value: '14' },
+    { label: 'Randevu Planlama', value: '15' },
+    { label: 'Tedavi Aşaması', value: '16' },
+    { label: 'Sonuçlanan Süreç', value: '17' },
+  ];
 
   constructor(
     injector: Injector,
@@ -44,7 +65,7 @@ export class PatientListComponent extends AppComponentBase {
   ngOnInit() {
     this.fetchData();
   }
-  
+
   fetchData() {
     this.loading = true;
     this.nationalityList = this.commonService.nationalityList;
@@ -63,10 +84,10 @@ export class PatientListComponent extends AppComponentBase {
         this.patientList = resPatientList.items;
         this.totalRecords = resPatientList.totalCount;
       },
-      error: ()=> {
+      error: () => {
         this.loading = false;
       },
-      complete: ()=> {
+      complete: () => {
         this.loading = false;
       }
     });
@@ -79,10 +100,10 @@ export class PatientListComponent extends AppComponentBase {
         this.patientList = res.items;
         this.totalRecords = res.totalCount;
       },
-      error: ()=> {
+      error: () => {
         this.loading = false;
       },
-      complete: ()=> {
+      complete: () => {
         this.loading = false;
       }
     });
@@ -95,10 +116,10 @@ export class PatientListComponent extends AppComponentBase {
         this.patientList = res.items;
         this.totalRecords = res.totalCount;
       },
-      error: ()=> {
+      error: () => {
         this.loading = false;
       },
-      complete: ()=> {
+      complete: () => {
         this.loading = false;
       }
     });
@@ -109,13 +130,13 @@ export class PatientListComponent extends AppComponentBase {
   }
 
   editPatientByRowClick(event: any, id: number) {
-    if(event.srcElement.nodeName.toLowerCase() != 'button') {
+    if (event.srcElement.nodeName.toLowerCase() != 'button') {
       this.router.navigate(['/patient/edit/' + id]);
     }
   }
 
   editPatientOnNewTab(id: number) {
-    this.router.navigate([]).then(result => {  window.open('/patient/edit/' + id, '_blank'); });
+    this.router.navigate([]).then(result => { window.open('/patient/edit/' + id, '_blank'); });
   }
 
   editPatient(id: number) {
@@ -136,5 +157,27 @@ export class PatientListComponent extends AppComponentBase {
         });
       }
     });
+  }
+
+  public getTreatmentProcessStatus(patient: PatientDto) {
+    if (patient) {
+      if (patient.noTreatmentPlan) {
+        return this.l('::PatientDetail:NoTreatmentPlan');
+      }
+      else {
+        return patient.patientTreatmentProcesses[0] ? (patient.patientTreatmentProcesses[0]?.treatmentCode +
+          " (" + patient.patientTreatmentProcesses[0]?.treatmentProcessStatus?.name + ")") : "-";
+      }
+    }
+    return "-";
+  }
+
+  getPatientList(patientStatus: string) {
+    switch (patientStatus) {
+      case "1": //Yeni
+        return this.patientList.filter(p => p.patientTreatmentProcesses.length == 0 && !p.noTreatmentPlan);
+      case "2": //Yeni
+        return this.patientList.filter(p => p.patientTreatmentProcesses.length == 0 && p.noTreatmentPlan);
+    }
   }
 }

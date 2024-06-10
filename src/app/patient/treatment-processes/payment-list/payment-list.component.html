@@ -106,7 +106,7 @@
                 <p-fileUpload #invoice id="invoice" name="invoice"
                     [disabled]="treatmentProcess?.treatmentProcessStatusId == preatmentTreatmentStatusEnum.PaymentCompletedTreatmentProcess"
                     chooseLabel="{{ '::ChooseFile' | abpLocalization}}" (onSelect)="onSelect($event)"
-                    maxFileSize="10000000" [auto]="true">
+                    maxFileSize="20000000" [auto]="true">
                     <!-- <ng-template let-file pTemplate="file">
                         <div class="inline-flex m-2">
                             <div class="fileContainer flex flex-wrap">

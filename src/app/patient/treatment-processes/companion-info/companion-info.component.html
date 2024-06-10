@@ -183,7 +183,7 @@
                 </label>
                 <p-fileUpload #invitationLetter id="invitationLetter" name="invitationLetter"
                     chooseLabel="{{ '::ChooseFile' | abpLocalization}}" (onSelect)="onSelect($event)"
-                    maxFileSize="10000000" [auto]="true">
+                    maxFileSize="20000000" [auto]="true">
                     <ng-template let-file pTemplate="file">
                     </ng-template>
                     <ng-template pTemplate="content">

@@ -9,7 +9,7 @@
     </div>
     <div class="p-toolbar-group-end p-0">
         <p-button pRipple label="{{ '::TreatmentProcess:StartTreatmentProcess' | abpLocalization }}"
-            icon="pi pi-plus" styleClass="p-button-success mr-2" (onClick)="newTreatmentProcess()" *ngIf="isAllowedToManage"></p-button>
+            icon="pi pi-plus" styleClass="p-button-success mr-2" (onClick)="newTreatmentProcess()" [disabled]="noTreatmentPlan" *ngIf="isAllowedToManage"></p-button>
     </div>
 </p-toolbar>
 

@@ -34,6 +34,7 @@ export class PatientComponent extends AppComponentBase {
   isAllowedToManage: boolean = false;
   isAssignedToTik?: boolean = null;
   currentUser: CurrentUserDto;
+  noTreatmentPlan: boolean = false;
 
   constructor(
     injector: Injector,
@@ -63,6 +64,7 @@ export class PatientComponent extends AppComponentBase {
           next: (patient) => {
             this.isAssignedToTik = patient.isAssignedToTik;
             this.patientView = { ...patient };
+            this.noTreatmentPlan = patient.noTreatmentPlan;
             this.creatorName = (patient.creator as unknown as IdentityUserDto).name + " " + (patient.creator as unknown as IdentityUserDto).surname;
             this.creationTime = new Date(patient.creationTime);
             this.patient = patient as SavePatientDto;
@@ -83,6 +85,7 @@ export class PatientComponent extends AppComponentBase {
     if (this.patient.email === "") {
       this.patient.email = null;
     }
+    this.patient.noTreatmentPlan = this.noTreatmentPlan;
     this.patientService.update(this.patientId, this.patient).subscribe({
       complete: () => {
         this.success(this.l("::PatientDetail:SaveSuccessful"));

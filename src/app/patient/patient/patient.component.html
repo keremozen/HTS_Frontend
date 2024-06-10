@@ -27,6 +27,11 @@
 </div>
 
 <p-card>
+    <div class="flex justify-content-end mr-3" style="margin-top:-10px; margin-bottom: -5px;">
+        <p-checkbox id="chkNoTreatmentPlan" name="chkNoTreatmentPlan" #chkNoTreatmentPlan="ngModel" [binary]="true"
+            [(ngModel)]="noTreatmentPlan" label="{{ '::PatientDetail:NoTreatmentPlan' |
+        abpLocalization }}" [disabled]="patientView.patientTreatmentProcesses?.length > 0"></p-checkbox>
+    </div>
     <fieldset class="border pl-3 pr-3 pt-2 pb-3 m-2 patientFieldSet">
         <legend class="float-none w-auto pl-3 pr-3 text-sm patientFieldSetlegend">{{'::PatientDetail:Profile' |
             abpLocalization}}
@@ -108,7 +113,7 @@
                     <div class="field grid mb-2">
                         <label for="patientPhoneNo" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::Patients:Column:PhoneNo'
                             |
-                            abpLocalization }}</label>
+                            abpLocalization }}&nbsp;<font style="color:red">*</font></label>
                         <div class="col-12 md:col-9">
                             <p-dropdown id="phoneCountryCode" name="phoneCountryCode" [filter]="true" filterBy="name"
                                 [showClear]="true" #phoneCountryCode="ngModel" [options]="nationalityList"
@@ -116,13 +121,13 @@
                                 [style]="{'width':'100px', 'margin-right':'10px'}" styleClass="filterDropDown"
                                 optionValue="id" placeholder="{{ '::Select' | abpLocalization }}" filterLocale="tr-TR"
                                 optionLabel="phoneCode" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
-                                emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}">
+                                emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}" [required]="true">
                                 <ng-template let-country pTemplate="item">
                                     <div><b>{{ country.phoneCode }}</b> - {{ country.name }}</div>
                                 </ng-template>
                             </p-dropdown>
                             <input id="patientPhoneNo" name="patientPhoneNo" #patientPhoneNo="ngModel" pInputText
-                                type="text" [(ngModel)]="patient.phoneNumber" [disabled]="!isAllowedToManage"
+                                type="text" [(ngModel)]="patient.phoneNumber" [disabled]="!isAllowedToManage" [required]="true"
                                 class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary">
                         </div>
 
@@ -202,7 +207,7 @@
                     {{'::PatientDetail:TreatmentProcesses' |
                     abpLocalization}}
                 </legend>
-                <app-treatment-processes [patient]="patientView"></app-treatment-processes>
+                <app-treatment-processes [patient]="patientView" [noTreatmentPlan]="noTreatmentPlan"></app-treatment-processes>
             </fieldset>
         </div>
     </div>

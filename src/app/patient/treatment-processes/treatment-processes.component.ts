@@ -13,6 +13,7 @@ import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 })
 export class TreatmentProcessesComponent extends AppComponentBase {
   @Input() patient: PatientDto;
+  @Input() noTreatmentPlan: boolean;
   processes: PatientTreatmentProcessDetailedDto[] = [];
   selectedProcess: PatientTreatmentProcessDto;
   processDialog: boolean = false;
