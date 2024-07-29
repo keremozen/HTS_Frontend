@@ -19,6 +19,7 @@ import { PaymentReasonComponent } from './payment-reason/payment-reason.componen
 import { ContractedInstitutionTypeComponent } from './contracted-institution-type/contracted-institution-type.component';
 import { ContractedInstitutionKindComponent } from './contracted-institution-kind/contracted-institution-kind.component';
 import { ProcessKindComponent } from './process-kind/process-kind.component';
+import { FinalizationTypeComponent } from './finalization-type/finalization-type.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { ProcessKindComponent } from './process-kind/process-kind.component';
     ProcessComponent,
     RejectReasonComponent,
     PaymentReasonComponent,
-    ProcessKindComponent
+    ProcessKindComponent,
+    FinalizationTypeComponent
   ],
   imports: [
     SharedModule,

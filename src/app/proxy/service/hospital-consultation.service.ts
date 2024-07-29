@@ -35,6 +35,14 @@ export class HospitalConsultationService {
     { apiName: this.apiName });
   
 
+  getByHospitalId = (hospitalId: number) =>
+    this.restService.request<any, PagedResultDto<HospitalConsultationDto>>({
+      method: 'GET',
+      url: `/api/app/hospital-consultation/by-hospital-id/${hospitalId}`,
+    },
+    { apiName: this.apiName });
+  
+
   getByPatientTreatmenProcess = (ptpId: number) =>
     this.restService.request<any, PagedResultDto<HospitalConsultationDto>>({
       method: 'GET',

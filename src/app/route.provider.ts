@@ -167,6 +167,15 @@ function configureRoutes(routesService: RoutesService) {
         layout: eLayoutType.application
       },
       {
+        path: '/admin/finalizationType',
+        name: '::Menu:Admin:FinalizationType',
+        iconClass: 'fas fa-list',
+        parentName: eThemeSharedRouteNames.Administration,
+        order: 115,
+        requiredPolicy: 'HTS.FinalizationTypeManagement',
+        layout: eLayoutType.application
+      },
+      {
         path: '/tasks',
         name: '::Menu:Tasks',
         iconClass: 'fas fa-tasks',

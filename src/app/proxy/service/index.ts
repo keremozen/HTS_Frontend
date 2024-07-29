@@ -9,6 +9,7 @@ export * from './currency.service';
 export * from './document-type.service';
 export * from './exchange-rate-information.service';
 export * from './external.service';
+export * from './finalization-type.service';
 export * from './gender.service';
 export * from './hospital-agent-note.service';
 export * from './hospital-consultation-document.service';

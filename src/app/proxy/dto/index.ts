@@ -9,6 +9,7 @@ import * as Currency from './currency';
 import * as DocumentType from './document-type';
 import * as ExchangeRateInformation from './exchange-rate-information';
 import * as External from './external';
+import * as FinalizationType from './finalization-type';
 import * as Gender from './gender';
 import * as Hospital from './hospital';
 import * as HospitalAgentNote from './hospital-agent-note';
@@ -54,4 +55,4 @@ import * as SalesMethodAndCompanionInfo from './sales-method-and-companion-info'
 import * as TaskType from './task-type';
 import * as TreatmentProcessStatus from './treatment-process-status';
 import * as TreatmentType from './treatment-type';
-export { AdditionalService, Branch, City, ContractedInstitution, ContractedInstitutionKind, ContractedInstitutionStaff, ContractedInstitutionType, Currency, DocumentType, ExchangeRateInformation, External, Gender, Hospital, HospitalAgentNote, HospitalConsultation, HospitalConsultationDocument, HospitalConsultationStatus, HospitalPricer, HospitalResponse, HospitalResponseBranch, HospitalResponseProcess, HospitalResponseType, HospitalStaff, HospitalUhbstaff, HospitalizationType, Htstask, InvitationLetterDocument, Language, Nationality, Operation, OperationStatus, OperationType, Patient, PatientAdmissionMethod, PatientDocument, PatientNote, PatientTreatmentProcess, Payment, PaymentDocument, PaymentItem, PaymentKind, PaymentReason, Process, ProcessCost, ProcessKind, ProcessRelation, ProcessType, Proforma, ProformaAdditionalService, ProformaNotIncludingService, ProformaProcess, RejectReason, SalesMethodAndCompanionInfo, TaskType, TreatmentProcessStatus, TreatmentType };
+export { AdditionalService, Branch, City, ContractedInstitution, ContractedInstitutionKind, ContractedInstitutionStaff, ContractedInstitutionType, Currency, DocumentType, ExchangeRateInformation, External, FinalizationType, Gender, Hospital, HospitalAgentNote, HospitalConsultation, HospitalConsultationDocument, HospitalConsultationStatus, HospitalPricer, HospitalResponse, HospitalResponseBranch, HospitalResponseProcess, HospitalResponseType, HospitalStaff, HospitalUhbstaff, HospitalizationType, Htstask, InvitationLetterDocument, Language, Nationality, Operation, OperationStatus, OperationType, Patient, PatientAdmissionMethod, PatientDocument, PatientNote, PatientTreatmentProcess, Payment, PaymentDocument, PaymentItem, PaymentKind, PaymentReason, Process, ProcessCost, ProcessKind, ProcessRelation, ProcessType, Proforma, ProformaAdditionalService, ProformaNotIncludingService, ProformaProcess, RejectReason, SalesMethodAndCompanionInfo, TaskType, TreatmentProcessStatus, TreatmentType };
