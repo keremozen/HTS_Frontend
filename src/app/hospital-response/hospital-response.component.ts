@@ -44,6 +44,7 @@ export class HospitalResponseComponent extends AppComponentBase {
   totalRecords: number;
   isAllowedToManage: boolean = false;
   hospitalResponse = {} as SaveHospitalResponseDto;
+  allConsultations: HospitalConsultationDto[] = [];
 
   process: SaveHospitalResponseProcessWithDetailDto;
   processDialog: boolean = false;
@@ -233,6 +234,10 @@ export class HospitalResponseComponent extends AppComponentBase {
         });
       }
     });
+  }
+
+  showAllConsultations(hospitalId: number) {
+    this.router.navigate(['/hospital-response/consultation-list'], { state: [hospitalId] });
   }
 }
 

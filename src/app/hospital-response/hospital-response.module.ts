@@ -4,14 +4,12 @@ import { SharedModule } from '../shared/shared.module';
 import { FormsModule } from '@angular/forms';
 import { HospitalResponseComponent } from './hospital-response.component';
 import { RouterModule, Routes } from '@angular/router';
+import { ConsultationListComponent } from './consultation-list.component';
 
 const routes: Routes = [
-  /*{
-    path: '/:uid', component: HospitalResponseComponent, canActivate: [PermissionGuard],
-    data: {
-        requiredPolicy: 'HTS.HospitalResponse' 
-    }
-  }*/
+  {
+    path: 'consultation-list', component: ConsultationListComponent
+  },
   {
     path: ':uid', component: HospitalResponseComponent
   }
@@ -20,7 +18,8 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [
-    HospitalResponseComponent
+    HospitalResponseComponent,
+    ConsultationListComponent
   ],
   imports: [
     SharedModule,

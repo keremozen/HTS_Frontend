@@ -3,6 +3,10 @@
 <div *ngIf="consultation">
     <form #hospitalResponseForm="ngForm">
         <div class="grid">
+            <div class="col-12 text-right">
+                <p-button pRipple label="{{ '::HospitalResponse:Button:AllConsultations' | abpLocalization }}"
+                styleClass="p-button-secondary mr-2" (onClick)="showAllConsultations(consultation.hospitalId)" [loading]="loading"></p-button>
+            </div>
             <div class="col-6">
                 <fieldset class="border pl-3 pr-3 pt-2 pb-3 m-2 responseFieldSet responseFieldHeight">
                     <legend class="float-none w-auto pl-3 pr-3 text-sm responseFieldSetlegend">

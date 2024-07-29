@@ -45,6 +45,9 @@
                 }}
                 <p-sortIcon field="creationTime"></p-sortIcon>
             </th>
+            <th class="text-center" style="width: 5rem">
+                {{ '::TreatmentProcess:Column:Finalization' | abpLocalization }}
+            </th>
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-process>
@@ -57,6 +60,10 @@
             <td>{{process.unPaidPrice| currency:'TRY':'symbol':'0.2-2'}}</td>
             <td>{{process.creator?.name + (process.creator?.surname ? (" " + process.creator?.surname) : "")}}</td>
             <td>{{process.creationTime | date: 'dd.MM.yyyy'}}</td>
+            <td class="text-center">
+                <img src="../../../assets/images/toggleoff.png" *ngIf="!process.finalizationTypeId" (click)="onFinalize(process)">
+                <img src="../../../assets/images/toggleon.png" *ngIf="process.finalizationTypeId" (click)="onDefinalize(process)">
+            </td>
         </tr>
     </ng-template>
     <ng-template pTemplate="emptymessage">
@@ -115,6 +122,35 @@
         </p-tabPanel>
     </p-tabView>
 </div>
+
+<p-dialog [(visible)]="finalizationDialog" [style]="{width: '450px'}"
+    header="{{ '::TreatmentProcess:FinalizationTypeModal:Title' | abpLocalization }}" [modal]="true" styleClass="p-fluid">
+    <form #languageForm="ngForm">
+        <div *ngIf="selectedProcess">
+            <div class="field">
+                <label for="type">{{ '::TreatmentProcess:FinalizationTypeModal:Type' | abpLocalization }}&nbsp;<font style="color:red">*
+                    </font></label>
+                <!-- <input type="text" pInputText id="name" name="name" #name="ngModel" [(ngModel)]="language.name" required
+                    autofocus />
+                <small class="p-error" *ngIf="!(name.valid || name.pristine)">{{ '::Message:RequiredField' |
+                    abpLocalization
+                    }}</small> -->
+            </div>
+            <div class="field">
+                <label for="description">{{ '::TreatmentProcess:FinalizationTypeModal:Description' | abpLocalization }}</label>
+                <div class="w-full">
+                  
+                </div>
+            </div>
+        </div>
+    </form>
+    <p-footer>
+        <!-- <p-button pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" styleClass="p-button-text"
+            (onClick)="hideDialog()"></p-button>
+        <p-button pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" styleClass="p-button-text"
+            (onClick)="saveLanguage()" [disabled]="!(languageForm.valid)"></p-button> -->
+    </p-footer>
+</p-dialog>
 
 <p-confirmDialog key="treatmentProcessConfirm" [style]="{width: '450px'}"
     rejectLabel="{{ '::Reject' | abpLocalization }}" acceptLabel="{{ '::Accept' | abpLocalization }}"

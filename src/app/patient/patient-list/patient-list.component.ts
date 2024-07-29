@@ -176,8 +176,39 @@ export class PatientListComponent extends AppComponentBase {
     switch (patientStatus) {
       case "1": //Yeni
         return this.patientList.filter(p => p.patientTreatmentProcesses.length == 0 && !p.noTreatmentPlan);
-      case "2": //Yeni
+      case "2": //Tedavi planı hazırlanmayacak
         return this.patientList.filter(p => p.patientTreatmentProcesses.length == 0 && p.noTreatmentPlan);
+      case "3": //Dokümanların çevirilmesi bekleniyor
+        return null;
+      case "4": //Hastanelerden cevap bekleniyor
+        return null;
+      case "5": //Ek bilgi bekleniyor
+        return null;
+      case "6": //Hastane cevabının değerlendirilmesi bekleniyor
+        return null;
+      case "7": //Fiyatlandırma gönderilmesi bekleniyor
+        return null;
+      case "8": //Fiyatlandırma bekleniyor
+        return null;
+      case "9": //MFB Onayı bekleniyor
+        return null;
+      case "10": //Proformanın iletilmesi bekleniyor
+        return null;
+      case "11": //Proformanın cevaplanması bekleniyor
+        return null;
+      case "12": //Ön ödemenin alınması bekleniyor
+        return null;
+      case "13": //Davet mektubu gönderilmesi bekleniyor
+        return null;
+      case "14": //Sehayat ve konaklama planı girilmesi bekleniyor
+        return null;
+      case "15": //Randevu planlama
+        return null;
+      case "16": //Tedavi aşaması
+        return null;
+      case "17": //Sonuçlanan süreç
+        return null;
+
     }
   }
 }

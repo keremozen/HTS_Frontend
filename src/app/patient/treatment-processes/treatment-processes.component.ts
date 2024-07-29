@@ -25,6 +25,8 @@ export class TreatmentProcessesComponent extends AppComponentBase {
   activeIndex = 0;
   salesAndCompanionInfo: SalesMethodAndCompanionInfoDto;
   isAllowedToManage: boolean = false;
+  finalizationDialog: boolean = false;
+  finalization: any;
 
   constructor(
     injector: Injector,
@@ -79,7 +81,6 @@ export class TreatmentProcessesComponent extends AppComponentBase {
         complete: () => {
           this.salesAndCompanionInfoService.getByPatientTreatmentProcessId(this.selectedProcess.id as unknown as number).subscribe({
             next: (res) => {
-              debugger;
               this.salesAndCompanionInfo = res as SalesMethodAndCompanionInfoDto;
               this.doesHaveAnySalesMethodAndCompanionInfo = (res != null || res != undefined);
             },
@@ -109,5 +110,13 @@ export class TreatmentProcessesComponent extends AppComponentBase {
 
   quotationChanged(event: any) {
     this.fetchData();
+  }
+
+  onFinalize(process: PatientTreatmentProcessDetailedDto) {
+    this.finalizationDialog = true;
+  }
+
+  onDefinalize(process: PatientTreatmentProcessDetailedDto) {
+    this.finalizationDialog = false;
   }
 }

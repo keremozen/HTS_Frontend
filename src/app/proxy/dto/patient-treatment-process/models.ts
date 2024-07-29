@@ -15,6 +15,8 @@ export interface PatientTreatmentProcessDetailedDto extends AuditedEntityWithUse
   proformaPrice: number;
   paymentPrice: number;
   unPaidPrice: number;
+  finalizationTypeId?: number;
+  finalizationDescription?: string;
   treatmentProcessStatusId: EntityEnum_PatientTreatmentStatusEnum;
   treatmentProcessStatus: TreatmentProcessStatusDto;
 }
