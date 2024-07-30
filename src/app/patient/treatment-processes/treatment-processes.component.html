@@ -8,8 +8,9 @@
         </div>
     </div>
     <div class="p-toolbar-group-end p-0">
-        <p-button pRipple label="{{ '::TreatmentProcess:StartTreatmentProcess' | abpLocalization }}"
-            icon="pi pi-plus" styleClass="p-button-success mr-2" (onClick)="newTreatmentProcess()" [disabled]="noTreatmentPlan" *ngIf="isAllowedToManage"></p-button>
+        <p-button pRipple label="{{ '::TreatmentProcess:StartTreatmentProcess' | abpLocalization }}" icon="pi pi-plus"
+            styleClass="p-button-success mr-2" (onClick)="newTreatmentProcess()" [disabled]="noTreatmentPlan"
+            *ngIf="isAllowedToManage"></p-button>
     </div>
 </p-toolbar>
 
@@ -61,8 +62,11 @@
             <td>{{process.creator?.name + (process.creator?.surname ? (" " + process.creator?.surname) : "")}}</td>
             <td>{{process.creationTime | date: 'dd.MM.yyyy'}}</td>
             <td class="text-center">
-                <img src="../../../assets/images/toggleoff.png" *ngIf="!process.finalizationTypeId" (click)="onFinalize(process)">
-                <img src="../../../assets/images/toggleon.png" *ngIf="process.finalizationTypeId" (click)="onDefinalize(process)">
+                <img src="../../../assets/images/toggleoff.png" *ngIf="!process.finalizationTypeId"
+                    (click)="onFinalize(process)">
+                <img src="../../../assets/images/toggleon.png" *ngIf="process.finalizationTypeId"
+                    (click)="onDefinalize(process)">
+                    <i class="ml-3 pi pi-info-circle" style="vertical-align: text-bottom;" [pTooltip]="getFinalizationTooltip(process)" tooltipPosition="top" [escape]="false" *ngIf="process.finalizationTypeId"></i>
             </td>
         </tr>
     </ng-template>
@@ -108,7 +112,7 @@
             </ng-template>
             <ng-template pTemplate="content">
                 <app-operational-info [patientTreatmentId]="selectedProcess?.id" [patient]="patient"
-                (onOperationChange)="operationChanged($event)"></app-operational-info>
+                    (onOperationChange)="operationChanged($event)"></app-operational-info>
             </ng-template>
         </p-tabPanel>
         <p-tabPanel [disabled]="!doesHaveAnySalesMethodAndCompanionInfo" [cache]="false">
@@ -117,38 +121,44 @@
                 <span>{{'::TreatmentProcess:Step:ProcessQuotationRevenue'|abpLocalization}}</span>
             </ng-template>
             <ng-template pTemplate="content">
-                <app-quotation [patientTreatmentId]="selectedProcess?.id" [patient]="patient" (onQuotationChange)="quotationChanged($event)"></app-quotation>
+                <app-quotation [patientTreatmentId]="selectedProcess?.id" [patient]="patient"
+                    (onQuotationChange)="quotationChanged($event)"></app-quotation>
             </ng-template>
         </p-tabPanel>
     </p-tabView>
 </div>
 
 <p-dialog [(visible)]="finalizationDialog" [style]="{width: '450px'}"
-    header="{{ '::TreatmentProcess:FinalizationTypeModal:Title' | abpLocalization }}" [modal]="true" styleClass="p-fluid">
-    <form #languageForm="ngForm">
-        <div *ngIf="selectedProcess">
+    header="{{ '::TreatmentProcess:FinalizationTypeModal:Title' | abpLocalization }}" [modal]="true"
+    styleClass="p-fluid">
+    <form #finalizationForm="ngForm">
+        <div *ngIf="finalizationPtp">
             <div class="field">
-                <label for="type">{{ '::TreatmentProcess:FinalizationTypeModal:Type' | abpLocalization }}&nbsp;<font style="color:red">*
+                <label for="type">{{ '::TreatmentProcess:FinalizationTypeModal:Type' | abpLocalization }}&nbsp;<font
+                        style="color:red">*
                     </font></label>
-                <!-- <input type="text" pInputText id="name" name="name" #name="ngModel" [(ngModel)]="language.name" required
-                    autofocus />
-                <small class="p-error" *ngIf="!(name.valid || name.pristine)">{{ '::Message:RequiredField' |
+                <p-dropdown id="type" name="type" [showClear]="true" #type="ngModel" [options]="typeList"
+                    [(ngModel)]="finalizationPtp.finalizationTypeId" [style]="{'width':'100%'}"
+                    styleClass="filterDropDown" optionValue="id" placeholder="{{ '::Select' | abpLocalization }}"
+                    optionLabel="name" appendTo="body" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" required>
+                </p-dropdown>
+                <small class="p-error" *ngIf="!(type.valid || type.pristine)">{{ '::Message:RequiredField' |
                     abpLocalization
-                    }}</small> -->
+                    }}</small>
             </div>
             <div class="field">
-                <label for="description">{{ '::TreatmentProcess:FinalizationTypeModal:Description' | abpLocalization }}</label>
-                <div class="w-full">
-                  
-                </div>
+                <label for="description">{{ '::TreatmentProcess:FinalizationTypeModal:Description' | abpLocalization
+                    }}</label>
+                <textarea rows="2" pInputText id="description" name="description" #description="ngModel"
+                    [(ngModel)]="finalizationPtp.description" class="w-full"></textarea>
             </div>
         </div>
     </form>
     <p-footer>
-        <!-- <p-button pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" styleClass="p-button-text"
+        <p-button pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" styleClass="p-button-text"
             (onClick)="hideDialog()"></p-button>
-        <p-button pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" styleClass="p-button-text"
-            (onClick)="saveLanguage()" [disabled]="!(languageForm.valid)"></p-button> -->
+        <p-button pRipple label="{{ '::Finalize' | abpLocalization }}" icon="pi pi-check" styleClass="p-button-text"
+            (onClick)="finalize()" [disabled]="!(finalizationForm.valid)"></p-button>
     </p-footer>
 </p-dialog>
 

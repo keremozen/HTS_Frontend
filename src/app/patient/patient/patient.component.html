@@ -30,7 +30,7 @@
     <div class="flex justify-content-end mr-3" style="margin-top:-10px; margin-bottom: -5px;">
         <p-checkbox id="chkNoTreatmentPlan" name="chkNoTreatmentPlan" #chkNoTreatmentPlan="ngModel" [binary]="true"
             [(ngModel)]="noTreatmentPlan" label="{{ '::PatientDetail:NoTreatmentPlan' |
-        abpLocalization }}" [disabled]="patientView.patientTreatmentProcesses?.length > 0"></p-checkbox>
+        abpLocalization }}" [disabled]="patientView?.patientTreatmentProcesses?.length > 0"></p-checkbox>
     </div>
     <fieldset class="border pl-3 pr-3 pt-2 pb-3 m-2 patientFieldSet">
         <legend class="float-none w-auto pl-3 pr-3 text-sm patientFieldSetlegend">{{'::PatientDetail:Profile' |

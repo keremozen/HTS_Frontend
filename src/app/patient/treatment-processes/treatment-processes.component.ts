@@ -1,8 +1,10 @@
 import { Component, Injector, Input, ViewEncapsulation } from '@angular/core';
+import { FinalizationTypeDto } from '@proxy/dto/finalization-type';
 import { PatientDto } from '@proxy/dto/patient';
-import { PatientTreatmentProcessDetailedDto, PatientTreatmentProcessDto } from '@proxy/dto/patient-treatment-process';
+import { FinalizePtpDto, PatientTreatmentProcessDetailedDto, PatientTreatmentProcessDto } from '@proxy/dto/patient-treatment-process';
 import { SalesMethodAndCompanionInfoDto } from '@proxy/dto/sales-method-and-companion-info';
 import { PatientTreatmentProcessService, SalesMethodAndCompanionInfoService, USSService } from '@proxy/service';
+import { CommonService } from 'src/app/services/common.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 @Component({
@@ -26,13 +28,16 @@ export class TreatmentProcessesComponent extends AppComponentBase {
   salesAndCompanionInfo: SalesMethodAndCompanionInfoDto;
   isAllowedToManage: boolean = false;
   finalizationDialog: boolean = false;
-  finalization: any;
+  finalizationPtp: FinalizePtpDto;
+  typeList: FinalizationTypeDto[] = [];
 
   constructor(
     injector: Injector,
     private patientTreatmentProcessService: PatientTreatmentProcessService,
     private salesAndCompanionInfoService: SalesMethodAndCompanionInfoService,
-    private ussService: USSService) {
+    private ussService: USSService,
+    private commonService: CommonService
+  ) {
     super(injector);
     this.isAllowedToManage = this.permission.getGrantedPolicy("HTS.PatientManagement");
   }
@@ -42,6 +47,7 @@ export class TreatmentProcessesComponent extends AppComponentBase {
   }
 
   fetchData() {
+    this.typeList = this.commonService.finalizationTypeList;
     this.patientTreatmentProcessService.getListByPatientId(+this.patient.id).subscribe({
       next: (res) => {
         this.processes = res.items;
@@ -113,10 +119,49 @@ export class TreatmentProcessesComponent extends AppComponentBase {
   }
 
   onFinalize(process: PatientTreatmentProcessDetailedDto) {
+    this.finalizationPtp = {} as FinalizePtpDto;
     this.finalizationDialog = true;
   }
 
   onDefinalize(process: PatientTreatmentProcessDetailedDto) {
+    this.confirm({
+      key: 'treatmentProcessConfirm',
+      message: this.l('::TreatmentProcess:Message:DefinalizeConfirmation'),
+      header: this.l('::Confirm'),
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.patientTreatmentProcessService.deFinalize(+process.id).subscribe({
+          complete: () => {
+            this.finalizationDialog = false;
+            this.fetchData();
+            this.success(this.l('::TreatmentProcess:Message:SuccessfulDefinalize'));
+          }
+        });
+      }
+    });
+  }
+
+  hideDialog() {
+    this.finalizationPtp = null;
     this.finalizationDialog = false;
+  }
+
+  finalize() {
+    if (this.finalizationPtp) {
+      this.patientTreatmentProcessService.finalize(+this.selectedProcess.id, this.finalizationPtp).subscribe({
+        complete: () => {
+          this.finalizationDialog = false;
+            this.fetchData();
+            this.success(this.l('::TreatmentProcess:Message:SuccessfulFinalize'));
+        }
+      });
+    }
+  }
+
+  getFinalizationTooltip(process: PatientTreatmentProcessDetailedDto) {
+    if (process.finalizationTypeId) {
+       return "<b>" + this.typeList.find(x => x.id == process.finalizationTypeId).name + "</b><br>" + process.finalizationDescription;
+    }
+    return '';
   }
 }

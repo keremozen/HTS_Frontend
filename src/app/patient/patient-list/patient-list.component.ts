@@ -1,11 +1,14 @@
 import { Component, Injector, ViewEncapsulation } from '@angular/core';
+import { TaskType } from '@proxy/dto';
 import { GenderDto } from '@proxy/dto/gender';
+import { HTSTaskDto } from '@proxy/dto/htstask';
 import { LanguageDto } from '@proxy/dto/language';
 import { NationalityDto } from '@proxy/dto/nationality';
 import { FilterPatientDto, PatientDto } from '@proxy/dto/patient';
 import { PatientTreatmentProcessDto } from '@proxy/dto/patient-treatment-process';
 import { TreatmentProcessStatusDto } from '@proxy/dto/treatment-process-status';
-import { PatientService, TreatmentProcessStatusService } from '@proxy/service';
+import { EntityEnum_PatientTreatmentStatusEnum, EntityEnum_TaskTypeEnum, entityEnum_TaskTypeEnumOptions } from '@proxy/enum';
+import { HTSTaskService, PatientService, TreatmentProcessStatusService } from '@proxy/service';
 import { forkJoin } from 'rxjs';
 import { CommonService } from 'src/app/services/common.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
@@ -24,6 +27,7 @@ export class PatientListComponent extends AppComponentBase {
   nationalityList: NationalityDto[] = [];
   languageList: LanguageDto[] = [];
   genderList: GenderDto[] = [];
+  taskList: HTSTaskDto[] = [];
   processStatusList: TreatmentProcessStatusDto[] = [];
   patientFilter: FilterPatientDto = {} as FilterPatientDto;
   loading: boolean;
@@ -56,7 +60,8 @@ export class PatientListComponent extends AppComponentBase {
     injector: Injector,
     private commonService: CommonService,
     private patientService: PatientService,
-    private treatmentProcessStatusService: TreatmentProcessStatusService
+    private treatmentProcessStatusService: TreatmentProcessStatusService,
+    private taskService: HTSTaskService
   ) {
     super(injector);
     this.isAllowedToManage = this.permission.getGrantedPolicy("HTS.PatientManagement")
@@ -74,15 +79,18 @@ export class PatientListComponent extends AppComponentBase {
 
     forkJoin([
       this.treatmentProcessStatusService.getList(),
-      this.patientService.getList()
+      this.patientService.getList(),
+      this.taskService.getList()
     ]).subscribe({
       next: ([
         resStatusList,
-        resPatientList
+        resPatientList,
+        resTaskList
       ]) => {
         this.processStatusList = resStatusList.items;
         this.patientList = resPatientList.items;
         this.totalRecords = resPatientList.totalCount;
+        this.taskList = resTaskList.items;
       },
       error: () => {
         this.loading = false;
@@ -179,35 +187,38 @@ export class PatientListComponent extends AppComponentBase {
       case "2": //Tedavi planı hazırlanmayacak
         return this.patientList.filter(p => p.patientTreatmentProcesses.length == 0 && p.noTreatmentPlan);
       case "3": //Dokümanların çevirilmesi bekleniyor
-        return null;
+        return this.patientList.filter(p => this.taskList.filter(t => t.taskTypeId == EntityEnum_TaskTypeEnum.DocumentTranslate).some(t => t.patientId == +p.id));
       case "4": //Hastanelerden cevap bekleniyor
-        return null;
+        return this.patientList.filter(p => p.patientTreatmentProcesses.some(ptp => ptp.isFinalized == false && ptp.treatmentProcessStatusId == 2));
       case "5": //Ek bilgi bekleniyor
         return null;
+      /*return this.patientList.filter(p => 
+        this.taskList.filter(t => t.taskTypeId == EntityEnum_TaskTypeEnum.EvaluationOfHospitalResponse).some(t => t.patientId == +p.id) &&
+      p.patientTreatmentProcesses.some(ptp => ptp.));*/
       case "6": //Hastane cevabının değerlendirilmesi bekleniyor
-        return null;
+        return this.patientList.filter(p => this.taskList.filter(t => t.taskTypeId == EntityEnum_TaskTypeEnum.EvaluationOfHospitalResponse).some(t => t.patientId == +p.id));
       case "7": //Fiyatlandırma gönderilmesi bekleniyor
-        return null;
+        return this.patientList.filter(p => this.taskList.filter(t => t.taskTypeId == EntityEnum_TaskTypeEnum.WaitingSentPricing).some(t => t.patientId == +p.id));
       case "8": //Fiyatlandırma bekleniyor
-        return null;
+        return this.patientList.filter(p => this.taskList.filter(t => t.taskTypeId == EntityEnum_TaskTypeEnum.Pricing).some(t => t.patientId == +p.id));
       case "9": //MFB Onayı bekleniyor
-        return null;
+        return this.patientList.filter(p => this.taskList.filter(t => t.taskTypeId == EntityEnum_TaskTypeEnum.MFBApproval).some(t => t.patientId == +p.id));
       case "10": //Proformanın iletilmesi bekleniyor
         return null;
       case "11": //Proformanın cevaplanması bekleniyor
-        return null;
+        return this.patientList.filter(p => this.taskList.filter(t => t.taskTypeId == EntityEnum_TaskTypeEnum.AnsweringProforma).some(t => t.patientId == +p.id));
       case "12": //Ön ödemenin alınması bekleniyor
-        return null;
+        return this.patientList.filter(p => this.taskList.filter(t => t.taskTypeId == EntityEnum_TaskTypeEnum.RequestingDownPayment).some(t => t.patientId == +p.id));
       case "13": //Davet mektubu gönderilmesi bekleniyor
-        return null;
+        return this.patientList.filter(p => this.taskList.filter(t => t.taskTypeId == EntityEnum_TaskTypeEnum.SendingInvitationLetter).some(t => t.patientId == +p.id));
       case "14": //Sehayat ve konaklama planı girilmesi bekleniyor
-        return null;
+        return this.patientList.filter(p => this.taskList.filter(t => t.taskTypeId == EntityEnum_TaskTypeEnum.EnteringTravelAccommodationPlan).some(t => t.patientId == +p.id));
       case "15": //Randevu planlama
-        return null;
+        return this.patientList.filter(p => this.taskList.filter(t => t.taskTypeId == EntityEnum_TaskTypeEnum.EnteringTravelAccommodationPlan).some(t => t.patientId == +p.id));
       case "16": //Tedavi aşaması
-        return null;
+        return this.patientList.filter(p => p.patientTreatmentProcesses.some(ptp => ptp.isFinalized == false && ptp.treatmentProcessStatusId == EntityEnum_PatientTreatmentStatusEnum.PaymentCompletedTreatmentProcess));
       case "17": //Sonuçlanan süreç
-        return null;
+        return this.patientList.filter(p => p.patientTreatmentProcesses.some(ptp => ptp.isFinalized == true));
 
     }
   }
