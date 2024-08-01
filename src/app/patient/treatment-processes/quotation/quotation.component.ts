@@ -110,7 +110,6 @@ export class QuotationComponent extends AppComponentBase {
             var id = 1;
             this.enabizProcessList.forEach(process => {
               process.id = id;
-              debugger;
               process.gerceklesmeZamani = moment(process.gerceklesmE_ZAMANI, "YYYYMMDDhhmm").toDate();
               id++;
             });

@@ -5,7 +5,7 @@ import { IdentityUserDto } from '@abp/ng.identity/proxy';
 
 export interface PatientTreatmentProcessDto extends AuditedEntityWithUserDto<number, IdentityUserDto> {
   treatmentCode?: string;
-  isFinalized?: boolean;
+  isFinalized: boolean;
   treatmentProcessStatusId: EntityEnum_PatientTreatmentStatusEnum;
   treatmentProcessStatus: TreatmentProcessStatusDto;
 }
@@ -21,7 +21,7 @@ export interface PatientTreatmentProcessDetailedDto extends AuditedEntityWithUse
   proformaPrice: number;
   paymentPrice: number;
   unPaidPrice: number;
-  isFinalized?: boolean;
+  isFinalized: boolean;
   finalizationTypeId?: number;
   finalizationDescription?: string;
   treatmentProcessStatusId: EntityEnum_PatientTreatmentStatusEnum;

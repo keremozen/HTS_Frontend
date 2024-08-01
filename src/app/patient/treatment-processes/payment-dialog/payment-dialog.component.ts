@@ -97,7 +97,6 @@ export class PaymentDialogComponent extends AppComponentBase {
             next: (resPayment) => {
               this.orderNumber = resPayment.generatedRowNumber;
               this.payment = resPayment as SavePaymentDto;
-              debugger;
               this.selectedHospitalId = this.payment.hospitalId;
               this.proformaCode = this.payment.proformaId.toString();
               this.payment.paymentDate = new Date(this.payment.paymentDate);

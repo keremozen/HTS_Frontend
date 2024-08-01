@@ -35,6 +35,8 @@
                     abpLocalization }}</th>
                 <th>{{ '::Admin:Hospital:Column:Pricers' |
                     abpLocalization }}</th>
+                <th>{{ '::Admin:Hospital:Column:Interpreters' |
+                    abpLocalization }}</th>
                 <th class="text-center">{{ '::Admin:Hospital:Column:IsActive' | abpLocalization }}</th>
                 <th style="width:8rem;"></th>
             </tr>
@@ -73,6 +75,15 @@
                         <p-button pRipple icon="pi pi-plus" styleClass="p-button-rounded p-button-info ml-2"
                             [pTooltip]="'::Admin:Hospital:Column:Pricers' | abpLocalization"
                             (onClick)="openPricerDialog(hospital)"></p-button>
+                    </div>
+                </td>
+                <td>
+                    <div class="flex justify-content-between">
+                        <div class="flex align-items-center"
+                            [innerHTML]="!hospital.hospitalInterpreterNames ? '-': hospital.hospitalInterpreterNames"></div>
+                        <p-button pRipple icon="pi pi-plus" styleClass="p-button-rounded p-button-info ml-2"
+                            [pTooltip]="'::Admin:Hospital:Column:Interpreters' | abpLocalization"
+                            (onClick)="openInterpreterDialog(hospital)"></p-button>
                     </div>
                 </td>
                 <td class="text-center"><i class="pi"
@@ -351,6 +362,64 @@
     </p-table>
 </p-dialog>
 
+<p-dialog [(visible)]="hospitalInterpreterListDialog" [style]="{width: '80vw'}"
+    header="{{ '::Admin:Hospital:HospitalInterpreterManagement' | abpLocalization }}" [modal]="true" styleClass="p-fluid"
+    (onHide)="refreshHospital()">
+    <p-toolbar styleClass="mb-4 gap-2">
+        <ng-template pTemplate="left">
+            <p-button pRipple label="{{ '::Admin:HospitalInterpreter:NewHospitalInterpreter' | abpLocalization }}" icon="pi pi-plus"
+                styleClass="p-button-success mr-2" (onClick)="openNewInterpreter()"></p-button>
+        </ng-template>
+    </p-toolbar>
+    <p-table #dt [value]="hospitalInterpreterList" [rows]="10" [paginator]="true" responsiveLayout="stack"
+        [breakpoint]="'960px'" [rowHover]="true"
+        currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
+        [showCurrentPageReport]="true">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="nameSurname">{{ '::Admin:HospitalInterpreter:Column:NameSurname' |
+                    abpLocalization }} <p-sortIcon field="nameSurname"></p-sortIcon></th>
+                <th pSortableColumn="phoneNumber">{{ '::Admin:HospitalInterpreter:Column:PhoneNumber' |
+                    abpLocalization }} <p-sortIcon field="phoneNumber"></p-sortIcon></th>
+                <th pSortableColumn="email">{{ '::Admin:HospitalInterpreter:Column:Email' | abpLocalization
+                    }} <p-sortIcon field="email"></p-sortIcon></th>
+                <th class="text-center">{{ '::Admin:HospitalInterpreter:Column:IsDefault' | abpLocalization }}</th>
+                <th class="text-center">{{ '::Admin:HospitalInterpreter:Column:IsActive' | abpLocalization }}</th>
+                <th style="width:8rem;"></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-interpreter let-editing="editing" let-ri="rowIndex">
+            <tr [pEditableRow]="interpreter">
+                <td>{{interpreter.user?.name}} {{interpreter.user?.surname}}</td>
+                <td>{{interpreter.user?.phoneNumber}}</td>
+                <td>{{interpreter.user?.email}}</td>
+                <td class="text-center"><i class="pi"
+                        [ngClass]="{ 'text-green-500 pi-check-circle': interpreter.isDefault, 'text-red-500 pi-times-circle': !interpreter.isDefault }"></i>
+                </td>
+                <td class="text-center"><i class="pi"
+                        [ngClass]="{ 'text-green-500 pi-check-circle': interpreter.isActive, 'text-red-500 pi-times-circle': !interpreter.isActive }"></i>
+                </td>
+                <td class="text-right">
+                    <p-button pRipple icon="pi pi-pencil" styleClass="p-button-rounded p-button-success mr-2"
+                        (onClick)="editInterpreter(interpreter)"></p-button>
+                    <p-button pRipple icon="pi pi-trash" styleClass="p-button-rounded p-button-warning"
+                        (onClick)="deleteInterpreter(interpreter)"></p-button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <div class="m-3">
+                {{ '::Table:EmptyMessage' | abpLocalization }}
+            </div>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="flex align-items-center justify-content-between" *ngIf="hospitalInterpreterTotalRecords > 0">
+                {{ '::Table:Summary' | abpLocalization:(hospitalInterpreterTotalRecords) }}
+            </div>
+        </ng-template>
+    </p-table>
+</p-dialog>
+
 <p-dialog [(visible)]="hospitalUHBStaffEditDialog" [style]="{width: '450px'}"
     header="{{ '::Admin:HospitalUHBStaff:HospitalUHBStaffDetails' | abpLocalization }}" [modal]="true"
     styleClass="p-fluid" (onHide)="hideUHBStaffDialog()">
@@ -495,6 +564,59 @@
             (onClick)="hidePricerDialog()"></p-button>
         <p-button pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" styleClass="p-button-text"
             (onClick)="saveHospitalPricer()" [disabled]="!(hospitalPricerEditForm.valid)"></p-button>
+    </p-footer>
+</p-dialog>
+
+<p-dialog [(visible)]="hospitalInterpreterEditDialog" [style]="{width: '450px'}"
+    header="{{ '::Admin:HospitalInterpreter:HospitalInterpreterDetails' | abpLocalization }}" [modal]="true" styleClass="p-fluid"
+    (onHide)="hideInterpreterDialog()">
+    <form #hospitalInterpreterEditForm="ngForm">
+        <div *ngIf="hospitalInterpreter">
+            <div class="field">
+                <label for="staff">{{ '::Admin:HospitalInterpreter:Column:Interpreter' | abpLocalization }}&nbsp;<font
+                        style="color:red">*</font></label>
+                <p-dropdown id="interpreter" name="interpreter" #interpreter="ngModel" [filter]="true" filterBy="name" [showClear]="true"
+                    [options]="allHospitalInterpreters" [(ngModel)]="selectedHospitalInterpreter" filterLocale="tr-TR"
+                    placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
+                    styleClass="filterDropDown" appendTo="body" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
+                    emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}" required>
+                    <ng-template pTemplate="selectedItem">
+                        <div class="flex align-items-center gap-2" *ngIf="selectedHospitalInterpreter">
+                            <div>{{ selectedHospitalInterpreter.name }} {{ selectedHospitalInterpreter.surname }}</div>
+                        </div>
+                    </ng-template>
+                    <ng-template let-interpreter pTemplate="item">
+                        <div class="flex align-items-center gap-2">
+                            <div>{{ interpreter.name }} {{ interpreter.surname }}</div>
+                        </div>
+                    </ng-template>
+                </p-dropdown>
+                <small class="p-error" *ngIf="!(interpreter.valid || interpreter.pristine)">{{ '::Message:RequiredField'
+                    |
+                    abpLocalization }}</small>
+            </div>
+            <div class="field">
+                <label for="isDefault">{{ '::Admin:HospitalInterpreter:Column:IsDefault' | abpLocalization
+                    }}</label>
+                <div class="w-full">
+                    <p-checkbox id="isDefault" name="isDefault" #isDefault="ngModel"
+                        [(ngModel)]="hospitalInterpreter.isDefault" [binary]="true"></p-checkbox>
+                </div>
+            </div>
+            <div class="field">
+                <label for="isActive">{{ '::Admin:HospitalInterpreter:Column:IsActive' | abpLocalization }}</label>
+                <div class="w-full">
+                    <p-checkbox id="isActive" name="isActive" #isActive="ngModel" [(ngModel)]="hospitalInterpreter.isActive"
+                        [binary]="true"></p-checkbox>
+                </div>
+            </div>
+        </div>
+    </form>
+    <p-footer>
+        <p-button pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" styleClass="p-button-text"
+            (onClick)="hideInterpreterDialog()"></p-button>
+        <p-button pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" styleClass="p-button-text"
+            (onClick)="saveHospitalInterpreter()" [disabled]="!(hospitalInterpreterEditForm.valid)"></p-button>
     </p-footer>
 </p-dialog>
 

@@ -4,6 +4,7 @@ import type { CityDto } from '../city/models';
 import type { HospitalStaffDto } from '../hospital-staff/models';
 import type { HospitalUHBStaffDto } from '../hospital-uhbstaff/models';
 import type { HospitalPricerDto } from '../hospital-pricer/models';
+import { HospitalInterpreterDto } from '../hospital-interpreter';
 
 export interface HospitalDto extends EntityDto<number> {
   name?: string;
@@ -19,6 +20,7 @@ export interface HospitalDto extends EntityDto<number> {
   hospitalStaffs: HospitalStaffDto[];
   hospitalUHBStaffs: HospitalUHBStaffDto[];
   hospitalPricers: HospitalPricerDto[];
+  hospitalInterpreters: HospitalInterpreterDto[];
 }
 
 export interface SaveHospitalDto {

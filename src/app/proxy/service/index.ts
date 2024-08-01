@@ -14,6 +14,7 @@ export * from './gender.service';
 export * from './hospital-agent-note.service';
 export * from './hospital-consultation-document.service';
 export * from './hospital-consultation.service';
+export * from './hospital-interpreter.service';
 export * from './hospital-pricer.service';
 export * from './hospital-response-type.service';
 export * from './hospital-response.service';

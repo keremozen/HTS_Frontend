@@ -189,7 +189,7 @@ export class PatientListComponent extends AppComponentBase {
       case "3": //Dokümanların çevirilmesi bekleniyor
         return this.patientList.filter(p => this.taskList.filter(t => t.taskTypeId == EntityEnum_TaskTypeEnum.DocumentTranslate).some(t => t.patientId == +p.id));
       case "4": //Hastanelerden cevap bekleniyor
-        return this.patientList.filter(p => p.patientTreatmentProcesses.some(ptp => ptp.isFinalized == false && ptp.treatmentProcessStatusId == 2));
+        return this.patientList.filter(p => p.patientTreatmentProcesses.some(ptp => ptp.isFinalized == false && ptp.treatmentProcessStatusId == EntityEnum_PatientTreatmentStatusEnum.HospitalAskedWaitingResponse));
       case "5": //Ek bilgi bekleniyor
         return null;
       /*return this.patientList.filter(p => 
@@ -219,7 +219,6 @@ export class PatientListComponent extends AppComponentBase {
         return this.patientList.filter(p => p.patientTreatmentProcesses.some(ptp => ptp.isFinalized == false && ptp.treatmentProcessStatusId == EntityEnum_PatientTreatmentStatusEnum.PaymentCompletedTreatmentProcess));
       case "17": //Sonuçlanan süreç
         return this.patientList.filter(p => p.patientTreatmentProcesses.some(ptp => ptp.isFinalized == true));
-
     }
   }
 }

@@ -1,11 +1,12 @@
 import { Component, Injector } from '@angular/core';
 import { CityDto } from '@proxy/dto/city';
 import { HospitalDto, SaveHospitalDto } from '@proxy/dto/hospital';
+import { HospitalInterpreterDto, SaveHospitalInterpreterDto } from '@proxy/dto/hospital-interpreter';
 import { HospitalPricerDto, SaveHospitalPricerDto } from '@proxy/dto/hospital-pricer';
 import { HospitalStaffDto, SaveHospitalStaffDto } from '@proxy/dto/hospital-staff';
 import { HospitalUHBStaffDto, SaveHospitalUHBStaffDto } from '@proxy/dto/hospital-uhbstaff';
 import { NationalityDto } from '@proxy/dto/nationality';
-import { HospitalPricerService, HospitalService, HospitalStaffService, HospitalUHBStaffService, UserService } from '@proxy/service';
+import { HospitalInterpreterService, HospitalPricerService, HospitalService, HospitalStaffService, HospitalUHBStaffService, UserService } from '@proxy/service';
 import { IdentityUserDto } from '@proxy/volo/abp/identity';
 import { forkJoin } from 'rxjs';
 import { CommonService } from 'src/app/services/common.service';
@@ -33,6 +34,8 @@ export class HospitalComponent extends AppComponentBase {
   hospitalUHBStaffEditDialog: boolean;
   hospitalPricerListDialog: boolean;
   hospitalPricerEditDialog: boolean;
+  hospitalInterpreterListDialog: boolean;
+  hospitalInterpreterEditDialog: boolean;
   hospitalList: HospitalWithStaffNames[];
   hospital: SaveHospitalDto;
   isEdit: boolean;
@@ -50,10 +53,16 @@ export class HospitalComponent extends AppComponentBase {
   hospitalUHBStaffToBeEdited: HospitalUHBStaffDto;
   hospitalPricer: SaveHospitalPricerDto;
   hospitalPricerToBeEdited: HospitalPricerDto;
+  hospitalInterpreterList: HospitalInterpreterDto[] = [];
+  hospitalInterpreterTotalRecords: number = 0;
+  hospitalInterpreter: SaveHospitalInterpreterDto;
+  hospitalInterpreterToBeEdited: HospitalInterpreterDto;
   allHospitalStaffs: IdentityUserDto[] = [];
   allHospitalPricers: IdentityUserDto[] = [];
+  allHospitalInterpreters: IdentityUserDto[] = [];
   selectedHospitalStaff: IdentityUserDto;
   selectedHospitalPricer: IdentityUserDto;
+  selectedHospitalInterpreter: IdentityUserDto;
   cityList: CityDto[] = [];
 
   constructor(
@@ -63,6 +72,7 @@ export class HospitalComponent extends AppComponentBase {
     private hospitalUHBStaffService: HospitalUHBStaffService,
     private hospitalPricerService: HospitalPricerService,
     private commonService: CommonService,
+    private hospitalInterpreterService: HospitalInterpreterService,
     private userService: UserService
   ) {
     super(injector);
@@ -78,13 +88,15 @@ export class HospitalComponent extends AppComponentBase {
     forkJoin([
       this.hospitalService.getList(),
       this.userService.getHospitalStaffList(),
-      this.userService.getHospitalPricerList()
+      this.userService.getHospitalPricerList(),
+      this.userService.getInterpreterList()
     ]).subscribe(
       {
         next: ([
           resHospitalList,
           resHospitalStaffList,
-          resHospitalPricerList
+          resHospitalPricerList,
+          resHospitalInterpreterList
         ]) => {
           this.commonService.hospitalList = resHospitalList.items.filter(h => h.isActive == true);
           this.totalRecords = resHospitalList.totalCount;
@@ -94,15 +106,18 @@ export class HospitalComponent extends AppComponentBase {
             hospitalwithstaff.hospitalStaffNames = hospital.hospitalStaffs.filter(s => s.isActive).map(s => s.user.name + " " + s.user.surname).join("<br>");
             hospitalwithstaff.hospitalUHBStaffNames = hospital.hospitalUHBStaffs.map(s => s.name + " " + s.surname).join("<br>");
             hospitalwithstaff.hospitalPricerNames = hospital.hospitalPricers.filter(s => s.isActive).map(s => s.user.name + " " + s.user.surname).join("<br>");
+            hospitalwithstaff.hospitalInterpreterNames = hospital.hospitalInterpreters.filter(s => s.isActive).map(s => s.user.name + " " + s.user.surname).join("<br>");
             this.hospitalList.push(hospitalwithstaff);
           });
           this.allHospitalStaffs = resHospitalStaffList;
           this.allHospitalPricers = resHospitalPricerList;
+          this.allHospitalInterpreters = resHospitalInterpreterList;
           if (this.hospitalToBeEdited) {
             this.hospitalToBeEdited = this.hospitalList.find(h=>h.id == this.hospitalToBeEdited.id);
             this.fetchHospitalStaff();
             this.fetchHospitalUHBStaff();
             this.fetchHospitalPricer();
+            this.fetchHospitalInterpreter();
           }
         }
       }
@@ -189,6 +204,12 @@ export class HospitalComponent extends AppComponentBase {
     this.hospitalPricerListDialog = true;
   }
 
+  openInterpreterDialog(hospital: HospitalDto) {
+    this.hospitalToBeEdited = hospital;
+    this.fetchHospitalInterpreter();
+    this.hospitalInterpreterListDialog = true;
+  }
+
   fetchHospitalStaff() {
     this.hospitalStaffList = this.hospitalToBeEdited.hospitalStaffs as HospitalStaffDto[];
     this.hospitalStaffTotalRecords = this.hospitalToBeEdited.hospitalStaffs.length;
@@ -202,6 +223,11 @@ export class HospitalComponent extends AppComponentBase {
   fetchHospitalPricer() {
     this.hospitalPricerList = this.hospitalToBeEdited.hospitalPricers as HospitalPricerDto[];
     this.hospitalPricerTotalRecords = this.hospitalToBeEdited.hospitalPricers.length;
+  }
+
+  fetchHospitalInterpreter() {
+    this.hospitalInterpreterList = this.hospitalToBeEdited.hospitalInterpreters as HospitalInterpreterDto[];
+    this.hospitalInterpreterTotalRecords = this.hospitalToBeEdited.hospitalInterpreters.length;
   }
 
   openNewStaff() {
@@ -227,6 +253,14 @@ export class HospitalComponent extends AppComponentBase {
     this.hospitalPricerEditDialog = true;
   }
 
+  openNewInterpreter() {
+    this.isEdit = false;
+    this.hospitalInterpreter = {} as SaveHospitalInterpreterDto;
+    this.hospitalInterpreter.hospitalId = this.hospitalToBeEdited.id;
+    this.hospitalInterpreter.isActive = true;
+    this.hospitalInterpreterEditDialog = true;
+  }
+
   editStaff(hospitalStaff: HospitalStaffDto) {
     this.isEdit = true;
     this.hospitalStaffToBeEdited = hospitalStaff;
@@ -248,6 +282,14 @@ export class HospitalComponent extends AppComponentBase {
     this.hospitalPricer = { ...hospitalPricer as SaveHospitalPricerDto };
     this.selectedHospitalPricer = hospitalPricer.user;
     this.hospitalPricerEditDialog = true;
+  }
+
+  editInterpreter(hospitalInterpreter: HospitalInterpreterDto) {
+    this.isEdit = true;
+    this.hospitalInterpreterToBeEdited = hospitalInterpreter;
+    this.hospitalInterpreter = { ...hospitalInterpreter as SaveHospitalInterpreterDto };
+    this.selectedHospitalInterpreter = hospitalInterpreter.user;
+    this.hospitalInterpreterEditDialog = true;
   }
 
   deleteStaff(hospitalStaff: HospitalStaffDto) {
@@ -295,6 +337,23 @@ export class HospitalComponent extends AppComponentBase {
             this.success(this.l('::Message:SuccessfulDeletion', this.l('::Admin:HospitalPricer:Name')));
             this.fetchData();
             this.hidePricerDialog();
+          }
+        });
+      }
+    });
+  }
+
+  deleteInterpreter(hospitalInterpreter: HospitalInterpreterDto) {
+    this.confirm({
+      message: this.l('::Message:DeleteConfirmation', (hospitalInterpreter.user?.name + " " + hospitalInterpreter.user?.surname)),
+      header: this.l('::Confirm'),
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.hospitalInterpreterService.delete(hospitalInterpreter.id).subscribe({
+          complete: () => {
+            this.success(this.l('::Message:SuccessfulDeletion', this.l('::Admin:HospitalInterpreter:Name')));
+            this.fetchData();
+            this.hideInterpreterDialog();
           }
         });
       }
@@ -386,6 +445,35 @@ export class HospitalComponent extends AppComponentBase {
     }
   }
 
+  saveHospitalInterpreter() {
+    if (this.selectedHospitalInterpreter) {
+      let interpreterDto: SaveHospitalInterpreterDto = {
+        hospitalId: this.hospitalToBeEdited.id,
+        isActive: this.hospitalInterpreter.isActive,
+        isDefault: this.hospitalInterpreter.isDefault,
+        userId: this.selectedHospitalInterpreter.id
+      };
+      if (!this.isEdit) {
+        this.hospitalInterpreterService.create(interpreterDto).subscribe({
+          complete: () => {
+            this.fetchData();
+            this.hideInterpreterDialog();
+            this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:HospitalInterpreter:Name')));
+          }
+        });
+      }
+      else {
+        this.hospitalInterpreterService.update(this.hospitalInterpreterToBeEdited.id, interpreterDto).subscribe({
+          complete: () => {
+            this.fetchData();
+            this.hideInterpreterDialog();
+            this.success(this.l('::Message:SuccessfulSave', this.l('::Admin:HospitalInterpreter:Name')));
+          }
+        });
+      }
+    }
+  }
+
   hideStaffDialog() {
     this.hospitalStaff = null;
     this.hospitalStaffToBeEdited = null;
@@ -406,6 +494,13 @@ export class HospitalComponent extends AppComponentBase {
     this.selectedHospitalPricer = null;
   }
 
+  hideInterpreterDialog() {
+    this.hospitalInterpreter = null;
+    this.hospitalInterpreterToBeEdited = null;
+    this.hospitalInterpreterEditDialog = false;
+    this.selectedHospitalInterpreter = null;
+  }
+
 }
 
 class HospitalWithStaffNames implements HospitalDto {
@@ -423,8 +518,10 @@ class HospitalWithStaffNames implements HospitalDto {
   hospitalStaffs: HospitalStaffDto[];
   hospitalUHBStaffs: HospitalUHBStaffDto[];
   hospitalPricers: HospitalPricerDto[];
+  hospitalInterpreters: HospitalInterpreterDto[];
   hospitalStaffNames: string;
   hospitalUHBStaffNames: string;
   hospitalPricerNames: string;
+  hospitalInterpreterNames: string;
   id?: number;
 }

@@ -60,7 +60,6 @@ export class TaskListComponent implements OnInit {
   }
 
   calculateElapsedTime(time: Date): string {
-    debugger;
     let delta = moment().diff(time, 'minutes');
 
     var days = Math.floor(delta / 1440);

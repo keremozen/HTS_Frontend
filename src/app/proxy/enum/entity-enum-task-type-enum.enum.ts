@@ -16,7 +16,7 @@ export enum EntityEnum_TaskTypeEnum {
   EnteringDownPayment = 13,
   SendingInvitationLetter = 14,
   EnteringTravelAccommodationPlan = 15,
-  AppointmentScheduling = 16 
+  AppointmentScheduling = 16,
 }
 
 export const entityEnum_TaskTypeEnumOptions = mapEnumToOptions(EntityEnum_TaskTypeEnum);

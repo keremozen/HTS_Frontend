@@ -139,7 +139,6 @@ export class CompanionInfoComponent extends AppComponentBase {
   }
 
   dataURLtoFile(base64, filename, type) {
-    debugger;
     var mime = type,
       bstr = atob(base64),
       n = bstr.length,
