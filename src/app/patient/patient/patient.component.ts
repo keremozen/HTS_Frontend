@@ -86,6 +86,7 @@ export class PatientComponent extends AppComponentBase {
       this.patient.email = null;
     }
     this.patient.noTreatmentPlan = this.noTreatmentPlan;
+    console.log(JSON.stringify(this.patient));
     this.patientService.update(this.patientId, this.patient).subscribe({
       complete: () => {
         this.success(this.l("::PatientDetail:SaveSuccessful"));

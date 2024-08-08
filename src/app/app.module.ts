@@ -44,6 +44,7 @@ echarts.registerTheme('macarons', Marcaron);
 
 import localeDe from '@angular/common/locales/de';
 import { registerLocaleData } from '@angular/common';
+import * as moment from 'moment';
 registerLocaleData(localeDe);
 
 @NgModule({
@@ -89,10 +90,11 @@ export class AppModule {
   }
 
   overrideDate() {
-    /*Date.prototype.toJSON = function () {
-      const hoursDiff = this.getHours() - this.getTimezoneOffset() / 60;
-      this.setHours(hoursDiff);
-      return this.toISOString();
-    };*/
+    Date.prototype.toJSON = function() {
+      
+      var temp = moment(this).format("yyyy-MM-DDTHH:mm:ss.SSSZ");
+      debugger;
+      return temp;
+    };
   }
 }

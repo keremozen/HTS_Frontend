@@ -80,7 +80,7 @@
                     <div class="field grid mb-2">
                         <label for="patientPhoneNo" class="col-12 mb-2 md:col-3 md:mb-0">{{ '::Patients:Column:PhoneNo'
                             |
-                            abpLocalization }}</label>
+                            abpLocalization }}&nbsp;<font style="color:red">*</font></label>
                         <div class="col-12 md:col-9">
                             <p-dropdown id="phoneCountryCode" name="phoneCountryCode" [filter]="true" filterBy="name"
                                 [showClear]="true" #phoneCountryCode="ngModel" [options]="nationalityList"

@@ -122,15 +122,6 @@ function configureRoutes(routesService: RoutesService) {
         layout: eLayoutType.application
       },
       {
-        path: '/admin/treatmentType',
-        name: '::Menu:Admin:TreatmentType',
-        iconClass: 'fas fa-list',
-        parentName: eThemeSharedRouteNames.Administration,
-        order: 110,
-        requiredPolicy: 'HTS.TreatmentTypeManagement',
-        layout: eLayoutType.application
-      },
-      {
         path: '/admin/processKind',
         name: '::Menu:Admin:ProcessKind',
         iconClass: 'fas fa-procedures',

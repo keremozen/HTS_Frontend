@@ -128,6 +128,8 @@ export class OperationComponent extends AppComponentBase {
           if (this.hospitalResponse.possibleTreatmentDate) {
             this.hospitalResponse.possibleTreatmentDate = new Date(this.hospitalResponse.possibleTreatmentDate);
           }
+          
+          this.agentNotes = this.hospitalResponse.hospitalAgentNotes;
           this.selectedBranches = this.hospitalResponse.hospitalResponseBranches.map(b => b.branchId);
           this.hospitalResponse.hospitalResponseProcesses.forEach(process => {
             let processWithDetail = process as SaveHospitalResponseProcessWithDetailDto;
@@ -294,6 +296,7 @@ export class OperationComponent extends AppComponentBase {
             this.hospitalResponse.hospitalResponseProcesses = [];
             this.hospitalResponse.hospitalResponseProcesses.push(...this.anticipatedProcesses);
             this.hospitalResponse.hospitalResponseProcesses.push(...this.anticipatedMaterials);
+            this.hospitalResponse.hospitalAgentNotes.push(...this.agentNotes);
             this.operation.hospitalResponse = this.hospitalResponse;
           }
 
