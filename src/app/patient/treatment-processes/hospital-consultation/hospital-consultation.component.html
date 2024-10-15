@@ -5,7 +5,7 @@
         <div class="p-toolbar-group-end p-0">
             <p-button pRipple label="{{ '::HospitalConsultation:NewConsultation' | abpLocalization }}" icon="pi pi-plus"
                 styleClass="p-button-success ml-2" (onClick)="onNewConsultation()"
-                [disabled]="doesHaveAnyApproved" *ngIf="isAllowedToConsult"></p-button>
+                *ngIf="isAllowedToConsult"></p-button>
         </div>
     </p-toolbar>
 

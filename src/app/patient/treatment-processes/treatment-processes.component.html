@@ -92,6 +92,8 @@
             <ng-template pTemplate="content">
                 <app-companion-info [patientTreatmentProcessId]="selectedProcess?.id"
                     [salesInfoAndCompanionInfo]="salesAndCompanionInfo"
+                    [patientId]="patient?.id"
+                    (documentUploaded)="onSalesInfoDocumentUploaded()"
                     (save)="onSaveSalesInfoAndCompanionInfo()"></app-companion-info>
             </ng-template>
         </p-tabPanel>

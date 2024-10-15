@@ -110,7 +110,6 @@ export class ProformaComponent extends AppComponentBase {
           this.saveProforma.operationId = +this.operation.id;
           this.fetchData();
         }
-
       }
     });
   }
@@ -164,7 +163,9 @@ export class ProformaComponent extends AppComponentBase {
         this.selectedAdditionalServices.push(this.additionalServiceEnum.TransferService, this.additionalServiceEnum.MedicalSecondExamination, this.additionalServiceEnum.Interpreting, this.additionalServiceEnum.CoordinationService);
       }
       else {
-        this.selectedAdditionalServices.push(...this.saveProforma.proformaAdditionalServices.map(pas => pas.additionalServiceId));
+        if (this.saveProforma.proformaAdditionalServices) {
+          this.selectedAdditionalServices.push(...this.saveProforma.proformaAdditionalServices.map(pas => pas.additionalServiceId));
+        }
       }
 
       resAdditionalServiceList.items.forEach(service => {

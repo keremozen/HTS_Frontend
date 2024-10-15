@@ -10,6 +10,14 @@ export class OperationService {
   apiName = 'Default';
   
 
+  cancelOperation = (id: number) =>
+    this.restService.request<any, void>({
+      method: 'POST',
+      url: `/api/app/operation/${id}/cancel-operation`,
+    },
+    { apiName: this.apiName });
+  
+
   create = (operation: SaveOperationDto) =>
     this.restService.request<any, void>({
       method: 'POST',

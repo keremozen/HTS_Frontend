@@ -2,7 +2,7 @@ import { Component, EventEmitter, Injector, Input, Output, ViewEncapsulation } f
 import { HospitalDto } from '@proxy/dto/hospital';
 import { HospitalConsultationDto } from '@proxy/dto/hospital-consultation';
 import { HospitalConsultationDocumentDto } from '@proxy/dto/hospital-consultation-document';
-import { HospitalResponseDto } from '@proxy/dto/hospital-response';
+import { HospitalResponseDto, SaveHospitalResponseDto } from '@proxy/dto/hospital-response';
 import { HospitalResponseProcessDto } from '@proxy/dto/hospital-response-process';
 import { EntityEnum_OperationStatusEnum, EntityEnum_OperationTypeEnum, EntityEnum_PatientDocumentStatusEnum, EntityEnum_PatientTreatmentStatusEnum, EntityEnum_ProcessTypeEnum } from '@proxy/enum';
 import { HospitalResponseService, OperationService } from '@proxy/service';
@@ -10,7 +10,7 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { CommonService } from 'src/app/services/common.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 import { PatientDto } from '@proxy/dto/patient';
-import { OperationDto } from '@proxy/dto/operation';
+import { OperationDto, SaveOperationDto } from '@proxy/dto/operation';
 import { BranchDto } from '@proxy/dto/branch';
 import { OperationComponent } from '../operation/operation.component';
 import { ProformaComponent } from '../proforma/proforma.component';
@@ -205,6 +205,44 @@ export class OperationalInfoComponent extends AppComponentBase {
       next: r => {
         this.fetchData();
         this.onOperationChange.emit();
+      }
+    });
+  }
+
+  onCopy(operation: OperationDto) {
+    this.confirm({
+      message: this.l('::OperatiomalInfo:Message:CopyConfirm'),
+      header: this.l('::Confirm'),
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        let newOperation: SaveOperationDto = JSON.parse(JSON.stringify(operation));
+        this.hospitalResponseService.get(operation?.hospitalResponseId).subscribe({
+          next: (res) => {
+            newOperation.hospitalResponse = res as SaveHospitalResponseDto;
+            this.operationService.create(newOperation).subscribe({
+              next: r => {
+                this.fetchData();
+                this.onOperationChange.emit();
+              }
+            });
+          }
+        });
+      }
+    });
+  }
+
+  onCancel(operation: OperationDto) {
+    this.confirm({
+      message: this.l('::OperatiomalInfo:Message:CancelConfirm'),
+      header: this.l('::Confirm'),
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.operationService.cancelOperation(+operation.id).subscribe({
+          next: r => {
+            this.fetchData();
+            this.onOperationChange.emit();
+          }
+        });
       }
     });
   }

@@ -121,13 +121,13 @@
                                 [style]="{'width':'100px', 'margin-right':'10px'}" styleClass="filterDropDown"
                                 optionValue="id" placeholder="{{ '::Select' | abpLocalization }}" filterLocale="tr-TR"
                                 optionLabel="phoneCode" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
-                                emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}" [required]="true">
+                                emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}" required>
                                 <ng-template let-country pTemplate="item">
                                     <div><b>{{ country.phoneCode }}</b> - {{ country.name }}</div>
                                 </ng-template>
                             </p-dropdown>
                             <input id="patientPhoneNo" name="patientPhoneNo" #patientPhoneNo="ngModel" pInputText
-                                type="text" [(ngModel)]="patient.phoneNumber" [disabled]="!isAllowedToManage" [required]="true"
+                                type="text" [(ngModel)]="patient.phoneNumber" [disabled]="!isAllowedToManage" required
                                 class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary">
                         </div>
 
@@ -195,7 +195,7 @@
                 <legend class="float-none w-auto pl-3 pr-3 text-sm patientFieldSetlegend">{{'::PatientDetail:Documents'
                     | abpLocalization}}
                 </legend>
-                <app-documents [patientId]="patientId"></app-documents>
+                <app-documents #documentComponent [patientId]="patientId"></app-documents>
             </fieldset>
         </div>
     </div>
@@ -207,7 +207,7 @@
                     {{'::PatientDetail:TreatmentProcesses' |
                     abpLocalization}}
                 </legend>
-                <app-treatment-processes [patient]="patientView" [noTreatmentPlan]="noTreatmentPlan"></app-treatment-processes>
+                <app-treatment-processes [patient]="patientView" [noTreatmentPlan]="noTreatmentPlan" (documentUploaded)="onDocumentUploaded()"></app-treatment-processes>
             </fieldset>
         </div>
     </div>

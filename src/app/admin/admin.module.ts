@@ -11,7 +11,6 @@ import { PatientAdmissionMethodComponent } from './patient-admission-method/pati
 import { ContractedInstitutionComponent } from './contracted-institution/contracted-institution.component';
 import { CityComponent } from './city/city.component';
 import { BranchComponent } from './branch/branch.component';
-import { TreatmentTypeComponent } from './treatment-type/treatment-type.component';
 import { ProcessTypeComponent } from './process-type/process-type.component';
 import { ProcessComponent } from './process/process.component';
 import { RejectReasonComponent } from './reject-reason/reject-reason.component';
@@ -33,7 +32,6 @@ import { FinalizationTypeComponent } from './finalization-type/finalization-type
     ContractedInstitutionKindComponent,
     CityComponent,
     BranchComponent,
-    TreatmentTypeComponent,
     ProcessTypeComponent,
     ProcessComponent,
     RejectReasonComponent,

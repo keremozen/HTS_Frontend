@@ -1,4 +1,5 @@
 import type { EntityDto } from '@abp/ng.core';
+import type { SMCIInterpreterAppointmentDto, SaveSMCIInterpreterAppointmentDto } from '../smciinterpreter-appointment/models';
 
 export interface SalesMethodAndCompanionInfoDto extends EntityDto<number> {
   companionNameSurname?: string;
@@ -12,6 +13,16 @@ export interface SalesMethodAndCompanionInfoDto extends EntityDto<number> {
   contractedInstitutionStaffId?: number;
   phoneCountryCodeId?: number;
   companionNationalityId?: number;
+  appointedInterpreterId?: string;
+  anyInvitationLetter: boolean;
+  isDocumentTranslationRequired: boolean;
+  advancePaymentRequested: boolean;
+  anyTravelPlan: boolean;
+  travelDateToTurkey?: Date;
+  turkeyDestination?: string;
+  travelDescription?: string;
+  treatmentDate?: Date;
+  interpreterAppointments: SMCIInterpreterAppointmentDto[];
 }
 
 export interface SaveSalesMethodAndCompanionInfoDto {
@@ -26,4 +37,14 @@ export interface SaveSalesMethodAndCompanionInfoDto {
   contractedInstitutionStaffId?: number;
   phoneCountryCodeId?: number;
   companionNationalityId?: number;
+  appointedInterpreterId?: string;
+  anyInvitationLetter: boolean;
+  isDocumentTranslationRequired: boolean;
+  advancePaymentRequested: boolean;
+  anyTravelPlan: boolean;
+  travelDateToTurkey?: Date;
+  turkeyDestination?: string;
+  travelDescription?: string;
+  treatmentDate?: Date;
+  interpreterAppointments: SaveSMCIInterpreterAppointmentDto[];
 }

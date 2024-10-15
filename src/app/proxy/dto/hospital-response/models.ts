@@ -21,6 +21,7 @@ export interface HospitalResponseDto extends EntityDto<number> {
   hospitalResponseProcesses: HospitalResponseProcessDto[];
   hospitalAgentNotes: HospitalAgentNoteDto[];
   hospitalConsultation: HospitalConsultationDto;
+  creationTime?: string;
 }
 
 export interface SaveHospitalResponseDto {

@@ -1,15 +1,16 @@
 import { ConfigStateService, CurrentUserDto } from '@abp/ng.core';
 import { IdentityUserDto } from '@abp/ng.identity/proxy';
-import { Component, Injector, ViewEncapsulation } from '@angular/core';
+import { Component, Injector, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GenderDto } from '@proxy/dto/gender';
 import { LanguageDto } from '@proxy/dto/language';
 import { NationalityDto } from '@proxy/dto/nationality';
 import { PatientDto, SavePatientDto } from '@proxy/dto/patient';
-import { HTSTaskService, PatientService } from '@proxy/service';
+import { HTSTaskService, PatientDocumentService, PatientService } from '@proxy/service';
 import * as moment from 'moment';
 import { CommonService } from 'src/app/services/common.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
+import { DocumentsComponent } from '../documents/documents.component';
 
 @Component({
   selector: 'app-patient',
@@ -35,6 +36,7 @@ export class PatientComponent extends AppComponentBase {
   isAssignedToTik?: boolean = null;
   currentUser: CurrentUserDto;
   noTreatmentPlan: boolean = false;
+  @ViewChild("documentComponent", { static: false }) documentComponent: DocumentsComponent;
 
   constructor(
     injector: Injector,
@@ -43,6 +45,7 @@ export class PatientComponent extends AppComponentBase {
     private patientService: PatientService,
     private htsTaskService: HTSTaskService,
     private route: ActivatedRoute,
+    private patientDocumentService: PatientDocumentService
   ) {
     super(injector);
     this.isAllowedToManage = this.permission.getGrantedPolicy("HTS.PatientManagement")
@@ -68,10 +71,12 @@ export class PatientComponent extends AppComponentBase {
             this.creatorName = (patient.creator as unknown as IdentityUserDto).name + " " + (patient.creator as unknown as IdentityUserDto).surname;
             this.creationTime = new Date(patient.creationTime);
             this.patient = patient as SavePatientDto;
+            if (this.patient.birthDate != null) {
+              this.patient.birthDate = new Date(this.patient.birthDate);
+            }
           },
           complete: () => {
             if (this.patient) {
-              this.patient.birthDate = new Date(this.patient.birthDate);
               this.title = this.l("::PatientDetail:EditTitle");
             }
           }
@@ -104,7 +109,7 @@ export class PatientComponent extends AppComponentBase {
       complete: () => {
         this.success(this.l("::PatientDetail:SentToTikSuccessful"));
         this.fetchData();
-      } 
+      }
     });
   }
 
@@ -113,7 +118,15 @@ export class PatientComponent extends AppComponentBase {
       complete: () => {
         this.success(this.l("::PatientDetail:ReturnSuccessful"));
         this.fetchData();
-      } 
+      }
     });
+  }
+
+  onDocumentUploaded() {
+    this.patientDocumentService.getList(this.patientId).subscribe({
+      next: res=> {
+        this.documentComponent.refresh();
+      }
+    })
   }
 }

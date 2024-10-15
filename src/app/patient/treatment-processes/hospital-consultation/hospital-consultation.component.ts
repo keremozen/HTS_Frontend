@@ -46,7 +46,6 @@ export class HospitalConsultationComponent extends AppComponentBase {
   hospitalizationTypeList: HospitalizationTypeDto[] = [];
   hospitalResponseTypeList: HospitalResponseTypeDto[] = [];
   branchListText: string;
-  doesHaveAnyApproved: boolean;
   isAllowedToConsult: boolean = false;
   
 
@@ -91,7 +90,6 @@ export class HospitalConsultationComponent extends AppComponentBase {
         ]) => {
           this.consultations = resConsultationList.items;
           this.totalConsultations = resConsultationList.totalCount;
-          this.doesHaveAnyApproved = this.consultations.some(c=>c.hospitalConsultationStatusId == this.consultationStatusEnum.OperationApproved);
         },
         error: () => {
           this.loading = false;

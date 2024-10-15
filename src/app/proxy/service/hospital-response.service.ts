@@ -1,4 +1,5 @@
 import { RestService } from '@abp/ng.core';
+import type { PagedResultDto } from '@abp/ng.core';
 import { Injectable } from '@angular/core';
 import type { HospitalResponseDto, SaveHospitalResponseDto } from '../dto/hospital-response/models';
 
@@ -38,6 +39,14 @@ export class HospitalResponseService {
     this.restService.request<any, HospitalResponseDto>({
       method: 'GET',
       url: `/api/app/hospital-response/by-hospital-consultation/${consultationId}`,
+    },
+    { apiName: this.apiName });
+  
+
+  getByHospitalId = (hospitalId: number) =>
+    this.restService.request<any, PagedResultDto<HospitalResponseDto>>({
+      method: 'GET',
+      url: `/api/app/hospital-response/by-hospital-id/${hospitalId}`,
     },
     { apiName: this.apiName });
   

@@ -13,3 +13,4 @@ export * from './entity-enum-process-type-enum.enum';
 export * from './entity-enum-proforma-status-enum.enum';
 export * from './entity-enum-room-type-enum.enum';
 export * from './entity-enum-task-type-enum.enum';
+export * from './entity-enum-treatment-type-enum.enum';

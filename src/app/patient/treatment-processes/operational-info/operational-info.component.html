@@ -7,8 +7,8 @@
     </div>
 </p-toolbar>
 
-<p-table #dt [value]="operations" [rows]="5" styleClass="pt-3" [paginator]="true" [rowHover]="true"
-    dataKey="id" currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
+<p-table #dt [value]="operations" [rows]="5" styleClass="pt-3" [paginator]="true" [rowHover]="true" dataKey="id"
+    currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
     [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
     <ng-template pTemplate="header">
         <tr>
@@ -53,20 +53,30 @@
             <td>{{operation.operationType?.name}}</td>
             <td>{{operation.operationStatus?.name}}</td>
             <td class="text-right">
-                <p-button pRipple label="{{ '::HospitalConsultation:Button:Consultation' | abpLocalization }}"
-                    styleClass="p-button-info ml-2" class="inline-block"
+                <p-button pRipple pTooltip="{{ '::HospitalConsultation:Button:Consultation' | abpLocalization }}"
+                    styleClass="p-button-info ml-2" class="inline-block" icon="fas fa-h-square"
                     (onClick)="openConsultation(operation.hospitalResponse.hospitalConsultation)"
                     *ngIf="operation.operationTypeId == operationTypeEnum.HospitalConsultation"></p-button>
-                <p-button pRipple label="{{ '::HospitalConsultation:Button:Answer' | abpLocalization }}"
-                    styleClass="p-button-warning ml-2" class="inline-block" (onClick)="openHospitalResponse(operation)"></p-button>
+                <p-button pRipple pTooltip="{{ '::HospitalConsultation:Button:Answer' | abpLocalization }}"
+                    styleClass="p-button-warning ml-2" class="inline-block" icon="fas fa-procedures"
+                    (onClick)="openHospitalResponse(operation)"></p-button>
                 <p-button pRipple styleClass="p-button-success ml-2" class="inline-block"
-                    label="{{ '::OperationalInfo:Button:CreateProforma' | abpLocalization }}"
-                    (onClick)="onCreateProforma(operation)" [disabled]="!hasPriceExceptingOperation || !isAllowedToCreateProforma"
+                    pTooltip="{{ '::OperationalInfo:Button:CreateProforma' | abpLocalization }}"
+                    (onClick)="onCreateProforma(operation)" icon="fas fa-file-invoice-dollar"
+                    [disabled]="!hasPriceExceptingOperation || !isAllowedToCreateProforma"
                     *ngIf="operation.operationStatus?.id != operationStatusEnum.NewRecord"></p-button>
                 <p-button pRipple styleClass="p-button-success ml-2" class="inline-block"
-                    label="{{ '::OperationalInfo:Button:SendToPricing' | abpLocalization }}"
+                    pTooltip="{{ '::OperationalInfo:Button:SendToPricing' | abpLocalization }}"
                     (onClick)="onSendToPricing(operation)" [disabled]="!isAllowedToSendToPricing"
+                    icon="fas fa-paper-plane"
                     *ngIf="operation.operationStatus?.id == operationStatusEnum.NewRecord"></p-button>
+                <p-button pRipple styleClass="p-button-info ml-2" class="inline-block"
+                    pTooltip="{{ '::OperationalInfo:Button:Copy' | abpLocalization }}" (onClick)="onCopy(operation)"
+                    icon="pi pi-copy"></p-button>
+                <p-button pRipple styleClass="p-button-danger ml-2" class="inline-block"
+                    pTooltip="{{ '::OperationalInfo:Button:Cancel' | abpLocalization }}" (onClick)="onCancel(operation)"
+                    *ngIf="operation.operationStatus?.id !== operationStatusEnum.Cancelled"
+                    icon="pi pi-times-circle"></p-button>
             </td>
         </tr>
     </ng-template>
@@ -95,9 +105,10 @@
                     </legend>
                     <p-listbox id="lstHospital" name="lstHospital" #lstHospital="ngModel" [options]="hospitalList"
                         [(ngModel)]="selectedHospitals" optionLabel="name" optionValue="id" [checkbox]="true"
-                        [filter]="true" [multiple]="true" [metaKeySelection]="false" [disabled]="true" filterLocale="tr-TR"
-                        emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" styleClass="hospitalListStyle"
-                        emptyFilterMessage="{{ '::EmptyMessage' | abpLocalization }}" required></p-listbox>
+                        [filter]="true" [multiple]="true" [metaKeySelection]="false" [disabled]="true"
+                        filterLocale="tr-TR" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
+                        styleClass="hospitalListStyle" emptyFilterMessage="{{ '::EmptyMessage' | abpLocalization }}"
+                        required></p-listbox>
                 </fieldset>
             </div>
             <div class="col-4">
@@ -330,3 +341,7 @@
         </div>
     </form>
 </p-dialog>
+
+<p-confirmDialog [style]="{width: '450px'}" rejectLabel="{{ '::Reject' | abpLocalization }}"
+    acceptLabel="{{ '::Accept' | abpLocalization }}" rejectButtonStyleClass="p-button-text p-button-danger"
+    acceptButtonStyleClass="p-button-text p-button-success"></p-confirmDialog>

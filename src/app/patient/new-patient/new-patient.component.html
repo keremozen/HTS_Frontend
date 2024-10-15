@@ -88,7 +88,7 @@
                                 [style]="{'width':'100px', 'margin-right':'10px'}" styleClass="filterDropDown"
                                 optionValue="id" placeholder="{{ '::Select' | abpLocalization }}"
                                 optionLabel="phoneCode" emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
-                                emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}">
+                                emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}" required>
                                 <ng-template let-country pTemplate="item">
                                     <div><b>{{ country.phoneCode }}</b> - {{ country.name }}</div>
                                 </ng-template>

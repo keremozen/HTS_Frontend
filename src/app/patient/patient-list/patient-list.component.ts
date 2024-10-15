@@ -68,6 +68,10 @@ export class PatientListComponent extends AppComponentBase {
   }
 
   ngOnInit() {
+    var storedView = localStorage.getItem("patientView");
+    if (storedView) {
+      this.selectedView = storedView;
+    }
     this.fetchData();
   }
 
@@ -133,6 +137,12 @@ export class PatientListComponent extends AppComponentBase {
     });
   }
 
+  onViewChanged() {
+    if (this.selectedView) {
+      localStorage.setItem("patientView", this.selectedView);
+    }
+  }
+
   openNewPatient() {
     this.router.navigate(['/patient/new']);
   }
@@ -192,9 +202,7 @@ export class PatientListComponent extends AppComponentBase {
         return this.patientList.filter(p => p.patientTreatmentProcesses.some(ptp => ptp.isFinalized == false && ptp.treatmentProcessStatusId == EntityEnum_PatientTreatmentStatusEnum.HospitalAskedWaitingResponse));
       case "5": //Ek bilgi bekleniyor
         return null;
-      /*return this.patientList.filter(p => 
-        this.taskList.filter(t => t.taskTypeId == EntityEnum_TaskTypeEnum.EvaluationOfHospitalResponse).some(t => t.patientId == +p.id) &&
-      p.patientTreatmentProcesses.some(ptp => ptp.));*/
+        //return this.patientList.filter(p => this.taskList.filter(t => t.taskTypeId == EntityEnum_TaskTypeEnum.EvaluationOfHospitalResponse).some(t => t.patientId == +p.id));
       case "6": //Hastane cevabının değerlendirilmesi bekleniyor
         return this.patientList.filter(p => this.taskList.filter(t => t.taskTypeId == EntityEnum_TaskTypeEnum.EvaluationOfHospitalResponse).some(t => t.patientId == +p.id));
       case "7": //Fiyatlandırma gönderilmesi bekleniyor
@@ -214,7 +222,7 @@ export class PatientListComponent extends AppComponentBase {
       case "14": //Sehayat ve konaklama planı girilmesi bekleniyor
         return this.patientList.filter(p => this.taskList.filter(t => t.taskTypeId == EntityEnum_TaskTypeEnum.EnteringTravelAccommodationPlan).some(t => t.patientId == +p.id));
       case "15": //Randevu planlama
-        return this.patientList.filter(p => this.taskList.filter(t => t.taskTypeId == EntityEnum_TaskTypeEnum.EnteringTravelAccommodationPlan).some(t => t.patientId == +p.id));
+        return this.patientList.filter(p => this.taskList.filter(t => t.taskTypeId == EntityEnum_TaskTypeEnum.AppointmentScheduling).some(t => t.patientId == +p.id));
       case "16": //Tedavi aşaması
         return this.patientList.filter(p => p.patientTreatmentProcesses.some(ptp => ptp.isFinalized == false && ptp.treatmentProcessStatusId == EntityEnum_PatientTreatmentStatusEnum.PaymentCompletedTreatmentProcess));
       case "17": //Sonuçlanan süreç

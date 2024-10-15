@@ -3,9 +3,13 @@
 <div *ngIf="consultation">
     <form #hospitalResponseForm="ngForm">
         <div class="grid">
-            <div class="col-12 text-right">
+            <div class="col-2 text-left mt-2 pb-0 pl-3">
+                <h4>{{consultation.patientTreatmentProcess?.patientNameSurname}}</h4>
+            </div>
+            <div class="col-10 text-right">
                 <p-button pRipple label="{{ '::HospitalResponse:Button:AllConsultations' | abpLocalization }}"
-                styleClass="p-button-secondary mr-2" (onClick)="showAllConsultations(consultation.hospitalId)" [loading]="loading"></p-button>
+                    styleClass="p-button-secondary mr-2" (onClick)="showAllConsultations(consultation.hospitalId)"
+                    [loading]="loading"></p-button>
             </div>
             <div class="col-6">
                 <fieldset class="border pl-3 pr-3 pt-2 pb-3 m-2 responseFieldSet responseFieldHeight">
@@ -46,16 +50,15 @@
                         <ng-template pTemplate="body" let-document>
                             <tr>
                                 <td><a class="cursor-pointer text-gray-900"
-                                        (click)="showFile(document.id)">{{document.fileName}}</a></td>
+                                        (click)="showFile(document.id)">{{document.fileName}}</a>
+                                </td>
+                                <td>{{document.documentType?.name}}</td>
                                 <td>
                                     <div class="overflow cursor-pointer" [pTooltip]="document.description"
                                         tooltipStyleClass="wideTooltip" tooltipPosition="bottom">
                                         {{document.description}}
                                     </div>
                                 </td>
-                                <td>{{document.creator?.name + (document.creator?.surname ? (" " +
-                                    document.creator?.surname) :
-                                    "")}}</td>
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="emptymessage">
@@ -80,7 +83,7 @@
                         <div class="col">
                             <p-dropdown id="hospitalResponseType" name="hospitalResponseType"
                                 #hospitalResponseType="ngModel" [options]="hospitalResponseTypeList"
-                                [(ngModel)]="selectedHospitalResponseType"
+                                [(ngModel)]="selectedHospitalResponseType" [disabled]="isResponseCreated"
                                 placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
                                 required="true" styleClass="filterDropDown" optionLabel="name" optionValue="id"
                                 emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
@@ -96,7 +99,7 @@
                         <div class="col">
                             <p-dropdown id="hospitalizationType" name="hospitalizationType"
                                 #hospitalizationType="ngModel" [options]="hospitalizationTypeList"
-                                [(ngModel)]="selectedHospitalizationType"
+                                [(ngModel)]="selectedHospitalizationType" [disabled]="isResponseCreated"
                                 placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
                                 required="true" styleClass="filterDropDown" optionLabel="name"
                                 [required]="selectedHospitalResponseType == hospitalResponseTypeEnum.SuitableForTreatment"
@@ -114,7 +117,7 @@
                                 [filter]="true" filterBy="name" [(ngModel)]="selectedBranches" display="chip"
                                 [style]="{'width':'100%'}" styleClass="filterDropDown text-sm" optionLabel="name"
                                 placeholder="{{ '::Select' | abpLocalization }}" filterLocale="tr-TR"
-                                emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"
+                                emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" [disabled]="isResponseCreated"
                                 [required]="selectedHospitalResponseType == hospitalResponseTypeEnum.SuitableForTreatment"
                                 emptyFilterMessage="{{ '::EmptyFilterMessage' | abpLocalization }}"></p-multiSelect>
                         </div>
@@ -126,7 +129,8 @@
                         <div class="col">
                             <p-calendar id="calTreatmentDate" name="calTreatmentDate" #calTreatmentDate="ngModel"
                                 [(ngModel)]="hospitalResponse.possibleTreatmentDate" [showIcon]="true"
-                                inputStyleClass="text-sm" dateFormat="dd.mm.yy" [minDate]="today"></p-calendar>
+                                [disabled]="isResponseCreated" inputStyleClass="text-sm" dateFormat="dd.mm.yy"
+                                [minDate]="today"></p-calendar>
                         </div>
                     </div>
                     <div class="field grid">
@@ -138,12 +142,12 @@
                             </font></label>
                         <div class="col">
                             <p-inputNumber id="numberOfHospitalizationDays" name="numberOfHospitalizationDays"
-                                #numberOfHospitalizationDays="ngModel" [min]="0"
+                                #numberOfHospitalizationDays="ngModel" [min]="0" [disabled]="isResponseCreated"
                                 [required]="selectedHospitalResponseType == hospitalResponseTypeEnum.SuitableForTreatment"
                                 [(ngModel)]="hospitalResponse.hospitalizationNumber"></p-inputNumber>
                         </div>
                     </div>
-                </div> 
+                </div>
 
                 <fieldset class="border pl-3 pr-3 pt-2 pb-3 m-2 responseFieldSet" style="height:20rem;">
                     <legend class="float-none w-auto pl-3 pr-3 text-sm responseFieldSetlegend">
@@ -154,7 +158,7 @@
                         </font>
                     </legend>
                     <textarea pInputText id="description" name="description" #description="ngModel"
-                        [(ngModel)]="hospitalResponse.description"
+                        [(ngModel)]="hospitalResponse.description" [disabled]="isResponseCreated"
                         [required]="selectedHospitalResponseType == hospitalResponseTypeEnum.NotSuitableForTreatment"
                         class="w-full h-full"></textarea>
                 </fieldset>
@@ -171,7 +175,7 @@
                             <div class="ml-3"></div>
                         </div>
                         <div class="p-toolbar-group-end p-0">
-                            <p-button pRipple
+                            <p-button pRipple *ngIf="!isResponseCreated"
                                 label="{{ '::HospitalResponse:AnticipatedProcesses:NewProcess' | abpLocalization }}"
                                 icon="pi pi-plus" styleClass="p-button-success mr-2" (onClick)="openNewProcess()"
                                 [loading]="loading"></p-button>
@@ -209,7 +213,7 @@
                                 <td>{{process.amount}}</td>
                                 <td>
                                     <p-button pRipple icon="pi pi-trash" styleClass="p-button-rounded p-button-warning"
-                                        (onClick)="deleteProcess(process)"></p-button>
+                                        (onClick)="deleteProcess(process)" *ngIf="!isResponseCreated"></p-button>
                                 </td>
                             </tr>
                         </ng-template>
@@ -239,7 +243,7 @@
                             <div class="ml-3"></div>
                         </div>
                         <div class="p-toolbar-group-end p-0">
-                            <p-button pRipple
+                            <p-button pRipple *ngIf="!isResponseCreated"
                                 label="{{ '::HospitalResponse:AnticipatedMaterials:NewMaterial' | abpLocalization }}"
                                 icon="pi pi-plus" styleClass="p-button-success mr-2" (onClick)="openNewMaterial()"
                                 [loading]="loading"></p-button>
@@ -270,7 +274,7 @@
                                 <td>{{material.amount}}</td>
                                 <td>
                                     <p-button pRipple icon="pi pi-trash" styleClass="p-button-rounded p-button-warning"
-                                        (onClick)="deleteMaterial(material)"></p-button>
+                                        (onClick)="deleteMaterial(material)" *ngIf="!isResponseCreated"></p-button>
                                 </td>
                             </tr>
                         </ng-template>
@@ -291,8 +295,9 @@
             <div class="col-12">
                 <div class="flex justify-content-end">
                     <p-button pRipple label="{{ '::Send' | abpLocalization }}" icon="pi pi-send"
-                        [disabled]="!(hospitalResponseForm.valid)" styleClass="p-button-success mr-2 w-12rem"
-                        [loading]="loading" (onClick)="onResponseSend()"></p-button>
+                        *ngIf="!isResponseCreated" [disabled]="!(hospitalResponseForm.valid)"
+                        styleClass="p-button-success mr-2 w-12rem" [loading]="loading"
+                        (onClick)="onResponseSend()"></p-button>
                 </div>
             </div>
         </div>

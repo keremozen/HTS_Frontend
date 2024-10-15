@@ -9,7 +9,6 @@ import { NationalityComponent } from './nationality/nationality.component';
 import { PatientAdmissionMethodComponent } from './patient-admission-method/patient-admission-method.component';
 import { CityComponent } from './city/city.component';
 import { BranchComponent } from './branch/branch.component';
-import { TreatmentTypeComponent } from './treatment-type/treatment-type.component';
 import { ProcessTypeComponent } from './process-type/process-type.component';
 import { ProcessComponent } from './process/process.component';
 import { RejectReasonComponent } from './reject-reason/reject-reason.component';
@@ -78,12 +77,6 @@ const routes: Routes = [
     path: 'branch', component: BranchComponent, canActivate: [PermissionGuard],
     data: {
         requiredPolicy: 'HTS.BranchManagement' 
-    }
-  },
-  {
-    path: 'treatmentType', component: TreatmentTypeComponent, canActivate: [PermissionGuard],
-    data: {
-        requiredPolicy: 'HTS.TreatmentTypeManagement' 
     }
   },
   {

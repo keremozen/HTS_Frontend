@@ -8,18 +8,15 @@ import type { IdentityUserDto } from '../../volo/abp/identity/models';
 import type { HospitalDto } from '../hospital/models';
 import type { PatientTreatmentProcessDto } from '../patient-treatment-process/models';
 import type { HospitalResponseDto, SaveHospitalResponseDto } from '../hospital-response/models';
+import type { EntityEnum_TreatmentTypeEnum } from '../../enum/entity-enum-treatment-type-enum.enum';
 
 export interface OperationDto extends FullAuditedEntityWithUserDto<number, IdentityUserDto> {
   hospitalResponseId: number;
-  travelDateToTurkey?: Date;
-  treatmentDate?: Date;
-  treatmentTypeId?: number;
-  anyInvitationLetter?: boolean;
+  treatmentTypeId: number;
   patientTreatmentProcessId?: number;
   hospitalId?: number;
   operationTypeId: EntityEnum_OperationTypeEnum;
   operationStatusId: EntityEnum_OperationStatusEnum;
-  appointedInterpreterId?: string;
   treatmentType: TreatmentTypeDto;
   operationType: OperationTypeDto;
   operationStatus: OperationStatusDto;
@@ -31,11 +28,7 @@ export interface OperationDto extends FullAuditedEntityWithUserDto<number, Ident
 
 export interface SaveOperationDto {
   hospitalResponseId: number;
-  travelDateToTurkey?: Date;
-  treatmentDate?: Date;
-  treatmentTypeId?: number;
-  anyInvitationLetter?: boolean;
-  appointedInterpreterId?: string;
+  treatmentTypeId: EntityEnum_TreatmentTypeEnum;
   patientTreatmentProcessId?: number;
   hospitalId?: number;
   hospitalResponse: SaveHospitalResponseDto;

@@ -3,18 +3,22 @@ import { ActivatedRoute } from '@angular/router';
 import { BranchDto } from '@proxy/dto/branch';
 import { HospitalConsultationDto } from '@proxy/dto/hospital-consultation';
 import { HospitalConsultationDocumentDto } from '@proxy/dto/hospital-consultation-document';
-import { SaveHospitalResponseDto } from '@proxy/dto/hospital-response';
+import { HospitalResponseDto, SaveHospitalResponseDto } from '@proxy/dto/hospital-response';
 import { SaveHospitalResponseProcessDto } from '@proxy/dto/hospital-response-process';
 import { HospitalResponseTypeDto } from '@proxy/dto/hospital-response-type';
 import { HospitalizationTypeDto } from '@proxy/dto/hospitalization-type';
 import { PatientDto } from '@proxy/dto/patient';
 import { ProcessDto } from '@proxy/dto/process';
-import { EntityEnum_HospitalAgentNoteStatusEnum, EntityEnum_HospitalResponseTypeEnum, EntityEnum_ProcessTypeEnum } from '@proxy/enum';
+import { EntityEnum_HospitalAgentNoteStatusEnum, EntityEnum_HospitalConsultationStatusEnum, EntityEnum_HospitalResponseTypeEnum, EntityEnum_ProcessTypeEnum } from '@proxy/enum';
 import { HospitalConsultationDocumentService, HospitalConsultationService, HospitalResponseService, HospitalResponseTypeService, HospitalizationTypeService, ProcessService } from '@proxy/service';
 import { forkJoin } from 'rxjs';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 import { CommonService } from '../services/common.service';
 import { HospitalAgentNoteDto, SaveHospitalAgentNoteDto } from '@proxy/dto/hospital-agent-note';
+import { IdentityUserDto } from '@abp/ng.identity/proxy';
+import { HospitalDto } from '@proxy/dto/hospital';
+import { HospitalConsultationStatusDto } from '@proxy/dto/hospital-consultation-status';
+import { PatientTreatmentProcessDto } from '@proxy/dto/patient-treatment-process';
 
 @Component({
   selector: 'app-hospital-response',
@@ -26,7 +30,7 @@ import { HospitalAgentNoteDto, SaveHospitalAgentNoteDto } from '@proxy/dto/hospi
 export class HospitalResponseComponent extends AppComponentBase {
 
   consultationId: number;
-  consultation: HospitalConsultationDto;
+  consultation: HospitalConsultationWithResponseDto;
   patient: PatientDto;
   documents: HospitalConsultationDocumentDto[] = [];
   hospitalResponseTypeList: HospitalResponseTypeDto[] = [];
@@ -45,6 +49,7 @@ export class HospitalResponseComponent extends AppComponentBase {
   isAllowedToManage: boolean = false;
   hospitalResponse = {} as SaveHospitalResponseDto;
   allConsultations: HospitalConsultationDto[] = [];
+  isResponseCreated: boolean = false;
 
   process: SaveHospitalResponseProcessWithDetailDto;
   processDialog: boolean = false;
@@ -98,20 +103,32 @@ export class HospitalResponseComponent extends AppComponentBase {
     this.loading = true;
     this.branchList = this.commonService.branchList;
     forkJoin([
-      this.hospitalConsultationService.get(this.consultationId),
       this.hostipalResponseTypeService.getList(),
       this.hospitalizationTypeService.getList(),
+      this.hospitalConsultationService.get(this.consultationId),
+      this.hospitalResponseService.getByHospitalConsultation(this.consultationId),
     ]).subscribe(
       {
         next: ([
-          resConsultation,
           resHospitalResponseTypeList,
-          resHospitalizationTypeList
+          resHospitalizationTypeList,
+          resConsultation,
+          resHospitalResponse
         ]) => {
-          this.consultation = resConsultation;
-          this.documents.push(...this.consultation.hospitalConsultationDocuments);
           this.hospitalResponseTypeList = resHospitalResponseTypeList.items;
           this.hospitalizationTypeList = resHospitalizationTypeList.items;
+          this.consultation = resConsultation as HospitalConsultationWithResponseDto;
+          this.documents.push(...this.consultation.hospitalConsultationDocuments);
+          if (resHospitalResponse) { // response is created
+            this.consultation.hospitalResponse = resHospitalResponse;
+            this.hospitalResponse = resHospitalResponse as SaveHospitalResponseDto;
+            this.selectedHospitalResponseType = this.hospitalResponse.hospitalResponseTypeId;
+            this.selectedHospitalizationType = this.hospitalizationTypeList.find(t => t.id == this.hospitalResponse.hospitalizationTypeId);
+            this.selectedBranches = this.branchList.filter(b => this.hospitalResponse.hospitalResponseBranches.map(rb => rb.branchId == b.id));
+            this.anticipatedProcesses = this.consultation.hospitalResponse.hospitalResponseProcesses.filter(p => p.process.processTypeId == EntityEnum_ProcessTypeEnum.SutCode) as SaveHospitalResponseProcessWithDetailDto[];
+            this.anticipatedMaterials = this.consultation.hospitalResponse.hospitalResponseProcesses.filter(p => p.process.processTypeId == EntityEnum_ProcessTypeEnum.Material) as SaveHospitalResponseProcessWithDetailDto[];
+            this.isResponseCreated = true;
+          }
         },
         error: () => {
           this.loading = false;
@@ -246,4 +263,24 @@ class SaveHospitalResponseProcessWithDetailDto implements SaveHospitalResponsePr
   processId: number;
   amount: number;
   process: ProcessDto;
+}
+
+class HospitalConsultationWithResponseDto implements HospitalConsultationDto {
+  note?: string;
+  patientTreatmentProcessId: number;
+  hospitalId: number;
+  rowNumber: number;
+  hospitalConsultationStatusId: EntityEnum_HospitalConsultationStatusEnum;
+  hospitalConsultationStatus: HospitalConsultationStatusDto;
+  hospitalConsultationDocuments: HospitalConsultationDocumentDto[];
+  hospital: HospitalDto;
+  patientTreatmentProcess: PatientTreatmentProcessDto;
+  creator?: number;
+  lastModifier?: number;
+  lastModificationTime?: string | Date;
+  lastModifierId?: string;
+  creationTime?: string | Date;
+  creatorId?: string;
+  id?: IdentityUserDto;
+  hospitalResponse: HospitalResponseDto;
 }

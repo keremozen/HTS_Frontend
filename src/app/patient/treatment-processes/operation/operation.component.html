@@ -90,6 +90,18 @@
                                 [disabled]="!isManual && !isInNewRecordStatus"></p-inputNumber>
                         </div>
                     </div>
+                    <div class="field grid">
+                        <label for="treatmentType" class="col-fixed"
+                            style="width:140px">{{'::OperationalInfo:Field:TreatmentType' |
+                            abpLocalization}}</label>
+                        <div class="col">
+                            <p-dropdown id="treatmentType" name="treatmentType" #treatmentType="ngModel"
+                                [options]="treatmentTypeList" [(ngModel)]="operation.treatmentTypeId"
+                                placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
+                                styleClass="filterDropDown" optionLabel="name" optionValue="id" appendTo="body"
+                                emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="col-4">
@@ -233,71 +245,7 @@
                         [disabled]="!isManual && !isInNewRecordStatus"></textarea>
                 </fieldset>
             </div>
-            <div class="col-4">
-                <div class="pl-3 pr-3 pt-2 pb-3 m-2">
-                    <div class="field grid">
-                        <label for="travelDate" class="col-fixed"
-                            style="width:160px">{{'::OperationalInfo:Field:TravelDateToTurkey' |
-                            abpLocalization}}</label>
-                        <div class="col">
-                            <p-calendar id="travelDate" name="travelDate" #travelDate="ngModel"
-                                [(ngModel)]="operation.travelDateToTurkey" [showIcon]="true" inputStyleClass="text-sm"
-                                dateFormat="dd.mm.yy" appendTo="body"></p-calendar>
-                        </div>
-                    </div>
-                    <div class="field grid">
-                        <label for="treatmentDate" class="col-fixed"
-                            style="width:160px">{{'::OperationalInfo:Field:TreatmentDate' |
-                            abpLocalization}}</label>
-                        <div class="col">
-                            <p-calendar id="treatmentDate" name="treatmentDate" #treatmentDate="ngModel"
-                                [(ngModel)]="operation.treatmentDate" [showIcon]="true" inputStyleClass="text-sm"
-                                dateFormat="dd.mm.yy" appendTo="body"></p-calendar>
-                        </div>
-                    </div>
-                    <div class="field grid">
-                        <label for="interpreter" class="col-fixed"
-                            style="width:160px">{{'::OperationalInfo:Field:AppointedInterpreter' |
-                            abpLocalization}}</label>
-                        <div class="col">
-                            <p-dropdown id="interpreter" name="interpreter" #interpreter="ngModel"
-                                [options]="interpreterList" [(ngModel)]="selectedInterpreter"
-                                placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
-                                styleClass="filterDropDown" optionLabel="name" appendTo="body"
-                                emptyMessage="{{ '::EmptyMessage' | abpLocalization }}">
-                                <ng-template pTemplate="selectedItem">
-                                    <div class="flex align-items-center gap-2" *ngIf="selectedInterpreter">
-                                        <div>{{ selectedInterpreter.name }} {{ selectedInterpreter.surname }}</div>
-                                    </div>
-                                </ng-template>
-                                <ng-template let-staff pTemplate="item">
-                                    <div class="flex align-items-center gap-2">
-                                        <div>{{ staff.name }} {{ staff.surname }}</div>
-                                    </div>
-                                </ng-template>
-                            </p-dropdown>
-                        </div>
-                    </div>
-                    <div class="field grid">
-                        <label for="treatmentType" class="col-fixed"
-                            style="width:160px">{{'::OperationalInfo:Field:TreatmentType' |
-                            abpLocalization}}</label>
-                        <div class="col">
-                            <p-dropdown id="treatmentType" name="treatmentType" #treatmentType="ngModel"
-                                [options]="treatmentTypeList" [(ngModel)]="operation.treatmentTypeId"
-                                placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
-                                styleClass="filterDropDown" optionLabel="name" optionValue="id" appendTo="body"
-                                emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
-                        </div>
-                    </div>
-                    <div class="field grid">
-                        <p-checkbox id="anyInvitationLetter" name="anyInvitationLetter" #anyInvitationLetter="ngModel"
-                            [binary]="true" [(ngModel)]="operation.anyInvitationLetter"></p-checkbox>
-                        <label for="anyInvitationLetter" class="pl-3 mt-2">{{
-                            '::OperationalInfo:Field:AnyInvitationLetter' | abpLocalization }}</label>
-                    </div>
-                </div>
-            </div>
+            
             <div class="col-4">
                 <fieldset class="border pl-3 pr-3 pt-2 pb-3 m-2 responseFieldSet">
                     <legend class="float-none w-auto pl-3 pr-3 text-sm responseFieldSetlegend">

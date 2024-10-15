@@ -1,9 +1,9 @@
-import { Component, Injector, Input, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Injector, Input, Output, ViewEncapsulation } from '@angular/core';
 import { FinalizationTypeDto } from '@proxy/dto/finalization-type';
 import { PatientDto } from '@proxy/dto/patient';
 import { FinalizePtpDto, PatientTreatmentProcessDetailedDto, PatientTreatmentProcessDto } from '@proxy/dto/patient-treatment-process';
 import { SalesMethodAndCompanionInfoDto } from '@proxy/dto/sales-method-and-companion-info';
-import { PatientTreatmentProcessService, SalesMethodAndCompanionInfoService, USSService } from '@proxy/service';
+import { PatientDocumentService, PatientTreatmentProcessService, SalesMethodAndCompanionInfoService, USSService } from '@proxy/service';
 import { CommonService } from 'src/app/services/common.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
@@ -16,6 +16,7 @@ import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 export class TreatmentProcessesComponent extends AppComponentBase {
   @Input() patient: PatientDto;
   @Input() noTreatmentPlan: boolean;
+  @Output() documentUploaded: EventEmitter<any> = new EventEmitter();
   processes: PatientTreatmentProcessDetailedDto[] = [];
   selectedProcess: PatientTreatmentProcessDto;
   processDialog: boolean = false;
@@ -104,6 +105,10 @@ export class TreatmentProcessesComponent extends AppComponentBase {
 
   onSaveSalesInfoAndCompanionInfo() {
     this.doesHaveAnySalesMethodAndCompanionInfo = true;
+  }
+
+  onSalesInfoDocumentUploaded() {
+    this.documentUploaded.emit();
   }
 
   consultationChanged(event: any) {

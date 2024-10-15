@@ -8,6 +8,7 @@ export interface PatientTreatmentProcessDto extends AuditedEntityWithUserDto<num
   isFinalized: boolean;
   treatmentProcessStatusId: EntityEnum_PatientTreatmentStatusEnum;
   treatmentProcessStatus: TreatmentProcessStatusDto;
+  patientNameSurname?: string;
 }
 
 export interface FinalizePtpDto {

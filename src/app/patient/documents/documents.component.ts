@@ -64,7 +64,10 @@ export class DocumentsComponent extends AppComponentBase {
         this.loading = false;
       }
     });
+  }
 
+  public refresh() {
+    this.fetchData();
   }
 
   manageDocumentsToBeDisplayed() {

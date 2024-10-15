@@ -63,6 +63,86 @@
                         class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
                 </div>
             </div>
+
+            <div class="field grid mb-2">
+                <label for="isDocumentTranslationNeeded" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                    '::SalesAndCompanionInfo:Column:IsDocumentTranslationNeeded' | abpLocalization }}</label>
+                <div class="col-12 md:col-9">
+                    <p-checkbox id="isDocumentTranslationNeeded" name="isDocumentTranslationNeeded"
+                        #isDocumentTranslationNeeded="ngModel" [binary]="true"
+                        [(ngModel)]="salesInfoAndCompanionInfo.isDocumentTranslationRequired"></p-checkbox>
+                    <i class="pi pi-upload cursor-pointer mr-2 ml-3" (click)="upload('translation')"></i>
+                </div>
+            </div>
+            <div class="field grid mb-2">
+                <label for="advancePaymentRequested" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                    '::SalesAndCompanionInfo:Column:AdvancePaymentRequested' | abpLocalization }}</label>
+                <div class="col-12 md:col-9">
+                    <p-checkbox id="advancePaymentRequested" name="advancePaymentRequested"
+                        #advancePaymentRequested="ngModel" [binary]="true"
+                        [(ngModel)]="salesInfoAndCompanionInfo.advancePaymentRequested"></p-checkbox>
+                    <i class="pi pi-upload cursor-pointer mr-2 ml-3" (click)="upload('advancepayment')"></i>
+                </div>
+            </div>
+            <div class="field grid mb-2">
+                <label for="anyInvitationLetter" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                    '::SalesAndCompanionInfo:Column:WillInvitationLetterBePrepared'
+                    |
+                    abpLocalization }}</label>
+                <div class="col-12 md:col-9">
+                    <p-checkbox id="anyInvitationLetter" name="anyInvitationLetter" #anyInvitationLetter="ngModel"
+                        [binary]="true" [(ngModel)]="salesInfoAndCompanionInfo.anyInvitationLetter"></p-checkbox>
+                    <i class="pi pi-download cursor-pointer mr-2 ml-3"
+                        (click)="download(salesInfoAndCompanionInfo)"></i>
+                    <i class="pi pi-upload cursor-pointer mr-2" (click)="upload('invitationletter')"></i>
+                    <i class="pi pi-send cursor-pointer"
+                        (click)="sendInvitationLetter(salesInfoAndCompanionInfo.id)"></i>
+                </div>
+            </div>
+            <div class="field grid mb-2">
+                <label for="anyTravelPlan" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                    '::SalesAndCompanionInfo:Column:AnyTravelPlan' | abpLocalization }}</label>
+                <div class="col-12 md:col-9">
+                    <p-checkbox id="anyTravelPlan" name="anyTravelPlan" #anyTravelPlan="ngModel" [binary]="true"
+                        [(ngModel)]="salesInfoAndCompanionInfo.anyTravelPlan"></p-checkbox>
+                    <i class="pi pi-upload cursor-pointer mr-2 ml-3" (click)="upload('travelplan')"></i>
+                    <i class="pi pi-send cursor-pointer"
+                        (click)="sendInvitationLetter(salesInfoAndCompanionInfo.id)"></i>
+                </div>
+            </div>
+            <div class="field grid mb-2">
+                <label for="travelDate" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                    '::SalesAndCompanionInfo:Column:TravelDateToTurkey' |
+                    abpLocalization}}</label>
+                <div class="col-12 md:col-9">
+                    <p-calendar id="travelDate" name="travelDate" #travelDate="ngModel"
+                        [(ngModel)]="salesInfoAndCompanionInfo.travelDateToTurkey" [showIcon]="true"
+                        inputStyleClass="text-sm" dateFormat="dd.mm.yy" appendTo="body"></p-calendar>
+                </div>
+            </div>
+            <div class="field grid mb-2">
+                <label for="turkeyDestination" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                    '::SalesAndCompanionInfo:Column:TurkeyDestination' | abpLocalization }}</label>
+                <div class="col-12 md:col-9">
+                    <input id="turkeyDestination" name="turkeyDestination" pInputText type="text"
+                        #turkeyDestination="ngModel" [(ngModel)]="salesInfoAndCompanionInfo.turkeyDestination"
+                        class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                </div>
+            </div>
+            <div class="field grid mb-2">
+                <label for="travelDescription" class="col-12 mb-2 md:col-3 md:mb-0">{{
+                    '::SalesAndCompanionInfo:Column:TurkeyDescription' | abpLocalization }}</label>
+                <div class="col-12 md:col-9">
+                    <textarea rows="2" pInputText id="travelDescription" name="travelDescription"
+                        #travelDescription="ngModel"
+                        class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+                        [(ngModel)]="salesInfoAndCompanionInfo.travelDescription"></textarea>
+                </div>
+            </div>
+            <!-- <div class="field grid mb-2 justify-content-start">
+                <p-button pRipple label="{{ '::SendNotification' | abpLocalization }}" icon="pi pi-save"
+                    styleClass="p-button-success mr-2"></p-button>
+            </div> -->
         </div>
         <div class="col">
             <div class="field grid mb-2">
@@ -149,17 +229,79 @@
                         class="text-sm text-color-secondary surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
                 </div>
             </div>
-            <div class="field grid mb-2 mt-3">
-                <label for="companionRelationship" class="col-12 mb-2 md:col-3 md:mb-0">{{
-                    '::SalesAndCompanionInfo:Column:WillInvitationLetterBePrepared'
-                    |
-                    abpLocalization }}</label>
+            <div class="mt-4 mb-4" style="border-bottom: 1px solid #DEE2E6">
+            </div>
+            <div class="field grid mb-2">
+                <label for="interpreter"
+                    class="col-12 mb-2 md:col-3 md:mb-0">{{'::SalesAndCompanionInfo:Column:AppointedInterpreter' |
+                    abpLocalization}}</label>
                 <div class="col-12 md:col-9">
-                    <i class="pi pi-download cursor-pointer mr-2" (click)="download(salesInfoAndCompanionInfo)"></i>
-                    <i class="pi pi-upload cursor-pointer mr-2" (click)="upload(salesInfoAndCompanionInfo.id)"></i>
-                    <i class="pi pi-send cursor-pointer"
-                        (click)="sendInvitationLetter(salesInfoAndCompanionInfo.id)"></i>
+                    <p-dropdown id="interpreter" name="interpreter" #interpreter="ngModel" [options]="interpreterList"
+                        [(ngModel)]="selectedInterpreter" placeholder="{{ '::Select' | abpLocalization }}"
+                        [style]="{'width':'100%'}" styleClass="filterDropDown" optionLabel="name" appendTo="body"
+                        emptyMessage="{{ '::EmptyMessage' | abpLocalization }}">
+                        <ng-template pTemplate="selectedItem">
+                            <div class="flex align-items-center gap-2" *ngIf="selectedInterpreter">
+                                <div>{{ selectedInterpreter.name }} {{ selectedInterpreter.surname }}</div>
+                            </div>
+                        </ng-template>
+                        <ng-template let-staff pTemplate="item">
+                            <div class="flex align-items-center gap-2">
+                                <div>{{ staff.name }} {{ staff.surname }}</div>
+                            </div>
+                        </ng-template>
+                    </p-dropdown>
                 </div>
+            </div>
+            <div class="field grid mb-2 flex flex-column">
+                <div class="align-self-end">
+                    <p-button pRipple label="{{ '::New' | abpLocalization }}" icon="pi pi-plus"
+                        styleClass="p-button-success mr-2" (onClick)="openNewAppointment()"
+                        *ngIf="isAllowedToManage"></p-button>
+                </div>
+                <p-table #dt [value]="salesInfoAndCompanionInfo.interpreterAppointments" [rows]="5" styleClass="pt-3"
+                    [paginator]="true" [rowHover]="true"
+                    currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
+                    [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th pSortableColumn="appointmentDate">{{
+                                '::SalesAndCompanionInfo:Appointments:Column:AppointmentDate' | abpLocalization }}
+                                <p-sortIcon field="appointmentDate"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="branch.name">{{ '::SalesAndCompanionInfo:Appointments:Column:Branch' |
+                                abpLocalization }}
+                                <p-sortIcon field="branch.name"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="description">{{
+                                '::SalesAndCompanionInfo:Appointments:Column:Description' | abpLocalization }}
+                                <p-sortIcon field="description"></p-sortIcon>
+                            </th>
+                            <th style="width: 4rem" *ngIf="isAllowedToManage"></th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-appointment>
+                        <tr>
+                            <td>{{appointment.appointmentDate | date: 'dd.MM.yyyy'}}</td>
+                            <td>{{appointment.branch.name}}</td>
+                            <td>{{appointment.description }}</td>
+                            <td *ngIf="isAllowedToManage">
+                                <p-button pRipple icon="pi pi-trash" styleClass="p-button-rounded p-button-danger"
+                                    (onClick)="deleteAppointment(appointment)"></p-button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <div class="m-3">
+                            {{ '::Table:EmptyMessage' | abpLocalization }}
+                        </div>
+                    </ng-template>
+                    <ng-template pTemplate="summary">
+                        <div class="flex align-items-center justify-content-between" *ngIf="totalRecords > 0">
+                            {{ '::Table:Summary' | abpLocalization: totalRecords }}
+                        </div>
+                    </ng-template>
+                </p-table>
             </div>
             <div class="field grid mb-2 justify-content-end">
                 <p-button pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-save"
@@ -170,70 +312,115 @@
     </div>
 </form>
 
-<p-dialog [(visible)]="displayUploadInvitationLetter" [style]="{width: '40vw'}"
-    header="{{ '::SalesAndCompanionInfo:UploadInvitationLetterDialog:Title' | abpLocalization }}" [modal]="true"
-    styleClass="p-fluid" (onHide)="hideUploadInvitationLetterDialog()">
-    <form #uploadForm="ngForm">
+<p-dialog [(visible)]="displayUploadDialog" [style]="{width: '450px'}"
+    header="{{ '::Documents:DocumentDetails' | abpLocalization }}" [modal]="true" styleClass="p-fluid"
+    (onHide)="hideUploadDialog()">
+    <form #documentForm="ngForm">
         <div>
             <div class="field">
-                <label for="invitationLetter">{{
-                    '::SalesAndCompanionInfo:UploadInvitationLetterDialog:Field:InvitationLetter' | abpLocalization }}
-                    <font style="color:red">*
+                <label for="documents">{{ '::Documents:Column:Document' | abpLocalization }} <font style="color:red">*
                     </font>
                 </label>
-                <p-fileUpload #invitationLetter id="invitationLetter" name="invitationLetter"
+                <p-fileUpload #documentUpload id="documents" name="documents" [multiple]="true"
                     chooseLabel="{{ '::ChooseFile' | abpLocalization}}" (onSelect)="onSelect($event)"
                     maxFileSize="20000000" [auto]="true">
                     <ng-template let-file pTemplate="file">
-                    </ng-template>
-                    <ng-template pTemplate="content">
-                        <div *ngIf="uploadedInvitationLetters.length">
-                            <div class="inline-flex m-2" *ngFor="let file of uploadedInvitationLetters">
-                                <div class="fileContainer flex flex-wrap">
-                                    <div class="flex align-items-center justify-content-center">
-                                        <div class="flex p-2">
-                                            <i class="pi pi-image fileIcon"
-                                                *ngIf="file.type == 'image/jpeg' || file.type == 'image/png'"></i>
-                                            <i class="pi pi-file-pdf fileIcon"
-                                                *ngIf="file.type == 'application/pdf'"></i>
-                                            <i class="pi pi-file-word fileIcon"
-                                                *ngIf="file.type == 'application/msword' || file.type == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'"></i>
-                                            <i class="pi pi-file-excel fileIcon"
-                                                *ngIf="file.type == 'application/msexcel' || file.type == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'"></i>
-                                            <i class="pi pi-file fileIcon" *ngIf="file.type != 'application/pdf' && 
-                                                file.type != 'application/msword' && 
-                                                file.type != 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' && 
-                                                file.type != 'application/msexcel' && 
-                                                file.type != 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' && 
-                                                file.type != 'image/jpeg' && 
-                                                file.type != 'image/png'"></i>
-                                        </div>
-                                        <div class="flex flex-column p-2">
-                                            <div class="fileName mb-2 font-medium cursor-pointer"
-                                                (click)="openFile(file)">
-                                                {{file.name}}</div>
-                                            <div class="fileSize">{{file.size / 1024 | number: '1.0-2'}} Kb</div>
-                                        </div>
-                                        <div class="flex p-2 cursor-pointer" (click)="removeFile()">
-                                            <i class="pi pi-times-circle text-xl"></i>
-                                        </div>
+                        <div class="inline-flex m-2 w-full">
+                            <div class="fileContainer flex flex-wrap w-full justify-content-between">
+                                <div class="flex align-items-center">
+                                    <div class="flex p-2">
+                                        <i class="pi pi-image fileIcon"
+                                            *ngIf="file.type == 'image/jpeg' || file.type == 'image/png'"></i>
+                                        <i class="pi pi-file-pdf fileIcon" *ngIf="file.type == 'application/pdf'"></i>
+                                        <i class="pi pi-file-word fileIcon"
+                                            *ngIf="file.type == 'application/msword' || file.type == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'"></i>
+                                        <i class="pi pi-file-excel fileIcon"
+                                            *ngIf="file.type == 'application/msexcel' || file.type == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'"></i>
+                                        <i class="pi pi-file fileIcon" *ngIf="file.type != 'application/pdf' && 
+                                            file.type != 'application/msword' && 
+                                            file.type != 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' && 
+                                            file.type != 'application/msexcel' && 
+                                            file.type != 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' && 
+                                            file.type != 'image/jpeg' && 
+                                            file.type != 'image/png'"></i>
                                     </div>
+                                    <div class="flex flex-column p-2">
+                                        <div class="fileName mb-2 font-medium cursor-pointer" (click)="openFile(file)">
+                                            {{file.name}}</div>
+                                        <div class="fileSize">{{file.size / 1024 | number: '1.0-2'}} Kb</div>
+                                    </div>
+
+                                </div>
+                                <div class="flex p-2 cursor-pointer align-items-center" (click)="removeFile(file)">
+                                    <i class="pi pi-times-circle text-xl"></i>
                                 </div>
                             </div>
                         </div>
                     </ng-template>
                 </p-fileUpload>
-                <small class="p-error" *ngIf="!uploadedInvitationLetters || uploadedInvitationLetters?.length == 0">{{
+                <small class="p-error" *ngIf="!uploadedDocuments || uploadedDocuments?.length == 0">{{
                     '::Message:RequiredField' | abpLocalization }}</small>
+            </div>
+            <div class="field">
+                <label for="documentType">{{ '::Documents:Column:DocumentType' | abpLocalization }}</label>
+                <p-dropdown id="documentType" name="documentType" #documentType="ngModel" [options]="documentTypeList"
+                    [(ngModel)]="selectedDocumentTypeId" placeholder="{{ '::Select' | abpLocalization }}"
+                    [style]="{'width':'100%'}" styleClass="filterDropDown" optionValue="id" optionLabel="name"
+                    emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
+            </div>
+            <div class="field">
+                <label for="description">{{ '::Documents:Column:Description' | abpLocalization }}</label>
+                <textarea rows="5" pInputText id="description" name="description" #description="ngModel"
+                    [(ngModel)]="documentDescription"></textarea>
             </div>
         </div>
     </form>
     <p-footer>
         <p-button pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" styleClass="p-button-text"
-            (onClick)="hideUploadInvitationLetterDialog()"></p-button>
+            (onClick)="hideUploadDialog()"></p-button>
         <p-button pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" styleClass="p-button-text"
-            (onClick)="uploadInvitationLetter()"
-            [disabled]="!(uploadForm.valid) || uploadedInvitationLetters?.length== 0"></p-button>
+            (onClick)="uploadDocument()" [disabled]="!(documentForm.valid) || uploadedDocuments?.length== 0"></p-button>
+    </p-footer>
+
+</p-dialog>
+
+<p-dialog [(visible)]="displayAppointmentDialog" [style]="{width: '450px'}"
+    header="{{ '::SalesAndCompanionInfo:AppointmentDetails' | abpLocalization }}" [modal]="true" styleClass="p-fluid"
+    (onHide)="hideAppointmentDialog()">
+    <form #appointmentForm="ngForm">
+        <div *ngIf="appointment">
+            <div class="field">
+                <label for="documents">{{ '::SalesAndCompanionInfo:Appointments:Column:AppointmentDate' |
+                    abpLocalization }} <font style="color:red">*
+                    </font>
+                </label>
+                <p-calendar [(ngModel)]="appointment.appointmentDate" id="calAppointmentDate" name="calAppointmentDate"
+                    #calAppointmentDate="ngModel" dateFormat="dd.mm.yy" [showIcon]="true" inputId="icon"
+                    inputStyleClass="text-sm" [disabled]="!isAllowedToManage" styleClass="customCalendar"
+                    [style]="{'width':'100%'}" required></p-calendar>
+            </div>
+            <div class="field">
+                <label for="ddlBranch">{{ '::SalesAndCompanionInfo:Appointments:Column:Branch' | abpLocalization
+                    }}</label>
+                <p-dropdown id="ddlBranch" name="ddlBranch" #ddlBranch="ngModel" [options]="branchList"
+                    [(ngModel)]="appointment.branchId" placeholder="{{ '::Select' | abpLocalization }}"
+                    [style]="{'width':'100%'}" styleClass="filterDropDown" optionValue="id" optionLabel="name"
+                    emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
+            </div>
+            <div class="field">
+                <label for="description">{{ '::SalesAndCompanionInfo:Appointments:Column:Description' | abpLocalization
+                    }}</label>
+                <textarea rows="5" pInputText id="description" name="description" #description="ngModel"
+                    [(ngModel)]="appointment.description"></textarea>
+            </div>
+        </div>
+    </form>
+    <p-footer>
+        <p-button pRipple label="{{ '::Cancel' | abpLocalization }}" icon="pi pi-times" styleClass="p-button-text"
+            (onClick)="hideAppointmentDialog()"></p-button>
+        <p-button pRipple label="{{ '::Save' | abpLocalization }}" icon="pi pi-check" styleClass="p-button-text"
+            (onClick)="saveAppointment()"
+            [disabled]="!appointmentForm.valid"></p-button>
     </p-footer>
 
 </p-dialog>

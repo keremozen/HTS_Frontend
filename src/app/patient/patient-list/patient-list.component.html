@@ -5,7 +5,7 @@
         <h4>{{ '::Patients:Title' | abpLocalization }}</h4>
     </div>
     <div>
-        <p-selectButton [options]="viewOptions" [(ngModel)]="selectedView" optionLabel="label" optionValue="value" />
+        <p-selectButton [options]="viewOptions" [(ngModel)]="selectedView" optionLabel="label" optionValue="value" (onChange)="onViewChanged()" />
     </div>
 </div>
 <div class="mb-3">
@@ -195,7 +195,8 @@
                     [style]="{'width':'20rem'}">
                     <ng-template pTemplate="header">{{ patientStatus.label }}</ng-template>
                     <ng-template let-patient pTemplate="item">
-                        <div class="flex flex-column p-2 mt-2 mb-2 flex-wrap bg-gray-100 border-round border-1 border-200" style="width:20rem">
+                        <div class="flex flex-column p-2 mt-2 mb-2 flex-wrap bg-gray-100 border-round border-1 border-200 cursor-pointer"
+                            style="width:20rem" (click)="editPatientByRowClick($event, patient.id)">
                             <div class="font-bold">
                                 {{patient.name}} {{patient.surname}}
                             </div>
@@ -203,7 +204,7 @@
                                 {{patient.nationality?.name}}
                             </div>
                             <div>
-                                Başakşehir Çam ve Sakura Şehir Hastanesi
+                                {{patient.creator?.name}} {{patient.creator?.surname}}
                             </div>
                         </div>
                     </ng-template>

@@ -10,6 +10,7 @@ export enum EntityEnum_ProformaStatusEnum {
   WaitingForPayment = 7,
   PaymentCompleted = 8,
   MFBUpdatedCancelled = 9,
+  Cancelled = 10,
 }
 
 export const entityEnum_ProformaStatusEnumOptions = mapEnumToOptions(EntityEnum_ProformaStatusEnum);

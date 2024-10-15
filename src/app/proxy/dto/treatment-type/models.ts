@@ -4,8 +4,3 @@ export interface TreatmentTypeDto extends EntityDto<number> {
   name?: string;
   isActive: boolean;
 }
-
-export interface SaveTreatmentTypeDto {
-  name: string;
-  isActive: boolean;
-}

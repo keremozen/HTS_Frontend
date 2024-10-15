@@ -1,3 +1,4 @@
+import { IdentityUserDto } from '@abp/ng.identity/proxy';
 import { Location } from '@angular/common';
 import { Component, EventEmitter, Injector, Input, Output, ViewEncapsulation } from '@angular/core';
 import { BranchDto } from '@proxy/dto/branch';
@@ -5,10 +6,12 @@ import { DocumentTypeDto } from '@proxy/dto/document-type';
 import { HospitalDto } from '@proxy/dto/hospital';
 import { HospitalConsultationDto, SaveHospitalConsultationDto } from '@proxy/dto/hospital-consultation';
 import { HospitalConsultationDocumentDto, SaveHospitalConsultationDocumentDto } from '@proxy/dto/hospital-consultation-document';
+import { HospitalConsultationStatusDto } from '@proxy/dto/hospital-consultation-status';
 import { HospitalResponseDto } from '@proxy/dto/hospital-response';
 import { HospitalResponseProcessDto } from '@proxy/dto/hospital-response-process';
 import { HospitalResponseTypeDto } from '@proxy/dto/hospital-response-type';
 import { HospitalizationTypeDto } from '@proxy/dto/hospitalization-type';
+import { PatientTreatmentProcessDto } from '@proxy/dto/patient-treatment-process';
 import { EntityEnum_HospitalConsultationStatusEnum, EntityEnum_PatientDocumentStatusEnum, EntityEnum_PatientNoteStatusEnum, EntityEnum_ProcessTypeEnum } from '@proxy/enum';
 import { HospitalConsultationService, HospitalResponseService, PatientDocumentService, PatientNoteService } from '@proxy/service';
 import { forkJoin } from 'rxjs';
@@ -24,44 +27,17 @@ import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 export class ConsultationListComponent extends AppComponentBase {
 
   hospitalId: number;
-  consultations: HospitalConsultationDto[] = [];
-
-  hospitalConsultation: SaveHospitalConsultationDto;
+  consultations: HospitalConsultationWithResponseDto[] = [];
+  responses: HospitalResponseDto[] = [];
   hospitalList: HospitalDto[] = [];
-  selectedHospitals: number[] = [];
-  consolidatedDescription: string;
-  hospitalResponse: HospitalResponseDto;
-  anticipatedProcesses: HospitalResponseProcessDto[] = [];
-  anticipatedMaterials: HospitalResponseProcessDto[] = [];
-  isConsultationReadOnly: boolean = false;
   totalConsultations: number = 0;
-  totalConsultationDocuments: number = 0;
-  hospitalResponseDialog: boolean = false;
-  consultationDialog: boolean = false;
-  public consultationStatusEnum = EntityEnum_HospitalConsultationStatusEnum;
-  public patientDocumentStatusEnum = EntityEnum_PatientDocumentStatusEnum;
   public processTypeEnum = EntityEnum_ProcessTypeEnum;
-  branchList: BranchDto[] = [];
-  hospitalizationTypeList: HospitalizationTypeDto[] = [];
-  hospitalResponseTypeList: HospitalResponseTypeDto[] = [];
-  branchListText: string;
-  doesHaveAnyApproved: boolean;
-
-  // Document Related variables
-  documentTypeList: DocumentTypeDto[] = [];
-  uploadedDocuments: any[] = [];
-  hospitalConsultationDocuments: HospitalConsultationDocumentDto[] = [];
-  hospitalConsultationDocument: HospitalConsultationDocumentDto;
-  hospitalConsultationDocumentDialog: boolean = false;
-
   @Output() onConsultationChange: EventEmitter<any> = new EventEmitter();
 
   constructor(
     injector: Injector,
     private location: Location,
-    private patientDocumentService: PatientDocumentService,
     private commonService: CommonService,
-    private patientNoteService: PatientNoteService,
     private hospitalConsultationService: HospitalConsultationService,
     private hospitalResponseService: HospitalResponseService
   ) {
@@ -76,9 +52,19 @@ export class ConsultationListComponent extends AppComponentBase {
     this.hospitalId = this.location.getState()[0];
     this.hospitalList = this.commonService.hospitalList;
     if (this.hospitalId) {
-      this.hospitalConsultationService.getByHospitalId(this.hospitalId).subscribe({
-        next: res => {
-          this.consultations = res.items;
+      this.hospitalResponseService.getByHospitalId(this.hospitalId).subscribe({
+        next: resResponse => {
+          this.responses = resResponse.items;
+        },
+        complete: () => {
+          this.hospitalConsultationService.getByHospitalId(this.hospitalId).subscribe({
+            next: res => {
+              this.consultations = res.items as HospitalConsultationWithResponseDto[];
+              this.consultations.forEach(consultation => {
+                consultation.hospitalResponse = this.responses.find(r=>r.hospitalConsultation.hospitalId == consultation.hospitalId);
+              });
+            }
+          });
         }
       });
     }
@@ -102,6 +88,25 @@ export class ConsultationListComponent extends AppComponentBase {
       counter += 1;
     }
     return result;
+  }
 }
 
+class HospitalConsultationWithResponseDto implements HospitalConsultationDto {
+  note?: string;
+  patientTreatmentProcessId: number;
+  hospitalId: number;
+  rowNumber: number;
+  hospitalConsultationStatusId: EntityEnum_HospitalConsultationStatusEnum;
+  hospitalConsultationStatus: HospitalConsultationStatusDto;
+  hospitalConsultationDocuments: HospitalConsultationDocumentDto[];
+  hospital: HospitalDto;
+  patientTreatmentProcess: PatientTreatmentProcessDto;
+  creator?: number;
+  lastModifier?: number;
+  lastModificationTime?: string | Date;
+  lastModifierId?: string;
+  creationTime?: string | Date;
+  creatorId?: string;
+  id?: IdentityUserDto;
+  hospitalResponse: HospitalResponseDto;
 }
