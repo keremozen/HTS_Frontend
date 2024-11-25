@@ -6,13 +6,14 @@ import { Branch } from '@proxy/dto';
 import { BranchDto } from '@proxy/dto/branch';
 import { ContractedInstitutionStaffDto } from '@proxy/dto/contracted-institution-staff';
 import { DocumentTypeDto } from '@proxy/dto/document-type';
+import { SaveDocumentDto } from '@proxy/dto/invitation-letter-document';
 import { LanguageDto } from '@proxy/dto/language';
 import { NationalityDto } from '@proxy/dto/nationality';
 import { PatientAdmissionMethodDto } from '@proxy/dto/patient-admission-method';
 import { SavePatientDocumentDto } from '@proxy/dto/patient-document';
 import { SalesMethodAndCompanionInfoDto } from '@proxy/dto/sales-method-and-companion-info';
 import { SaveSMCIInterpreterAppointmentDto, SMCIInterpreterAppointmentDto } from '@proxy/dto/smciinterpreter-appointment';
-import { EntityEnum_TaskTypeEnum } from '@proxy/enum';
+import { EntityEnum_PatientDocumentStatusEnum, EntityEnum_TaskTypeEnum } from '@proxy/enum';
 import { ContractedInstitutionStaffService, HTSTaskService, InvitationLetterDocumentService, PatientDocumentService, SalesMethodAndCompanionInfoService, UserService } from '@proxy/service';
 import { FileUpload } from 'primeng/fileupload';
 import { CommonService } from 'src/app/services/common.service';
@@ -135,6 +136,8 @@ export class CompanionInfoComponent extends AppComponentBase {
     if (this.selectedInterpreter) {
       this.salesInfoAndCompanionInfo.appointedInterpreterId = this.selectedInterpreter.id;
     }
+    console.log(JSON.stringify(this.salesInfoAndCompanionInfo));
+    debugger;
     this.salesAndCompanionInfoService.save(this.salesInfoAndCompanionInfo).subscribe({
       complete: () => {
         this.success(this.l('::Message:SuccessfulSave', this.l('::SalesAndCompanionInfo:Name')));
@@ -186,24 +189,70 @@ export class CompanionInfoComponent extends AppComponentBase {
       document.documentTypeId = this.selectedDocumentTypeId;
       document.description = this.documentDescription;
     });
-    this.documentService.create(this.documents).subscribe({
-      next: (res) => {
-        var taskToBeClosed: SaveHTSTaskDto = {
-          patientId: this.patientId,
-          taskType: EntityEnum_TaskTypeEnum.DocumentTranslate,
-          relatedEntityId: this.patientTreatmentProcessId
-        };
-        this.taskService.closeTaskBySaveTask(taskToBeClosed).subscribe({
-          next: res=> {
+
+    if (this.uploadingDocumentType == 'invitationletter') {
+      let invitationDocuments: SaveDocumentDto[] = [];
+      this.documents.forEach(document => {
+        let invitationDoc: SaveDocumentDto = {
+          contentType: document.contentType,
+          file: document.file,
+          fileName: document.fileName,
+          salesMethodAndCompanionInfoId: this.salesInfoAndCompanionInfo.id,
+          patientDocumentStatusId: EntityEnum_PatientDocumentStatusEnum.NewRecord
+        }
+        invitationDocuments.push(invitationDoc);
+      });
+      this.invitationLetterService.upload(invitationDocuments).subscribe({
+        next: (res) => {
+          this.success(this.l('::Message:SuccessfulSave', this.l('::SalesAndCompanionInfo:InvitationLetters:NameSingular')));
+          this.fetchData();
+          this.documentUploaded.emit();
+          this.hideUploadDialog();
+        }
+      });
+    }
+    else {
+      this.documentService.create(this.documents).subscribe({
+        next: (res) => {
+          if (this.uploadingDocumentType == 'translation') {
+            var taskToBeClosed: SaveHTSTaskDto = {
+              patientId: this.patientId,
+              taskType: EntityEnum_TaskTypeEnum.DocumentTranslate,
+              relatedEntityId: this.patientTreatmentProcessId
+            };
+            this.taskService.closeTaskBySaveTask(taskToBeClosed).subscribe({
+              next: res => {
+                this.success(this.l('::Message:SuccessfulSave', this.l('::Documents:NamePlural')));
+                this.fetchData();
+                this.documentUploaded.emit();
+                this.hideUploadDialog();
+              }
+            });
+          }
+          else if (this.uploadingDocumentType == 'advancepayment') {
+            var taskToBeClosed: SaveHTSTaskDto = {
+              patientId: this.patientId,
+              taskType: EntityEnum_TaskTypeEnum.RequestingDownPayment,
+              relatedEntityId: this.patientTreatmentProcessId
+            };
+            this.taskService.closeTaskBySaveTask(taskToBeClosed).subscribe({
+              next: res => {
+                this.success(this.l('::Message:SuccessfulSave', this.l('::Documents:NamePlural')));
+                this.fetchData();
+                this.documentUploaded.emit();
+                this.hideUploadDialog();
+              }
+            });
+          }
+          else {
             this.success(this.l('::Message:SuccessfulSave', this.l('::Documents:NamePlural')));
             this.fetchData();
             this.documentUploaded.emit();
             this.hideUploadDialog();
           }
-        });
-        
-      }
-    });
+        }
+      });
+    }
   }
 
   onSelect(event: any) {
@@ -255,7 +304,7 @@ export class CompanionInfoComponent extends AppComponentBase {
 
   saveAppointment() {
     this.appointment.salesMethodAndCompanionInfoId = this.salesInfoAndCompanionInfo.id;
-    this.appointment.branch = this.branchList.find(b=>b.id == this.appointment.branchId);
+    this.appointment.branch = this.branchList.find(b => b.id == this.appointment.branchId);
     this.salesInfoAndCompanionInfo.interpreterAppointments.push(this.appointment);
     this.hideAppointmentDialog();
   }

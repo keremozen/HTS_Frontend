@@ -17,10 +17,18 @@ export class InvitationLetterDocumentService {
     { apiName: this.apiName });
   
 
-  getBySalesInfo = (salesInfoId: number) =>
+  get = (id: number) =>
     this.restService.request<any, SaveDocumentDto>({
       method: 'GET',
-      url: `/api/app/invitation-letter-document/by-sales-info/${salesInfoId}`,
+      url: `/api/app/invitation-letter-document/${id}`,
+    },
+    { apiName: this.apiName });
+  
+
+  getByPatient = (patientId: number) =>
+    this.restService.request<any, SaveDocumentDto[]>({
+      method: 'GET',
+      url: `/api/app/invitation-letter-document/by-patient/${patientId}`,
     },
     { apiName: this.apiName });
   
@@ -33,11 +41,19 @@ export class InvitationLetterDocumentService {
     { apiName: this.apiName });
   
 
-  upload = (document: SaveDocumentDto) =>
+  updateStatusByIdAndStatusId = (id: number, statusId: number) =>
+    this.restService.request<any, SaveDocumentDto>({
+      method: 'PUT',
+      url: `/api/app/invitation-letter-document/${id}/status/${statusId}`,
+    },
+    { apiName: this.apiName });
+  
+
+  upload = (documents: SaveDocumentDto[]) =>
     this.restService.request<any, void>({
       method: 'POST',
       url: '/api/app/invitation-letter-document/upload',
-      body: document,
+      body: documents,
     },
     { apiName: this.apiName });
 

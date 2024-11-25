@@ -118,10 +118,10 @@
                             abpLocalization }}
                             <p-sortIcon field="creator.name"></p-sortIcon>
                         </th>
-                        <th pSortableColumn="creationTime">{{
+                        <th pSortableColumn="creationDate">{{
                             '::Quotation:ProformaTable:Column:Created' |
                             abpLocalization }}
-                            <p-sortIcon field="creationTime"></p-sortIcon>
+                            <p-sortIcon field="creationDate"></p-sortIcon>
                         </th>
                         <th pSortableColumn="proformaStatusId">{{ '::Quotation:ProformaTable:Column:ProformaStatus' |
                             abpLocalization }} <p-sortIcon field="proformaStatusId"></p-sortIcon></th>
@@ -147,27 +147,27 @@
                         <td>{{proforma.creator?.name + (proforma.creator?.surname ? (" " +
                             proforma.creator?.surname) :
                             "")}}</td>
-                        <td>{{proforma.creationTime | date: 'dd.MM.yyyy HH:mm'}}</td>
+                        <td>{{proforma.creationDate | date: 'dd.MM.yyyy HH:mm'}}</td>
                         <td>{{proforma.proformaStatus.name}}</td>
                         <td class="text-center">
                             <i class="pi text-xl" [pTooltip]="proforma.rejectReasonMFB" tooltipPosition="top"
                                 [ngClass]="{ 
-                                    'text-green-500 pi-check-circle': proforma.proformaStatusId >= proformaStatusEnum.WillBeTransferedToPatient, 
+                                    'text-green-500 pi-check-circle': proforma.proformaStatusId >= proformaStatusEnum.WillBeTransferedToPatient && proforma.proformaStatusId != proformaStatusEnum.Cancelled, 
                                     'text-red-500 pi-times-circle': proforma.proformaStatusId == proformaStatusEnum.MFBRejected,
-                                    'text-gray-600 pi-question-circle': proforma.proformaStatusId < proformaStatusEnum.MFBRejected }"></i>
+                                    'text-gray-600 pi-question-circle': proforma.proformaStatusId < proformaStatusEnum.MFBRejected || proforma.proformaStatusId == proformaStatusEnum.Cancelled }"></i>
                         </td>
                         <td class="text-center">
                             <i class="pi text-xl" [pTooltip]="proforma.rejectReason?.reason" tooltipPosition="top"
                                 [ngClass]="{ 
-                                    'text-green-500 pi-check-circle': proforma.proformaStatusId >= proformaStatusEnum.WaitingForPayment, 
+                                    'text-green-500 pi-check-circle': proforma.proformaStatusId >= proformaStatusEnum.WaitingForPayment && proforma.proformaStatusId != proformaStatusEnum.Cancelled, 
                                     'text-red-500 pi-times-circle': proforma.proformaStatusId == proformaStatusEnum.PatientRejected,
-                                    'text-gray-600 pi-question-circle': proforma.proformaStatusId < proformaStatusEnum.PatientRejected }"></i>
+                                    'text-gray-600 pi-question-circle': proforma.proformaStatusId < proformaStatusEnum.PatientRejected || proforma.proformaStatusId == proformaStatusEnum.Cancelled }"></i>
                         </td>
                         <td class="text-center">
                             <i class="pi text-xl"
                                 [ngClass]="{ 
                                     'text-green-500 pi-check-circle': proforma.proformaStatusId == proformaStatusEnum.PaymentCompleted,
-                                    'text-gray-600 pi-question-circle': proforma.proformaStatusId < proformaStatusEnum.PaymentCompleted }"></i>
+                                    'text-gray-600 pi-question-circle': proforma.proformaStatusId < proformaStatusEnum.PaymentCompleted || proforma.proformaStatusId == proformaStatusEnum.Cancelled }"></i>
                         </td>
                         <td class="white-space-nowrap">
                             <p-button

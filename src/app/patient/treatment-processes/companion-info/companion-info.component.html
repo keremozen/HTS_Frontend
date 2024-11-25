@@ -361,7 +361,7 @@
                 <small class="p-error" *ngIf="!uploadedDocuments || uploadedDocuments?.length == 0">{{
                     '::Message:RequiredField' | abpLocalization }}</small>
             </div>
-            <div class="field">
+            <div class="field" *ngIf="uploadingDocumentType != 'invitationletter'">
                 <label for="documentType">{{ '::Documents:Column:DocumentType' | abpLocalization }}</label>
                 <p-dropdown id="documentType" name="documentType" #documentType="ngModel" [options]="documentTypeList"
                     [(ngModel)]="selectedDocumentTypeId" placeholder="{{ '::Select' | abpLocalization }}"

@@ -97,6 +97,7 @@ export class ProformaComponent extends AppComponentBase {
     this.proformaService.getNameListByOperationId(+this.operation.id).subscribe({
       next: (res) => {
         this.proformaList = res;
+        debugger;
       },
       complete: () => {
         if (this.proformaList.length > 0) {

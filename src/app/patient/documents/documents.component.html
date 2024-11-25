@@ -36,7 +36,7 @@
     </ng-template>
     <ng-template pTemplate="body" let-document>
         <tr>
-            <td><a class="cursor-pointer text-gray-900" (click)="showFile(document.id)">{{document.fileName}}</a>
+            <td><a class="cursor-pointer text-gray-900" (click)="showFile(document)">{{document.fileName}}</a>
                 <p-tag severity="warning" value="{{ '::Revoked' | abpLocalization }}" [rounded]="true"
                     styleClass="revokeTag" class="ml-3"
                     *ngIf="document.patientDocumentStatusId === patientDocumentStatusEnum.Revoked"></p-tag>

@@ -14,14 +14,17 @@ export interface HospitalResponseDto extends EntityDto<number> {
   hospitalResponseTypeId: EntityEnum_HospitalResponseTypeEnum;
   hospitalizationTypeId?: EntityEnum_HospitalizationTypeEnum;
   possibleTreatmentDate?: Date;
-  hospitalizationNumber?: number;
+  preOpHospitalizationNumber: number;
+  postOpHospitalizationNumber: number;
+  icHospitalizationNumber: number;
+  treatmentTypeId?: number;
   hospitalResponseType: HospitalResponseTypeDto;
   hospitalizationType: HospitalizationTypeDto;
   hospitalResponseBranches: HospitalResponseBranchDto[];
   hospitalResponseProcesses: HospitalResponseProcessDto[];
   hospitalAgentNotes: HospitalAgentNoteDto[];
   hospitalConsultation: HospitalConsultationDto;
-  creationTime?: string;
+  creationTime?: Date;
 }
 
 export interface SaveHospitalResponseDto {
@@ -30,7 +33,10 @@ export interface SaveHospitalResponseDto {
   hospitalResponseTypeId: number;
   hospitalizationTypeId?: number;
   possibleTreatmentDate?: Date;
-  hospitalizationNumber?: number;
+  preOpHospitalizationNumber: number;
+  postOpHospitalizationNumber: number;
+  icHospitalizationNumber: number;
+  treatmentTypeId?: number;
   hospitalResponseBranches: SaveHospitalResponseBranchDto[];
   hospitalResponseProcesses: SaveHospitalResponseProcessDto[];
   hospitalAgentNotes: SaveHospitalAgentNoteDto[];

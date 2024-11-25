@@ -93,13 +93,16 @@
                     <div class="field grid">
                         <label for="treatmentType" class="col-fixed"
                             style="width:140px">{{'::OperationalInfo:Field:TreatmentType' |
-                            abpLocalization}}</label>
+                            abpLocalization}}<font style="color:red"
+                                *ngIf="hospitalResponse.hospitalResponseTypeId == hospitalResponseTypeEnum.SuitableForTreatment">
+                                &nbsp;*
+                            </font></label>
                         <div class="col">
                             <p-dropdown id="treatmentType" name="treatmentType" #treatmentType="ngModel"
                                 [options]="treatmentTypeList" [(ngModel)]="operation.treatmentTypeId"
                                 placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
                                 styleClass="filterDropDown" optionLabel="name" optionValue="id" appendTo="body"
-                                emptyMessage="{{ '::EmptyMessage' | abpLocalization }}"></p-dropdown>
+                                emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" required></p-dropdown>
                         </div>
                     </div>
                 </div>
@@ -123,8 +126,9 @@
                         </div>
                     </p-toolbar>
 
-                    <p-table #dtAnticipatedProcesses [value]="anticipatedProcesses" [rows]="5" styleClass="pt-3" [paginator]="true"
-                        [rowHover]="true" [loading]="loading" [totalRecords]="totalAnticipatedProcesses"
+                    <p-table #dtAnticipatedProcesses [value]="anticipatedProcesses" [rows]="5" styleClass="pt-3"
+                        [paginator]="true" [rowHover]="true" [loading]="loading"
+                        [totalRecords]="totalAnticipatedProcesses"
                         currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
                         [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
                         <ng-template pTemplate="header">
@@ -192,8 +196,9 @@
                         </div>
                     </p-toolbar>
 
-                    <p-table #dtAnticipatedMaterials [value]="anticipatedMaterials" [rows]="5" styleClass="pt-3" [paginator]="true"
-                        [rowHover]="true" [loading]="loading" [totalRecords]="totalAnticipatedMaterials"
+                    <p-table #dtAnticipatedMaterials [value]="anticipatedMaterials" [rows]="5" styleClass="pt-3"
+                        [paginator]="true" [rowHover]="true" [loading]="loading"
+                        [totalRecords]="totalAnticipatedMaterials"
                         currentPageReportTemplate="{{'::Table:PageSummary' | abpLocalization:'first':'last':'totalRecords'}}"
                         [showCurrentPageReport]="false" [alwaysShowPaginator]="false">
                         <ng-template pTemplate="header">
@@ -245,14 +250,15 @@
                         [disabled]="!isManual && !isInNewRecordStatus"></textarea>
                 </fieldset>
             </div>
-            
+
             <div class="col-4">
                 <fieldset class="border pl-3 pr-3 pt-2 pb-3 m-2 responseFieldSet">
                     <legend class="float-none w-auto pl-3 pr-3 text-sm responseFieldSetlegend">
                         {{'::Proforma:Field:HospitalAgentNote' |
                         abpLocalization}}
                     </legend>
-                    <app-agent-notes [readonly]="false" [hospitalResponseId]="hospitalResponse.id" (onNoteAdded)="onNoteAdded($event)"></app-agent-notes>
+                    <app-agent-notes [readonly]="false" [hospitalResponseId]="hospitalResponse.id"
+                        (onNoteAdded)="onNoteAdded($event)"></app-agent-notes>
                 </fieldset>
             </div>
             <div class="col-12 align-self-end">

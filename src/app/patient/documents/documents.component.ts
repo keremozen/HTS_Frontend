@@ -3,7 +3,8 @@ import { Form } from '@angular/forms';
 import { DocumentTypeDto } from '@proxy/dto/document-type';
 import { PatientDocumentDto, SavePatientDocumentDto } from '@proxy/dto/patient-document';
 import { EntityEnum_PatientDocumentStatusEnum } from '@proxy/enum';
-import { DocumentTypeService, PatientDocumentService } from '@proxy/service';
+import { InvitationLetterDocumentService, PatientDocumentService } from '@proxy/service';
+import { LegendPlainComponent } from 'echarts/components';
 import { FileUpload } from 'primeng/fileupload';
 import { forkJoin } from 'rxjs';
 import { CommonService } from 'src/app/services/common.service';
@@ -17,6 +18,7 @@ import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 })
 export class DocumentsComponent extends AppComponentBase {
   @Input() patientId: number;
+  @Input() salesMethodAndCompanionInfoId: number;
   allDocuments: PatientDocumentDto[] = [];
   documentsToBeDisplayed: PatientDocumentDto[] = [];
   documentDialog: boolean = false;
@@ -38,7 +40,8 @@ export class DocumentsComponent extends AppComponentBase {
   constructor(
     injector: Injector,
     private commonService: CommonService,
-    private documentService: PatientDocumentService
+    private documentService: PatientDocumentService,
+    private invitationLetterService: InvitationLetterDocumentService
   ) {
     super(injector);
     this.isAllowedToManage = this.permission.getGrantedPolicy("HTS.PatientManagement");
@@ -51,10 +54,33 @@ export class DocumentsComponent extends AppComponentBase {
   fetchData() {
     this.loading = true;
     this.documentTypeList = this.commonService.documentTypeList;
-    this.documentService.getList(this.patientId).subscribe({
-      next: (resDocumentList) => {
+
+    forkJoin([
+      this.documentService.getList(this.patientId),
+      this.invitationLetterService.getByPatient(this.patientId)
+    ]).subscribe({
+      next: ([
+        resDocumentList,
+        resInvitationLetterList
+      ]) => {
+        let invitationList: PatientDocumentDto[] = [];
+        resInvitationLetterList.forEach(letter => {
+          invitationList.push({
+            id: letter.id,
+            documentType: { id: 100, name: this.l('::Documents:DocumentType:InvitationLetter'), isActive: true },
+            fileName: letter.fileName,
+            contentType: letter.contentType,
+            patientId: this.patientId,
+            patientDocumentStatusId: letter.patientDocumentStatusId,
+            creator: letter.creator,
+            creatorId: letter.creatorId,
+            creationTime: letter.creationTime
+          });
+        });
         this.allDocuments = resDocumentList.items;
+        this.allDocuments.push(...invitationList);
         this.revokedRecordCount = resDocumentList.items.filter(d => d.patientDocumentStatusId === this.patientDocumentStatusEnum.Revoked).length;
+        debugger;
         this.manageDocumentsToBeDisplayed();
       },
       error: () => {
@@ -80,16 +106,29 @@ export class DocumentsComponent extends AppComponentBase {
     this.totalRecords = this.documentsToBeDisplayed.length;
   }
 
-  showFile(documentId: number) {
-    this.documentService.get(documentId).subscribe({
-      next: r => {
-        const source = `data:${r.contentType};base64,${r.file}`;
-        const link = document.createElement("a");
-        link.href = source;
-        link.download = r.fileName
-        link.click();
-      }
-    });
+  showFile(patientDocument: any) {
+    if (patientDocument.documentType != undefined && patientDocument.documentType.id == 100) {
+      this.invitationLetterService.get(patientDocument.id).subscribe({
+        next: r => {
+          const source = `data:${r.contentType};base64,${r.file}`;
+          const link = document.createElement("a");
+          link.href = source;
+          link.download = r.fileName
+          link.click();
+        }
+      });
+    }
+    else {
+      this.documentService.get(patientDocument.id).subscribe({
+        next: r => {
+          const source = `data:${r.contentType};base64,${r.file}`;
+          const link = document.createElement("a");
+          link.href = source;
+          link.download = r.fileName
+          link.click();
+        }
+      });
+    }
   }
 
   openNew() {
@@ -136,20 +175,29 @@ export class DocumentsComponent extends AppComponentBase {
     this.documentDialog = false;
   }
 
-  revokeDocument(documentsToBeRevoked: PatientDocumentDto) {
+  revokeDocument(documentToBeRevoked: PatientDocumentDto) {
     this.confirm({
       key: 'documentConfirm',
       message: this.l('::Message:RevokeConfirmation'),
       header: this.l('::Confirm'),
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.documentService.updateStatusByIdAndStatusId(documentsToBeRevoked.id as unknown as number, this.patientDocumentStatusEnum.Revoked).subscribe({
-          next: (res) => {
-            this.success(this.l('::Message:SuccessfulRevokation', this.l('::Documents:NameSingular')));
-            this.fetchData();
-          }
-        });
-
+        if (documentToBeRevoked.documentType != null && documentToBeRevoked.documentType.id == 100) {
+          this.invitationLetterService.updateStatusByIdAndStatusId(documentToBeRevoked.id as unknown as number, this.patientDocumentStatusEnum.Revoked).subscribe({
+            next: (res) => {
+              this.success(this.l('::Message:SuccessfulRevokation', this.l('::Documents:NameSingular')));
+              this.fetchData();
+            }
+          });
+        }
+        else {
+          this.documentService.updateStatusByIdAndStatusId(documentToBeRevoked.id as unknown as number, this.patientDocumentStatusEnum.Revoked).subscribe({
+            next: (res) => {
+              this.success(this.l('::Message:SuccessfulRevokation', this.l('::Documents:NameSingular')));
+              this.fetchData();
+            }
+          });
+        }
       }
     });
   }

@@ -147,6 +147,21 @@
                                 [(ngModel)]="hospitalResponse.hospitalizationNumber"></p-inputNumber>
                         </div>
                     </div>
+                    <div class="field grid">
+                        <label for="treatmentType" class="col-fixed"
+                            style="width:140px">{{'::HospitalResponse:Field:TreatmentType' |
+                            abpLocalization}}<font style="color:red"
+                                *ngIf="selectedHospitalResponseType == hospitalResponseTypeEnum.SuitableForTreatment">
+                                &nbsp;*
+                            </font></label>
+                        <div class="col">
+                            <p-dropdown id="treatmentType" name="treatmentType" #treatmentType="ngModel" [disabled]="isResponseCreated"
+                                [options]="treatmentTypeList" [(ngModel)]="hospitalResponse.treatmentTypeId"
+                                placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
+                                styleClass="filterDropDown" optionLabel="name" optionValue="id" appendTo="body"
+                                emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" required></p-dropdown>
+                        </div>
+                    </div>
                 </div>
 
                 <fieldset class="border pl-3 pr-3 pt-2 pb-3 m-2 responseFieldSet" style="height:20rem;">

@@ -10,7 +10,7 @@ import { HospitalizationTypeDto } from '@proxy/dto/hospitalization-type';
 import { PatientDto } from '@proxy/dto/patient';
 import { ProcessDto } from '@proxy/dto/process';
 import { EntityEnum_HospitalAgentNoteStatusEnum, EntityEnum_HospitalConsultationStatusEnum, EntityEnum_HospitalResponseTypeEnum, EntityEnum_ProcessTypeEnum } from '@proxy/enum';
-import { HospitalConsultationDocumentService, HospitalConsultationService, HospitalResponseService, HospitalResponseTypeService, HospitalizationTypeService, ProcessService } from '@proxy/service';
+import { HospitalConsultationDocumentService, HospitalConsultationService, HospitalResponseService, HospitalResponseTypeService, HospitalizationTypeService, ProcessService, TreatmentTypeService } from '@proxy/service';
 import { forkJoin } from 'rxjs';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 import { CommonService } from '../services/common.service';
@@ -19,6 +19,7 @@ import { IdentityUserDto } from '@abp/ng.identity/proxy';
 import { HospitalDto } from '@proxy/dto/hospital';
 import { HospitalConsultationStatusDto } from '@proxy/dto/hospital-consultation-status';
 import { PatientTreatmentProcessDto } from '@proxy/dto/patient-treatment-process';
+import { TreatmentTypeDto } from '@proxy/dto/treatment-type';
 
 @Component({
   selector: 'app-hospital-response',
@@ -44,6 +45,7 @@ export class HospitalResponseComponent extends AppComponentBase {
   anticipatedMaterials: SaveHospitalResponseProcessWithDetailDto[] = [];
   totalAnticipatedMaterials: number = 0;
   agentNotes: SaveHospitalAgentNoteDto[] = [];
+  treatmentTypeList: TreatmentTypeDto[] = [];
   loading: boolean;
   totalRecords: number;
   isAllowedToManage: boolean = false;
@@ -73,12 +75,14 @@ export class HospitalResponseComponent extends AppComponentBase {
     private hospitalResponseService: HospitalResponseService,
     private commonService: CommonService,
     private processService: ProcessService,
+    private treatmentTypeService: TreatmentTypeService,
     private route: ActivatedRoute
   ) {
     super(injector);
   }
 
   ngOnInit() {
+    debugger;
     const base64param = this.route.snapshot.paramMap.get('uid')!.split('.')[1];
     if (base64param) {
       try {
@@ -107,16 +111,19 @@ export class HospitalResponseComponent extends AppComponentBase {
       this.hospitalizationTypeService.getList(),
       this.hospitalConsultationService.get(this.consultationId),
       this.hospitalResponseService.getByHospitalConsultation(this.consultationId),
+      this.treatmentTypeService.getList(),
     ]).subscribe(
       {
         next: ([
           resHospitalResponseTypeList,
           resHospitalizationTypeList,
           resConsultation,
-          resHospitalResponse
+          resHospitalResponse,
+          resTreatmentTypeList
         ]) => {
           this.hospitalResponseTypeList = resHospitalResponseTypeList.items;
           this.hospitalizationTypeList = resHospitalizationTypeList.items;
+          this.treatmentTypeList = resTreatmentTypeList.items;
           this.consultation = resConsultation as HospitalConsultationWithResponseDto;
           this.documents.push(...this.consultation.hospitalConsultationDocuments);
           if (resHospitalResponse) { // response is created

@@ -437,10 +437,10 @@
                 *ngIf="!doesHaveAnyApproved && hospitalResponse.hospitalConsultation?.hospitalConsultationStatusId == consultationStatusEnum.SuitableForTreatment">
                 <div class="flex justify-content-end">
                     <p-button pRipple label="{{ '::RejectResponse' | abpLocalization }}" icon="pi pi-times"
-                        styleClass="p-button-danger p-button-text mr-2 mt-4 w-10rem" [loading]="loading"
+                        styleClass="p-button-danger mr-2 mt-4 w-10rem" [loading]="loading"
                         (onClick)="onReject(null)"></p-button>
                     <p-button pRipple label="{{ '::ApproveResponse' | abpLocalization }}" icon="pi pi-check"
-                        styleClass="p-button-success p-button-text mr-2 mt-4 w-10rem" [loading]="loading"
+                        styleClass="p-button-success mr-2 mt-4 w-10rem" [loading]="loading"
                         (onClick)="onApprove(null)"></p-button>
                 </div>
             </div>
