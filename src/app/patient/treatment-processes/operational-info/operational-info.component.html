@@ -62,7 +62,7 @@
                     (onClick)="openHospitalResponse(operation)"></p-button>
                 <p-button pRipple styleClass="p-button-success ml-2" class="inline-block"
                     pTooltip="{{ '::OperationalInfo:Button:CreateProforma' | abpLocalization }}"
-                    (onClick)="onCreateProforma(operation)" icon="fas fa-file-invoice-dollar"
+                    (onClick)="onCreateProforma(operation)" icon="fas fa-lira-sign"
                     [disabled]="!hasPriceExceptingOperation || !isAllowedToCreateProforma"
                     *ngIf="operation.operationStatus?.id != operationStatusEnum.NewRecord"></p-button>
                 <p-button pRipple styleClass="p-button-success ml-2" class="inline-block"
@@ -184,7 +184,7 @@
                 <div class="pl-3 pr-3 pt-2 pb-3 m-2">
                     <div class="field grid">
                         <label for="hospitalName" class="col-fixed"
-                            style="width:140px">{{'::HospitalResponse:Field:HospitalName' |
+                            style="width:180px">{{'::HospitalResponse:Field:HospitalName' |
                             abpLocalization}}</label>
                         <div class="col">
                             {{hospitalResponse.hospitalConsultation ?
@@ -193,7 +193,7 @@
                     </div>
                     <div class="field grid">
                         <label for="treatmentCode" class="col-fixed"
-                            style="width:140px">{{'::HospitalResponse:Field:TreatmentCode' |
+                            style="width:180px">{{'::HospitalResponse:Field:TreatmentCode' |
                             abpLocalization}}</label>
                         <div class="col">
                             {{operation?.patientTreatmentProcess?.treatmentCode}}
@@ -201,7 +201,7 @@
                     </div>
                     <div class="field grid">
                         <label for="hospitalResponse" class="col-fixed"
-                            style="width:140px">{{'::HospitalResponse:Field:HospitalResponse' |
+                            style="width:180px">{{'::HospitalResponse:Field:HospitalResponse' |
                             abpLocalization}}</label>
                         <div class="col">
                             {{hospitalResponse.hospitalResponseType?.name}}
@@ -209,14 +209,14 @@
                     </div>
                     <div class="field grid">
                         <label for="hospitalizationType" class="col-fixed"
-                            style="width:140px">{{'::HospitalResponse:Field:HospitalizationType' |
+                            style="width:180px">{{'::HospitalResponse:Field:HospitalizationType' |
                             abpLocalization}}</label>
                         <div class="col">
                             {{hospitalResponse.hospitalizationType?.name}}
                         </div>
                     </div>
                     <div class="field grid">
-                        <label for="branch" class="col-fixed" style="width:140px">{{'::HospitalResponse:Field:Branch' |
+                        <label for="branch" class="col-fixed" style="width:180px">{{'::HospitalResponse:Field:Branch' |
                             abpLocalization}}</label>
                         <div class="col">
                             <div [innerHtml]="branchListText"></div>
@@ -224,18 +224,34 @@
                     </div>
                     <div class="field grid">
                         <label for="earliestTreatmentDate" class="col-fixed"
-                            style="width:140px">{{'::HospitalResponse:Field:EarliestTreatmentDate' |
+                            style="width:180px">{{'::HospitalResponse:Field:EarliestTreatmentDate' |
                             abpLocalization}}</label>
                         <div class="col">
                             {{hospitalResponse.possibleTreatmentDate | date: 'dd.MM.yyyy'}}
                         </div>
                     </div>
                     <div class="field grid">
-                        <label for="numberOfHospitalizationDays" class="col-fixed"
-                            style="width:140px">{{'::HospitalResponse:Field:NumberOfHospitalizationDays' |
+                        <label class="col-fixed"
+                            style="width:180px">{{'::HospitalResponse:Field:NumberOfPreOpHospitalizationDays' |
                             abpLocalization}}</label>
                         <div class="col">
-                            {{hospitalResponse.hospitalizationNumber}}
+                            {{ hospitalResponse?.preOpHospitalizationNumber }}
+                        </div>
+                    </div>
+                    <div class="field grid">
+                        <label class="col-fixed"
+                            style="width:180px">{{'::HospitalResponse:Field:NumberOfPostOpHospitalizationDays' |
+                            abpLocalization}}</label>
+                        <div class="col">
+                            {{ hospitalResponse?.postOpHospitalizationNumber }}
+                        </div>
+                    </div>
+                    <div class="field grid">
+                        <label class="col-fixed"
+                            style="width:180px">{{'::HospitalResponse:Field:NumberOfIcHospitalizationDays' |
+                            abpLocalization}}</label>
+                        <div class="col">
+                            {{ hospitalResponse?.icHospitalizationNumber }}
                         </div>
                     </div>
                 </div>

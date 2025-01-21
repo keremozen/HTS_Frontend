@@ -44,6 +44,14 @@ export class PatientService {
     { apiName: this.apiName });
   
 
+  getByConsultationId = (consultationId: number) =>
+    this.restService.request<any, PatientDto>({
+      method: 'GET',
+      url: `/api/app/patient/by-consultation-id/${consultationId}`,
+    },
+    { apiName: this.apiName });
+  
+
   getList = () =>
     this.restService.request<any, PagedResultDto<PatientDto>>({
       method: 'GET',

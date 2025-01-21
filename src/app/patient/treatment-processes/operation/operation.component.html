@@ -5,7 +5,7 @@
                 <div class="pl-3 pr-3 pt-2 pb-3 m-2">
                     <div class="field grid" *ngIf="isInNewRecordStatus">
                         <label for="hospital" class="col-fixed"
-                            style="width:140px">{{'::HospitalResponse:Field:HospitalName' |
+                            style="width:200px">{{'::HospitalResponse:Field:HospitalName' |
                             abpLocalization}}</label>
                         <div class="col">
                             <p-dropdown id="hospital" name="hospital" #hospital="ngModel" [options]="hospitalList"
@@ -17,7 +17,7 @@
                     </div>
                     <div class="field grid">
                         <label for="hospitalResponse" class="col-fixed"
-                            style="width:140px">{{'::HospitalResponse:Field:HospitalResponse' |
+                            style="width:200px">{{'::HospitalResponse:Field:HospitalResponse' |
                             abpLocalization}}</label>
                         <div class="col">
                             <p-dropdown id="hospitalResponseType" name="hospitalResponseType"
@@ -31,7 +31,7 @@
                     </div>
                     <div class="field grid">
                         <label for="hospitalizationType" class="col-fixed"
-                            style="width:140px">{{'::HospitalResponse:Field:HospitalizationType' |
+                            style="width:200px">{{'::HospitalResponse:Field:HospitalizationType' |
                             abpLocalization}}<font style="color:red"
                                 *ngIf="hospitalResponse.hospitalResponseTypeId == hospitalResponseTypeEnum.SuitableForTreatment">
                                 &nbsp;*
@@ -48,7 +48,7 @@
                         </div>
                     </div>
                     <div class="field grid">
-                        <label for="branch" class="col-fixed" style="width:140px">{{'::HospitalResponse:Field:Branch' |
+                        <label for="branch" class="col-fixed" style="width:200px">{{'::HospitalResponse:Field:Branch' |
                             abpLocalization}}<font style="color:red"
                                 *ngIf="hospitalResponse.hospitalResponseTypeId == hospitalResponseTypeEnum.SuitableForTreatment">
                                 &nbsp;*
@@ -66,7 +66,7 @@
                     </div>
                     <div class="field grid">
                         <label for="earliestTreatmentDate" class="col-fixed"
-                            style="width:140px">{{'::HospitalResponse:Field:EarliestTreatmentDate' |
+                            style="width:200px">{{'::HospitalResponse:Field:EarliestTreatmentDate' |
                             abpLocalization}}</label>
                         <div class="col">
                             <p-calendar id="calTreatmentDate" name="calTreatmentDate" #calTreatmentDate="ngModel"
@@ -76,23 +76,54 @@
                         </div>
                     </div>
                     <div class="field grid">
-                        <label for="numberOfHospitalizationDays" class="col-fixed"
-                            style="width:140px">{{'::HospitalResponse:Field:NumberOfHospitalizationDays' |
+                        <label for="numberOfPreOpHospitalizationDays" class="col-fixed"
+                            style="width:200px">{{'::HospitalResponse:Field:NumberOfPreOpHospitalizationDays' |
                             abpLocalization}}<font style="color:red"
                                 *ngIf="hospitalResponse.hospitalResponseTypeId == hospitalResponseTypeEnum.SuitableForTreatment">
                                 &nbsp;*
                             </font></label>
                         <div class="col">
-                            <p-inputNumber id="numberOfHospitalizationDays" name="numberOfHospitalizationDays"
-                                #numberOfHospitalizationDays="ngModel"
+                            <p-inputNumber id="numberOfPreOpHospitalizationDays" name="numberOfPreOpHospitalizationDays"
+                                #numberOfPreOpHospitalizationDays="ngModel" [min]="0"
                                 [required]="hospitalResponse.hospitalResponseTypeId == hospitalResponseTypeEnum.SuitableForTreatment"
-                                [(ngModel)]="hospitalResponse.hospitalizationNumber"
+                                [(ngModel)]="hospitalResponse.preOpHospitalizationNumber"
+                                [disabled]="!isManual && !isInNewRecordStatus"></p-inputNumber>
+                        </div>
+                    </div>
+                    <div class="field grid">
+                        <label for="numberOfPostOpHospitalizationDays" class="col-fixed"
+                            style="width:200px">{{'::HospitalResponse:Field:NumberOfPostOpHospitalizationDays' |
+                            abpLocalization}}<font style="color:red"
+                                *ngIf="hospitalResponse.hospitalResponseTypeId == hospitalResponseTypeEnum.SuitableForTreatment">
+                                &nbsp;*
+                            </font></label>
+                        <div class="col">
+                            <p-inputNumber id="numberOfPostOpHospitalizationDays"
+                                name="numberOfPostOpHospitalizationDays" #numberOfPostOpHospitalizationDays="ngModel"
+                                [min]="0"
+                                [required]="hospitalResponse.hospitalResponseTypeId == hospitalResponseTypeEnum.SuitableForTreatment"
+                                [(ngModel)]="hospitalResponse.postOpHospitalizationNumber"
+                                [disabled]="!isManual && !isInNewRecordStatus"></p-inputNumber>
+                        </div>
+                    </div>
+                    <div class="field grid">
+                        <label for="numberOfIcOpHospitalizationDays" class="col-fixed"
+                            style="width:200px">{{'::HospitalResponse:Field:NumberOfIcHospitalizationDays' |
+                            abpLocalization}}<font style="color:red"
+                                *ngIf="hospitalResponse.hospitalResponseTypeId == hospitalResponseTypeEnum.SuitableForTreatment">
+                                &nbsp;*
+                            </font></label>
+                        <div class="col">
+                            <p-inputNumber id="numberOfIcHospitalizationDays" name="numberOfIcHospitalizationDays"
+                                #numberOfIcHospitalizationDays="ngModel" [min]="0"
+                                [required]="hospitalResponse.hospitalResponseTypeId == hospitalResponseTypeEnum.SuitableForTreatment"
+                                [(ngModel)]="hospitalResponse.icHospitalizationNumber"
                                 [disabled]="!isManual && !isInNewRecordStatus"></p-inputNumber>
                         </div>
                     </div>
                     <div class="field grid">
                         <label for="treatmentType" class="col-fixed"
-                            style="width:140px">{{'::OperationalInfo:Field:TreatmentType' |
+                            style="width:200px">{{'::OperationalInfo:Field:TreatmentType' |
                             abpLocalization}}<font style="color:red"
                                 *ngIf="hospitalResponse.hospitalResponseTypeId == hospitalResponseTypeEnum.SuitableForTreatment">
                                 &nbsp;*

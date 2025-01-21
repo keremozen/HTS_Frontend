@@ -10,7 +10,7 @@ import { HospitalizationTypeDto } from '@proxy/dto/hospitalization-type';
 import { PatientDto } from '@proxy/dto/patient';
 import { ProcessDto } from '@proxy/dto/process';
 import { EntityEnum_HospitalAgentNoteStatusEnum, EntityEnum_HospitalConsultationStatusEnum, EntityEnum_HospitalResponseTypeEnum, EntityEnum_ProcessTypeEnum } from '@proxy/enum';
-import { HospitalConsultationDocumentService, HospitalConsultationService, HospitalResponseService, HospitalResponseTypeService, HospitalizationTypeService, ProcessService, TreatmentTypeService } from '@proxy/service';
+import { HospitalConsultationDocumentService, HospitalConsultationService, HospitalResponseService, HospitalResponseTypeService, HospitalizationTypeService, PatientService, ProcessService, TreatmentTypeService } from '@proxy/service';
 import { forkJoin } from 'rxjs';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 import { CommonService } from '../services/common.service';
@@ -20,6 +20,7 @@ import { HospitalDto } from '@proxy/dto/hospital';
 import { HospitalConsultationStatusDto } from '@proxy/dto/hospital-consultation-status';
 import { PatientTreatmentProcessDto } from '@proxy/dto/patient-treatment-process';
 import { TreatmentTypeDto } from '@proxy/dto/treatment-type';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-hospital-response',
@@ -61,6 +62,8 @@ export class HospitalResponseComponent extends AppComponentBase {
   material: SaveHospitalResponseProcessWithDetailDto;
   materialDialog: boolean = false;
 
+  patientInfo: string;
+
   today = new Date();
 
   public hospitalResponseTypeEnum = EntityEnum_HospitalResponseTypeEnum;
@@ -76,6 +79,7 @@ export class HospitalResponseComponent extends AppComponentBase {
     private commonService: CommonService,
     private processService: ProcessService,
     private treatmentTypeService: TreatmentTypeService,
+    private patientService: PatientService,
     private route: ActivatedRoute
   ) {
     super(injector);
@@ -111,6 +115,7 @@ export class HospitalResponseComponent extends AppComponentBase {
       this.hospitalizationTypeService.getList(),
       this.hospitalConsultationService.get(this.consultationId),
       this.hospitalResponseService.getByHospitalConsultation(this.consultationId),
+      this.patientService.getByConsultationId(this.consultationId),
       this.treatmentTypeService.getList(),
     ]).subscribe(
       {
@@ -119,12 +124,15 @@ export class HospitalResponseComponent extends AppComponentBase {
           resHospitalizationTypeList,
           resConsultation,
           resHospitalResponse,
+          resPatient,
           resTreatmentTypeList
         ]) => {
           this.hospitalResponseTypeList = resHospitalResponseTypeList.items;
           this.hospitalizationTypeList = resHospitalizationTypeList.items;
           this.treatmentTypeList = resTreatmentTypeList.items;
           this.consultation = resConsultation as HospitalConsultationWithResponseDto;
+          this.patient = resPatient; 
+          this.generatePatientInfo();
           this.documents.push(...this.consultation.hospitalConsultationDocuments);
           if (resHospitalResponse) { // response is created
             this.consultation.hospitalResponse = resHospitalResponse;
@@ -145,6 +153,18 @@ export class HospitalResponseComponent extends AppComponentBase {
         }
       }
     );
+  }
+
+  generatePatientInfo() {
+    this.patientInfo = this.patient.nationality.name;
+    if (this.patient.birthDate) {
+      this.patientInfo += " | " + this.l("::Patients:Age") + ": " + this.ageFromDateOfBirthday(this.patient.birthDate);
+    }
+    if (this.patient.gender) {
+      this.patientInfo += " | " + this.patient.gender.name;
+    }
+    this.patientInfo += " | " + this.l("::Patients:Column:NativeLanguage") + ": " + (this.patient.motherTongue != null ? this.patient.motherTongue.name : '-');
+    this.patientInfo += " | " + this.l("::Patients:Column:SecondLanguage") + ": " + (this.patient.secondTongue != null ? this.patient.secondTongue.name : '-');
   }
 
   filterProcess(event: any) {
@@ -262,6 +282,10 @@ export class HospitalResponseComponent extends AppComponentBase {
 
   showAllConsultations(hospitalId: number) {
     this.router.navigate(['/hospital-response/consultation-list'], { state: [hospitalId] });
+  }
+
+  public ageFromDateOfBirthday(dateOfBirth: any): number {
+    return moment().diff(dateOfBirth, 'years');
   }
 }
 

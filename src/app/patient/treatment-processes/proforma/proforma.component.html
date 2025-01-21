@@ -385,7 +385,7 @@
                     </fieldset>
                     <div class="mt-4 ml-2">
                         <div class="field grid mb-0">
-                            <label class="col-fixed font-bold" style="width:140px">{{'::HospitalResponse:Field:Branch' |
+                            <label class="col-fixed font-bold" style="width:200px">{{'::HospitalResponse:Field:Branch' |
                                 abpLocalization}}</label>
                             <div class="col">
                                 {{ branchListText }}
@@ -393,15 +393,31 @@
                         </div>
                         <div class="field grid mb-0">
                             <label class="col-fixed font-bold"
-                                style="width:140px">{{'::HospitalResponse:Field:NumberOfHospitalizationDays' |
+                                style="width:200px">{{'::HospitalResponse:Field:NumberOfPreOpHospitalizationDays' |
                                 abpLocalization}}</label>
                             <div class="col">
-                                {{ hospitalResponse?.hospitalizationNumber }}
+                                {{ hospitalResponse?.preOpHospitalizationNumber }}
+                            </div>
+                        </div>
+                        <div class="field grid mb-0">
+                            <label class="col-fixed font-bold"
+                                style="width:200px">{{'::HospitalResponse:Field:NumberOfPostOpHospitalizationDays' |
+                                abpLocalization}}</label>
+                            <div class="col">
+                                {{ hospitalResponse?.postOpHospitalizationNumber }}
+                            </div>
+                        </div>
+                        <div class="field grid mb-0">
+                            <label class="col-fixed font-bold"
+                                style="width:200px">{{'::HospitalResponse:Field:NumberOfIcHospitalizationDays' |
+                                abpLocalization}}</label>
+                            <div class="col">
+                                {{ hospitalResponse?.icHospitalizationNumber }}
                             </div>
                         </div>
                         <div class="field grid mb-0"
                             *ngIf="selectedProforma && (selectedProforma?.proformaStatusId == proformaStatusEnum.MFBRejected || selectedProforma?.proformaStatusId == proformaStatusEnum.PatientRejected)">
-                            <label class="col-fixed font-bold" style="width:140px">{{'::Proforma:Field:RejectReason' |
+                            <label class="col-fixed font-bold" style="width:200px">{{'::Proforma:Field:RejectReason' |
                                 abpLocalization}}</label>
                             <div class="col">
                                 {{ selectedProforma?.proformaStatusId == proformaStatusEnum.MFBRejected ?
