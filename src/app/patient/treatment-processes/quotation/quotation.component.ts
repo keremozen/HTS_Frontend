@@ -92,8 +92,7 @@ export class QuotationComponent extends AppComponentBase {
       ]) => {
         this.patientTreatmentProcess = resPatientTreatment;
         this.proformaList = resPricingList as ProformaPricingListDto[];
-        this.proformaList.forEach(proforma => {
-          debugger;
+        this.proformaList?.forEach(proforma => {
           proforma.creationDate = new Date(proforma.creationDate.toLocaleDateString());
         });
       },

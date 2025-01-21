@@ -58,7 +58,7 @@ export class PaymentListComponent extends AppComponentBase {
       resPaymentList
     ]) => {
       this.treatmentProcess = resTreatmentProcess.items.find(ptp=>+ptp.id == this.ptpId);
-      this.paymentList = resPaymentList.items;
+      this.paymentList = resPaymentList?.items;
       if (this.treatmentProcess.treatmentProcessStatusId == this.preatmentTreatmentStatusEnum.PaymentCompletedTreatmentProcess) {
         this.onPaymentCompleted.emit();
       }
@@ -66,7 +66,7 @@ export class PaymentListComponent extends AppComponentBase {
 
     this.paymentService.getList(this.ptpId).subscribe({
       next: (res) => {
-        this.paymentList = res.items;
+        this.paymentList = res?.items;
       },
       complete: () => {
         this.loading = false;

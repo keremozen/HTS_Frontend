@@ -198,8 +198,8 @@
                     </div>
                 </ng-template>
                 <ng-template pTemplate="summary">
-                    <div class="flex align-items-center justify-content-between" *ngIf="proformaList.length > 0">
-                        {{ '::Table:Summary' | abpLocalization: proformaList.length }}
+                    <div class="flex align-items-center justify-content-between" *ngIf="proformaList?.length > 0">
+                        {{ '::Table:Summary' | abpLocalization: proformaList?.length }}
                     </div>
                 </ng-template>
             </p-table>
