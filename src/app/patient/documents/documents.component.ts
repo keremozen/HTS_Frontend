@@ -70,6 +70,7 @@ export class DocumentsComponent extends AppComponentBase {
             documentType: { id: 100, name: this.l('::Documents:DocumentType:InvitationLetter'), isActive: true },
             fileName: letter.fileName,
             contentType: letter.contentType,
+            description: letter.description,
             patientId: this.patientId,
             patientDocumentStatusId: letter.patientDocumentStatusId,
             creator: letter.creator,
@@ -80,7 +81,6 @@ export class DocumentsComponent extends AppComponentBase {
         this.allDocuments = resDocumentList.items;
         this.allDocuments.push(...invitationList);
         this.revokedRecordCount = resDocumentList.items.filter(d => d.patientDocumentStatusId === this.patientDocumentStatusEnum.Revoked).length;
-        debugger;
         this.manageDocumentsToBeDisplayed();
       },
       error: () => {
@@ -133,8 +133,6 @@ export class DocumentsComponent extends AppComponentBase {
 
   openNew() {
     this.documents = [];
-    //this.document = {} as SavePatientDocumentDto;
-    //this.document.patientId = this.patientId;
     this.documentDialog = true;
   }
 
@@ -151,22 +149,6 @@ export class DocumentsComponent extends AppComponentBase {
         this.hideDialog();
       }
     });
-    // let fileReader = new FileReader();
-    // fileReader.readAsDataURL(this.uploadedDocuments[0]);
-    // fileReader.onload = (r) => {
-    //   if (this.document) {
-    //     this.document.fileName = this.uploadedDocuments[0].name;
-    //     this.document.contentType = this.uploadedDocuments[0].type;
-    //     this.document.file = fileReader.result as string;
-    //     this.documentService.create(this.document).subscribe({
-    //       next: (res) => {
-    //         this.success(this.l('::Message:SuccessfulSave', this.l('::Documents:NameSingular')));
-    //         this.fetchData();
-    //         this.hideDialog();
-    //       }
-    //     });
-    //   }
-    // };
   }
 
   hideDialog() {
@@ -208,13 +190,13 @@ export class DocumentsComponent extends AppComponentBase {
       this.uploadedDocuments.push(file);
       let document = {} as SavePatientDocumentDto;
       let fileReader = new FileReader();
-      fileReader.readAsDataURL(file);
       fileReader.onload = (r) => {
         document.fileName = file.name;
         document.contentType = file.type;
         document.file = fileReader.result as string;
         this.documents.push(document);
       };
+      fileReader.readAsDataURL(file);
     }
   }
 

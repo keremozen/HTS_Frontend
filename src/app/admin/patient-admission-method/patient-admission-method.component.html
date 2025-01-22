@@ -38,9 +38,9 @@
                 </td>
                 <td>
                     <p-button pRipple icon="pi pi-pencil" styleClass="p-button-rounded p-button-success mr-2"
-                        (onClick)="editPatientAdmissionMethod(patientAdmissionMethod)"></p-button>
+                        (onClick)="editPatientAdmissionMethod(patientAdmissionMethod)" *ngIf="patientAdmissionMethod.name != 'Kurum Anlaşmaları'"></p-button>
                     <p-button pRipple icon="pi pi-trash" styleClass="p-button-rounded p-button-warning"
-                        (onClick)="deletePatientAdmissionMethod(patientAdmissionMethod)"></p-button>
+                        (onClick)="deletePatientAdmissionMethod(patientAdmissionMethod)" *ngIf="patientAdmissionMethod.name != 'Kurum Anlaşmaları'"></p-button>
                 </td>
             </tr>
         </ng-template>

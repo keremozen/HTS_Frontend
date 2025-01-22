@@ -86,7 +86,6 @@ export class HospitalResponseComponent extends AppComponentBase {
   }
 
   ngOnInit() {
-    debugger;
     const base64param = this.route.snapshot.paramMap.get('uid')!.split('.')[1];
     if (base64param) {
       try {

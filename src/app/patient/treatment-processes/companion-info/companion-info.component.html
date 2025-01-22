@@ -11,6 +11,7 @@
                         #patientAdmissionMethod="ngModel" [options]="patientAdmissionMethodList"
                         [(ngModel)]="salesInfoAndCompanionInfo.patientAdmissionMethodId" [disabled]="!isAllowedToManage"
                         placeholder="{{ '::Select' | abpLocalization }}" [style]="{'width':'100%'}"
+                        (onChange)="onPatientAdmissionMethodChange()"
                         styleClass="filterDropDown" optionValue="id" optionLabel="name" required></p-dropdown>
                 </div>
             </div>
@@ -106,8 +107,6 @@
                     <p-checkbox id="anyTravelPlan" name="anyTravelPlan" #anyTravelPlan="ngModel" [binary]="true"
                         [(ngModel)]="salesInfoAndCompanionInfo.anyTravelPlan"></p-checkbox>
                     <i class="pi pi-upload cursor-pointer mr-2 ml-3" (click)="upload('travelplan')"></i>
-                    <i class="pi pi-send cursor-pointer"
-                        (click)="sendInvitationLetter(salesInfoAndCompanionInfo.id)"></i>
                 </div>
             </div>
             <div class="field grid mb-2">
@@ -116,7 +115,8 @@
                     abpLocalization}}</label>
                 <div class="col-12 md:col-9">
                     <p-calendar id="travelDate" name="travelDate" #travelDate="ngModel"
-                        [(ngModel)]="salesInfoAndCompanionInfo.travelDateToTurkey" [showIcon]="true"
+                        [(ngModel)]="salesInfoAndCompanionInfo.travelDateToTurkey" [showIcon]="true" 
+                        [showTime]="true" [hourFormat]="24" 
                         inputStyleClass="text-sm" dateFormat="dd.mm.yy" appendTo="body"></p-calendar>
                 </div>
             </div>
@@ -282,7 +282,7 @@
                     </ng-template>
                     <ng-template pTemplate="body" let-appointment>
                         <tr>
-                            <td>{{appointment.appointmentDate | date: 'dd.MM.yyyy'}}</td>
+                            <td>{{appointment.appointmentDate | date: 'dd.MM.yyyy HH:mm'}}</td>
                             <td>{{appointment.branch.name}}</td>
                             <td>{{appointment.description }}</td>
                             <td *ngIf="isAllowedToManage">
@@ -396,6 +396,7 @@
                 </label>
                 <p-calendar [(ngModel)]="appointment.appointmentDate" id="calAppointmentDate" name="calAppointmentDate"
                     #calAppointmentDate="ngModel" dateFormat="dd.mm.yy" [showIcon]="true" inputId="icon"
+                    [showTime]="true" [hourFormat]="24" appendTo="body"
                     inputStyleClass="text-sm" [disabled]="!isAllowedToManage" styleClass="customCalendar"
                     [style]="{'width':'100%'}" required></p-calendar>
             </div>

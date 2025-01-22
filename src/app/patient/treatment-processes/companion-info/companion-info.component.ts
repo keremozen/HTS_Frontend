@@ -108,6 +108,18 @@ export class CompanionInfoComponent extends AppComponentBase {
 
   }
 
+  onPatientAdmissionMethodChange() {
+    if (this.salesInfoAndCompanionInfo.patientAdmissionMethodId &&
+      this.patientAdmissionMethodList.find(a => a.id == this.salesInfoAndCompanionInfo.patientAdmissionMethodId)?.name == 'Kurum Anlaşmaları') {
+      if (this.salesInfoAndCompanionInfo.advancePaymentRequested == null) {
+        this.salesInfoAndCompanionInfo.advancePaymentRequested = true;
+      }
+      if (this.salesInfoAndCompanionInfo.anyTravelPlan == null) {
+        this.salesInfoAndCompanionInfo.anyTravelPlan = true;
+      }
+    }
+  }
+
   onInstitutionSelect() {
     if (this.salesInfoAndCompanionInfo.contractedInstitutionId) {
       this.contractedInstitutionStaffService.getByInstitutionList(this.salesInfoAndCompanionInfo.contractedInstitutionId).subscribe({
@@ -136,8 +148,6 @@ export class CompanionInfoComponent extends AppComponentBase {
     if (this.selectedInterpreter) {
       this.salesInfoAndCompanionInfo.appointedInterpreterId = this.selectedInterpreter.id;
     }
-    console.log(JSON.stringify(this.salesInfoAndCompanionInfo));
-    debugger;
     this.salesAndCompanionInfoService.save(this.salesInfoAndCompanionInfo).subscribe({
       complete: () => {
         this.success(this.l('::Message:SuccessfulSave', this.l('::SalesAndCompanionInfo:Name')));
@@ -197,6 +207,7 @@ export class CompanionInfoComponent extends AppComponentBase {
           contentType: document.contentType,
           file: document.file,
           fileName: document.fileName,
+          description: this.documentDescription,
           salesMethodAndCompanionInfoId: this.salesInfoAndCompanionInfo.id,
           patientDocumentStatusId: EntityEnum_PatientDocumentStatusEnum.NewRecord
         }
