@@ -75,7 +75,7 @@
                     icon="pi pi-copy" [disabled]="!isAllowedToCreateProforma"></p-button>
                 <p-button pRipple styleClass="p-button-danger ml-2" class="inline-block"
                     pTooltip="{{ '::OperationalInfo:Button:Cancel' | abpLocalization }}" (onClick)="onCancel(operation)"
-                    *ngIf="operation.operationStatus?.id !== operationStatusEnum.Cancelled"
+                    *ngIf="operation.operationStatus?.id !== operationStatusEnum.Cancelled" [disabled]="!isAllowedToCreateProforma"
                     icon="pi pi-times-circle"></p-button>
             </td>
         </tr>
