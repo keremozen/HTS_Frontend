@@ -19,5 +19,5 @@ export interface SavePatientDocumentDto {
   description?: string;
   fileName: string;
   file: string;
-  contentType: string;
+  contentType?: string;
 }

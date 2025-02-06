@@ -19,7 +19,7 @@ export interface SaveHospitalConsultationDocumentDto {
   documentTypeId?: number;
   patientDocumentStatusId: number;
   description?: string;
-  fileName: string;
-  file: string;
-  contentType: string;
+  fileName?: string;
+  file?: string;
+  contentType?: string;
 }

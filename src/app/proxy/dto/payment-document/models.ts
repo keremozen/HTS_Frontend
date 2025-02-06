@@ -9,7 +9,7 @@ export interface PaymentDocumentDto extends EntityDto<number> {
 
 export interface SavePaymentDocumentDto {
   paymentId: number;
-  fileName: string;
-  file: string;
-  contentType: string;
+  fileName?: string;
+  file?: string;
+  contentType?: string;
 }

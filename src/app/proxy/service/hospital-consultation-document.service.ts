@@ -24,6 +24,22 @@ export class HospitalConsultationDocumentService {
       url: `/api/app/hospital-consultation-document/${id}`,
     },
     { apiName: this.apiName });
+  
+
+  getByPatient = (patientId: number) =>
+    this.restService.request<any, HospitalConsultationDocumentDto[]>({
+      method: 'GET',
+      url: `/api/app/hospital-consultation-document/by-patient/${patientId}`,
+    },
+    { apiName: this.apiName });
+  
+
+  updateStatusByIdAndStatusId = (id: number, statusId: number) =>
+    this.restService.request<any, HospitalConsultationDocumentDto>({
+      method: 'PUT',
+      url: `/api/app/hospital-consultation-document/${id}/status/${statusId}`,
+    },
+    { apiName: this.apiName });
 
   constructor(private restService: RestService) {}
 }

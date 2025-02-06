@@ -174,8 +174,9 @@ export class CompanionInfoComponent extends AppComponentBase {
     this.displayUploadDialog = true;
   }
 
-  sendInvitationLetter(salesInfoAndCompanionInfoId: number) {
-    this.invitationLetterService.sendEMailToPatientBySalesMethodId(salesInfoAndCompanionInfoId).subscribe({
+  sendInvitationLetter(salesInfoAndCompanionInfo: SalesMethodAndCompanionInfoDto) {
+    debugger;
+    this.invitationLetterService.sendEMailToPatientBySalesMethodId(salesInfoAndCompanionInfo.id).subscribe({
       complete: () => {
         this.success(this.l('::Message:SuccessfulSendInvitationLetter'));
       }

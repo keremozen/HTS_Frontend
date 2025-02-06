@@ -1,6 +1,8 @@
+import { HospitalConsultationDocumentService } from './../../proxy/service/hospital-consultation-document.service';
 import { Component, Injector, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Form } from '@angular/forms';
 import { DocumentTypeDto } from '@proxy/dto/document-type';
+import { HospitalConsultationDocumentDto } from '@proxy/dto/hospital-consultation-document';
 import { PatientDocumentDto, SavePatientDocumentDto } from '@proxy/dto/patient-document';
 import { EntityEnum_PatientDocumentStatusEnum } from '@proxy/enum';
 import { InvitationLetterDocumentService, PatientDocumentService } from '@proxy/service';
@@ -41,7 +43,8 @@ export class DocumentsComponent extends AppComponentBase {
     injector: Injector,
     private commonService: CommonService,
     private documentService: PatientDocumentService,
-    private invitationLetterService: InvitationLetterDocumentService
+    private invitationLetterService: InvitationLetterDocumentService,
+    private hospitalConsultationDocumentService: HospitalConsultationDocumentService
   ) {
     super(injector);
     this.isAllowedToManage = this.permission.getGrantedPolicy("HTS.PatientManagement");
@@ -57,11 +60,13 @@ export class DocumentsComponent extends AppComponentBase {
 
     forkJoin([
       this.documentService.getList(this.patientId),
-      this.invitationLetterService.getByPatient(this.patientId)
+      this.invitationLetterService.getByPatient(this.patientId),
+      this.hospitalConsultationDocumentService.getByPatient(this.patientId)
     ]).subscribe({
       next: ([
         resDocumentList,
-        resInvitationLetterList
+        resInvitationLetterList,
+        resHospitalConsultationDocumentList
       ]) => {
         let invitationList: PatientDocumentDto[] = [];
         resInvitationLetterList.forEach(letter => {
@@ -78,8 +83,25 @@ export class DocumentsComponent extends AppComponentBase {
             creationTime: letter.creationTime
           });
         });
+        let hospitalConsultationDocumentList: PatientDocumentDto[] = [];
+        resHospitalConsultationDocumentList.forEach(document => {
+          hospitalConsultationDocumentList.push({
+            id: document.id,
+            documentType: { id: 101, name: this.l('::Documents:DocumentType:HospitalConsultationDocument'), isActive: true },
+            fileName: document.fileName,
+            contentType: document.contentType,
+            description: document.description,
+            patientId: this.patientId,
+            patientDocumentStatusId: document.patientDocumentStatusId,
+            creator: document.creator,
+            creatorId: document.creatorId,
+            creationTime: document.creationTime
+          });
+        });
+
         this.allDocuments = resDocumentList.items;
         this.allDocuments.push(...invitationList);
+        this.allDocuments.push(...hospitalConsultationDocumentList);
         this.revokedRecordCount = resDocumentList.items.filter(d => d.patientDocumentStatusId === this.patientDocumentStatusEnum.Revoked).length;
         this.manageDocumentsToBeDisplayed();
       },
@@ -107,27 +129,40 @@ export class DocumentsComponent extends AppComponentBase {
   }
 
   showFile(patientDocument: any) {
-    if (patientDocument.documentType != undefined && patientDocument.documentType.id == 100) {
-      this.invitationLetterService.get(patientDocument.id).subscribe({
-        next: r => {
-          const source = `data:${r.contentType};base64,${r.file}`;
-          const link = document.createElement("a");
-          link.href = source;
-          link.download = r.fileName
-          link.click();
-        }
-      });
-    }
-    else {
-      this.documentService.get(patientDocument.id).subscribe({
-        next: r => {
-          const source = `data:${r.contentType};base64,${r.file}`;
-          const link = document.createElement("a");
-          link.href = source;
-          link.download = r.fileName
-          link.click();
-        }
-      });
+    if (patientDocument.documentType != undefined) {
+      if (patientDocument.documentType.id == 100) {
+        this.invitationLetterService.get(patientDocument.id).subscribe({
+          next: r => {
+            const source = `data:${r.contentType};base64,${r.file}`;
+            const link = document.createElement("a");
+            link.href = source;
+            link.download = r.fileName
+            link.click();
+          }
+        });
+      }
+      else if (patientDocument.documentType.id == 101) {
+        this.hospitalConsultationDocumentService.get(patientDocument.id).subscribe({
+          next: r => {
+            const source = `data:${r.contentType};base64,${r.file}`;
+            const link = document.createElement("a");
+            link.href = source;
+            link.download = r.fileName
+            link.click();
+          }
+        });
+      }
+      else {
+        this.documentService.get(patientDocument.id).subscribe({
+          next: r => {
+            const source = `data:${r.contentType};base64,${r.file}`;
+            const link = document.createElement("a");
+            link.href = source;
+            link.download = r.fileName
+            link.click();
+          }
+        });
+      }
     }
   }
 
@@ -158,30 +193,43 @@ export class DocumentsComponent extends AppComponentBase {
   }
 
   revokeDocument(documentToBeRevoked: PatientDocumentDto) {
-    this.confirm({
-      key: 'documentConfirm',
-      message: this.l('::Message:RevokeConfirmation'),
-      header: this.l('::Confirm'),
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        if (documentToBeRevoked.documentType != null && documentToBeRevoked.documentType.id == 100) {
-          this.invitationLetterService.updateStatusByIdAndStatusId(documentToBeRevoked.id as unknown as number, this.patientDocumentStatusEnum.Revoked).subscribe({
-            next: (res) => {
-              this.success(this.l('::Message:SuccessfulRevokation', this.l('::Documents:NameSingular')));
-              this.fetchData();
-            }
-          });
+    if (documentToBeRevoked.documentType != null) {
+      this.confirm({
+        key: 'documentConfirm',
+        message: this.l('::Message:RevokeConfirmation'),
+        header: this.l('::Confirm'),
+        icon: 'pi pi-exclamation-triangle',
+        accept: () => {
+          if (documentToBeRevoked.documentType.id == 100) {
+            this.invitationLetterService.updateStatusByIdAndStatusId(documentToBeRevoked.id as unknown as number, this.patientDocumentStatusEnum.Revoked).subscribe({
+              next: (res) => {
+                this.success(this.l('::Message:SuccessfulRevokation', this.l('::Documents:NameSingular')));
+                this.fetchData();
+              }
+            });
+          }
+          else if (documentToBeRevoked.documentType.id == 101) {
+            this.hospitalConsultationDocumentService.updateStatusByIdAndStatusId(documentToBeRevoked.id as unknown as number, this.patientDocumentStatusEnum.Revoked).subscribe({
+              next: (res) => {
+                this.success(this.l('::Message:SuccessfulRevokation', this.l('::Documents:NameSingular')));
+                this.fetchData();
+              }
+            });
+          }
+          else {
+            this.documentService.updateStatusByIdAndStatusId(documentToBeRevoked.id as unknown as number, this.patientDocumentStatusEnum.Revoked).subscribe({
+              next: (res) => {
+                this.success(this.l('::Message:SuccessfulRevokation', this.l('::Documents:NameSingular')));
+                this.fetchData();
+              }
+            });
+          }
         }
-        else {
-          this.documentService.updateStatusByIdAndStatusId(documentToBeRevoked.id as unknown as number, this.patientDocumentStatusEnum.Revoked).subscribe({
-            next: (res) => {
-              this.success(this.l('::Message:SuccessfulRevokation', this.l('::Documents:NameSingular')));
-              this.fetchData();
-            }
-          });
-        }
-      }
-    });
+      });
+    }
+    else {
+      this.error(this.l('::Message:DataIncorrect'));
+    }
   }
 
   onSelect(event: any) {

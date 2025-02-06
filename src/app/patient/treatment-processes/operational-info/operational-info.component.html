@@ -72,10 +72,10 @@
                     *ngIf="operation.operationStatus?.id == operationStatusEnum.NewRecord"></p-button>
                 <p-button pRipple styleClass="p-button-info ml-2" class="inline-block"
                     pTooltip="{{ '::OperationalInfo:Button:Copy' | abpLocalization }}" (onClick)="onCopy(operation)"
-                    icon="pi pi-copy" [disabled]="!isAllowedToCreateProforma"></p-button>
+                    icon="pi pi-copy" [disabled]="!isAllowedToManage"></p-button>
                 <p-button pRipple styleClass="p-button-danger ml-2" class="inline-block"
                     pTooltip="{{ '::OperationalInfo:Button:Cancel' | abpLocalization }}" (onClick)="onCancel(operation)"
-                    *ngIf="operation.operationStatus?.id !== operationStatusEnum.Cancelled" [disabled]="!isAllowedToCreateProforma"
+                    *ngIf="operation.operationStatus?.id !== operationStatusEnum.Cancelled" [disabled]="!isAllowedToManage"
                     icon="pi pi-times-circle"></p-button>
             </td>
         </tr>
