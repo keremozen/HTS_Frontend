@@ -52,7 +52,8 @@ export class HospitalResponseComponent extends AppComponentBase {
   isAllowedToManage: boolean = false;
   hospitalResponse = {} as SaveHospitalResponseDto;
   allConsultations: HospitalConsultationDto[] = [];
-  isResponseCreated: boolean = false;
+  //isResponseCreated: boolean = false;
+  isReadOnly: boolean = false;
 
   process: SaveHospitalResponseProcessWithDetailDto;
   processDialog: boolean = false;
@@ -130,18 +131,23 @@ export class HospitalResponseComponent extends AppComponentBase {
           this.hospitalizationTypeList = resHospitalizationTypeList.items;
           this.treatmentTypeList = resTreatmentTypeList.items;
           this.consultation = resConsultation as HospitalConsultationWithResponseDto;
-          this.patient = resPatient; 
+          this.patient = resPatient;
           this.generatePatientInfo();
           this.documents.push(...this.consultation.hospitalConsultationDocuments);
           if (resHospitalResponse) { // response is created
             this.consultation.hospitalResponse = resHospitalResponse;
             this.hospitalResponse = resHospitalResponse as SaveHospitalResponseDto;
+            if (this.hospitalResponse.possibleTreatmentDate) {
+              this.hospitalResponse.possibleTreatmentDate = new Date(resHospitalResponse.possibleTreatmentDate);
+            }
             this.selectedHospitalResponseType = this.hospitalResponse.hospitalResponseTypeId;
             this.selectedHospitalizationType = this.hospitalizationTypeList.find(t => t.id == this.hospitalResponse.hospitalizationTypeId);
-            this.selectedBranches = this.branchList.filter(b => this.hospitalResponse.hospitalResponseBranches.map(rb => rb.branchId == b.id));
+            if (this.hospitalResponse.hospitalResponseBranches && this.hospitalResponse.hospitalResponseBranches.length > 0) {
+              this.selectedBranches = this.branchList.filter(b => this.hospitalResponse.hospitalResponseBranches.map(rb => rb.branchId).includes(b.id));
+            }
             this.anticipatedProcesses = this.consultation.hospitalResponse.hospitalResponseProcesses.filter(p => p.process.processTypeId == EntityEnum_ProcessTypeEnum.SutCode) as SaveHospitalResponseProcessWithDetailDto[];
             this.anticipatedMaterials = this.consultation.hospitalResponse.hospitalResponseProcesses.filter(p => p.process.processTypeId == EntityEnum_ProcessTypeEnum.Material) as SaveHospitalResponseProcessWithDetailDto[];
-            this.isResponseCreated = true;
+            this.isReadOnly = resHospitalResponse.hospitalResponseTypeId != this.hospitalResponseTypeEnum.AdditionalInformationRequired;
           }
         },
         error: () => {

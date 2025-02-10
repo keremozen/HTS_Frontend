@@ -10,10 +10,11 @@ export class HospitalConsultationService {
   apiName = 'Default';
   
 
-  create = (hospitalConsultation: SaveHospitalConsultationDto) =>
+  create = (hospitalConsultation: SaveHospitalConsultationDto, createNewConsultation: boolean) =>
     this.restService.request<any, void>({
       method: 'POST',
       url: '/api/app/hospital-consultation',
+      params: { createNewConsultation },
       body: hospitalConsultation,
     },
     { apiName: this.apiName });

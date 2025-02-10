@@ -34,6 +34,7 @@ export class HospitalConsultationComponent extends AppComponentBase {
   anticipatedProcesses: HospitalResponseProcessDto[] = [];
   anticipatedMaterials: HospitalResponseProcessDto[] = [];
   isConsultationReadOnly: boolean = false;
+  isConsultationHospitalSelectionReadOnly: boolean = false;
   loading: boolean;
   totalConsultations: number = 0;
   totalConsultationDocuments: number = 0;
@@ -108,6 +109,7 @@ export class HospitalConsultationComponent extends AppComponentBase {
   onNewConsultation() {
     this.hospitalConsultation = {} as SaveHospitalConsultationDto;
     this.isConsultationReadOnly = false;
+    this.isConsultationHospitalSelectionReadOnly = false;
     this.hospitalConsultationDocuments = [];
     this.hospitalConsultation.patientTreatmentProcessId = this.patientTreatmentId;
     this.patientNoteService.getList(this.patientId).subscribe({
@@ -131,7 +133,7 @@ export class HospitalConsultationComponent extends AppComponentBase {
   saveConsultation() {
     this.hospitalConsultation.hospitalIds = this.selectedHospitals;
     this.hospitalConsultation.hospitalConsultationDocuments = this.hospitalConsultationDocuments as unknown as SaveHospitalConsultationDocumentDto[];
-    this.hospitalConsultationService.create(this.hospitalConsultation).subscribe({
+    this.hospitalConsultationService.create(this.hospitalConsultation, (!this.isConsultationReadOnly && !this.isConsultationHospitalSelectionReadOnly)).subscribe({
       complete: () => {
         this.success(this.l('::Message:SuccessfulSave', this.l('::HospitalConsultation:Title')));
         this.fetchData();
@@ -147,7 +149,8 @@ export class HospitalConsultationComponent extends AppComponentBase {
     this.hospitalConsultationDocuments = [];
     this.hospitalConsultationDocuments.push(...consultation.hospitalConsultationDocuments);
     this.totalConsultationDocuments = this.hospitalConsultationDocuments.length;
-    this.isConsultationReadOnly = true;
+    this.isConsultationReadOnly = consultation.hospitalConsultationStatusId != EntityEnum_HospitalConsultationStatusEnum.AdditionalInfoWaiting;
+    this.isConsultationHospitalSelectionReadOnly = consultation.hospitalConsultationStatusId == EntityEnum_HospitalConsultationStatusEnum.AdditionalInfoWaiting
     this.consultationDialog = true;
   }
 

@@ -7,6 +7,7 @@ export enum EntityEnum_HospitalConsultationStatusEnum {
   ExaminationsIsRequiredForDiagnosis = 4,
   OperationApproved = 5,
   OperationRejected = 6,
+  AdditionalInfoWaiting = 7,
 }
 
 export const entityEnum_HospitalConsultationStatusEnumOptions = mapEnumToOptions(EntityEnum_HospitalConsultationStatusEnum);

@@ -2,7 +2,6 @@ import { SaveHTSTaskDto } from './../../../proxy/dto/htstask/models';
 import { IdentityUserDto } from '@abp/ng.identity/proxy';
 import { Component, EventEmitter, Injector, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ContractedInstitutionDto } from '@proxy';
-import { Branch } from '@proxy/dto';
 import { BranchDto } from '@proxy/dto/branch';
 import { ContractedInstitutionStaffDto } from '@proxy/dto/contracted-institution-staff';
 import { DocumentTypeDto } from '@proxy/dto/document-type';
@@ -12,11 +11,13 @@ import { NationalityDto } from '@proxy/dto/nationality';
 import { PatientAdmissionMethodDto } from '@proxy/dto/patient-admission-method';
 import { SavePatientDocumentDto } from '@proxy/dto/patient-document';
 import { SalesMethodAndCompanionInfoDto } from '@proxy/dto/sales-method-and-companion-info';
-import { SaveSMCIInterpreterAppointmentDto, SMCIInterpreterAppointmentDto } from '@proxy/dto/smciinterpreter-appointment';
+import { SMCIInterpreterAppointmentDto } from '@proxy/dto/smciinterpreter-appointment';
 import { EntityEnum_PatientDocumentStatusEnum, EntityEnum_TaskTypeEnum } from '@proxy/enum';
 import { ContractedInstitutionStaffService, HTSTaskService, InvitationLetterDocumentService, PatientDocumentService, SalesMethodAndCompanionInfoService, UserService } from '@proxy/service';
+import * as moment from 'moment';
 import { FileUpload } from 'primeng/fileupload';
 import { CommonService } from 'src/app/services/common.service';
+import { DateUtilService } from 'src/app/services/dateUtil.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
 
 @Component({
@@ -90,14 +91,20 @@ export class CompanionInfoComponent extends AppComponentBase {
           if (this.salesInfoAndCompanionInfo.contractedInstitutionId) {
             this.onInstitutionSelect();
           }
+          debugger;
           if (this.salesInfoAndCompanionInfo.travelDateToTurkey) {
-            this.salesInfoAndCompanionInfo.travelDateToTurkey = new Date(this.salesInfoAndCompanionInfo.travelDateToTurkey);
+            this.salesInfoAndCompanionInfo.travelDateToTurkey = DateUtilService.overrideTimezone(this.salesInfoAndCompanionInfo.travelDateToTurkey.toString());
           }
           if (this.salesInfoAndCompanionInfo.treatmentDate) {
-            this.salesInfoAndCompanionInfo.treatmentDate = new Date(this.salesInfoAndCompanionInfo.treatmentDate);
+            this.salesInfoAndCompanionInfo.treatmentDate = DateUtilService.overrideTimezone(this.salesInfoAndCompanionInfo.treatmentDate.toString());
           }
           if (this.salesInfoAndCompanionInfo.appointedInterpreterId) {
             this.selectedInterpreter = this.interpreterList.find(i => i.id == this.salesInfoAndCompanionInfo.appointedInterpreterId);
+          }
+          if (this.salesInfoAndCompanionInfo.interpreterAppointments) {
+            this.salesInfoAndCompanionInfo.interpreterAppointments.forEach(appointment => {
+              appointment.appointmentDate = DateUtilService.overrideTimezone(appointment.appointmentDate.toString());
+            });
           }
         }
         else {
@@ -105,7 +112,6 @@ export class CompanionInfoComponent extends AppComponentBase {
         }
       }
     });
-
   }
 
   onPatientAdmissionMethodChange() {
@@ -315,6 +321,9 @@ export class CompanionInfoComponent extends AppComponentBase {
   }
 
   saveAppointment() {
+    if (!this.salesInfoAndCompanionInfo.interpreterAppointments) {
+      this.salesInfoAndCompanionInfo.interpreterAppointments = [];
+    }
     this.appointment.salesMethodAndCompanionInfoId = this.salesInfoAndCompanionInfo.id;
     this.appointment.branch = this.branchList.find(b => b.id == this.appointment.branchId);
     this.salesInfoAndCompanionInfo.interpreterAppointments.push(this.appointment);

@@ -90,7 +90,7 @@
                     </legend>
                     <p-listbox id="lstHospital" name="lstHospital" #lstHospital="ngModel" [options]="hospitalList"
                         [(ngModel)]="selectedHospitals" optionLabel="name" optionValue="id" [checkbox]="true" filterLocale="tr-TR"
-                        [filter]="true" [multiple]="true" [metaKeySelection]="false" [disabled]="isConsultationReadOnly"
+                        [filter]="true" [multiple]="true" [metaKeySelection]="false" [disabled]="isConsultationReadOnly || isConsultationHospitalSelectionReadOnly"
                         emptyMessage="{{ '::EmptyMessage' | abpLocalization }}" styleClass="hospitalListStyle"
                         emptyFilterMessage="{{ '::EmptyMessage' | abpLocalization }}" required></p-listbox>
                 </fieldset>

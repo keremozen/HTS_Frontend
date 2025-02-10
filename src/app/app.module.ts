@@ -91,7 +91,8 @@ export class AppModule {
 
   overrideDate() {
     Date.prototype.toJSON = function() {
-      return moment(this).format("yyyy-MM-DD");
+      debugger;
+      return moment(this).format("yyyy-MM-DDTHH:mm");
     };
   }
 }
