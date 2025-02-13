@@ -7,7 +7,7 @@ import { NationalityDto } from '@proxy/dto/nationality';
 import { FilterPatientDto, PatientDto } from '@proxy/dto/patient';
 import { PatientTreatmentProcessDto } from '@proxy/dto/patient-treatment-process';
 import { TreatmentProcessStatusDto } from '@proxy/dto/treatment-process-status';
-import { EntityEnum_PatientTreatmentStatusEnum, EntityEnum_TaskTypeEnum, entityEnum_TaskTypeEnumOptions } from '@proxy/enum';
+import { EntityEnum_HospitalConsultationStatusEnum, EntityEnum_PatientTreatmentStatusEnum, EntityEnum_TaskTypeEnum, entityEnum_TaskTypeEnumOptions } from '@proxy/enum';
 import { HTSTaskService, PatientService, TreatmentProcessStatusService } from '@proxy/service';
 import { forkJoin } from 'rxjs';
 import { CommonService } from 'src/app/services/common.service';
@@ -201,8 +201,7 @@ export class PatientListComponent extends AppComponentBase {
       case "4": //Hastanelerden cevap bekleniyor
         return this.patientList.filter(p => p.patientTreatmentProcesses.some(ptp => ptp.isFinalized == false && ptp.treatmentProcessStatusId == EntityEnum_PatientTreatmentStatusEnum.HospitalAskedWaitingResponse));
       case "5": //Ek bilgi bekleniyor
-        return null;
-        //return this.patientList.filter(p => this.taskList.filter(t => t.taskTypeId == EntityEnum_TaskTypeEnum.EvaluationOfHospitalResponse).some(t => t.patientId == +p.id));
+        return this.patientList.filter(p => p.patientTreatmentProcesses.some(ptp => ptp.isFinalized == false && ptp.hospitalConsultations.some(hc=>hc.hospitalConsultationStatusId = EntityEnum_HospitalConsultationStatusEnum.AdditionalInfoWaiting)));
       case "6": //Hastane cevabının değerlendirilmesi bekleniyor
         return this.patientList.filter(p => this.taskList.filter(t => t.taskTypeId == EntityEnum_TaskTypeEnum.EvaluationOfHospitalResponse).some(t => t.patientId == +p.id));
       case "7": //Fiyatlandırma gönderilmesi bekleniyor

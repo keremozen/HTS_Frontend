@@ -118,47 +118,46 @@ export class CreateENabizProformaComponent extends AppComponentBase {
 
       this.enabizProcesses.forEach(enabizProcess => {
         if (!enabizProcess.isUsedInProforma) {
-
           var process = resProcessList.items.find(p => p.id == enabizProcess.processId &&
             p.processCosts.some(c => this.proformaDate.isSameOrAfter(c.validityStartDate, 'day') &&
               this.proformaDate.isSameOrBefore(c.validityEndDate, 'day')));
-
-          if (process.processTypeId == this.processTypeEnum.SutCode) {
-            var existingTreatmentItem = this.treatmentItemList.find(ti => ti.processId == process.id);
-            if (!existingTreatmentItem) {
-              let item = new SaveProformaProcessDtoWithDetails();
-              item.processId = process.id;
-              item.code = process.code;
-              item.name = process.name;
-              item.treatmentCount = +enabizProcess.adet;
-              item.unitPrice = process.processCosts.filter(c => this.proformaDate.isSameOrAfter(c.validityStartDate, 'day') && this.proformaDate.isSameOrBefore(c.validityEndDate, 'day'))
-                .reduce((sum, current) => sum + current.ushasPrice, 0);
-              item.totalPrice = +(item.treatmentCount * item.unitPrice).toFixed(2);
-              item.proformaPrice = +(item.totalPrice / this.saveProforma.exchangeRate).toFixed(2);
-              item.change = 0;
-              item.proformaFinalPrice = item.proformaPrice;
-              this.treatmentItemList.push(item);
-            }else {
-              existingTreatmentItem.treatmentCount += +enabizProcess.adet;
-              existingTreatmentItem.totalPrice = +(existingTreatmentItem.treatmentCount * existingTreatmentItem.unitPrice).toFixed(2);
-              existingTreatmentItem.proformaPrice = +(existingTreatmentItem.totalPrice / this.saveProforma.exchangeRate).toFixed(2);
-              existingTreatmentItem.proformaFinalPrice = existingTreatmentItem.proformaPrice;
+          if (process) {
+            if (process.processTypeId == this.processTypeEnum.SutCode) {
+              var existingTreatmentItem = this.treatmentItemList.find(ti => ti.processId == process.id);
+              if (!existingTreatmentItem) {
+                let item = new SaveProformaProcessDtoWithDetails();
+                item.processId = process.id;
+                item.code = process.code;
+                item.name = process.name;
+                item.treatmentCount = +enabizProcess.adet;
+                item.unitPrice = process.processCosts.filter(c => this.proformaDate.isSameOrAfter(c.validityStartDate, 'day') && this.proformaDate.isSameOrBefore(c.validityEndDate, 'day'))
+                  .reduce((sum, current) => sum + current.ushasPrice, 0);
+                item.totalPrice = +(item.treatmentCount * item.unitPrice).toFixed(2);
+                item.proformaPrice = +(item.totalPrice / this.saveProforma.exchangeRate).toFixed(2);
+                item.change = 0;
+                item.proformaFinalPrice = item.proformaPrice;
+                this.treatmentItemList.push(item);
+              } else {
+                existingTreatmentItem.treatmentCount += +enabizProcess.adet;
+                existingTreatmentItem.totalPrice = +(existingTreatmentItem.treatmentCount * existingTreatmentItem.unitPrice).toFixed(2);
+                existingTreatmentItem.proformaPrice = +(existingTreatmentItem.totalPrice / this.saveProforma.exchangeRate).toFixed(2);
+                existingTreatmentItem.proformaFinalPrice = existingTreatmentItem.proformaPrice;
+              }
             }
-          }
-          else if (process.processTypeId == this.processTypeEnum.Material) {
-            let item = new AnticipatedMaterial();
-            item.processId = process.id;
-            item.name = process.name;
-            item.amount = +this.enabizProcesses.find(ep => ep.processId == process.id).adet;
-            item.unitCost = process.processCosts.filter(c => this.proformaDate.isSameOrAfter(c.validityStartDate, 'day') && this.proformaDate.isSameOrBefore(c.validityEndDate, 'day'))
-              .reduce((sum, current) => sum + current.ushasPrice, 0);
-            item.totalCost = +(item.amount * item.unitCost).toFixed(2);
-            item.proformaCost = +(item.totalCost / this.saveProforma.exchangeRate).toFixed(2);
-            this.anticipatedMaterialList.push(item);
+            else if (process.processTypeId == this.processTypeEnum.Material) {
+              let item = new AnticipatedMaterial();
+              item.processId = process.id;
+              item.name = process.name;
+              item.amount = +this.enabizProcesses.find(ep => ep.processId == process.id).adet;
+              item.unitCost = process.processCosts.filter(c => this.proformaDate.isSameOrAfter(c.validityStartDate, 'day') && this.proformaDate.isSameOrBefore(c.validityEndDate, 'day'))
+                .reduce((sum, current) => sum + current.ushasPrice, 0);
+              item.totalCost = +(item.amount * item.unitCost).toFixed(2);
+              item.proformaCost = +(item.totalCost / this.saveProforma.exchangeRate).toFixed(2);
+              this.anticipatedMaterialList.push(item);
+            }
           }
         }
       });
-
 
       this.saveProforma.totalProformaPrice = +(this.treatmentItemList.reduce((sum, current) => sum + current.proformaFinalPrice, 0)).toFixed(2);
     });

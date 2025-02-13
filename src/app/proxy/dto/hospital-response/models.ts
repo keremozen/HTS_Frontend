@@ -33,9 +33,9 @@ export interface SaveHospitalResponseDto {
   hospitalResponseTypeId: number;
   hospitalizationTypeId?: number;
   possibleTreatmentDate?: Date;
-  preOpHospitalizationNumber: number;
-  postOpHospitalizationNumber: number;
-  icHospitalizationNumber: number;
+  preOpHospitalizationNumber?: number;
+  postOpHospitalizationNumber?: number;
+  icHospitalizationNumber?: number;
   treatmentTypeId?: number;
   hospitalResponseBranches: SaveHospitalResponseBranchDto[];
   hospitalResponseProcesses: SaveHospitalResponseProcessDto[];
