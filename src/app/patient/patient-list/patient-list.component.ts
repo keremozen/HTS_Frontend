@@ -1,14 +1,15 @@
 import { Component, Injector, ViewEncapsulation } from '@angular/core';
 import { TaskType } from '@proxy/dto';
 import { GenderDto } from '@proxy/dto/gender';
+import { HospitalResponseDto } from '@proxy/dto/hospital-response';
 import { HTSTaskDto } from '@proxy/dto/htstask';
 import { LanguageDto } from '@proxy/dto/language';
 import { NationalityDto } from '@proxy/dto/nationality';
 import { FilterPatientDto, PatientDto } from '@proxy/dto/patient';
 import { PatientTreatmentProcessDto } from '@proxy/dto/patient-treatment-process';
 import { TreatmentProcessStatusDto } from '@proxy/dto/treatment-process-status';
-import { EntityEnum_HospitalConsultationStatusEnum, EntityEnum_PatientTreatmentStatusEnum, EntityEnum_TaskTypeEnum, entityEnum_TaskTypeEnumOptions } from '@proxy/enum';
-import { HTSTaskService, PatientService, TreatmentProcessStatusService } from '@proxy/service';
+import { EntityEnum_HospitalConsultationStatusEnum, EntityEnum_HospitalResponseTypeEnum, EntityEnum_PatientTreatmentStatusEnum, EntityEnum_TaskTypeEnum, entityEnum_TaskTypeEnumOptions } from '@proxy/enum';
+import { HospitalResponseService, HTSTaskService, PatientService, TreatmentProcessStatusService } from '@proxy/service';
 import { forkJoin } from 'rxjs';
 import { CommonService } from 'src/app/services/common.service';
 import { AppComponentBase } from 'src/app/shared/common/app-component-base';
@@ -28,6 +29,7 @@ export class PatientListComponent extends AppComponentBase {
   languageList: LanguageDto[] = [];
   genderList: GenderDto[] = [];
   taskList: HTSTaskDto[] = [];
+  hospitalResponseList: HospitalResponseDto[] = [];
   processStatusList: TreatmentProcessStatusDto[] = [];
   patientFilter: FilterPatientDto = {} as FilterPatientDto;
   loading: boolean;
@@ -61,7 +63,8 @@ export class PatientListComponent extends AppComponentBase {
     private commonService: CommonService,
     private patientService: PatientService,
     private treatmentProcessStatusService: TreatmentProcessStatusService,
-    private taskService: HTSTaskService
+    private taskService: HTSTaskService,
+    private hospitalResponseService: HospitalResponseService
   ) {
     super(injector);
     this.isAllowedToManage = this.permission.getGrantedPolicy("HTS.PatientManagement")
@@ -95,6 +98,11 @@ export class PatientListComponent extends AppComponentBase {
         this.patientList = resPatientList.items;
         this.totalRecords = resPatientList.totalCount;
         this.taskList = resTaskList.items;
+        this.hospitalResponseService.getByPatientList(this.patientList.map(p=>+p.id)).subscribe({
+          next: res=> {
+            this.hospitalResponseList = res.items as HospitalResponseDto[];
+          }
+        });
       },
       error: () => {
         this.loading = false;
@@ -111,6 +119,12 @@ export class PatientListComponent extends AppComponentBase {
       next: (res) => {
         this.patientList = res.items;
         this.totalRecords = res.totalCount;
+        this.hospitalResponseService.getByPatientList(this.patientList.map(p=>+p.id)).subscribe({
+          next: res=> {
+            debugger;
+            this.hospitalResponseList = res as HospitalResponseDto[];
+          }
+        });
       },
       error: () => {
         this.loading = false;
@@ -127,6 +141,11 @@ export class PatientListComponent extends AppComponentBase {
       next: (res) => {
         this.patientList = res.items;
         this.totalRecords = res.totalCount;
+        this.hospitalResponseService.getByPatientList(this.patientList.map(p=>+p.id)).subscribe({
+          next: res=> {
+            this.hospitalResponseList = res as HospitalResponseDto[];
+          }
+        });
       },
       error: () => {
         this.loading = false;
@@ -201,7 +220,9 @@ export class PatientListComponent extends AppComponentBase {
       case "4": //Hastanelerden cevap bekleniyor
         return this.patientList.filter(p => p.patientTreatmentProcesses.some(ptp => ptp.isFinalized == false && ptp.treatmentProcessStatusId == EntityEnum_PatientTreatmentStatusEnum.HospitalAskedWaitingResponse));
       case "5": //Ek bilgi bekleniyor
-        return this.patientList.filter(p => p.patientTreatmentProcesses.some(ptp => ptp.isFinalized == false && ptp.hospitalConsultations.some(hc=>hc.hospitalConsultationStatusId = EntityEnum_HospitalConsultationStatusEnum.AdditionalInfoWaiting)));
+        return this.patientList.filter(p => p.patientTreatmentProcesses.some(ptp => ptp.isFinalized == false && 
+          this.hospitalResponseList.some(hr=> hr.hospitalConsultation.patientTreatmentProcess.id == ptp.id && 
+            hr.hospitalResponseTypeId == EntityEnum_HospitalResponseTypeEnum.AdditionalInformationRequired)));
       case "6": //Hastane cevabının değerlendirilmesi bekleniyor
         return this.patientList.filter(p => this.taskList.filter(t => t.taskTypeId == EntityEnum_TaskTypeEnum.EvaluationOfHospitalResponse).some(t => t.patientId == +p.id));
       case "7": //Fiyatlandırma gönderilmesi bekleniyor

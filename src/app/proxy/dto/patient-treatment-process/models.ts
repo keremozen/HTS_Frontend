@@ -1,7 +1,6 @@
 import type { AuditedEntityWithUserDto } from '@abp/ng.core';
 import type { EntityEnum_PatientTreatmentStatusEnum } from '../../enum/entity-enum-patient-treatment-status-enum.enum';
 import type { TreatmentProcessStatusDto } from '../treatment-process-status/models';
-import type { HospitalConsultationDto } from '../hospital-consultation/models';
 import { IdentityUserDto } from '@abp/ng.identity/proxy';
 
 export interface PatientTreatmentProcessDto extends AuditedEntityWithUserDto<number, IdentityUserDto> {
@@ -10,7 +9,6 @@ export interface PatientTreatmentProcessDto extends AuditedEntityWithUserDto<num
   treatmentProcessStatusId: EntityEnum_PatientTreatmentStatusEnum;
   treatmentProcessStatus: TreatmentProcessStatusDto;
   patientNameSurname?: string;
-  hospitalConsultations: HospitalConsultationDto[];
 }
 
 export interface FinalizePtpDto {
@@ -29,5 +27,4 @@ export interface PatientTreatmentProcessDetailedDto extends AuditedEntityWithUse
   finalizationDescription?: string;
   treatmentProcessStatusId: EntityEnum_PatientTreatmentStatusEnum;
   treatmentProcessStatus: TreatmentProcessStatusDto;
-  hospitalConsultations: HospitalConsultationDto[];
 }

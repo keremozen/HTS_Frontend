@@ -4,7 +4,7 @@ import type { BranchDto } from '../branch/models';
 export interface SMCIInterpreterAppointmentDto extends EntityDto<number> {
   salesMethodAndCompanionInfoId: number;
   appointmentDate?: Date;
-  description?: string;
+  description?: Date;
   branchId?: number;
   branch: BranchDto;
 }
@@ -12,6 +12,6 @@ export interface SMCIInterpreterAppointmentDto extends EntityDto<number> {
 export interface SaveSMCIInterpreterAppointmentDto extends EntityDto<number> {
   salesMethodAndCompanionInfoId: number;
   appointmentDate?: Date;
-  description?: string;
+  description?: Date;
   branchId?: number;
 }

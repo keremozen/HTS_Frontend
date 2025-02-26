@@ -51,6 +51,15 @@ export class HospitalResponseService {
     { apiName: this.apiName });
   
 
+  getByPatientList = (patientList: number[]) =>
+    this.restService.request<any, PagedResultDto<HospitalResponseDto>>({
+      method: 'GET',
+      url: '/api/app/hospital-response/by-patient-list',
+      params: { patientList },
+    },
+    { apiName: this.apiName });
+  
+
   reject = (hospitalResponseId: number) =>
     this.restService.request<any, void>({
       method: 'POST',
